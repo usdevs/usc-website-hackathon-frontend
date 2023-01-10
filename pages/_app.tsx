@@ -15,7 +15,8 @@ const colors = {
 
 const fonts = {
     heading: `'Domine', serif`,
-    body: `'Do Hyeon', sans-serif`,
+    body: `'Domine', serif`,
+    // body: `'Do Hyeon', sans-serif`,
 }
 
 const theme = extendTheme({colors, fonts})

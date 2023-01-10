@@ -1,7 +1,7 @@
 import React from "react";
 import { LinkBox, LinkOverlay, Text } from "@chakra-ui/react";
 
-const BigCard: React.FC<ButtonInfo> = (props) => {
+const HomePageCard: React.FC<ButtonInfo> = (props) => {
   return (
       <LinkBox
           as='button'
@@ -33,4 +33,4 @@ const BigCard: React.FC<ButtonInfo> = (props) => {
       </LinkBox>  );
 };
 
-export default BigCard;
+export default HomePageCard;

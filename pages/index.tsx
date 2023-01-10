@@ -3,7 +3,7 @@ import React from "react";
 import NavMenu from "../components/NavMenu";
 import {Flex, Box, Stack, Text, useBreakpointValue, VStack, SimpleGrid} from '@chakra-ui/react';
 import Footer from '../components/Footer';
-import BigCard from "../components/BigCard";
+import HomePageCard from "../components/HomePageCard";
 
 const BUTTON_LINKS: ButtonInfo[] = [
     {name: "IGs", link: "#"},
@@ -95,10 +95,10 @@ const LandingPage: NextPage = () => {
             <HeroSection/>
             <Box mx={'80px'} my={'80px'}>
             <SimpleGrid minChildWidth='500px' spacingX='20px' spacingY='20px'>
-                <BigCard name={BUTTON_LINKS[0].name} link={BUTTON_LINKS[0].link} key={0}/>
-                <BigCard name={BUTTON_LINKS[1].name} link={BUTTON_LINKS[1].link} key={1}/>
-                <BigCard name={BUTTON_LINKS[2].name} link={BUTTON_LINKS[2].link} key={2}/>
-                <BigCard name={BUTTON_LINKS[3].name} link={BUTTON_LINKS[3].link} key={3}/>
+                <HomePageCard name={BUTTON_LINKS[0].name} link={BUTTON_LINKS[0].link} key={0}/>
+                <HomePageCard name={BUTTON_LINKS[1].name} link={BUTTON_LINKS[1].link} key={1}/>
+                <HomePageCard name={BUTTON_LINKS[2].name} link={BUTTON_LINKS[2].link} key={2}/>
+                <HomePageCard name={BUTTON_LINKS[3].name} link={BUTTON_LINKS[3].link} key={3}/>
             </SimpleGrid>
             </Box>
             <Footer/>
