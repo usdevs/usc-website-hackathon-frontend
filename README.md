@@ -8,11 +8,16 @@ Install the following:
 - Node.JS version - 18.12.1 LTS (would recommend that you install through [nvm](https://github.com/nvm-sh/nvm))
 - npm - 8.19.2
 
-### 
-
+Typical workflow
 - `git clone https://github.com/usdevs/usc-website-hackathon-frontend.git`
 - Navigate to the directory
-- 'npm i'
+- `npm i`
+- `git checkout dev`
+- `git branch -d <branch-name`
+- `git add -A`
+- `git commit -m <message>`
+- If upstream does not exist, `git push --set-upstream origin <branch-name` else `git push origin`
+- Create PR on GitHub from `<branch-name>` to `<master>`
 
 ## Getting Started
 
