@@ -51,10 +51,6 @@ const IGDetails: IGInfo[] = [
 ]
 
 const InterestGroups: NextPage = () => {
-    //todo lazy load all IGs
-    //todo responsive UI
-    //todo hide scrollbar
-    //todo break things by adding very long names and text everywhere
     return (
         <Flex
             justify="center"
