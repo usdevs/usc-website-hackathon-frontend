@@ -1,16 +1,33 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## Installation
+
+### Requirements
+
+Install the following:
+- Node.JS version - 18.12.1 LTS (would recommend that you install through [nvm](https://github.com/nvm-sh/nvm))
+- npm - 8.19.2
+
+### 
+
+- `git clone https://github.com/usdevs/usc-website-hackathon-frontend.git`
+- Navigate to the directory
+- 'npm i'
+
 ## Getting Started
 
 First, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+Currently, we have 3 pages:
+1. http://localhost:3000/
+2. http://localhost:3000/bookings/
+3. http://localhost:3000/interest-groups/
 
 You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
 
