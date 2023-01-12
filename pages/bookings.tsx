@@ -3,7 +3,7 @@ import React, {Dispatch, SetStateAction, useState} from "react";
 import NavMenu from "../components/NavMenu";
 import {Box, Flex, FormLabel, Grid, GridItem, HStack, Input, Select, Text} from '@chakra-ui/react';
 import Footer from '../components/Footer';
-import ScheduleSelector from 'react-schedule-selector';
+import ScheduleSelector from 'react-schedule-selector-v2';
 import {SingleDatepicker} from "chakra-dayzed-datepicker";
 
 const venues = ['CPTH', 'Chatterbox', 'Maker\'s Studio', 'Amphi', 'TRR', 'TRB'];
