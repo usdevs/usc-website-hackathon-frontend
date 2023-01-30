@@ -1,17 +1,17 @@
-import type {NextPage} from "next";
-import React, {Dispatch, SetStateAction, useState} from "react";
+import type { NextPage } from "next";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import NavMenu from "../components/NavMenu";
-import {Box, Flex, FormLabel, Grid, GridItem, HStack, Input, Select, Text} from '@chakra-ui/react';
-import Footer from '../components/Footer';
-import ScheduleSelector from 'react-schedule-selector-v2';
-import {SingleDatepicker} from "chakra-dayzed-datepicker";
+import { Box, Flex, FormLabel, Grid, GridItem, HStack, Input, Select, Text } from "@chakra-ui/react";
+import Footer from "../components/Footer";
+import ScheduleSelector from "react-schedule-selector-v2";
+import { SingleDatepicker } from "chakra-dayzed-datepicker";
 
-const venues = ['CPTH', 'Chatterbox', 'Maker\'s Studio', 'Amphi', 'TRR', 'TRB'];
+const venues = ["CPTH", "Chatterbox", "Maker's Studio", "Amphi", "TRR", "TRB"];
 
 interface VenueBookingProps {
-    venue: string
-    isTimeLabelsDisplayed: boolean
-    startDate: Date
+    venue: string;
+    isTimeLabelsDisplayed: boolean;
+    startDate: Date;
 }
 
 type bookingInfo = {
@@ -28,9 +28,9 @@ const bookings: bookingInfo[] = [
         venue: "CPTH",
         bookedBy: "IG Head",
         from: 1673506685,
-        to: 1673521085,
-    },
-]
+        to: 1673521085
+    }
+];
 
 /*
    {
@@ -87,7 +87,7 @@ const Switcher: React.FC = () => {
                     // w={"22px"}
                     // h={"22px"}
                 >
-                    {isDisplayByDay ? 'Day' : 'Month'}
+                    {isDisplayByDay ? "Day" : "Month"}
                 </Text>
             </Box>
         </FormLabel>
@@ -110,34 +110,33 @@ const VenueBooking: React.FC<VenueBookingProps> = (props: VenueBookingProps) => 
         dateFormat="DD/MM"
         hourlyChunks={2}
         onChange={(newSchedule: Array<Date>) => {
-            setSchedule(newSchedule)
+            setSchedule(newSchedule);
         }}
         isTimeLabelsDisplayed={false}
         // isTimeLabelsDisplayed={props.isTimeLabelsDisplayed}
         isRenderVenueLabel={true}
         venues={[props.venue]}
-    />
-}
+    />;
+};
 
 const DateAndVenueSelection: React.FC<{ startDate: Date, setStartDate: Dispatch<SetStateAction<Date>> }>
-    = ({startDate, setStartDate}) => {
+    = ({ startDate, setStartDate }) => {
     return (
-        <HStack align='flex-start' alignItems="center" justifyContent={"center"}>
-            <Switcher/>
-            <Box maxWidth={'125px'}>
+        <HStack align="flex-start" alignItems="center" justifyContent={"center"}>
+            <Switcher />
+            <Box maxWidth={"125px"}>
                 <SingleDatepicker
                     name="date-input"
                     date={startDate}
                     onDateChange={setStartDate}
                 />
             </Box>
-            <Select variant='flushed' placeholder={venues[0]}>
+            <Select variant="flushed" placeholder={venues[0]}>
                 {venues.map(venue => <option key={venue} value={venue}>{venue}</option>)}
             </Select>
         </HStack>
     );
-}
-
+};
 const BookingTimes: React.FC = () => {
     const [schedule, setSchedule] = useState<Date[]>([]);
 
@@ -152,36 +151,36 @@ const BookingTimes: React.FC = () => {
         dateFormat="DD/MM"
         hourlyChunks={2}
         onChange={(newSchedule: Array<Date>) => {
-            setSchedule(newSchedule)
+            setSchedule(newSchedule);
         }}
         isTimeLabelsDisplayed={true}
         isRenderVenueLabel={true}
         renderDateCell={(datetime: Date, selected: boolean, refSetter: (dateCellElement: HTMLElement) => void): JSX.Element => {
-            return <div style={{width: "0%", height: '25px'}}/>
+            return <div style={{ width: "0px", height: "25px" }} />;
         }}
         renderVenueCell={(venueName: string): JSX.Element => {
-            return (<span>x</span>)
+            return (<span>x</span>);
         }}
         venues={["x"]}
-    />)
-}
+    />);
+};
 
 const BookingSelector: React.FC = () => {
-    const [startDate, setStartDate] = React.useState<Date>(new Date())
+    const [startDate, setStartDate] = React.useState<Date>(new Date());
 
     return (
         <>
-            <DateAndVenueSelection startDate={startDate} setStartDate={setStartDate}/>
-                <HStack>
-                    <BookingTimes/>
-                    {venues.map((venue, index) => {
-                        return (<VenueBooking key={venue}
-                                              venue={venue} isTimeLabelsDisplayed={index == 0} startDate={startDate}/>)
-                    })}
-                </HStack>
+            <DateAndVenueSelection startDate={startDate} setStartDate={setStartDate} />
+            <HStack>
+                <BookingTimes />
+                {venues.map((venue, index) => {
+                    return (<VenueBooking key={venue}
+                                          venue={venue} isTimeLabelsDisplayed={index == 0} startDate={startDate} />);
+                })}
+            </HStack>
         </>
     );
-}
+};
 
 const Bookings: NextPage = () => {
     return (
@@ -190,9 +189,9 @@ const Bookings: NextPage = () => {
             flexDir="column"
             as="main"
         >
-            <NavMenu/>
-            <BookingSelector/>
-            <Footer/>
+            <NavMenu />
+            <BookingSelector />
+            <Footer />
         </Flex>
     );
 };
