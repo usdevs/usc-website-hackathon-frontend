@@ -22,17 +22,59 @@ import {
   PinInput,
   PinInputField,
   Center,
+  useBoolean,
+  FormErrorMessage,
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import { FaCheck } from 'react-icons/fa'
+import { NumericLiteral } from 'typescript'
 
 type LoginForms = 'login' | 'code' | 'success'
 
 const LoginModal = () => {
+  // For controlling modal dialog
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const [loginFormState, setLoginFormState] = useState<LoginForms>('success')
+  // For controlling form state
 
   const Login = () => {
+    const [isInvalid, setInvalid] = useBoolean(false)
+    const [loginFormState, setLoginFormState] = useState<LoginForms>('login')
+    const [username, setUsername] = useState('')
+    const [otp, setOtp] = useState(['', '', '', ''])
+
+    // Placeholder functions for handling login
+    function requestForOtp() {
+      return true
+    }
+
+    function submitOtp() {
+      return true
+    }
+
+    function handleLogin() {
+      const teleHandleFound = requestForOtp()
+      if (teleHandleFound) {
+        setLoginFormState('code')
+      } else {
+        setInvalid.on()
+      }
+    }
+
+    function onOtpChange(index: number, n: string) {
+      const pin = [...otp]
+      pin[index] = n.toString()
+      setOtp(pin)
+    }
+
+    function handleOtp() {
+      const validOTP = submitOtp()
+      if (validOTP) {
+        setLoginFormState('success')
+      } else {
+        setInvalid.on()
+      }
+    }
+
     if (loginFormState == 'login') {
       return (
         <>
@@ -42,16 +84,24 @@ const LoginModal = () => {
               Please log in with your registered telehandle to make booking for spaces.
             </Text>
             <Spacer />
-            <FormControl px={4}>
+            <FormControl px={4} isInvalid={isInvalid} h={100} isRequired>
               <FormLabel m={0}>Telehandle</FormLabel>
               <InputGroup borderRadius={0}>
                 <InputLeftAddon borderRadius={0}>@</InputLeftAddon>
-                <Input py={2} borderRadius={0} />
+                <Input
+                  py={2}
+                  borderRadius={0}
+                  id='username'
+                  name='username'
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
               </InputGroup>
+              <FormErrorMessage fontSize='xs'>Your telehandle could not be found.</FormErrorMessage>
             </FormControl>
           </Flex>
           <Flex justify='flex-end' w='100%' mt={16}>
-            <Button onClick={onClose}>Next</Button>
+            <Button onClick={handleLogin}>Next</Button>
           </Flex>
         </>
       )
@@ -64,18 +114,27 @@ const LoginModal = () => {
               Please enter the 4-digit OTP sent to your telehandle (@xxxxxxxx)
             </Text>
             <Spacer />
-            <HStack justify='center'>
-              <PinInput size='lg' otp placeholder=''>
-                <PinInputField rounded='none' />
-                <PinInputField rounded='none' />
-                <PinInputField rounded='none' />
-                <PinInputField rounded='none' />
-              </PinInput>
-            </HStack>
+            <FormControl isInvalid={isInvalid} h={100}>
+              <HStack justify='center'>
+                <PinInput id='otp' size='lg' otp placeholder='' isInvalid={isInvalid}>
+                  {otp.map((n, index) => (
+                    <PinInputField
+                      key={index}
+                      rounded='none'
+                      value={n}
+                      onChange={(e) => onOtpChange(index, e.target.value)}
+                    ></PinInputField>
+                  ))}
+                </PinInput>
+              </HStack>
+              <FormErrorMessage fontSize={'xs'}>You have entered an invalid OTP.</FormErrorMessage>
+            </FormControl>
           </Flex>
           <Flex justify='space-between' w='100%' mt={16}>
-            <Button variant='link'>Resend OTP</Button>
-            <Button onClick={onClose}>Continue</Button>
+            <Button variant='link' onClick={requestForOtp}>
+              Resend OTP
+            </Button>
+            <Button onClick={handleOtp}>Continue</Button>
           </Flex>
         </>
       )
