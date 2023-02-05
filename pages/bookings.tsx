@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import React, { Dispatch, SetStateAction, useState } from "react";
 import NavMenu from "../components/NavMenu";
-import { Box, Flex, FormLabel, Grid, GridItem, HStack, Input, Select, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, FormControl, FormLabel, Grid, GridItem, HStack, Input, Select, Text } from "@chakra-ui/react";
 import Footer from "../components/Footer";
 import ScheduleSelector from "react-schedule-selector-v2";
 import { SingleDatepicker } from "chakra-dayzed-datepicker";
@@ -27,10 +27,24 @@ const bookings: bookingInfo[] = [
         ig: "Hacks",
         venue: "CPTH",
         bookedBy: "IG Head",
-        from: 1673506685,
-        to: 1673521085
+        from: 1675602110,
+        to: 1675604239
     }
 ];
+
+/*
+model Booking {
+  id Int @id@default(autoincrement())
+  venue Venue @relation(fields: [venueId], references: [id])
+  venueId Int
+  bookedBy UserOnOrg @relation(fields: [userId, orgId], references: [userId, orgId])
+  userId Int
+  orgId Int
+  start DateTime // start time of booking
+  end DateTime // end time of booking 
+  bookedAt DateTime @default(now())
+}
+*/
 
 /*
    {
@@ -137,6 +151,7 @@ const DateAndVenueSelection: React.FC<{ startDate: Date, setStartDate: Dispatch<
         </HStack>
     );
 };
+
 const BookingTimes: React.FC = () => {
     const [schedule, setSchedule] = useState<Date[]>([]);
 
@@ -167,9 +182,12 @@ const BookingTimes: React.FC = () => {
 
 const BookingSelector: React.FC = () => {
     const [startDate, setStartDate] = React.useState<Date>(new Date());
+    const [showBookingPopup, setShowBookingPopup] = React.useState<Boolean>(true);
 
     return (
+        
         <>
+            {showBookingPopup ? <BookingConfirmationPopup /> : <></>}
             <DateAndVenueSelection startDate={startDate} setStartDate={setStartDate} />
             <HStack>
                 <BookingTimes />
@@ -182,8 +200,109 @@ const BookingSelector: React.FC = () => {
     );
 };
 
-const Bookings: NextPage = () => {
+const BookingConfirmationPopup: React.FC = (setShowBookingPopup) => {
+    const sampleBookingData = [{
+        venueId:undefined,
+        userId:undefined,
+        orgId: undefined,
+        start: undefined,
+        end: undefined,
+        bookedAt: undefined
+    }];
+
     return (
+        <Flex 
+            justifyContent="center" 
+            alignItems="center" 
+            position="fixed" 
+            zIndex="1" 
+            width="100vw" 
+            height="100vh" 
+            bg="rgba(14, 14, 14, 0.8)" 
+            top="0"
+        >
+            <Box width="40%">
+                <HStack color="white" bg="#1f407b" fontSize="1.1rem">
+                    <Button 
+                        bg="#1f407b"
+                        _hover={{
+                            background: "none",
+                            color: "#c9c9c9"
+                        }}
+                    >
+                        X
+                    </Button>
+                    <Box>NEW BOOKING</Box>
+                </HStack>
+                <FormControl bg="white" padding="1rem">
+                <FormLabel>Name</FormLabel>
+                    <Input />
+                    <FormLabel>Organisation</FormLabel>
+                    <Input />
+                    <FormLabel>Event</FormLabel>
+                    <Input />
+                    <FormLabel>Telehandle</FormLabel>
+                    <Input />
+                    <FormLabel>Date</FormLabel>
+                    <Input type="date"/>
+                    <FormLabel>Start Time</FormLabel>
+                    <Select>
+                        { 
+                            Array.from(Array(12).keys()).map(hour => 
+                                <>
+                                    <option>{hour}:00am</option>
+                                    <option>{hour}:30am</option>
+                                </>
+                            )
+                        }
+                        { 
+                            Array.from(Array(12).keys()).map(hour => 
+                                <>
+                                    <option>{hour}:00pm</option>
+                                    <option>{hour}:30pm</option>
+                                </>
+                            )
+                        }
+                    </Select>
+                    <FormLabel>End Time</FormLabel>
+                    <Select>
+                        { 
+                            Array.from(Array(12).keys()).map(hour => 
+                                <>
+                                    <option>{hour}:00am</option>
+                                    <option>{hour}:30am</option>
+                                </>
+                            )
+                        }
+                        { 
+                            Array.from(Array(12).keys()).map(hour => 
+                                <>
+                                    <option>{hour}:00pm</option>
+                                    <option>{hour}:30pm</option>
+                                </>
+                            )
+                        }
+                    </Select>
+                    
+                    <Input 
+                        type="submit" 
+                        marginTop="1rem" 
+                        bg="#66cc99" 
+                        width="fit-content"
+                        borderRadius="0.2rem"
+                        value="Confirm Booking"
+                    />
+                </FormControl>
+            </Box>
+        </Flex>
+    );
+}
+
+const Bookings: NextPage = () => {
+    
+    return (
+        
+        
         <Flex
             justify="center"
             flexDir="column"
