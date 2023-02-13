@@ -1,46 +1,15 @@
 import type { NextPage } from "next";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import NavMenu from "../components/NavMenu";
-import { Box, Flex, FormLabel, Grid, GridItem, HStack, Input, Select, Text } from "@chakra-ui/react";
+import { Box, Flex, FormLabel, Grid, GridItem, HStack, Input, Select, Text, useConst } from "@chakra-ui/react";
 import Footer from "../components/Footer";
 import ScheduleSelector from "react-schedule-selector-v2";
 import { SingleDatepicker } from "chakra-dayzed-datepicker";
+import { useContext } from 'react';
+import { BookingsContext } from './BookingsContext';
 
-const venues = ["CPTH", "Chatterbox", "Maker's Studio", "Amphi", "TRR", "TRB"];
+const venues = ["CTPH", "Chatterbox", "Maker's Studio", "Amphi", "TRR", "TRB"];
 
-interface VenueBookingProps {
-    venue: string;
-    isTimeLabelsDisplayed: boolean;
-    startDate: Date;
-}
-
-type bookingInfo = {
-    ig: string,
-    venue: string,
-    bookedBy: string,
-    from: number,
-    to: number,
-}
-
-const bookings: bookingInfo[] = [
-    {
-        ig: "Hacks",
-        venue: "CPTH",
-        bookedBy: "IG Head",
-        from: 1673506685,
-        to: 1673521085
-    }
-];
-
-/*
-   {
-    ig: "Second",
-    venue: "CPTH",
-    bookedBy: "IG Head",
-    from: 1673524685,
-    to: 1673524985,
-  }
- */
 const Switcher: React.FC = () => {
     const [isDisplayByDay, setIsDisplayByDay] = useState<boolean>(true);
     return (
@@ -98,12 +67,26 @@ const Switcher: React.FC = () => {
 
 const VenueBooking: React.FC<VenueBookingProps> = (props: VenueBookingProps) => {
     const [schedule, setSchedule] = useState<Date[]>([]);
+    const [bookings, setBookings] = useState<BookingInfoToDisplay[]>([]);
+    const bookingsFromBackend: BackendBookingInfo[] = useContext(BookingsContext);
+
+    useEffect(() => {
+        setBookings(bookingsFromBackend.map((x) => {
+            return {
+                ig: x.orgId.toString(),
+                venue: "CTPH",//x.venueId.toString(),
+                bookedBy: x.userId.toString(),
+                from: Date.parse(x.start),
+                to: Date.parse(x.end),
+            }
+        }).filter(x => x.venue === "CTPH"));
+    }, [bookingsFromBackend])
 
     return <ScheduleSelector
         startDate={new Date(props.startDate)}
         selection={schedule}
         numDays={1}
-        bookings={bookings.filter(x => x.venue === props.venue)}
+        bookings={bookings}
         minTime={0}
         maxTime={23.5}
         timeFormat="HH:mm"
@@ -144,7 +127,7 @@ const BookingTimes: React.FC = () => {
         startDate={new Date()}
         selection={schedule}
         numDays={1}
-        bookings={bookings.filter(x => false)}
+        bookings={[]}
         minTime={0}
         maxTime={23.5}
         timeFormat="HH:mm"
@@ -182,7 +165,7 @@ const BookingSelector: React.FC = () => {
     );
 };
 
-const Bookings: NextPage = () => {
+const Bookings: NextPage<{currentUserBookings: BackendBookingInfo[]}> = ({currentUserBookings}) => {
     return (
         <Flex
             justify="center"
@@ -190,10 +173,17 @@ const Bookings: NextPage = () => {
             as="main"
         >
             <NavMenu />
-            <BookingSelector />
+            <BookingsContext.Provider value={currentUserBookings}>
+                <BookingSelector/>
+            </BookingsContext.Provider>
             <Footer />
         </Flex>
     );
 };
 
+export async function getServerSideProps() {
+    const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "bookings?userId=1")
+    const currentUserBookings = await res.json()
+    return { props: { currentUserBookings } }
+}
 export default Bookings;

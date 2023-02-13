@@ -5,10 +5,12 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 ### Requirements
 
 Install the following:
+
 - Node.JS version - 18.12.1 LTS (would recommend that you install through [nvm](https://github.com/nvm-sh/nvm))
 - npm - 8.19.2
 
 Typical workflow
+
 - `git clone https://github.com/usdevs/usc-website-hackathon-frontend.git`
 - Navigate to the directory
 - `npm i`
@@ -30,6 +32,7 @@ npm run dev
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 Currently, we have 3 pages:
+
 1. http://localhost:3000/
 2. http://localhost:3000/bookings/
 3. http://localhost:3000/interest-groups/

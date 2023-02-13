@@ -14,4 +14,29 @@ declare global {
         description: string,
         category: string
     }
+
+    //todo merge backend with frontend types, create types package
+    type BackendBookingInfo =   {
+        id: number,
+        venueId: number,
+        userId: number,
+        orgId: number,
+        start: string,
+        end: string,
+        bookedAt: string
+    }
+
+    type BookingInfoToDisplay = {
+        ig: string,
+        venue: string,
+        bookedBy: string,
+        from: number,
+        to: number,
+    }
+
+    interface VenueBookingProps {
+        venue: string;
+        isTimeLabelsDisplayed: boolean;
+        startDate: Date;
+    }
 }
