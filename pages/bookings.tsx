@@ -34,20 +34,6 @@ const bookings: bookingInfo[] = [
 ];
 
 /*
-model Booking {
-  id Int @id@default(autoincrement())
-  venue Venue @relation(fields: [venueId], references: [id])
-  venueId Int
-  bookedBy UserOnOrg @relation(fields: [userId, orgId], references: [userId, orgId])
-  userId Int
-  orgId Int
-  start DateTime // start time of booking
-  end DateTime // end time of booking 
-  bookedAt DateTime @default(now())
-}
-*/
-
-/*
    {
     ig: "Second",
     venue: "CPTH",
@@ -202,10 +188,7 @@ const BookingSelector: React.FC = () => {
 };
 
 const Bookings: NextPage = () => {
-    
     return (
-        
-        
         <Flex
             justify="center"
             flexDir="column"
