@@ -80,13 +80,17 @@ export const BookingConfirmationPopup: React.FC<BookingConfirmationPopupProps> =
       bg="rgba(14, 14, 14, 0.8)"
       top="0"
     >
-      <Box width="40%">
+      <Box width="30rem" overflow="auto" maxHeight="100vh">
         <Flex color="white" bg="#1f407b" fontSize="1.1rem" alignItems="center">
           <Button
             bg="#1f407b"
             _hover={{
               background: "none",
               color: "#c9c9c9",
+            }}
+            _active={{
+                background: "none",
+                color: "#c9c9c9",
             }}
             onClick={() => onClosePopup(false)}
           >
