@@ -5,6 +5,7 @@ import { Box, Button, Flex, FormControl, FormLabel, Grid, GridItem, HStack, Inpu
 import Footer from "../components/Footer";
 import ScheduleSelector from "react-schedule-selector-v2";
 import { SingleDatepicker } from "chakra-dayzed-datepicker";
+import { BookingConfirmationPopup } from "../components/BookingConfirmationPopup";
 
 const venues = ["CPTH", "Chatterbox", "Maker's Studio", "Amphi", "TRR", "TRB"];
 
@@ -187,7 +188,7 @@ const BookingSelector: React.FC = () => {
     return (
         
         <>
-            {showBookingPopup ? <BookingConfirmationPopup /> : <></>}
+            {showBookingPopup ? <BookingConfirmationPopup onClosePopup={setShowBookingPopup} /> : <></>}
             <DateAndVenueSelection startDate={startDate} setStartDate={setStartDate} />
             <HStack>
                 <BookingTimes />
@@ -199,104 +200,6 @@ const BookingSelector: React.FC = () => {
         </>
     );
 };
-
-const BookingConfirmationPopup: React.FC = (setShowBookingPopup) => {
-    const sampleBookingData = [{
-        venueId:undefined,
-        userId:undefined,
-        orgId: undefined,
-        start: undefined,
-        end: undefined,
-        bookedAt: undefined
-    }];
-
-    return (
-        <Flex 
-            justifyContent="center" 
-            alignItems="center" 
-            position="fixed" 
-            zIndex="1" 
-            width="100vw" 
-            height="100vh" 
-            bg="rgba(14, 14, 14, 0.8)" 
-            top="0"
-        >
-            <Box width="40%">
-                <HStack color="white" bg="#1f407b" fontSize="1.1rem">
-                    <Button 
-                        bg="#1f407b"
-                        _hover={{
-                            background: "none",
-                            color: "#c9c9c9"
-                        }}
-                    >
-                        X
-                    </Button>
-                    <Box>NEW BOOKING</Box>
-                </HStack>
-                <FormControl bg="white" padding="1rem">
-                <FormLabel>Name</FormLabel>
-                    <Input />
-                    <FormLabel>Organisation</FormLabel>
-                    <Input />
-                    <FormLabel>Event</FormLabel>
-                    <Input />
-                    <FormLabel>Telehandle</FormLabel>
-                    <Input />
-                    <FormLabel>Date</FormLabel>
-                    <Input type="date"/>
-                    <FormLabel>Start Time</FormLabel>
-                    <Select>
-                        { 
-                            Array.from(Array(12).keys()).map(hour => 
-                                <>
-                                    <option>{hour}:00am</option>
-                                    <option>{hour}:30am</option>
-                                </>
-                            )
-                        }
-                        { 
-                            Array.from(Array(12).keys()).map(hour => 
-                                <>
-                                    <option>{hour}:00pm</option>
-                                    <option>{hour}:30pm</option>
-                                </>
-                            )
-                        }
-                    </Select>
-                    <FormLabel>End Time</FormLabel>
-                    <Select>
-                        { 
-                            Array.from(Array(12).keys()).map(hour => 
-                                <>
-                                    <option>{hour}:00am</option>
-                                    <option>{hour}:30am</option>
-                                </>
-                            )
-                        }
-                        { 
-                            Array.from(Array(12).keys()).map(hour => 
-                                <>
-                                    <option>{hour}:00pm</option>
-                                    <option>{hour}:30pm</option>
-                                </>
-                            )
-                        }
-                    </Select>
-                    
-                    <Input 
-                        type="submit" 
-                        marginTop="1rem" 
-                        bg="#66cc99" 
-                        width="fit-content"
-                        borderRadius="0.2rem"
-                        value="Confirm Booking"
-                    />
-                </FormControl>
-            </Box>
-        </Flex>
-    );
-}
 
 const Bookings: NextPage = () => {
     
