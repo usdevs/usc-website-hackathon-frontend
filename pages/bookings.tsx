@@ -65,7 +65,6 @@ const Switcher: React.FC = () => {
 };
 
 //trying to figure out how to render these bookigns and empty booking together from propss, can use computeDateMatrix
-
 const VenueBooking: React.FC<VenueBookingProps> = (props: VenueBookingProps) => {
     const [schedule, setSchedule] = useState<Date[]>([]);
     const [bookings, setBookings] = useState<BookingInfoToDisplay[]>([]);
@@ -97,10 +96,12 @@ const VenueBooking: React.FC<VenueBookingProps> = (props: VenueBookingProps) => 
             setSchedule(newSchedule);
             props.onOpen(true);
         }}
+        setBookingDataFromSelection={props.setBookingDataFromSelection}
         isTimeLabelsDisplayed={false}
         // isTimeLabelsDisplayed={props.isTimeLabelsDisplayed}
         isRenderVenueLabel={true}
         venues={[props.venue]}
+        venueId={1}
     />;
 };
 
@@ -152,16 +153,30 @@ const BookingTimes: React.FC = () => {
 };
 const BookingSelector: React.FC = () => {
     const [startDate, setStartDate] = React.useState<Date>(new Date());
-    const { isOpen, onOpen, onClose } = useDisclosure()
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [bookingDataFromSelection, setBookingDataFromSelection] = useState<BookingDataFromSelection>({
+        start: null,
+        end: null,
+        venueId: 1
+    });
+    const [unsuccessfulFormSubmitString, setUnsuccessfulFormSubmitString] = useState<string>("");
+    const onModalClose = () => {
+        setUnsuccessfulFormSubmitString("")
+        onClose();
+    }
 
     return (
         <>
-            <BookingConfirmationPopup isOpen={isOpen} onClose={onClose}/>
+            <BookingConfirmationPopup isOpen={isOpen} onClose={onModalClose} startDate={startDate}
+                                      setUnsuccessfulFormSubmitString={setUnsuccessfulFormSubmitString}
+                                      unsuccessfulFormSubmitString={unsuccessfulFormSubmitString}
+                                      bookingDataFromSelection={bookingDataFromSelection} />
             <DateAndVenueSelection startDate={startDate} setStartDate={setStartDate} />
             <HStack>
                 <BookingTimes />
                 {venues.map((venue, index) => {
                     return (<VenueBooking key={venue} onOpen={onOpen}
+                                          setBookingDataFromSelection={setBookingDataFromSelection}
                                           venue={venue} isTimeLabelsDisplayed={index == 0} startDate={startDate} />);
                 })}
             </HStack>

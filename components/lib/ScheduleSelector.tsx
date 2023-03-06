@@ -16,6 +16,7 @@ import selectionSchemes, {SelectionSchemeType, SelectionType} from './selection-
 import isAfter from "date-fns/isAfter";
 import subMinutes from 'date-fns/subMinutes'
 import differenceInMinutes from 'date-fns/differenceInMinutes';
+import { Dispatch, SetStateAction } from "react";
 
 const Wrapper = styled.div`
   display: flex;
@@ -145,6 +146,8 @@ type PropsType = {
   renderTimeLabel?: (time: Date) => JSX.Element
   renderDateLabel?: (date: Date) => JSX.Element
   renderVenueLabel?: (venueName: string) => JSX.Element
+  setBookingDataFromSelection: Dispatch<SetStateAction<BookingDataFromSelection>>
+  venueId: number
 }
 
 type StateType = {
@@ -362,6 +365,8 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
         this.state.timeCellInfos.map(x => x.map(y => y.date))
       )
     }
+
+    this.props.setBookingDataFromSelection({venueId: this.props.venueId, start: selectionStart, end: selectionEnd})
 
     let nextDraft: Array<Date> = []
     if (selectionType === 'add') {
