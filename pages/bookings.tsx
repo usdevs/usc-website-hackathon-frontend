@@ -1,9 +1,9 @@
 import type { NextPage } from "next";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import NavMenu from "../components/NavMenu";
-import { Button, FormControl, Box, Flex, FormLabel, Grid, GridItem, HStack, Input, Select, Text, useConst } from "@chakra-ui/react";
+import { Box, Flex, FormLabel, HStack, Input, Select, Text, useDisclosure } from "@chakra-ui/react";
 import Footer from "../components/Footer";
-import ScheduleSelector from "react-schedule-selector-v2";
+import ScheduleSelector from "../components/lib";
 import { SingleDatepicker } from "chakra-dayzed-datepicker";
 import { BookingConfirmationPopup } from "../components/BookingConfirmationPopup";
 import { useContext } from 'react';
@@ -95,6 +95,7 @@ const VenueBooking: React.FC<VenueBookingProps> = (props: VenueBookingProps) => 
         hourlyChunks={2}
         onChange={(newSchedule: Array<Date>) => {
             setSchedule(newSchedule);
+            props.onOpen(true);
         }}
         isTimeLabelsDisplayed={false}
         // isTimeLabelsDisplayed={props.isTimeLabelsDisplayed}
@@ -143,26 +144,24 @@ const BookingTimes: React.FC = () => {
         renderDateCell={(datetime: Date, selected: boolean, refSetter: (dateCellElement: HTMLElement) => void): JSX.Element => {
             return <div style={{ width: "0px", height: "25px" }} />;
         }}
-        renderVenueCell={(venueName: string): JSX.Element => {
-            return (<span>x</span>);
+        renderVenueLabel={(venueName: string): JSX.Element => {
+            return (<span>Times</span>);
         }}
-        venues={["x"]}
+        venues={["Times"]}
     />);
 };
-
 const BookingSelector: React.FC = () => {
     const [startDate, setStartDate] = React.useState<Date>(new Date());
-    const [showBookingPopup, setShowBookingPopup] = React.useState<Boolean>(true);
+    const { isOpen, onOpen, onClose } = useDisclosure()
 
     return (
-
         <>
-            {showBookingPopup ? <BookingConfirmationPopup onClosePopup={setShowBookingPopup} /> : <></>}
+            <BookingConfirmationPopup isOpen={isOpen} onClose={onClose}/>
             <DateAndVenueSelection startDate={startDate} setStartDate={setStartDate} />
             <HStack>
                 <BookingTimes />
                 {venues.map((venue, index) => {
-                    return (<VenueBooking key={venue}
+                    return (<VenueBooking key={venue} onOpen={onOpen}
                                           venue={venue} isTimeLabelsDisplayed={index == 0} startDate={startDate} />);
                 })}
             </HStack>

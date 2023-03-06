@@ -1,16 +1,14 @@
 import React, { useState, useCallback } from "react";
 import {
-  Box,
-  Button,
-  Flex,
   FormControl,
   FormLabel,
-  Input,
-  Select,
+  Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay,
+  Select
 } from "@chakra-ui/react";
 
 type BookingConfirmationPopupProps = {
-  onClosePopup: (show: boolean) => void;
+  onClose: () => void;
+  isOpen: boolean;
 };
 
 function generateHourOptions() {
@@ -32,119 +30,118 @@ function generateHourOptions() {
 }
 
 export const BookingConfirmationPopup: React.FC<BookingConfirmationPopupProps> = ({
-  onClosePopup,
-}) => {
+                                                                                    onClose, isOpen
+                                                                                  }) => {
 
-    const [bookingData, setBookingData] = useState({
-        name: "",
-        organisation: "",
-        event: "",
-        telehandle: "",
-        date: "",
-        startTime: "",
-        endTime: "",
+  const [bookingData, setBookingData] = useState({
+    name: "",
+    organisation: "",
+    event: "",
+    telehandle: "",
+    date: "",
+    startTime: "",
+    endTime: ""
+  });
+
+  const handleSubmit = useCallback(async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer c310bce8f3e0604f2728217fa8027f6a42923180f01e8f5864614d5ae28c1378',
+      },
+      body: JSON.stringify(bookingData)
+    };
+    const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "bookings", requestOptions);
+    const data = await response.json();
+    //todo handle error
+    onClose();
+    setBookingData({
+      name: "",
+      organisation: "",
+      event: "",
+      telehandle: "",
+      date: "",
+      startTime: "",
+      endTime: ""
     });
+  }, [bookingData]);
 
-    const handleSubmit = useCallback((event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        console.log(bookingData);
-        onClosePopup(false);
-        setBookingData({
-            name: "",
-            organisation: "",
-            event: "",
-            telehandle: "",
-            date: "",
-            startTime: "",
-            endTime: "",
-        });
-    }, [bookingData]);
+  const handleInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setBookingData((prevData) => ({
+      ...prevData,
+      [event.target.name]: event.target.value
+    }));
+  }, []);
 
-    const handleInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        setBookingData((prevData) => ({
-        ...prevData,
-        [event.target.name]: event.target.value,
-        }));
-    }, []);
-
-    
 
   return (
-    <Flex
-      justifyContent="center"
-      alignItems="center"
-      position="fixed"
-      zIndex="1"
-      width="100vw"
-      height="100vh"
-      bg="rgba(14, 14, 14, 0.8)"
-      top="0"
-    >
-      <Box width="30rem" overflow="auto" maxHeight="100vh">
-        <Flex color="white" bg="#1f407b" fontSize="1.1rem" alignItems="center">
-          <Button
-            bg="#1f407b"
-            _hover={{
-              background: "none",
-              color: "#c9c9c9",
-            }}
-            _active={{
-                background: "none",
-                color: "#c9c9c9",
-            }}
-            onClick={() => onClosePopup(false)}
-          >
-            X
-          </Button>
-          <Box>NEW BOOKING</Box>
-        </Flex>
-        <form onSubmit={handleSubmit} style={{backgroundColor:"white", padding:"1rem"}}>
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader color="white" bg="#1f407b" fontSize="1.1rem" alignItems="center">NEW BOOKING</ModalHeader>
+        <ModalCloseButton
+          bg="white"
+          _hover={{
+            background: "none",
+            color: "#c9c9c9"
+          }}
+          _active={{
+            background: "none",
+            color: "#c9c9c9"
+          }}
+        />
+        <ModalBody>
+          <form onSubmit={handleSubmit} style={{ backgroundColor: "white", padding: "1rem" }}>
             <FormControl>
-                <FormLabel htmlFor="name">Name</FormLabel>
-                <Input name="name" id="name" aria-label="Name" onChange={handleInputChange} required  />
+              <FormLabel htmlFor="name">Name</FormLabel>
+              <Input name="name" id="name" aria-label="Name" onChange={handleInputChange} required />
             </FormControl>
             <FormControl>
-                <FormLabel htmlFor="organisation" marginTop="0.5rem">Organisation</FormLabel>
-                <Input id="organisation" name="organisation" aria-label="Organisation" onChange={handleInputChange} required />
+              <FormLabel htmlFor="organisation" marginTop="0.5rem">Organisation</FormLabel>
+              <Input id="organisation" name="organisation" aria-label="Organisation" onChange={handleInputChange}
+                     required />
             </FormControl>
             <FormControl>
-                <FormLabel htmlFor="event" marginTop="0.5rem">Event</FormLabel>
-                <Input id="event" name="event" aria-label="Event" onChange={handleInputChange} required />
+              <FormLabel htmlFor="event" marginTop="0.5rem">Event</FormLabel>
+              <Input id="event" name="event" aria-label="Event" onChange={handleInputChange} required />
             </FormControl>
             <FormControl>
-                <FormLabel htmlFor="telehandle" marginTop="0.5rem">Telehandle</FormLabel>
-                <Input id="telehandle" name="telehandle" aria-label="Telehandle" onChange={handleInputChange} required />
+              <FormLabel htmlFor="telehandle" marginTop="0.5rem">Telehandle</FormLabel>
+              <Input id="telehandle" name="telehandle" aria-label="Telehandle" onChange={handleInputChange} required />
             </FormControl>
             <FormControl>
-                <FormLabel htmlFor="date" marginTop="0.5rem">Date</FormLabel>
-                <Input id="date" type="date" name="date" aria-label="Telehandle" onChange={handleInputChange} required />
+              <FormLabel htmlFor="date" marginTop="0.5rem">Date</FormLabel>
+              <Input id="date" type="date" name="date" aria-label="Telehandle" onChange={handleInputChange} required />
             </FormControl>
             <FormControl>
-                <FormLabel htmlFor="startTime" marginTop="0.5rem">Start Time</FormLabel>
-                <Select id="startTime" name="startTime" aria-label="Start Time" onChange={handleInputChange} required >
-                    {generateHourOptions()}
-                </Select>
+              <FormLabel htmlFor="startTime" marginTop="0.5rem">Start Time</FormLabel>
+              <Select id="startTime" name="startTime" aria-label="Start Time" onChange={handleInputChange} required>
+                {generateHourOptions()}
+              </Select>
             </FormControl>
             <FormControl>
-                <FormLabel htmlFor="endTime" marginTop="0.5rem">End Time</FormLabel>
-                <Select id="endTime" name="endTime" aria-label="End Time" onChange={handleInputChange} required >
-                    {generateHourOptions()}
-                </Select>
+              <FormLabel htmlFor="endTime" marginTop="0.5rem">End Time</FormLabel>
+              <Select id="endTime" name="endTime" aria-label="End Time" onChange={handleInputChange} required>
+                {generateHourOptions()}
+              </Select>
             </FormControl>
             <FormControl>
-                <Input
-                    type="submit"
-                    marginTop="1rem"
-                    bg="#66cc99"
-                    _hover={{ bg: "#e53e3e", color:"#fff" }}
-                    width="fit-content"
-                    borderRadius="0.2rem"
-                    cursor="pointer"
-                    value="Confirm Booking"
-                />
+              <Input
+                type="submit"
+                marginTop="1rem"
+                bg="#66cc99"
+                _hover={{ bg: "#e53e3e", color: "#fff" }}
+                width="fit-content"
+                borderRadius="0.2rem"
+                cursor="pointer"
+                value="Confirm Booking"
+              />
             </FormControl>
-        </form>
-      </Box>
-    </Flex>
+          </form>
+        </ModalBody>
+      </ModalContent>
+    </Modal>
   );
 };

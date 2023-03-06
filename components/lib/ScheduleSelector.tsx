@@ -363,7 +363,7 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
       )
     }
 
-    let nextDraft = [...this.props.selection]
+    let nextDraft: Array<Date> = []
     if (selectionType === 'add') {
       nextDraft = Array.from(new Set([...nextDraft, ...newSelection]))
     } else if (selectionType === 'remove') {
@@ -379,6 +379,7 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
     // add values or remove values
     const timeSelected = this.props.selection.find(a => isSameMinute(a, startTime))
     this.setState({
+      selectionDraft: [],
       selectionType: timeSelected ? 'remove' : 'add',
       selectionStart: startTime
     })
