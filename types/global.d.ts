@@ -42,11 +42,13 @@ declare global {
         startDate: Date;
         onOpen: Dispatch<SetStateAction<Boolean>>;
         setBookingDataFromSelection: Dispatch<SetStateAction<BookingDataFromSelection>>;
+        bookingDataFromSelection: BookingDataFromSelection;
     }
 
     interface BookingDataFromSelection {
         start: Date | null;
         end: Date | null;
         venueId: number;
+        venue: string;
     }
 }

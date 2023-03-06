@@ -147,7 +147,7 @@ type PropsType = {
   renderDateLabel?: (date: Date) => JSX.Element
   renderVenueLabel?: (venueName: string) => JSX.Element
   setBookingDataFromSelection: Dispatch<SetStateAction<BookingDataFromSelection>>
-  venueId: number
+  bookingDataFromSelection: BookingDataFromSelection
 }
 
 type StateType = {
@@ -366,7 +366,7 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
       )
     }
 
-    this.props.setBookingDataFromSelection({venueId: this.props.venueId, start: selectionStart, end: selectionEnd})
+    this.props.setBookingDataFromSelection({...this.props.bookingDataFromSelection, start: selectionStart, end: selectionEnd})
 
     let nextDraft: Array<Date> = []
     if (selectionType === 'add') {

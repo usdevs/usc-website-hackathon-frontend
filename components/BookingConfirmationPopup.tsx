@@ -96,6 +96,10 @@ export const BookingConfirmationPopup: React.FC<BookingConfirmationPopupProps> =
               <Input id="event" name="event" aria-label="Event" onChange={handleInputChange} required />
             </FormControl>
             <FormControl>
+              <FormLabel htmlFor="venue" marginTop="0.5rem">Venue</FormLabel>
+              <Box>{bookingDataFromSelection?.venue}</Box>
+            </FormControl>
+            <FormControl>
               <FormLabel htmlFor="date" marginTop="0.5rem">Date</FormLabel>
               <Box>{format(startDate, "PPP")}</Box>
             </FormControl>

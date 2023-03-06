@@ -94,14 +94,15 @@ const VenueBooking: React.FC<VenueBookingProps> = (props: VenueBookingProps) => 
         hourlyChunks={2}
         onChange={(newSchedule: Array<Date>) => {
             setSchedule(newSchedule);
+            props.setBookingDataFromSelection({...props.bookingDataFromSelection, venueId: 1, venue: props.venue})
             props.onOpen(true);
         }}
+        bookingDataFromSelection={props.bookingDataFromSelection}
         setBookingDataFromSelection={props.setBookingDataFromSelection}
         isTimeLabelsDisplayed={false}
         // isTimeLabelsDisplayed={props.isTimeLabelsDisplayed}
         isRenderVenueLabel={true}
         venues={[props.venue]}
-        venueId={1}
     />;
 };
 
@@ -157,7 +158,8 @@ const BookingSelector: React.FC = () => {
     const [bookingDataFromSelection, setBookingDataFromSelection] = useState<BookingDataFromSelection>({
         start: null,
         end: null,
-        venueId: 1
+        venueId: 1,
+        venue: ""
     });
     const [unsuccessfulFormSubmitString, setUnsuccessfulFormSubmitString] = useState<string>("");
     const onModalClose = () => {
@@ -175,7 +177,7 @@ const BookingSelector: React.FC = () => {
             <HStack>
                 <BookingTimes />
                 {venues.map((venue, index) => {
-                    return (<VenueBooking key={venue} onOpen={onOpen}
+                    return (<VenueBooking key={venue} onOpen={onOpen} bookingDataFromSelection={bookingDataFromSelection}
                                           setBookingDataFromSelection={setBookingDataFromSelection}
                                           venue={venue} isTimeLabelsDisplayed={index == 0} startDate={startDate} />);
                 })}
