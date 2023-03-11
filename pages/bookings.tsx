@@ -1,10 +1,11 @@
 import type { NextPage } from "next";
 import React, { Dispatch, SetStateAction, useState } from "react";
 import NavMenu from "../components/NavMenu";
-import { Box, Flex, FormLabel, Grid, GridItem, HStack, Input, Select, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, FormControl, FormLabel, Grid, GridItem, HStack, Input, Select, Text } from "@chakra-ui/react";
 import Footer from "../components/Footer";
 import ScheduleSelector from "react-schedule-selector-v2";
 import { SingleDatepicker } from "chakra-dayzed-datepicker";
+import { BookingConfirmationPopup } from "../components/BookingConfirmationPopup";
 
 const venues = ["CPTH", "Chatterbox", "Maker's Studio", "Amphi", "TRR", "TRB"];
 
@@ -27,8 +28,8 @@ const bookings: bookingInfo[] = [
         ig: "Hacks",
         venue: "CPTH",
         bookedBy: "IG Head",
-        from: 1673506685,
-        to: 1673521085
+        from: 1675602110,
+        to: 1675604239
     }
 ];
 
@@ -137,6 +138,7 @@ const DateAndVenueSelection: React.FC<{ startDate: Date, setStartDate: Dispatch<
         </HStack>
     );
 };
+
 const BookingTimes: React.FC = () => {
     const [schedule, setSchedule] = useState<Date[]>([]);
 
@@ -167,9 +169,12 @@ const BookingTimes: React.FC = () => {
 
 const BookingSelector: React.FC = () => {
     const [startDate, setStartDate] = React.useState<Date>(new Date());
+    const [showBookingPopup, setShowBookingPopup] = React.useState<Boolean>(true);
 
     return (
+        
         <>
+            {showBookingPopup ? <BookingConfirmationPopup onClosePopup={setShowBookingPopup} /> : <></>}
             <DateAndVenueSelection startDate={startDate} setStartDate={setStartDate} />
             <HStack>
                 <BookingTimes />
