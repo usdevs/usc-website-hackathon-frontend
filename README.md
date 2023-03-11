@@ -5,10 +5,12 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 ### Requirements
 
 Install the following:
+
 - Node.JS version - 18.12.1 LTS (would recommend that you install through [nvm](https://github.com/nvm-sh/nvm))
 - npm - 8.19.2
 
 Typical workflow
+
 - `git clone https://github.com/usdevs/usc-website-hackathon-frontend.git`
 - Navigate to the directory
 - `npm i`
@@ -19,6 +21,16 @@ Typical workflow
 - If upstream does not exist, `git push --set-upstream origin <branch-name` else `git push origin`
 - Create PR on GitHub from `<branch-name>` to `<master>`
 
+### Setting up the backend
+
+```bash
+$ docker-compose up
+$ npm install
+$ npm run prisma:migrate
+$ npm run prisma:seed
+```
+- Make .env file
+
 ## Getting Started
 
 First, run the development server:
@@ -27,16 +39,16 @@ First, run the development server:
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3001](http://localhost:3001) with your browser to see the result.
 
 Currently, we have 3 pages:
-1. http://localhost:3000/
-2. http://localhost:3000/bookings/
-3. http://localhost:3000/interest-groups/
+1. http://localhost:3001/
+2. http://localhost:3001/bookings/
+3. http://localhost:3001/interest-groups/
 
 You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3001/api/hello](http://localhost:3001/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
 
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
