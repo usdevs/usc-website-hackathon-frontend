@@ -33,13 +33,17 @@ const NavLink: React.FC<ButtonInfo> = (props) => (
   <LinkBox
     px={2}
     py={1}
-    rounded={'md'}
+    boxShadow={'inset 0 0 0 0 white'}
+    color='white'
+    margin='0 -.25rem'
+    padding='0.25rem'
+    transition='color .3s ease-in-out, box-shadow .3s ease-in-out'
     _hover={{
-      textDecoration: 'none',
-      bg: useColorModeValue('gray.800', 'gray.200'),
+      boxShadow: 'inset 200px 0 0 0 white',
+      color: 'brand.primary',
     }}
   >
-    <Text color='white' fontFamily={'Domine'} fontSize={'24px'}>
+    <Text fontFamily={'Domine'} fontSize={'24px'}>
       {props.name}
     </Text>
     <LinkOverlay href={props.link} />
@@ -67,6 +71,7 @@ const NavMenu = () => {
             onClick={isOpen ? onClose : onOpen}
           />
           <Container centerContent>
+            {/* Links to various pages in the Nav bar (IGs, NOW, etc.) */}
             <HStack as={'nav'} spacing={36} display={{ base: 'none', md: 'flex' }}>
               {BUTTON_LINKS.map((info) => (
                 <NavLink key={info.name} name={info.name} link={info.link} />
