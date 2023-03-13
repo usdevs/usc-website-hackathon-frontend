@@ -79,7 +79,7 @@ const VenueBooking: React.FC<VenueBookingProps> = (props: VenueBookingProps) => 
                 from: Date.parse(x.start),
                 to: Date.parse(x.end),
             }
-        }).filter(x => x.venue === "CTPH"));
+        }).filter(x => x.venue === props.venue));
     }, [bookingsFromBackend])
 
     return <ScheduleSelector
@@ -95,7 +95,7 @@ const VenueBooking: React.FC<VenueBookingProps> = (props: VenueBookingProps) => 
         onChange={(newSchedule: Array<Date>) => {
             setSchedule(newSchedule);
             props.setBookingDataFromSelection({...props.bookingDataFromSelection, venueId: 1, venue: props.venue})
-            props.onOpen(true);
+            props.onOpen();
         }}
         bookingDataFromSelection={props.bookingDataFromSelection}
         setBookingDataFromSelection={props.setBookingDataFromSelection}
@@ -110,7 +110,7 @@ const DateAndVenueSelection: React.FC<{ startDate: Date, setStartDate: Dispatch<
     = ({ startDate, setStartDate }) => {
     return (
         <HStack align="flex-start" alignItems="center" justifyContent={"center"}>
-            <Switcher />
+            {/*<Switcher />*/}
             <Box maxWidth={"125px"}>
                 <SingleDatepicker
                     name="date-input"
@@ -118,9 +118,9 @@ const DateAndVenueSelection: React.FC<{ startDate: Date, setStartDate: Dispatch<
                     onDateChange={setStartDate}
                 />
             </Box>
-            <Select variant="flushed" placeholder={venues[0]}>
-                {venues.map(venue => <option key={venue} value={venue}>{venue}</option>)}
-            </Select>
+            {/*<Select variant="flushed" placeholder={venues[0]}>*/}
+            {/*    {venues.map(venue => <option key={venue} value={venue}>{venue}</option>)}*/}
+            {/*</Select>*/}
         </HStack>
     );
 };
