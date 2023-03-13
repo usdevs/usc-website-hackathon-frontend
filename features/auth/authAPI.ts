@@ -1,6 +1,19 @@
-// A mock function to mimic making an async request for data
-export function fetchCount(amount = 1) {
-  return new Promise<{ data: number }>((resolve) =>
-    setTimeout(() => resolve({ data: amount }), 500)
-  );
+import { TelegramUser } from "../../components/TelegramLoginButton";
+
+export function getJwtTokenFromBackend(user: TelegramUser) {
+  const headers = {
+    Accept: "application/json",
+    "Content-Type": "application/json"
+  };
+
+  const body = {
+    method: "POST",
+    body: JSON.stringify(user),
+    headers: headers
+  };
+  return fetch("http://localhost:3000/login", body)
+    .then((response) => response.text())
+    .catch((error) => {
+      return ""
+    });
 }

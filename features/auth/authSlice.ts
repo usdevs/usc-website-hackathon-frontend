@@ -1,13 +1,14 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState, AppThunk } from '../../app/store';
-import { fetchCount } from './authAPI';
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { RootState } from "../../redux_app/store";
+import { getJwtTokenFromBackend } from "./authAPI";
+import { TelegramUser } from "../../components/TelegramLoginButton";
 
 export interface AuthState {
-  value: number;
+  token: string;
 }
 
 const initialState: AuthState = {
-  value: 0
+  token: ""
 };
 
 // The function below is called a thunk and allows us to perform async logic. It
@@ -15,12 +16,11 @@ const initialState: AuthState = {
 // will call the thunk with the `dispatch` function as the first argument. Async
 // code can then be executed and other actions can be dispatched. Thunks are
 // typically used to make async requests.
-export const incrementAsync = createAsyncThunk(
-  'auth/fetchToken',
-  async (amount: number) => {
-    const response = await fetchCount(amount);
+export const fetchJwtToken = createAsyncThunk(
+  'auth/fetchJwtToken',
+  async (user: TelegramUser) => {
     // The value we return becomes the `fulfilled` action payload
-    return response.data;
+    return await getJwtTokenFromBackend(user);
   }
 );
 
@@ -29,7 +29,14 @@ export const authSlice = createSlice({
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
-    increment: (state) => {
+    logout: (state) => {
+      state.token = "";
+    },
+    setToken: (state, action: PayloadAction<string>) => {
+      state.token = action.payload;
+    }
+    /*
+        increment: (state) => {
       // Redux Toolkit allows us to write "mutating" logic in reducers. It
       // doesn't actually mutate the state because it uses the Immer library,
       // which detects changes to a "draft state" and produces a brand new
@@ -43,25 +50,14 @@ export const authSlice = createSlice({
     incrementByAmount: (state, action: PayloadAction<number>) => {
       state.value += action.payload;
     },
+     */
   },
 });
-
-export const { increment, decrement, incrementByAmount } = authSlice.actions;
+export const { logout } = authSlice.actions;
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.auth.value)`
-export const selectCount = (state: RootState) => state.auth.value;
-
-// We can also write thunks by hand, which may contain both sync and async logic.
-// Here's an example of conditionally dispatching actions based on current state.
-export const incrementIfOdd =
-  (amount: number): AppThunk =>
-  (dispatch, getState) => {
-    const currentValue = selectCount(getState());
-    if (currentValue % 2 === 1) {
-      dispatch(incrementByAmount(amount));
-    }
-  };
+export const selectToken = (state: RootState) => state.auth.token;
 
 export default authSlice.reducer;
