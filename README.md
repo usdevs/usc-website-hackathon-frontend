@@ -21,6 +21,18 @@ Typical workflow
 - If upstream does not exist, `git push --set-upstream origin <branch-name` else `git push origin`
 - Create PR on GitHub from `<branch-name>` to `<master>`
 
+### Telegram login token
+
+1. Go to https://usdevs.github.io/uscwebsite-hackathon-backend/, login, copy the token and paste it into `const NEXT_PUBLIC_BACKEND_JWT_DEV =` on line 7 in `components/Auth.tsx`.
+2. Tried to Dockerise this, view `docker` branch
+3. Linux set-up to set up nginx as a proxy (should be roughly similar for Mac, not sure about Windows)
+   4. Install `mkcert` and generate certs for a domain. I am using `frontend.local.dev`. (check `certgen.sh` on the `docker` branch)
+   5. In your hosts file, add `127.0.0.1 frontend.local.dev`
+   6. Copy the `nginx.conf` on the docker branch over to `/etc/nginx/conf/default.conf` or somewhere.
+   7. `sudo nginx -t && sudo systemctl restart nginx`
+   8. If you have `apache` running, need to deconflict it as pgadmin uses it as well. You can change the port it uses, or change nginx's port. Otherwise, you can just `sudo service apache2 stop` and not use pgadmin.
+   9. You will have to update the Tele bot's BOT_TOKEN on the backend repo to '5980011686:AAHuxodOvlPYeftZTElSpC-13ybW5to9Y1M' if you used frontend.local.dev, or you can set up your own Tele login bot or let me know if you want to use another domain.
+
 ### Setting up the backend
 
 ```bash
