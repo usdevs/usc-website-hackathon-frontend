@@ -3,7 +3,6 @@ import useSWR from 'swr';
 import { LocalStorageHookResult } from '../types';
 import { isServerSide } from '../utils';
 
-
 /**
  * Gets and sets value to/from local storage.
  *
@@ -12,31 +11,31 @@ import { isServerSide } from '../utils';
  *
  * @returns an array of (the saved value, set value function, and remove value function) in the same order.
  */
-const useLocalStorage = <T>(key: string, defaultValue: T|null = null): LocalStorageHookResult<T>  => {
+const useLocalStorage = <T>(
+  key: string,
+  defaultValue: T | null = null,
+): LocalStorageHookResult<T> => {
   let initialValue = defaultValue;
 
-  if(!isServerSide()) {
+  if (!isServerSide()) {
     let storedValue = window.localStorage.getItem(key);
-    if(storedValue !== null && storedValue !== 'undefined')
-      initialValue = JSON.parse(storedValue);
+    if (storedValue !== null && storedValue !== 'undefined') initialValue = JSON.parse(storedValue);
   }
 
-  const { data: value = initialValue, mutate } = useSWR(
-    key,
-    null,
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      refreshWhenHidden: false,
-      refreshWhenOffline: false,
-    }
-  );
+  const { data: value = initialValue, mutate } = useSWR(key, null, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    refreshWhenHidden: false,
+    refreshWhenOffline: false,
+  });
 
   // ========== Set value ==========
   const setValue = async (value: T): Promise<void> => {
     await mutate(value, false);
 
-    if (isServerSide()) { return; }
+    if (isServerSide()) {
+      return;
+    }
 
     // Save to local storage
     const localStorageValue = JSON.stringify(value);
@@ -47,7 +46,9 @@ const useLocalStorage = <T>(key: string, defaultValue: T|null = null): LocalStor
   const removeValue = async (): Promise<void> => {
     await mutate(defaultValue, false);
 
-    if (isServerSide()) { return; }
+    if (isServerSide()) {
+      return;
+    }
 
     // Remove value from local storage
     window.localStorage.removeItem(key);
