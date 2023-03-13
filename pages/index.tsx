@@ -4,6 +4,8 @@ import NavMenu from "../components/NavMenu";
 import {Flex, Box, Stack, Text, useBreakpointValue, VStack, SimpleGrid} from '@chakra-ui/react';
 import Footer from '../components/Footer';
 import HomePageCard from "../components/HomePageCard";
+import { Auth } from '../features/auth/Auth';
+
 
 const BUTTON_LINKS: ButtonInfo[] = [
     {name: "IGs", link: "#"},
@@ -11,6 +13,29 @@ const BUTTON_LINKS: ButtonInfo[] = [
     {name: "NOW!", link: "#"},
     {name: "NUSC Committee", link: "#"}
 ]
+
+import Script from 'next/script'
+
+export interface TelegramUser {
+    id: number
+    first_name: string
+    last_name: string
+    username: string
+    photo_url: string
+    auth_date: number
+    hash: string
+}
+function onTelegramAuth(user: TelegramUser) {
+    alert('Logged in as ' + user.first_name + ' ' + user.last_name + ' (' + user.id + (user.username ? ', @' + user.username : '') + ')');
+}
+
+function Dashboard() {
+    return (
+      <>
+          <Script src="https://telegram.org/js/telegram-widget.js?21" data-telegram-login="TestForUSDevsBot" data-size="large" data-onauth="onTelegramAuth(user)" data-request-access="write"></Script>
+      </>
+    )
+}
 
 const HeroSection = () => {
     return (
@@ -100,6 +125,8 @@ const LandingPage: NextPage = () => {
                 <HomePageCard name={BUTTON_LINKS[2].name} link={BUTTON_LINKS[2].link} key={2}/>
                 <HomePageCard name={BUTTON_LINKS[3].name} link={BUTTON_LINKS[3].link} key={3}/>
             </SimpleGrid>
+                <Dashboard/>
+                <Auth />
             </Box>
             <Footer/>
         </Flex>
