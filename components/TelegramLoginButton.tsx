@@ -2,15 +2,6 @@ import PropTypes from 'prop-types';
 import React, { useRef, useEffect } from 'react';
 import { Box } from '@chakra-ui/react';
 
-export interface TelegramUser {
-  id: number;
-  first_name: string;
-  username: string;
-  photo_url: string;
-  auth_date: number;
-  hash: string;
-}
-
 interface Props {
   botName: string;
   usePic?: boolean;

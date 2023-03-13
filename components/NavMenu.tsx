@@ -1,17 +1,12 @@
 import React from 'react';
 import {
-  Avatar,
   Box,
-  Button,
   Container,
   Flex,
   HStack,
   IconButton,
   LinkBox,
   LinkOverlay,
-  Menu,
-  MenuButton,
-  MenuList,
   Stack,
   Text,
   useColorModeValue,
@@ -20,7 +15,6 @@ import {
 import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons';
 import Image from 'next/image';
 import NUSCollegePic from '../public/nus-college-1@2x.png';
-import TelegramLoginButton, { TelegramUser } from './TelegramLoginButton';
 import Auth from '../components/Auth';
 
 const BUTTON_LINKS: ButtonInfo[] = [
