@@ -86,7 +86,7 @@ const NavMenu = () => {
                   }
                 />
               </MenuButton> */}
-              <LoginModal />
+              {/*<LoginModal />*/}
               <Auth />
 
               <MenuList>

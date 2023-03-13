@@ -2,16 +2,16 @@ import React from 'react';
 
 import { Button } from '@chakra-ui/react';
 import TelegramLoginButton from './TelegramLoginButton';
-import { useGlobalState } from './swr-internal-state-main';
+import { useLocalStorage } from './swr-internal-state-main';
 
 const NEXT_PUBLIC_BACKEND_JWT_DEV =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTExMzY0ODY1MCwiZmlyc3RfbmFtZSI6IlBhcnRoIiwidXNlcm5hbWUiOiJncGFydGgyNiIsImF1dGhfZGF0ZSI6MTY3ODcyNjk4MywicGhvdG9fdXJsIjoiaHR0cHM6Ly90Lm1lL2kvdXNlcnBpYy8zMjAvZ0VtVHBfbDR1WUJueWQ3elZFZTQxVGRuQWhQczgtMmJnbXY3MXc4ZzM2US5qcGciLCJoYXNoIjoiNjc4ZGY0MDgxZTlhOGEyZGFiYjA5N2Q5Njg5ZTk4N2E0MDg2OWUzNzI3MWEwMTEzMjEwYWYwYTVkYzA2ODRhNyIsImlhdCI6MTY3ODcyNjk4NCwiZXhwIjoxNjc4NzMwNTg0fQ.rwEwP_YP9xRSQfUTNss13z6BAam2bAzuOqNc63sA8KE';
 const NEXT_PUBLIC_NGINX_PROXY_ON = false;
 
-const useUserInfo = () => useGlobalState<AuthState>('token-value', { token: '' });
+const useUserInfo = () => useLocalStorage<AuthState>('token-value', { token: '' });
 
 const Auth: React.FC = () => {
-  const [auth, setAuth] = useUserInfo();
+  const [auth, setAuth, cleanUpAuth] = useUserInfo();
 
   const loginButtonDev = (
     <Button
@@ -51,7 +51,7 @@ const Auth: React.FC = () => {
   const logoutButton = (
     <Button
       onClick={() => {
-        setAuth({ token: '' });
+        cleanUpAuth();
       }}
     >
       Logout
