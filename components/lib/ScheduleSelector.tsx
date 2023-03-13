@@ -224,8 +224,8 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
           const dateFnsRepresentation = addMinutes(addHours(addDays(startTime, d), h), c * minutesInChunk);
           //todo careful of off-by-one, the slot is 29min long and not 30 min long
           const filteredArray = props.bookings.filter(booking => {
-            const bookingFromDate = subMinutes(fromUnixTime(booking.from), 60 / props.hourlyChunks);
-            const bookingToDate = addMinutes(fromUnixTime(booking.to), 60 / props.hourlyChunks);
+            const bookingFromDate = subMinutes(fromUnixTime(booking.from / 1000), 60 / props.hourlyChunks);
+            const bookingToDate = addMinutes(fromUnixTime(booking.to / 1000), 60 / props.hourlyChunks);
             // console.log(isAfter(dateFnsRepresentation, bookingFromDate));
             // console.log(isAfter(bookingToDate, dateFnsRepresentation));
             // console.log(dateFnsRepresentation);

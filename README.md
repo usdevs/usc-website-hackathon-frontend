@@ -28,8 +28,14 @@ $ docker-compose up
 $ npm install
 $ npm run prisma:migrate
 $ npm run prisma:seed
+$ # update env files
+$ git checkout frontend
 ```
+
 - Make .env file
+- 1. Install pgadmin if you prefer that - https://www.pgadmin.org/download/
+  2. Telegram login and add yourself as a user to the DB (like via pgadmin)
+     https://usdevs.github.io/uscwebsite-hackathon-backend/
 
 ## Getting Started
 
@@ -42,6 +48,7 @@ npm run dev
 Open [http://localhost:3001](http://localhost:3001) with your browser to see the result.
 
 Currently, we have 3 pages:
+
 1. http://localhost:3001/
 2. http://localhost:3001/bookings/
 3. http://localhost:3001/interest-groups/

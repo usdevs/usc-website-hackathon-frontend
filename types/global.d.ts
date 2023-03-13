@@ -40,7 +40,7 @@ declare global {
         venue: string;
         isTimeLabelsDisplayed: boolean;
         startDate: Date;
-        onOpen: Dispatch<SetStateAction<Boolean>>;
+        onOpen: () => void;
         setBookingDataFromSelection: Dispatch<SetStateAction<BookingDataFromSelection>>;
         bookingDataFromSelection: BookingDataFromSelection;
     }
