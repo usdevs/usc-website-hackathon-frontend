@@ -1,7 +1,8 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { RootState } from "../../redux_app/store";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { AppState } from "../../redux_app/store";
 import { getJwtTokenFromBackend } from "./authAPI";
 import { TelegramUser } from "../../components/TelegramLoginButton";
+import { HYDRATE } from "next-redux-wrapper";
 
 export interface AuthState {
   token: string;
@@ -52,12 +53,22 @@ export const authSlice = createSlice({
     },
      */
   },
+  // Special reducer for hydrating the state. Special case for next-redux-wrapper
+  extraReducers: {
+    [HYDRATE]: (state, action) => {
+      return {
+        ...state,
+        ...action.payload.auth,
+      };
+    },
+  },
+
 });
-export const { logout } = authSlice.actions;
+export const { logout, setToken } = authSlice.actions;
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.auth.value)`
-export const selectToken = (state: RootState) => state.auth.token;
+export const selectToken = (state: AppState) => state.auth.token;
 
 export default authSlice.reducer;

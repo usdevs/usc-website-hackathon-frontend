@@ -1,26 +1,16 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import authReducer from '../features/auth/authSlice';
-import { setupListeners } from '@reduxjs/toolkit/query'
-import { pokemonApi } from '../services/pokemon'
-
-export const store = configureStore({
+import { createWrapper } from 'next-redux-wrapper';
+import { authSlice } from "../features/auth/authSlice";
+export const makeStore = () => configureStore({
   reducer: {
-    auth: authReducer,
-    [pokemonApi.reducerPath]: pokemonApi.reducer,
+    [authSlice.name]: authSlice.reducer,
   },
-  // Adding the api middleware enables caching, invalidation, polling,
-  // and other useful features of `rtk-query`.
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(pokemonApi.middleware),
+  devTools: true,
 });
 
-setupListeners(store.dispatch)
+export type AppStore = ReturnType<typeof makeStore>;
+export type AppState = ReturnType<AppStore['getState']>;
+export type AppDispatch = AppStore['dispatch'];
+export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, AppState, unknown, Action>;
 
-export type AppDispatch = typeof store.dispatch;
-export type RootState = ReturnType<typeof store.getState>;
-export type AppThunk<ReturnType = void> = ThunkAction<
-  ReturnType,
-  RootState,
-  unknown,
-  Action<string>
->;
+export const wrapper = createWrapper<AppStore>(makeStore, {debug: true});

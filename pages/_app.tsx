@@ -5,7 +5,7 @@ import "./global.css";
 import "@fontsource/domine/400.css";
 import "@fontsource/do-hyeon";
 import { Provider } from "react-redux";
-import { store } from '../redux_app/store';
+import { wrapper } from '../redux_app/store';
 
 const colors = {
   brand: {
@@ -23,12 +23,13 @@ const fonts = {
 
 const theme = extendTheme({ colors, fonts });
 
-function MyApp({ Component, pageProps }: AppProps) {
+const MyApp: React.FC<AppProps> = ({ Component, ...rest }) => {
+  const {store, props} = wrapper.useWrappedStore(rest);
   return (
     <React.StrictMode>
       <Provider store={store}>
         <ChakraProvider resetCSS theme={theme}>
-          <Component {...pageProps} />
+          <Component {...props.pageProps} />
         </ChakraProvider>
       </Provider>
     </React.StrictMode>

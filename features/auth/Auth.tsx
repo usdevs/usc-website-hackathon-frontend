@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { useAppSelector, useAppDispatch } from "../../redux_app/hooks";
-import { fetchJwtToken, logout, selectToken } from "./authSlice";
+import { fetchJwtToken, logout, selectToken, setToken } from "./authSlice";
 import { Button } from "@chakra-ui/react";
 import TelegramLoginButton, { TelegramUser } from "../../components/TelegramLoginButton";
 
@@ -9,13 +9,11 @@ export function Auth() {
   const token = useAppSelector(selectToken);
   const dispatch = useAppDispatch();
 
-  const loginButton = process.env.NODE_ENV === "development"
-    ? <Button onClick={(event) => {
-      fetchJwtToken(user)
-    }}>
+  const loginButton = process.env.NEXT_NGINX_PROXY_ON === "false"
+    ? <Button onClick={() => {  dispatch(setToken(process.env.NEXT_BACKEND_JWT_DEV || "")) } }>
       Login for dev
     </Button>
-    : <TelegramLoginButton botName={process.env.NODE_ENV === "test" ? "TestForUSDevsBot" : "usdevs_bot"}
+    : <TelegramLoginButton botName={ process.env.NODE_ENV === "development" ? "TestForUSDevsBot" : "usdevs_bot"}
                            dataOnauth={(user: TelegramUser) => {
                              fetchJwtToken(user)
                            }} />;
@@ -24,6 +22,9 @@ export function Auth() {
   }}>
     Logout
   </Button>;
+
+
+  console.log("token" + token + "end");
 
   return token === "" ? loginButton : logoutButton;
   // return (
