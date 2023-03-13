@@ -21,7 +21,7 @@ import {CloseIcon, HamburgerIcon} from "@chakra-ui/icons";
 import Image from "next/image";
 import NUSCollegePic from "../public/nus-college-1@2x.png";
 import TelegramLoginButton, { TelegramUser } from "./TelegramLoginButton";
-import { Auth } from "../features/auth/Auth";
+import Auth from "../features/auth/Auth";
 
 const BUTTON_LINKS: ButtonInfo[] = [
     {name: "Interest Groups", link: "/interest-groups"},

@@ -1,31 +1,53 @@
 import React from "react";
 
-// import { useAppSelector, useAppDispatch } from "../../redux_app/hooks";
 import { Button } from "@chakra-ui/react";
-import { TokenGetterContext } from "../../pages/TokenGetterProvider";
-import { TokenSetterContext } from "../../pages/TokenSetterProvider";
-import { useContext } from "react";
 import TelegramLoginButton, { TelegramUser } from "../../components/TelegramLoginButton";
+import { useGlobalState } from "../../components/swr-internal-state-main";
 
-export function Auth() {
-  const { token } = useContext(TokenGetterContext);
-  const { setToken } = useContext(TokenSetterContext);
+const NEXT_PUBLIC_BACKEND_JWT_DEV = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTExMzY0ODY1MCwiZmlyc3RfbmFtZSI6IlBhcnRoIiwidXNlcm5hbWUiOiJncGFydGgyNiIsImF1dGhfZGF0ZSI6MTY3ODcwMTcwNiwicGhvdG9fdXJsIjoiaHR0cHM6Ly90Lm1lL2kvdXNlcnBpYy8zMjAvZ0VtVHBfbDR1WUJueWQ3elZFZTQxVGRuQWhQczgtMmJnbXY3MXc4ZzM2US5qcGciLCJoYXNoIjoiZmQ5Njg2Y2IyYmI5NTdkNGNiOTA1MDczMjNhNTQ5NzNhMjhiYWFiNDdlYTc4NzEzOGQzMzYzMzU3MjMwZDkwMiIsImlhdCI6MTY3ODcwMTcwOCwiZXhwIjoxNjc4NzA1MzA4fQ.I7ZJE9k0yNjSzZJBZdhHh-hHrsLm8QiV4jc2lEf5MiE";
+const NEXT_PUBLIC_NGINX_PROXY_ON = true;
+interface AuthState {
+  token: string;
+}
+const useUserInfo = () => useGlobalState<AuthState>("token-value", { token: "" });
 
-  setToken(process.env.NEXT_BACKEND_JWT_DEV || "");
+const Auth: React.FC = () => {
+  const [auth, setAuth] = useUserInfo();
 
-  const TeleLogin = <TelegramLoginButton botName={ process.env.NODE_ENV === "development" ? "TestForUSDevsBot" : "usdevs_bot"}
-                                         dataOnauth={(user: TelegramUser) => {
-                                           // fetchJwtToken(user)
-                                         }} />
-
-  const loginButton = <Button onClick={() => {}}>
+  const loginButtonDev = <Button onClick={() => {
+    setAuth({ token: NEXT_PUBLIC_BACKEND_JWT_DEV });
+  }}>
     Login for dev
   </Button>;
-  const logoutButton = <Button onClick={() => {}}>
+
+  const loginButtonWidget = <TelegramLoginButton
+    botName={process.env.NODE_ENV === "development" ? "TestForUSDevsBot" : "usdevs_bot"}
+    dataOnauth={(user: TelegramUser) => {
+      const headers = {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      };
+      const body = {
+        method: "POST",
+        body: JSON.stringify(user),
+        headers: headers
+      };
+      fetch("http://localhost:3000/login", body)
+        .then((response) => response.text())
+        .then(data => {
+          setAuth({ token: data });
+        })
+        .catch((error) => {
+          alert(error);
+        });
+    }} />;
+
+  const logoutButton = <Button onClick={() => {
+    setAuth({ token: "" });
+  }}>
     Logout
   </Button>;
 
-  console.log("token" + token + "end");
-
-  return token === "" ? loginButton : logoutButton;
-}
+  return auth?.token === "" ? (process.env.NODE_ENV === "development" ? (NEXT_PUBLIC_NGINX_PROXY_ON ? loginButtonWidget : loginButtonDev ) : loginButtonWidget) : logoutButton;
+};
+export default Auth;
