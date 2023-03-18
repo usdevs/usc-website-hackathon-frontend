@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Component, useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Box, HStack, VStack, Center, Text } from '@chakra-ui/react'
 import { useBoolean, useDisclosure } from '@chakra-ui/react'
 import eachMinuteOfInterval from 'date-fns/eachMinuteOfInterval'
@@ -19,6 +19,21 @@ const TIME_INTERVALS = eachMinuteOfInterval(
   { step: 30 },
 ).map((x) => format(x, 'HH:mm'))
 
+function useOutsideAlerter(ref: any, callback: () => void) {
+  useEffect(() => {
+    function handleClickOutside(event: any) {
+      if (ref.current && !ref.current.contains(event.target)) {
+        callback()
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [ref, callback])
+}
+
 // Individual Grid Cells for the time intervals
 function VenueTimeCell({ onMouseDown, onMouseOver, selected }) {
   // Cell is coloured based on whether it's selected or not
@@ -33,8 +48,17 @@ function VenueTimeCell({ onMouseDown, onMouseOver, selected }) {
     ></Box>
   )
 }
+
 // Column of Time Grid Cells for a single venue
-function VenueBooking({ venueName, openBookingModal }) {
+function VenueBooking({ venueName, openBookingModal, bookingModalIsOpen }) {
+  // Helper function to check if i is between x and y
+  const between = (i: number, x: number, y: number): boolean => {
+    const lower = Math.min(x, y)
+    const higher = Math.max(x, y)
+
+    return i >= lower && i <= higher
+  }
+
   const [mouseIsDown, setMouse] = useBoolean()
 
   // Venue column works by colouring in cells between firstSelected and lastSelected
@@ -43,14 +67,21 @@ function VenueBooking({ venueName, openBookingModal }) {
   const [firstSelected, setFirst] = useState(-1)
   const [lastSelected, setLast] = useState(-1)
 
+  const wrapperRef = useRef(null) //  Used to detect clicks outside of the grid
+  useOutsideAlerter(wrapperRef, () => {
+    if (bookingModalIsOpen) return // Don't deselect if booking modal is open
+    setFirst(-1)
+    setLast(-1)
+  })
+
   return (
-    <VStack spacing='0'>
+    <VStack ref={wrapperRef} spacing='0'>
       <Text fontSize='lg'>{venueName}</Text>
       <VStack
         onMouseDown={setMouse.on}
         onMouseUp={() => {
           setMouse.off()
-          if (firstSelected === -1 || firstSelected > lastSelected) return
+          if (firstSelected === -1) return
 
           const start = TIME_INTERVALS[firstSelected]
           const end = TIME_INTERVALS[(lastSelected + 1) % TIME_INTERVALS.length]
@@ -63,17 +94,16 @@ function VenueBooking({ venueName, openBookingModal }) {
         {TIME_INTERVALS.map((el, i) => (
           <VenueTimeCell
             key={el}
-            onMouseDown={() => setFirst(i)}
+            onMouseDown={() => {
+              setFirst(i)
+              setLast(i)
+            }}
             onMouseOver={() => {
               if (mouseIsDown) {
-                firstSelected === -1 && setFirst(i)
                 setLast(i)
-              } else {
-                setFirst(-1)
-                setLast(-1)
               }
             }}
-            selected={i >= firstSelected && i <= lastSelected}
+            selected={between(i, firstSelected, lastSelected)}
           />
         ))}
       </VStack>
@@ -140,6 +170,7 @@ function BookingSelector() {
             })
             onOpen()
           }}
+          bookingModalIsOpen={isOpen}
         />
       ))}
     </HStack>
