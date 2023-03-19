@@ -99,7 +99,7 @@ export const BookingConfirmationPopup: React.FC<BookingConfirmationPopupProps> =
   );
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} autoFocus={false} returnFocusOnClose={false}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader color="white" bg="#1f407b" fontSize="1.1rem" alignItems="center">
