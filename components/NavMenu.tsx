@@ -12,20 +12,19 @@ import {
   Stack,
   Text,
   useDisclosure,
-} from '@chakra-ui/react'
-import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons'
-import Image from 'next/image'
-import NUSCollegePic from '../public/nus-college-1@2x.png'
+} from '@chakra-ui/react';
+import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons';
+import Image from 'next/image';
+import NUSCollegePic from '../public/nus-college-1@2x.png';
 import LoginModal from './LoginModal';
 import Auth from '../components/Auth';
-
 
 const BUTTON_LINKS: ButtonInfo[] = [
   { name: 'Interest Groups', link: '/interest-groups' },
   { name: 'Houses', link: '#' },
   { name: 'NOW!', link: '#' },
   { name: 'Events', link: '#' },
-]
+];
 
 const NavLink: React.FC<ButtonInfo> = (props) => (
   <LinkBox
@@ -46,10 +45,10 @@ const NavLink: React.FC<ButtonInfo> = (props) => (
     </Text>
     <LinkOverlay href={props.link} />
   </LinkBox>
-)
+);
 
 const NavMenu = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <>
@@ -110,7 +109,7 @@ const NavMenu = () => {
         ) : null}
       </Box>
     </>
-  )
-}
+  );
+};
 
-export default NavMenu
+export default NavMenu;

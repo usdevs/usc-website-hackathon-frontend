@@ -15,13 +15,13 @@ const colors = {
       dark: '#379767',
     },
   },
-}
+};
 
 const fonts = {
   heading: `'Domine', serif`,
   body: `'Domine', serif`,
   // body: `'Do Hyeon', sans-serif`,
-}
+};
 
 const components = {
   Button: {
@@ -69,9 +69,9 @@ const components = {
       color: 'gray.500',
     },
   },
-}
+};
 
-const theme = extendTheme({ colors, fonts, components })
+const theme = extendTheme({ colors, fonts, components });
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

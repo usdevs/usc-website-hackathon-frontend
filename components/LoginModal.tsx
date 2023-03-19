@@ -24,54 +24,54 @@ import {
   Center,
   useBoolean,
   FormErrorMessage,
-} from '@chakra-ui/react'
-import { useState } from 'react'
-import { FaCheck } from 'react-icons/fa'
-import { NumericLiteral } from 'typescript'
+} from '@chakra-ui/react';
+import { useState } from 'react';
+import { FaCheck } from 'react-icons/fa';
+import { NumericLiteral } from 'typescript';
 
-type LoginForms = 'login' | 'code' | 'success'
+type LoginForms = 'login' | 'code' | 'success';
 
 const LoginModal = () => {
   // For controlling modal dialog
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen, onOpen, onClose } = useDisclosure();
   // For controlling form state
 
   const Login = () => {
-    const [isInvalid, setInvalid] = useBoolean(false)
-    const [loginFormState, setLoginFormState] = useState<LoginForms>('login')
-    const [username, setUsername] = useState('')
-    const [otp, setOtp] = useState(['', '', '', ''])
+    const [isInvalid, setInvalid] = useBoolean(false);
+    const [loginFormState, setLoginFormState] = useState<LoginForms>('login');
+    const [username, setUsername] = useState('');
+    const [otp, setOtp] = useState(['', '', '', '']);
 
     // Placeholder functions for handling login
     function requestForOtp() {
-      return true
+      return true;
     }
 
     function submitOtp() {
-      return true
+      return true;
     }
 
     function handleLogin() {
-      const teleHandleFound = requestForOtp()
+      const teleHandleFound = requestForOtp();
       if (teleHandleFound) {
-        setLoginFormState('code')
+        setLoginFormState('code');
       } else {
-        setInvalid.on()
+        setInvalid.on();
       }
     }
 
     function onOtpChange(index: number, n: string) {
-      const pin = [...otp]
-      pin[index] = n.toString()
-      setOtp(pin)
+      const pin = [...otp];
+      pin[index] = n.toString();
+      setOtp(pin);
     }
 
     function handleOtp() {
-      const validOTP = submitOtp()
+      const validOTP = submitOtp();
       if (validOTP) {
-        setLoginFormState('success')
+        setLoginFormState('success');
       } else {
-        setInvalid.on()
+        setInvalid.on();
       }
     }
 
@@ -104,7 +104,7 @@ const LoginModal = () => {
             <Button onClick={handleLogin}>Next</Button>
           </Flex>
         </>
-      )
+      );
     } else if (loginFormState == 'code') {
       return (
         <>
@@ -137,7 +137,7 @@ const LoginModal = () => {
             <Button onClick={handleOtp}>Continue</Button>
           </Flex>
         </>
-      )
+      );
     } else if (loginFormState == 'success') {
       return (
         <>
@@ -155,11 +155,11 @@ const LoginModal = () => {
             <Button onClick={onClose}>Done</Button>
           </Flex>
         </>
-      )
+      );
     } else {
-      return <></>
+      return <></>;
     }
-  }
+  };
 
   return (
     <>
@@ -175,6 +175,6 @@ const LoginModal = () => {
         </ModalContent>
       </Modal>
     </>
-  )
-}
-export default LoginModal
+  );
+};
+export default LoginModal;

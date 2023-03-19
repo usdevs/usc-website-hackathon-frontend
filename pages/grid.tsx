@@ -1,5 +1,5 @@
-import * as React from 'react'
-import { useState, useRef, useEffect, useContext } from 'react'
+import * as React from 'react';
+import { useState, useRef, useEffect, useContext } from 'react';
 
 import {
   Box,
@@ -14,50 +14,50 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
-} from '@chakra-ui/react'
-import { useBoolean, useDisclosure } from '@chakra-ui/react'
+} from '@chakra-ui/react';
+import { useBoolean, useDisclosure } from '@chakra-ui/react';
 
-import eachMinuteOfInterval from 'date-fns/eachMinuteOfInterval'
-import format from 'date-fns/format'
+import eachMinuteOfInterval from 'date-fns/eachMinuteOfInterval';
+import format from 'date-fns/format';
 
-import { BookingConfirmationPopup } from '../components/BookingConfirmationPopup'
-import { BookingsContext } from './BookingsContext'
-import { isAfter, isSameDay, sub } from 'date-fns'
-import { SingleDatepicker } from 'chakra-dayzed-datepicker'
-import Footer from '../components/Footer'
-import { NextPage } from 'next'
-import NavMenu from '../components/NavMenu'
+import { BookingConfirmationPopup } from '../components/BookingConfirmationPopup';
+import { BookingsContext } from './BookingsContext';
+import { isAfter, isSameDay, sub } from 'date-fns';
+import { SingleDatepicker } from 'chakra-dayzed-datepicker';
+import Footer from '../components/Footer';
+import { NextPage } from 'next';
+import NavMenu from '../components/NavMenu';
 
 // Types for the Bookings Components
 // To be moved to global types file after replacing the old Bookings page
 interface VenueBookingProps {
-  venueName: String
-  openBookingModal: (start: Date, end: Date) => void
-  bookingModalIsOpen: boolean
-  timeIntervals: Date[]
+  venueName: String;
+  openBookingModal: (start: Date, end: Date) => void;
+  bookingModalIsOpen: boolean;
+  timeIntervals: Date[];
 }
 
 interface VenueTimeCellProps {
-  onMouseDown: () => void
-  onMouseOver: () => void
-  booked: boolean
-  selected: boolean
+  onMouseDown: () => void;
+  onMouseOver: () => void;
+  booked: boolean;
+  selected: boolean;
 }
 
-const BOX_HEIGHT = 8 // Ensures time labels are aligned with grid cells
-const VENUES = ['CTPH', 'Chatterbox', "Maker's Studio", 'Amphi', 'TRR', 'TRB']
+const BOX_HEIGHT = 8; // Ensures time labels are aligned with grid cells
+const VENUES = ['CTPH', 'Chatterbox', "Maker's Studio", 'Amphi', 'TRR', 'TRB'];
 
 // Detects clicks outside of the grid
 function useOutsideAlerter(ref: any, callback: () => void) {
   useEffect(() => {
     const handleClickOutside = (event: any) =>
-      ref.current && !ref.current.contains(event.target) && callback()
+      ref.current && !ref.current.contains(event.target) && callback();
 
-    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [ref, callback])
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [ref, callback]);
 }
 
 // Individual Grid Cells for the time intervals
@@ -77,8 +77,8 @@ const VenueTimeCell: React.FC<VenueTimeCellProps> = ({
       onMouseOver={onMouseOver}
       onMouseDown={onMouseDown}
     ></Box>
-  )
-}
+  );
+};
 
 // Column of Time Grid Cells for a single venue
 const VenueBooking: React.FC<VenueBookingProps> = ({
@@ -89,27 +89,27 @@ const VenueBooking: React.FC<VenueBookingProps> = ({
 }) => {
   // Helper function to check if the current cell is between the first and last selected cells
   const between = (currentIndex: number, x: number, y: number): boolean => {
-    const startIndex = Math.min(x, y)
-    const endIndex = Math.max(x, y)
+    const startIndex = Math.min(x, y);
+    const endIndex = Math.max(x, y);
 
-    return currentIndex >= startIndex && currentIndex <= endIndex
-  }
+    return currentIndex >= startIndex && currentIndex <= endIndex;
+  };
   // Venue column works by colouring in cells between firstSelected and lastSelected
   // firstSelected is updated when user holds the mouse down
   // lastSelected is updated when cursor moves over a cell while mouse is held down
-  const [mouseIsDown, setMouse] = useBoolean()
-  const [firstSelected, setFirst] = useState(-1)
-  const [lastSelected, setLast] = useState(-1)
+  const [mouseIsDown, setMouse] = useBoolean();
+  const [firstSelected, setFirst] = useState(-1);
+  const [lastSelected, setLast] = useState(-1);
 
-  const wrapperRef = useRef(null) //  Used to detect clicks outside of the grid
+  const wrapperRef = useRef(null); //  Used to detect clicks outside of the grid
   useOutsideAlerter(wrapperRef, () => {
-    if (bookingModalIsOpen) return // Don't deselect if booking modal is open
-    setFirst(-1)
-    setLast(-1)
-  })
+    if (bookingModalIsOpen) return; // Don't deselect if booking modal is open
+    setFirst(-1);
+    setLast(-1);
+  });
 
   // Bookings from the backend
-  const bookingsFromBackend: BackendBookingInfo[] = useContext(BookingsContext)
+  const bookingsFromBackend: BackendBookingInfo[] = useContext(BookingsContext);
   // Convert the bookings from the backend into a format that can be used by the grid
   // Filter bookings to only show bookings for the current day and the current venue
   const bookings = bookingsFromBackend
@@ -122,7 +122,7 @@ const VenueBooking: React.FC<VenueBookingProps> = ({
       to: Date.parse(booking.end),
     }))
     .filter((booking) => isSameDay(booking.to, timeIntervals[0]))
-    .filter((booking) => booking.venue === venueName)
+    .filter((booking) => booking.venue === venueName);
 
   // Test data for venue bookings
   // To be removed after replacing the old Bookings page
@@ -151,7 +151,7 @@ const VenueBooking: React.FC<VenueBookingProps> = ({
   ]
     .map((booking) => ({ ...booking, from: sub(booking.from, { minutes: 1 }) }))
     .filter((booking) => isSameDay(booking.to, timeIntervals[0]))
-    .filter((booking) => booking.venue === venueName)
+    .filter((booking) => booking.venue === venueName);
 
   return (
     <VStack ref={wrapperRef} spacing='0'>
@@ -159,39 +159,39 @@ const VenueBooking: React.FC<VenueBookingProps> = ({
       <VStack
         onMouseDown={setMouse.on}
         onMouseUp={() => {
-          setMouse.off()
-          if (firstSelected === -1) return
+          setMouse.off();
+          if (firstSelected === -1) return;
           // If selection has been made, open the booking modal
-          const start = timeIntervals[firstSelected]
-          const end = timeIntervals[(lastSelected + 1) % timeIntervals.length]
-          openBookingModal(start, end)
+          const start = timeIntervals[firstSelected];
+          const end = timeIntervals[(lastSelected + 1) % timeIntervals.length];
+          openBookingModal(start, end);
         }}
       >
         {timeIntervals.map((el, i) => {
           // Check if the current cell is booked
           const isBooked = bookingsTest.some((booking) => {
-            return isAfter(el, booking.from) && isAfter(booking.to, el)
-          })
+            return isAfter(el, booking.from) && isAfter(booking.to, el);
+          });
           return (
             <VenueTimeCell
               key={i}
               booked={isBooked}
               onMouseDown={() => {
-                if (isBooked) return
-                setFirst(i)
-                setLast(i)
+                if (isBooked) return;
+                setFirst(i);
+                setLast(i);
               }}
               onMouseOver={() => {
-                mouseIsDown && !isBooked && setLast(i)
+                mouseIsDown && !isBooked && setLast(i);
               }}
               selected={!isBooked && between(i, firstSelected, lastSelected)}
             />
-          )
+          );
         })}
       </VStack>
     </VStack>
-  )
-}
+  );
+};
 
 // Labels for time 0000-2330
 const BookingTimes: React.FC = () => {
@@ -202,7 +202,7 @@ const BookingTimes: React.FC = () => {
       end: new Date(2000, 1, 1, 23, 59), // End at 2359
     },
     { step: 30 },
-  ).map((el) => format(el, 'HH:mm'))
+  ).map((el) => format(el, 'HH:mm'));
 
   return (
     <VStack spacing='0'>
@@ -216,38 +216,38 @@ const BookingTimes: React.FC = () => {
         ))}
       </VStack>
     </VStack>
-  )
-}
+  );
+};
 
 const BookingSelector: React.FC = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [bookingDataFromSelection, setBookingDataFromSelection] =
     useState<BookingDataFromSelection>({
       start: null,
       end: null,
       venueId: 1,
       venue: '',
-    })
-  const [unsuccessfulFormSubmitString, setUnsuccessfulFormSubmitString] = useState<string>('')
+    });
+  const [unsuccessfulFormSubmitString, setUnsuccessfulFormSubmitString] = useState<string>('');
   const onModalClose = () => {
-    setUnsuccessfulFormSubmitString('')
-    onClose()
-  }
+    setUnsuccessfulFormSubmitString('');
+    onClose();
+  };
 
-  const [startDate, setStartDate] = React.useState<Date>(new Date())
+  const [startDate, setStartDate] = React.useState<Date>(new Date());
   // Create time intervals for the current date
   const timeIntervals = (() => {
-    const year = startDate.getFullYear()
-    const month = startDate.getMonth()
-    const day = startDate.getDate()
+    const year = startDate.getFullYear();
+    const month = startDate.getMonth();
+    const day = startDate.getDate();
     return eachMinuteOfInterval(
       {
         start: new Date(year, month, day, 0),
         end: new Date(year, month, day, 23, 59),
       },
       { step: 30 },
-    )
-  })()
+    );
+  })();
 
   return (
     <VStack px={12} py={4} alignItems={'start'}>
@@ -286,8 +286,8 @@ const BookingSelector: React.FC = () => {
                       venueId: venueId,
                       start,
                       end,
-                    })
-                    onOpen()
+                    });
+                    onOpen();
                   }}
                   bookingModalIsOpen={isOpen}
                 />
@@ -307,8 +307,8 @@ const BookingSelector: React.FC = () => {
         </TabPanels>
       </Tabs>
     </VStack>
-  )
-}
+  );
+};
 
 const Bookings: NextPage<{ currentUserBookings: BackendBookingInfo[] }> = ({
   currentUserBookings,
@@ -321,13 +321,13 @@ const Bookings: NextPage<{ currentUserBookings: BackendBookingInfo[] }> = ({
       </BookingsContext.Provider>
       <Footer />
     </Flex>
-  )
-}
+  );
+};
 
 export async function getServerSideProps() {
-  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings?userId=1')
-  const currentUserBookings = await res.json()
-  return { props: { currentUserBookings } }
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings?userId=1');
+  const currentUserBookings = await res.json();
+  return { props: { currentUserBookings } };
 }
 
-export default Bookings
+export default Bookings;
