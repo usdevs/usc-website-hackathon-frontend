@@ -132,9 +132,9 @@ const VenueBooking: React.FC<VenueBookingProps> = ({
           setMouse.off();
           if (firstSelected === -1) return;
           // If selection has been made, open the booking modal
-          const start = timeIntervals[firstSelected];
-          const end = lastSelected === 47 ? addMinutes(timeIntervals[lastSelected], 30) : timeIntervals[lastSelected];
-          openBookingModal(start, end);
+          const start = Math.min(firstSelected, lastSelected)
+          const end = Math.max(firstSelected, lastSelected)
+          openBookingModal(timeIntervals[start], addMinutes(timeIntervals[end], 30))
         }}
       >
         {timeIntervals.map((el, i) => {
