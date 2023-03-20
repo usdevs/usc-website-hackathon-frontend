@@ -334,7 +334,7 @@ const BookingSelector: React.FC = () => {
   );
 };
 
-const Bookings: NextPage<{ allBookings: BookingDataBackend[]; allOrgs: OrgInfo[] }> = ({
+const Grid: NextPage<{ allBookings: BookingDataBackend[]; allOrgs: OrgInfo[] }> = ({
   allBookings,
   allOrgs,
 }) => {
@@ -367,4 +367,4 @@ export async function getServerSideProps() {
   return { props: { allBookings, allOrgs } };
 }
 
-export default Bookings;
+export default Grid;
