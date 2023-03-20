@@ -1,9 +1,4 @@
-import React, {
-  useCallback,
-  Dispatch,
-  SetStateAction,
-  useContext,
-} from 'react';
+import React, { useCallback, Dispatch, SetStateAction, useContext } from 'react';
 import {
   Box,
   FormControl,
@@ -16,6 +11,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
+  useToast,
 } from '@chakra-ui/react';
 import format from 'date-fns/format';
 import { BookingsContext, BookingsContextValue } from '../pages/BookingsContext';
@@ -44,6 +40,8 @@ export const BookingConfirmationPopup: React.FC<BookingConfirmationPopupProps> =
   auth,
 }) => {
   const bookingsContextValue: BookingsContextValue = useContext(BookingsContext);
+  const toast = useToast();
+  const toast_id = 'response-toast';
 
   const getOrgNameFromId = (orgId: number) => {
     return bookingsContextValue?.allOrgs.find((o) => o.id === orgId)?.name || '';
@@ -63,22 +61,38 @@ export const BookingConfirmationPopup: React.FC<BookingConfirmationPopupProps> =
     };
     const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings', requestOptions);
     const data = await response.json();
-    if (data?.status === 400) {
+    if (response.status === 400) {
       setUnsuccessfulFormSubmitString(JSON.stringify(data.message));
+    } else if (response.status === 200) {
+      toast({
+        id: toast_id,
+        title: `Booking made successfully!`,
+        position: 'top',
+        duration: 3000,
+        status: 'success',
+        isClosable: true,
+      });
+      onClose();
     } else {
+      toast({
+        id: toast_id,
+        title: JSON.stringify(data.message),
+        position: 'top',
+        duration: 3000,
+        status: 'error',
+        isClosable: true,
+      });
       onClose();
     }
   };
 
-  const handleInputChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      setBookingData((prevData) => ({
-        ...prevData,
-        [event.target.name]: event.target.value,
-      }));
-    },
-    [],
-  );
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const newValue = event.target.name === "orgId" ? parseInt(event.target.value) : event.target.value
+    setBookingData((prevData) => ({
+      ...prevData,
+      [event.target.name]: newValue,
+    }));
+  };
 
   if (!auth || auth.token === '' || auth.orgIds.length === 0 || !bookingDataFromSelection) {
     return <></>;
@@ -137,7 +151,6 @@ export const BookingConfirmationPopup: React.FC<BookingConfirmationPopupProps> =
                 </Select>
               }
             </FormControl>
-            <Box>{bookingData.orgId}</Box>
             <FormControl>
               <FormLabel htmlFor='event' marginTop='0.5rem'>
                 Event

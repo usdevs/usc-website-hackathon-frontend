@@ -151,8 +151,8 @@ type PropsType = {
   renderTimeLabel?: (time: Date) => JSX.Element;
   renderDateLabel?: (date: Date) => JSX.Element;
   renderVenueLabel?: (venueName: string) => JSX.Element;
-  setBookingDataFromSelection: Dispatch<SetStateAction<BookingDataFromSelection>>;
-  bookingDataFromSelection: BookingDataFromSelection;
+  setBookingDataFromSelection: Dispatch<SetStateAction<BookingDataSelection>>;
+  bookingDataFromSelection: BookingDataSelection;
 };
 
 type StateType = {

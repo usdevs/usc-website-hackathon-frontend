@@ -182,17 +182,16 @@ const BookingTimes: React.FC = () => {
 
 const BookingSelector: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [bookingDataFromSelection, setBookingDataFromSelection] =
-    useState<BookingDataSelection>({
-      start: null,
-      end: null,
-      venueId: -1,
-      venueName: '',
-    });
+  const [bookingDataFromSelection, setBookingDataFromSelection] = useState<BookingDataSelection>({
+    start: null,
+    end: null,
+    venueId: -1,
+    venueName: '',
+  });
   const [unsuccessfulFormSubmitString, setUnsuccessfulFormSubmitString] = useState<string>('');
   const [startDate, setStartDate] = React.useState<Date>(new Date());
   const [auth] = useUserInfo();
-  const [bookingData, setBookingData] = useState({
+  const [bookingData, setBookingData] = useState<BookingDataForm>({
     event: '',
     orgId: auth ? auth.orgIds[0] : -1,
   });
