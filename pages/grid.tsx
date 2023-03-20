@@ -206,6 +206,27 @@ const BookingSelector: React.FC = () => {
   });
   const toast = useToast();
   const toast_id = 'auth-toast';
+  const [allBookings, setAllBookings] = useState<BookingDataBackend[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const startOfDay = new Date(startDate);
+      startOfDay.setHours(0, 0, 0, 0);
+      const endOfDay = new Date(startDate);
+      endOfDay.setHours(23, 59, 59, 999);
+      const currentBookings = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_URL +
+        'bookings/all?start=' +
+        startOfDay.toISOString() +
+        '&end=' +
+        endOfDay,
+      );
+      const allBookings = await currentBookings.json();
+      console.log(allBookings);
+      setAllBookings(allBookings);
+    })();
+    return () => {};
+  }, [startDate])
 
   // Create time intervals for the current date
   const timeIntervals = (() => {
@@ -224,10 +245,9 @@ const BookingSelector: React.FC = () => {
   const venueBookings: Array<Array<BookingDataDisplay>> = new Array(6)
     .fill(0)
     .map(() => new Array(0));
-  const bookingsContextValue: BookingsContextValue = useContext(BookingsContext);
   // Convert the bookings from the backend into a format that can be used by the grid
   // Filter bookings to only show bookings for the current day and the current venue
-  bookingsContextValue.allBookings
+  allBookings
     .map((booking) => ({
       ig: booking.orgId.toString(),
       venueId: booking.venueId,
@@ -360,7 +380,7 @@ const Grid: NextPage<{ allBookings: BookingDataBackend[]; allOrgs: OrgInfo[] }> 
   return (
     <Flex justify='center' flexDir='column' as='main'>
       <NavMenu />
-      <BookingsContext.Provider value={{ allBookings, allOrgs }}>
+      <BookingsContext.Provider value={{ allOrgs, refreshData }}>
         <BookingSelector />
       </BookingsContext.Provider>
       <Footer />
@@ -368,22 +388,11 @@ const Grid: NextPage<{ allBookings: BookingDataBackend[]; allOrgs: OrgInfo[] }> 
   );
 };
 
+// TODO we should use getStaticProps here
 export async function getServerSideProps() {
-  const startOfDay = new Date();
-  startOfDay.setHours(0, 0, 0, 0);
-  const endOfDay = new Date();
-  endOfDay.setHours(23, 59, 59, 999);
-  const currentBookings = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL +
-      'bookings/all?start=' +
-      startOfDay.toISOString() +
-      '&end=' +
-      endOfDay,
-  );
-  const allBookings = await currentBookings.json();
   const orgs = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs');
   const allOrgs = await orgs.json();
-  return { props: { allBookings, allOrgs } };
+  return { props: { allOrgs } };
 }
 
 export default Grid;

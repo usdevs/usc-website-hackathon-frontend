@@ -130,12 +130,13 @@ export const BookingConfirmationPopup: React.FC<BookingConfirmationPopupProps> =
               {
                 <Select
                   id='orgId'
+                  value={bookingData.orgId}
                   name='orgId'
                   aria-label='Organisation'
                   onChange={handleInputChange}
                   required
                 >
-                  <option key={0} selected value={auth.orgIds[0]}>
+                  <option key={0} value={auth.orgIds[0]}>
                     {getOrgNameFromId(auth.orgIds[0])}
                   </option>
                   {auth.orgIds
