@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { useState, useRef, useEffect, useContext } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 import {
   Box,
@@ -14,6 +15,12 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
+  Menu,
+  MenuButton,
+  MenuItemOption,
+  MenuList,
+  Button,
+  MenuOptionGroup,
 } from '@chakra-ui/react'
 import { useBoolean, useDisclosure } from '@chakra-ui/react'
 
@@ -27,6 +34,8 @@ import { SingleDatepicker } from 'chakra-dayzed-datepicker'
 import Footer from '../components/Footer'
 import { NextPage } from 'next'
 import NavMenu from '../components/NavMenu'
+import Calendar from '../components/Calendar'
+import { ChevronDownIcon } from '@chakra-ui/icons'
 
 // Types for the Bookings Components
 // To be moved to global types file after replacing the old Bookings page
@@ -263,10 +272,12 @@ const BookingSelector: React.FC = () => {
 
       {/* Different tabs for day and month view */}
       <Tabs variant='solid-rounded' colorScheme='blue'>
-        <TabList w={300}>
+        <TabList w={320}>
           {/* Hardcoded values for width - to be updated */}
           <SingleDatepicker name='date-input' date={startDate} onDateChange={setStartDate} />
-          <Tab ml={4}>Day</Tab>
+          <motion.div whileHover={{ scale: 1.1 }}>
+            <Tab mx={4}>Day</Tab>
+          </motion.div>
           <Tab>Month</Tab>
         </TabList>
         <TabPanels>
@@ -296,13 +307,21 @@ const BookingSelector: React.FC = () => {
           </TabPanel>
           {/* Month view */}
           <TabPanel>
-            <Select variant='flushed' placeholder={VENUES[0]}>
-              {VENUES.map((venue) => (
-                <option key={venue} value={venue}>
-                  {venue}
-                </option>
-              ))}
-            </Select>
+            <Menu closeOnSelect={false}>
+              <MenuButton as={Button} colorScheme='blue' rightIcon={<ChevronDownIcon />}>
+                Venue
+              </MenuButton>
+              <MenuList>
+                <MenuOptionGroup defaultValue={VENUES[0]} type='radio'>
+                  {VENUES.map((venue) => (
+                    <MenuItemOption key={venue} value={venue}>
+                      {venue}
+                    </MenuItemOption>
+                  ))}
+                </MenuOptionGroup>
+              </MenuList>
+            </Menu>
+            <Calendar />
           </TabPanel>
         </TabPanels>
       </Tabs>
