@@ -30,7 +30,7 @@ import format from 'date-fns/format';
 
 import { BookingConfirmationPopup } from '../components/BookingConfirmationPopup';
 import { BookingsContext, BookingsContextValue } from './BookingsContext';
-import { isAfter, isSameDay, sub } from 'date-fns';
+import { isAfter, isSameDay, sub, addMinutes } from 'date-fns';
 import { SingleDatepicker } from 'chakra-dayzed-datepicker';
 import Footer from '../components/Footer';
 import { NextPage } from 'next';
@@ -133,7 +133,7 @@ const VenueBooking: React.FC<VenueBookingProps> = ({
           if (firstSelected === -1) return;
           // If selection has been made, open the booking modal
           const start = timeIntervals[firstSelected];
-          const end = timeIntervals[(lastSelected + 1) % timeIntervals.length];
+          const end = lastSelected === 47 ? addMinutes(timeIntervals[lastSelected], 30) : timeIntervals[lastSelected];
           openBookingModal(start, end);
         }}
       >

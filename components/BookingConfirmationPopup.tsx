@@ -44,7 +44,7 @@ export const BookingConfirmationPopup: React.FC<BookingConfirmationPopupProps> =
   const toast_id = 'response-toast';
 
   const getOrgNameFromId = (orgId: number) => {
-    return bookingsContextValue?.allOrgs.find((o) => o.id === orgId)?.name || '';
+    return bookingsContextValue.allOrgs.find((o) => o.id === orgId)?.name || '';
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
