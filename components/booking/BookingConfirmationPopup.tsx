@@ -14,7 +14,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import format from 'date-fns/format';
-import { BookingsContext, BookingsContextValue } from '../pages/BookingsContext';
+import { BookingsContext, BookingsContextValue } from '../../pages/BookingsContext';
 
 type BookingConfirmationPopupProps = {
   onClose: () => void;
@@ -87,7 +87,8 @@ export const BookingConfirmationPopup: React.FC<BookingConfirmationPopupProps> =
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const newValue = event.target.name === "orgId" ? parseInt(event.target.value) : event.target.value
+    const newValue =
+      event.target.name === 'orgId' ? parseInt(event.target.value) : event.target.value;
     setBookingData((prevData) => ({
       ...prevData,
       [event.target.name]: newValue,
