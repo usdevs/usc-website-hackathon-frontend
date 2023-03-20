@@ -1,4 +1,9 @@
-import React, { useState, useCallback, Dispatch, SetStateAction } from 'react';
+import React, {
+  useCallback,
+  Dispatch,
+  SetStateAction,
+  useContext,
+} from 'react';
 import {
   Box,
   FormControl,
@@ -10,21 +15,22 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  useToast,
+  Select,
 } from '@chakra-ui/react';
 import format from 'date-fns/format';
-import { useLocalStorage } from './swr-internal-state-main';
+import { BookingsContext, BookingsContextValue } from '../pages/BookingsContext';
 
 type BookingConfirmationPopupProps = {
   onClose: () => void;
   isOpen: boolean;
-  bookingDataFromSelection: BookingDataFromSelection;
+  bookingDataFromSelection: BookingDataSelection;
   startDate: Date;
   unsuccessfulFormSubmitString: string;
   setUnsuccessfulFormSubmitString: Dispatch<SetStateAction<string>>;
+  bookingData: BookingDataForm;
+  setBookingData: Dispatch<SetStateAction<BookingDataForm>>;
+  auth: AuthState;
 };
-
-const useUserInfo = () => useLocalStorage<AuthState>('token-value', { token: '' });
 
 export const BookingConfirmationPopup: React.FC<BookingConfirmationPopupProps> = ({
   onClose,
@@ -33,60 +39,36 @@ export const BookingConfirmationPopup: React.FC<BookingConfirmationPopupProps> =
   startDate,
   unsuccessfulFormSubmitString,
   setUnsuccessfulFormSubmitString,
+  bookingData,
+  setBookingData,
+  auth,
 }) => {
-  const [bookingData, setBookingData] = useState({
-    event: '',
-    orgId: 1,
-  });
-  const toast = useToast();
-  const toast_id = 'auth-toast';
-  const [auth] = useUserInfo();
+  const bookingsContextValue: BookingsContextValue = useContext(BookingsContext);
 
-  if (auth?.token === '') {
-    if (!toast.isActive(toast_id)) {
-      toast({
-        id: toast_id,
-        title: `You need to login to make a booking!`,
-        position: 'top',
-        duration: 3000,
-        status: 'error',
-        isClosable: true,
-      });
+  const getOrgNameFromId = (orgId: number) => {
+    return bookingsContextValue?.allOrgs.find((o) => o.id === orgId)?.name || '';
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setUnsuccessfulFormSubmitString('');
+    const token = auth?.token;
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify({ ...bookingData, ...bookingDataFromSelection }),
+    };
+    const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings', requestOptions);
+    const data = await response.json();
+    if (data?.status === 400) {
+      setUnsuccessfulFormSubmitString(JSON.stringify(data.message));
+    } else {
+      onClose();
     }
-  }
-
-  const handleSubmit = useCallback(
-    async (event: React.FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-      setUnsuccessfulFormSubmitString('');
-      const token = auth?.token;
-      const requestOptions = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + token,
-        },
-        //todo fix
-        body: JSON.stringify({ ...bookingData, ...bookingDataFromSelection, venueId: 1 }),
-      };
-      const response = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings',
-        requestOptions,
-      );
-      const data = await response.json();
-      if (data?.status === 400) {
-        setUnsuccessfulFormSubmitString(JSON.stringify(data.message));
-      } else {
-        onClose();
-        setBookingData({
-          event: '',
-          orgId: 1,
-        });
-      }
-      //todo handle error
-    },
-    [bookingData],
-  );
+  };
 
   const handleInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -97,6 +79,10 @@ export const BookingConfirmationPopup: React.FC<BookingConfirmationPopupProps> =
     },
     [],
   );
+
+  if (!auth || auth.token === '' || auth.orgIds.length === 0 || !bookingDataFromSelection) {
+    return <></>;
+  }
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} autoFocus={false} returnFocusOnClose={false}>
@@ -127,17 +113,31 @@ export const BookingConfirmationPopup: React.FC<BookingConfirmationPopupProps> =
               <FormLabel htmlFor='organisation' marginTop='0.5rem'>
                 Organisation
               </FormLabel>
-              <Input
-                id='organisation'
-                name='organisation'
-                aria-label='Organisation'
-                onChange={handleInputChange}
-                required
-              />
-              {/*<Select id="startTime" name="startTime" aria-label="Start Time" onChange={handleInputChange} required>*/}
-              {/*  {generateHourOptions()}*/}
-              {/*</Select>*/}
+              {
+                <Select
+                  id='orgId'
+                  name='orgId'
+                  aria-label='Organisation'
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option key={0} selected value={auth.orgIds[0]}>
+                    {getOrgNameFromId(auth.orgIds[0])}
+                  </option>
+                  {auth.orgIds
+                    .slice(1)
+                    .map(getOrgNameFromId)
+                    .map((orgName, i) => {
+                      return (
+                        <option key={i + 1} value={auth.orgIds[i + 1]}>
+                          {orgName}
+                        </option>
+                      );
+                    })}
+                </Select>
+              }
             </FormControl>
+            <Box>{bookingData.orgId}</Box>
             <FormControl>
               <FormLabel htmlFor='event' marginTop='0.5rem'>
                 Event
@@ -154,7 +154,7 @@ export const BookingConfirmationPopup: React.FC<BookingConfirmationPopupProps> =
               <FormLabel htmlFor='venue' marginTop='0.5rem'>
                 Venue
               </FormLabel>
-              <Box>{bookingDataFromSelection?.venue}</Box>
+              <Box>{bookingDataFromSelection?.venueName}</Box>
             </FormControl>
             <FormControl>
               <FormLabel htmlFor='date' marginTop='0.5rem'>

@@ -1,225 +1,348 @@
-import type { NextPage } from 'next';
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import NavMenu from '../components/NavMenu';
-import { Box, Flex, FormLabel, HStack, Input, Select, Text, useDisclosure } from '@chakra-ui/react';
-import Footer from '../components/Footer';
-import ScheduleSelector from '../components/lib';
-import { SingleDatepicker } from 'chakra-dayzed-datepicker';
+import * as React from 'react';
+import { useState, useRef, useEffect, useContext } from 'react';
+
+import {
+  Box,
+  HStack,
+  VStack,
+  Center,
+  Text,
+  Select,
+  Flex,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  useToast,
+} from '@chakra-ui/react';
+import { useBoolean, useDisclosure } from '@chakra-ui/react';
+
+import eachMinuteOfInterval from 'date-fns/eachMinuteOfInterval';
+import format from 'date-fns/format';
+
 import { BookingConfirmationPopup } from '../components/BookingConfirmationPopup';
-import { useContext } from 'react';
-import { BookingsContext } from './BookingsContext';
+import { BookingsContext, BookingsContextValue } from './BookingsContext';
+import { isAfter, isSameDay, sub } from 'date-fns';
+import { SingleDatepicker } from 'chakra-dayzed-datepicker';
+import Footer from '../components/Footer';
+import { NextPage } from 'next';
+import NavMenu from '../components/NavMenu';
+import { useLocalStorage } from '../components/swr-internal-state-main';
 
-const venues = ['CTPH', 'Chatterbox', "Maker's Studio", 'Amphi', 'TRR', 'TRB'];
+// Types for the BookingsOld Components
+// To be moved to global types file after replacing the old BookingsOld page
+interface VenueBookingProps {
+  venueName: String;
+  openBookingModal: (start: Date, end: Date) => void;
+  bookingModalIsOpen: boolean;
+  timeIntervals: Date[];
+  currentVenueBookings: Array<BookingDataDisplay>;
+}
 
-const Switcher: React.FC = () => {
-  const [isDisplayByDay, setIsDisplayByDay] = useState<boolean>(true);
-  return (
-    <FormLabel
-      htmlFor='theme-switcher'
-      as={'label'}
-      display='flex'
-      alignItems='center'
-      justifyContent='center'
-      // gap={2}
-      position='relative'
-    >
-      <Input
-        id='theme-switcher'
-        type='checkbox'
-        checked={true}
-        onChange={() => setIsDisplayByDay(!isDisplayByDay)}
-        display='inline-block'
-        appearance='none'
-        cursor='pointer'
-        // height="24px"
-        // width="48px"
-        backgroundColor='blue.50'
-        border='1px solid'
-        borderColor='blue.200'
-        borderRadius='full'
-      />
-      <Box
-        className={`iconMove `}
-        transition='all 0.2s ease-in'
-        transform={isDisplayByDay ? 'translateX(0)' : 'translateX(24px)'}
-        position='absolute'
-        cursor='pointer'
-        // top={"1px"}
-        // left={"1px"}
-        // w={"22px"}
-        // h={"22px"}
-        bg='blue.900'
-        borderRadius='full'
-      >
-        <Text
-        // as={isDisplayByDay ? BsSunFill : BsFillMoonFill}
-        // padding="2px"
-        // w={"22px"}
-        // h={"22px"}
-        >
-          {isDisplayByDay ? 'Day' : 'Month'}
-        </Text>
-      </Box>
-    </FormLabel>
-  );
-};
+interface VenueTimeCellProps {
+  onMouseDown: () => void;
+  onMouseOver: () => void;
+  booked: boolean;
+  selected: boolean;
+}
 
-//trying to figure out how to render these bookigns and empty booking together from propss, can use computeDateMatrix
-const VenueBooking: React.FC<VenueBookingProps> = (props: VenueBookingProps) => {
-  const [schedule, setSchedule] = useState<Date[]>([]);
-  const [bookings, setBookings] = useState<BookingInfoToDisplay[]>([]);
-  const bookingsFromBackend: BackendBookingInfo[] = useContext(BookingsContext);
+const BOX_HEIGHT = 8; // Ensures time labels are aligned with grid cells
+const VENUES = ['CTPH', 'Chatterbox', "Maker's Studio", 'Amphi', 'TRR', 'TRB'];
 
+const useUserInfo = () => useLocalStorage<AuthState>('token-value');
+
+// Detects clicks outside of the grid
+function useOutsideAlerter(ref: any, callback: () => void) {
   useEffect(() => {
-    setBookings(
-      bookingsFromBackend
-        .map((x) => {
-          return {
-            ig: x.orgId.toString(),
-            venue: 'CTPH', //x.venueId.toString(),
-            bookedBy: x.userId.toString(),
-            from: Date.parse(x.start),
-            to: Date.parse(x.end),
-          };
-        })
-        .filter((x) => x.venue === props.venue),
-    );
-  }, [bookingsFromBackend]);
+    const handleClickOutside = (event: any) =>
+      ref.current && !ref.current.contains(event.target) && callback();
 
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [ref, callback]);
+}
+
+// Individual Grid Cells for the time intervals
+const VenueTimeCell: React.FC<VenueTimeCellProps> = ({
+  onMouseDown,
+  onMouseOver,
+  booked,
+  selected,
+}) => {
+  // Cell is coloured based on whether it's selected or not
   return (
-    <ScheduleSelector
-      startDate={new Date(props.startDate)}
-      selection={schedule}
-      numDays={1}
-      bookings={bookings}
-      minTime={0}
-      maxTime={23.5}
-      timeFormat='HH:mm'
-      dateFormat='DD/MM'
-      hourlyChunks={2}
-      onChange={(newSchedule: Array<Date>) => {
-        setSchedule(newSchedule);
-        props.setBookingDataFromSelection({
-          ...props.bookingDataFromSelection,
-          venueId: 1,
-          venue: props.venue,
-        });
-        props.onOpen();
-      }}
-      bookingDataFromSelection={props.bookingDataFromSelection}
-      setBookingDataFromSelection={props.setBookingDataFromSelection}
-      isTimeLabelsDisplayed={false}
-      // isTimeLabelsDisplayed={props.isTimeLabelsDisplayed}
-      isRenderVenueLabel={true}
-      venues={[props.venue]}
-    />
+    <Box
+      w='40'
+      h={BOX_HEIGHT}
+      bg={booked ? 'green.500' : selected ? 'blue.500' : 'gray.200'}
+      _hover={{ bg: booked ? 'green.700' : selected ? 'blue.700' : 'gray.300' }}
+      onMouseOver={onMouseOver}
+      onMouseDown={onMouseDown}
+    ></Box>
   );
 };
 
-const DateAndVenueSelection: React.FC<{
-  startDate: Date;
-  setStartDate: Dispatch<SetStateAction<Date>>;
-}> = ({ startDate, setStartDate }) => {
-  return (
-    <HStack align='flex-start' alignItems='center' justifyContent={'center'}>
-      {/*<Switcher />*/}
-      <Box maxWidth={'125px'}>
-        <SingleDatepicker name='date-input' date={startDate} onDateChange={setStartDate} />
-      </Box>
-      {/*<Select variant="flushed" placeholder={venues[0]}>*/}
-      {/*    {venues.map(venue => <option key={venue} value={venue}>{venue}</option>)}*/}
-      {/*</Select>*/}
-    </HStack>
-  );
-};
+// Column of Time Grid Cells for a single venue
+const VenueBooking: React.FC<VenueBookingProps> = ({
+  venueName,
+  openBookingModal,
+  bookingModalIsOpen,
+  timeIntervals,
+  currentVenueBookings,
+}) => {
+  // Helper function to check if the current cell is between the first and last selected cells
+  const between = (currentIndex: number, x: number, y: number): boolean => {
+    const startIndex = Math.min(x, y);
+    const endIndex = Math.max(x, y);
 
-const BookingTimes: React.FC = () => {
-  const [schedule, setSchedule] = useState<Date[]>([]);
-
-  return (
-    <ScheduleSelector
-      startDate={new Date()}
-      selection={schedule}
-      numDays={1}
-      bookings={[]}
-      minTime={0}
-      maxTime={23.5}
-      timeFormat='HH:mm'
-      dateFormat='DD/MM'
-      hourlyChunks={2}
-      onChange={(newSchedule: Array<Date>) => {
-        setSchedule(newSchedule);
-      }}
-      isTimeLabelsDisplayed={true}
-      isRenderVenueLabel={true}
-      renderDateCell={(
-        datetime: Date,
-        selected: boolean,
-        refSetter: (dateCellElement: HTMLElement) => void,
-      ): JSX.Element => {
-        return <div style={{ width: '0px', height: '25px' }} />;
-      }}
-      renderVenueLabel={(venueName: string): JSX.Element => {
-        return <span>Times</span>;
-      }}
-      venues={['Times']}
-    />
-  );
-};
-const BookingSelector: React.FC = () => {
-  const [startDate, setStartDate] = React.useState<Date>(new Date());
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [bookingDataFromSelection, setBookingDataFromSelection] =
-    useState<BookingDataFromSelection>({
-      start: null,
-      end: null,
-      venueId: 1,
-      venue: '',
-    });
-  const [unsuccessfulFormSubmitString, setUnsuccessfulFormSubmitString] = useState<string>('');
-  const onModalClose = () => {
-    setUnsuccessfulFormSubmitString('');
-    onClose();
+    return currentIndex >= startIndex && currentIndex <= endIndex;
   };
+  // Venue column works by colouring in cells between firstSelected and lastSelected
+  // firstSelected is updated when user holds the mouse down
+  // lastSelected is updated when cursor moves over a cell while mouse is held down
+  const [mouseIsDown, setMouse] = useBoolean();
+  const [firstSelected, setFirst] = useState(-1);
+  const [lastSelected, setLast] = useState(-1);
+
+  const wrapperRef = useRef(null); //  Used to detect clicks outside of the grid
+  useOutsideAlerter(wrapperRef, () => {
+    if (bookingModalIsOpen) return; // Don't deselect if booking modal is open
+    setFirst(-1);
+    setLast(-1);
+  });
 
   return (
-    <>
-      <BookingConfirmationPopup
-        isOpen={isOpen}
-        onClose={onModalClose}
-        startDate={startDate}
-        setUnsuccessfulFormSubmitString={setUnsuccessfulFormSubmitString}
-        unsuccessfulFormSubmitString={unsuccessfulFormSubmitString}
-        bookingDataFromSelection={bookingDataFromSelection}
-      />
-      <DateAndVenueSelection startDate={startDate} setStartDate={setStartDate} />
-      <HStack>
-        <BookingTimes />
-        {venues.map((venue, index) => {
+    <VStack ref={wrapperRef} spacing='0'>
+      <Text fontSize='lg'>{venueName}</Text>
+      <VStack
+        onMouseDown={setMouse.on}
+        onMouseUp={() => {
+          setMouse.off();
+          if (firstSelected === -1) return;
+          // If selection has been made, open the booking modal
+          const start = timeIntervals[firstSelected];
+          const end = timeIntervals[(lastSelected + 1) % timeIntervals.length];
+          openBookingModal(start, end);
+        }}
+      >
+        {timeIntervals.map((el, i) => {
+          // Check if the current cell is booked
+          const isBooked = currentVenueBookings.some((booking) => {
+            return isAfter(el, booking.from) && isAfter(booking.to, el);
+          });
           return (
-            <VenueBooking
-              key={venue}
-              onOpen={onOpen}
-              bookingDataFromSelection={bookingDataFromSelection}
-              setBookingDataFromSelection={setBookingDataFromSelection}
-              venue={venue}
-              isTimeLabelsDisplayed={index == 0}
-              startDate={startDate}
+            <VenueTimeCell
+              key={i}
+              booked={isBooked}
+              onMouseDown={() => {
+                if (isBooked) return;
+                setFirst(i);
+                setLast(i);
+              }}
+              onMouseOver={() => {
+                mouseIsDown && !isBooked && setLast(i);
+              }}
+              selected={!isBooked && between(i, firstSelected, lastSelected)}
             />
           );
         })}
-      </HStack>
-    </>
+      </VStack>
+    </VStack>
   );
 };
 
-const Bookings: NextPage<{ currentUserBookings: BackendBookingInfo[] }> = ({
-  currentUserBookings,
+// Labels for time 0000-2330
+const BookingTimes: React.FC = () => {
+  // Format the time intervals into strings
+  const timeStrings = eachMinuteOfInterval(
+    {
+      start: new Date(2000, 1, 1, 0), // Start at 0000
+      end: new Date(2000, 1, 1, 23, 59), // End at 2359
+    },
+    { step: 30 },
+  ).map((el) => format(el, 'HH:mm'));
+
+  return (
+    <VStack spacing='0'>
+      <Text fontSize={'lg'}>Time</Text>
+      <VStack>
+        {timeStrings.map((el, i) => (
+          <Center h={BOX_HEIGHT} key={el}>
+            {/* Ensures time labels are aligned with grid cells */}
+            <Box>{el}</Box>
+          </Center>
+        ))}
+      </VStack>
+    </VStack>
+  );
+};
+
+const BookingSelector: React.FC = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [bookingDataFromSelection, setBookingDataFromSelection] =
+    useState<BookingDataSelection>({
+      start: null,
+      end: null,
+      venueId: -1,
+      venueName: '',
+    });
+  const [unsuccessfulFormSubmitString, setUnsuccessfulFormSubmitString] = useState<string>('');
+  const [startDate, setStartDate] = React.useState<Date>(new Date());
+  const [auth] = useUserInfo();
+  const [bookingData, setBookingData] = useState({
+    event: '',
+    orgId: auth ? auth.orgIds[0] : -1,
+  });
+  const toast = useToast();
+  const toast_id = 'auth-toast';
+
+  // Create time intervals for the current date
+  const timeIntervals = (() => {
+    const year = startDate.getFullYear();
+    const month = startDate.getMonth();
+    const day = startDate.getDate();
+    return eachMinuteOfInterval(
+      {
+        start: new Date(year, month, day, 0),
+        end: new Date(year, month, day, 23, 59),
+      },
+      { step: 30 },
+    );
+  })();
+
+  const venueBookings: Array<Array<BookingDataDisplay>> = new Array(6)
+    .fill(0)
+    .map(() => new Array(0));
+  const bookingsContextValue: BookingsContextValue = useContext(BookingsContext);
+  // Convert the bookings from the backend into a format that can be used by the grid
+  // Filter bookings to only show bookings for the current day and the current venue
+  bookingsContextValue.allBookings
+    .map((booking) => ({
+      ig: booking.orgId.toString(),
+      venueId: booking.venueId,
+      bookedBy: booking.userId.toString(),
+      // Subtract 1 minute to the start time to properly display the booking
+      from: sub(Date.parse(booking.start), { minutes: 1 }),
+      to: new Date(booking.end),
+    }))
+    // TODO fix, this is broken for some strange reason cuz of the +8; we do not need it anyways because we specify
+    //  start and end to backend now, but good to have
+    // .filter((booking) => isSameDay(booking.to, timeIntervals[0]))
+    .reduce(function (memo, x) {
+      memo[x['venueId'] - 1].push(x);
+      return memo;
+    }, venueBookings);
+
+  const onModalClose = () => {
+    setUnsuccessfulFormSubmitString('');
+    setBookingData({
+      event: '',
+      orgId: auth ? auth.orgIds[0] : -1,
+    });
+    onClose();
+  };
+
+  const onModalOpen = () => {
+    if (!auth || auth.token === '') {
+      if (!toast.isActive(toast_id)) {
+        toast({
+          id: toast_id,
+          title: `You need to login to make a booking!`,
+          position: 'top',
+          duration: 3000,
+          status: 'error',
+          isClosable: true,
+        });
+      }
+    } else {
+      setBookingData({
+        event: '',
+        orgId: auth ? auth.orgIds[0] : -1,
+      });
+      onOpen();
+    }
+  };
+
+  return (
+    <VStack px={12} py={4} alignItems={'start'}>
+      {auth ? (
+        <BookingConfirmationPopup
+          isOpen={isOpen}
+          onClose={onModalClose}
+          startDate={startDate}
+          setUnsuccessfulFormSubmitString={setUnsuccessfulFormSubmitString}
+          unsuccessfulFormSubmitString={unsuccessfulFormSubmitString}
+          bookingDataFromSelection={bookingDataFromSelection}
+          bookingData={bookingData}
+          setBookingData={setBookingData}
+          auth={auth}
+        />
+      ) : (
+        <></>
+      )}
+      <Box maxWidth={'125px'}></Box>
+
+      {/* Different tabs for day and month view */}
+      <Tabs variant='solid-rounded' colorScheme='blue'>
+        <TabList w={300}>
+          {/* Hardcoded values for width - to be updated */}
+          <SingleDatepicker name='date-input' date={startDate} onDateChange={setStartDate} />
+          <Tab ml={4}>Day</Tab>
+          <Tab>Month</Tab>
+        </TabList>
+        <TabPanels>
+          {/* Day view */}
+          <TabPanel>
+            <HStack>
+              <BookingTimes />
+              {VENUES.map((venueName, venueId) => (
+                <VenueBooking
+                  timeIntervals={timeIntervals}
+                  key={venueName}
+                  venueName={venueName}
+                  openBookingModal={(start, end) => {
+                    setBookingDataFromSelection({
+                      ...bookingDataFromSelection,
+                      venueName,
+                      venueId: venueId + 1,
+                      start,
+                      end,
+                    });
+                    onModalOpen();
+                  }}
+                  bookingModalIsOpen={isOpen}
+                  currentVenueBookings={venueBookings[venueId]}
+                />
+              ))}
+            </HStack>
+          </TabPanel>
+          {/* Month view */}
+          <TabPanel>
+            <Select variant='flushed' placeholder={VENUES[0]}>
+              {VENUES.map((venue) => (
+                <option key={venue} value={venue}>
+                  {venue}
+                </option>
+              ))}
+            </Select>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+    </VStack>
+  );
+};
+
+const Bookings: NextPage<{ allBookings: BookingDataBackend[]; allOrgs: OrgInfo[] }> = ({
+  allBookings,
+  allOrgs,
 }) => {
   return (
     <Flex justify='center' flexDir='column' as='main'>
       <NavMenu />
-      <BookingsContext.Provider value={currentUserBookings}>
+      <BookingsContext.Provider value={{ allBookings, allOrgs }}>
         <BookingSelector />
       </BookingsContext.Provider>
       <Footer />
@@ -228,8 +351,21 @@ const Bookings: NextPage<{ currentUserBookings: BackendBookingInfo[] }> = ({
 };
 
 export async function getServerSideProps() {
-  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings?userId=1');
-  const currentUserBookings = await res.json();
-  return { props: { currentUserBookings } };
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+  const endOfDay = new Date();
+  endOfDay.setHours(23, 59, 59, 999);
+  const currentBookings = await fetch(
+    process.env.NEXT_PUBLIC_BACKEND_URL +
+      'bookings/all?start=' +
+      startOfDay.toISOString() +
+      '&end=' +
+      endOfDay,
+  );
+  const allBookings = await currentBookings.json();
+  const orgs = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs');
+  const allOrgs = await orgs.json();
+  return { props: { allBookings, allOrgs } };
 }
+
 export default Bookings;

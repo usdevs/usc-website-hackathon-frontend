@@ -17,8 +17,7 @@ declare global {
     category: string;
   }
 
-  //todo merge backend with frontend types, create types package
-  type BackendBookingInfo = {
+  type BookingDataBackend = {
     id: number;
     venueId: number;
     userId: number;
@@ -28,28 +27,19 @@ declare global {
     bookedAt: string;
   };
 
-  type BookingInfoToDisplay = {
+  type BookingDataDisplay = {
     ig: string;
-    venue: string;
+    venueId: number;
     bookedBy: string;
-    from: number;
-    to: number;
+    from: Date;
+    to: Date;
   };
 
-  interface VenueBookingProps {
-    venue: string;
-    isTimeLabelsDisplayed: boolean;
-    startDate: Date;
-    onOpen: () => void;
-    setBookingDataFromSelection: Dispatch<SetStateAction<BookingDataFromSelection>>;
-    bookingDataFromSelection: BookingDataFromSelection;
-  }
-
-  interface BookingDataFromSelection {
+  interface BookingDataSelection {
     start: Date | null;
     end: Date | null;
     venueId: number;
-    venue: string;
+    venueName: string;
   }
 
   interface TelegramUser {
@@ -63,5 +53,18 @@ declare global {
 
   interface AuthState {
     token: string;
+    orgIds: Array<number>;
+  }
+
+  interface BookingDataForm {
+    event: string;
+    orgId: number;
+  }
+
+  interface OrgInfo {
+    id: number;
+    name: string;
+    description: string;
+    verified: boolean;
   }
 }

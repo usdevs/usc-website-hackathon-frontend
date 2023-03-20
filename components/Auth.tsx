@@ -8,7 +8,7 @@ const NEXT_PUBLIC_BACKEND_JWT_DEV =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTExMzY0ODY1MCwiZmlyc3RfbmFtZSI6IlBhcnRoIiwidXNlcm5hbWUiOiJncGFydGgyNiIsImF1dGhfZGF0ZSI6MTY3ODcyNjk4MywicGhvdG9fdXJsIjoiaHR0cHM6Ly90Lm1lL2kvdXNlcnBpYy8zMjAvZ0VtVHBfbDR1WUJueWQ3elZFZTQxVGRuQWhQczgtMmJnbXY3MXc4ZzM2US5qcGciLCJoYXNoIjoiNjc4ZGY0MDgxZTlhOGEyZGFiYjA5N2Q5Njg5ZTk4N2E0MDg2OWUzNzI3MWEwMTEzMjEwYWYwYTVkYzA2ODRhNyIsImlhdCI6MTY3ODcyNjk4NCwiZXhwIjoxNjc4NzMwNTg0fQ.rwEwP_YP9xRSQfUTNss13z6BAam2bAzuOqNc63sA8KE';
 const NEXT_PUBLIC_NGINX_PROXY_ON = false;
 
-const useUserInfo = () => useLocalStorage<AuthState>('token-value', { token: '' });
+const useUserInfo = () => useLocalStorage<AuthState>('token-value', { token: '', orgIds: [] });
 
 const Auth: React.FC = () => {
   const [auth, setAuth, cleanUpAuth] = useUserInfo();
@@ -16,7 +16,8 @@ const Auth: React.FC = () => {
   const loginButtonDev = (
     <Button
       onClick={() => {
-        setAuth({ token: NEXT_PUBLIC_BACKEND_JWT_DEV });
+        // TODO security hole despite process.env.NODE_ENV, but leaving it here for testing for now
+        setAuth({ token: NEXT_PUBLIC_BACKEND_JWT_DEV, orgIds: [0] });
       }}
     >
       Login for dev
@@ -39,7 +40,9 @@ const Auth: React.FC = () => {
         fetch('http://localhost:3000/login', body)
           .then((response) => response.text())
           .then((data) => {
-            setAuth({ token: data });
+            //todo add type here for backend response from the backend repo, see issue #22 on github
+            const { token, orgIds } = JSON.parse(data);
+            setAuth({ token, orgIds });
           })
           .catch((error) => {
             alert(error);

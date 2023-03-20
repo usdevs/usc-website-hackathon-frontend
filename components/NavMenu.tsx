@@ -23,7 +23,7 @@ const BUTTON_LINKS: ButtonInfo[] = [
   { name: 'Interest Groups', link: '/interest-groups' },
   { name: 'Houses', link: '#' },
   { name: 'NOW!', link: '#' },
-  { name: 'Events', link: '#' },
+  { name: 'Bookings', link: '/bookings' },
 ];
 
 const NavLink: React.FC<ButtonInfo> = (props) => (
