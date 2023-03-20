@@ -380,7 +380,7 @@ const Grid: NextPage<{ allBookings: BookingDataBackend[]; allOrgs: OrgInfo[] }> 
   return (
     <Flex justify='center' flexDir='column' as='main'>
       <NavMenu />
-      <BookingsContext.Provider value={{ allOrgs, refreshData }}>
+      <BookingsContext.Provider value={{ allOrgs }}>
         <BookingSelector />
       </BookingsContext.Provider>
       <Footer />

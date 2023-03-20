@@ -21,13 +21,13 @@ Typical workflow
 - If upstream does not exist, `git push --set-upstream origin <branch-name` else `git push origin`
 - Create PR on GitHub from `<branch-name>` to `<master>`
 
-### Telegram login token
+## Initial setup
 
-1. Go to https://usdevs.github.io/uscwebsite-hackathon-backend/, login, copy the token and paste it into `const NEXT_PUBLIC_BACKEND_JWT_DEV =` on line 7 in `components/Auth.tsx`.
-2. Tried to Dockerise this, view `docker` branch
-3. Linux set-up to set up nginx as a proxy (should be roughly similar for Mac, not sure about Windows) 4. Install `mkcert` and generate certs for a domain. I am using `frontend.local.dev`. (check `certgen.sh` on the `docker` branch) 5. In your hosts file, add `127.0.0.1 frontend.local.dev` 6. Copy the `nginx.conf` on the docker branch over to `/etc/nginx/conf/default.conf` or somewhere. 7. `sudo nginx -t && sudo systemctl restart nginx` 8. If you have `apache` running, need to deconflict it as pgadmin uses it as well. You can change the port it uses, or change nginx's port. Otherwise, you can just `sudo service apache2 stop` and not use pgadmin. 9. You will have to update the Tele bot's BOT_TOKEN on the backend repo to '5980011686:AAHuxodOvlPYeftZTElSpC-13ybW5to9Y1M' if you used frontend.local.dev, or you can set up your own Tele login bot or let me know if you want to use another domain.
+1. `npm install`
 
 ### Setting up the backend
+
+Add your Tele handle to the Users sheet in the Excel file, and your organisations you are a member of to the userOnOrg sheet in the file
 
 ```bash
 $ docker-compose up
@@ -40,26 +40,31 @@ $ git checkout frontend
 
 - Make .env file
 - 1. Install pgadmin if you prefer that - https://www.pgadmin.org/download/
-  2. Telegram login and add yourself as a user to the DB (like via pgadmin)
-     https://usdevs.github.io/uscwebsite-hackathon-backend/
+2. Telegram login and add yourself as a user to the DB (like via pgadmin)
+   https://usdevs.github.io/uscwebsite-hackathon-backend/
 
-## Getting Started
 
-First, run the development server:
-
-```bash
-npm run dev
-```
+## Running it locally
+Run the following in separate terminals
+1. `npm run dev`
+2. `cd <backend repo> && yarn dev`
+3. `cd <backend repo> && docker-compose up`
 
 Open [http://localhost:3001](http://localhost:3001) with your browser to see the result.
 
-Currently, we have 3 pages:
+### Telegram login token
 
-1. http://localhost:3001/
-2. http://localhost:3001/bookings/
-3. http://localhost:3001/interest-groups/
+1. EITHER go to https://usdevs.github.io/uscwebsite-hackathon-backend/, login, copy the token and paste it into `const NEXT_PUBLIC_BACKEND_JWT_DEV =` on line 7 in `components/Auth.tsx`.
+2. OR Tried to Dockerise this, view `docker` branch
+3. OR Linux set-up to set up nginx as a proxy (should be roughly similar for Mac, not sure about Windows)
+3. Install `mkcert` and generate certs for a domain. I am using `frontend.local.dev`. (check `certgen.sh` on the `docker` branch)
+3. In your hosts file, add `127.0.0.1 frontend.local.dev`
+3. Copy the `nginx.conf` on the docker branch over to `/etc/nginx/conf/default.conf` or somewhere
+3. `sudo nginx -t && sudo systemctl restart nginx`
+3. If you have `apache` running, need to deconflict it as pgadmin uses it as well. You can change the port it uses, or change nginx's port. Otherwise, you can just `sudo service apache2 stop` and not use pgadmin. 
+3. You will have to update the Tele bot's BOT_TOKEN on the backend repo to '5980011686:AAHuxodOvlPYeftZTElSpC-13ybW5to9Y1M' if you used frontend.local.dev, or you can set up your own Tele login bot or let me know if you want to use another domain.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Note
 
 [API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3001/api/hello](http://localhost:3001/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
 
