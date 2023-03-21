@@ -136,7 +136,14 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
 
   return (
     <VStack ref={wrapperRef} spacing='0'>
-      <Text fontSize='lg' position='sticky'>
+      <Text
+        fontSize='lg'
+        position='sticky'
+        top='0'
+        bg='white'
+        alignSelf='stretch'
+        textAlign='center'
+      >
         {venueName}
       </Text>
       <VStack

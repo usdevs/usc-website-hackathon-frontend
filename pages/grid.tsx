@@ -209,7 +209,7 @@ const BookingSelector: React.FC = () => {
         <TabPanels>
           {/* Day view */}
           <TabPanel>
-            <HStack>
+            <HStack pt='6' >
               <BookingsTimesCol boxHeight={BOX_HEIGHT} />
               {VENUES.map((venueName, venueId) => (
                 <BookingVenueCol

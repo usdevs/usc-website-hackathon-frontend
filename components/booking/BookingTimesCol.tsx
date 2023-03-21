@@ -17,8 +17,17 @@ const BookingsTimesCol: React.FC<BookingTimesProps> = ({ boxHeight }) => {
   ).map((el) => format(el, 'HH:mm'));
 
   return (
-    <VStack spacing='0' height="100%">
-      <Text fontSize={'lg'}>Time</Text>
+    <VStack spacing='0'>
+      <Text
+        fontSize={'lg'}
+        position='sticky'
+        top='0'
+        bg='white'
+        alignSelf='stretch'
+        textAlign='center'
+      >
+        Time
+      </Text>
       <VStack spacing='0'>
         {timeStrings.map((el, i) => (
           <Center
