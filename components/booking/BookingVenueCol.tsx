@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { addMinutes, isAfter } from 'date-fns';
 import { useState, useRef, useEffect } from 'react';
+import { BoxProps } from '@chakra-ui/react';
 
 // Types for the BookingsOld Components
 // To be moved to global types file after replacing the old BookingsOld page
@@ -56,32 +57,45 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
 }) => {
   // Cell is coloured based on whether it's selected or not
 
-  const CellColorProps = {
-    bg: disabled ? 'gray.300' : booked ? 'green.500' : selected ? 'blue.500' : 'gray.200',
-    borderColor: disabled ? 'gray.300' : booked ? 'green.500' : selected ? 'blue.500' : 'white',
+  const SharedBoxProps: BoxProps = {
+    w: '40',
+    h: boxHeight,
+    boxSizing: 'content-box',
+    borderY: '.2rem solid',
   };
 
-  const CellHoverProps = disabled
-    ? {}
-    : {
-        _hover: {
-          bg: booked ? 'green.700' : selected ? 'blue.700' : 'gray.300',
-          borderColor: booked ? 'green.700' : selected ? 'blue.700' : 'white',
-        },
-      };
-
-  return (
-    <Box
-      w='40'
-      h={boxHeight}
-      boxSizing='content-box'
-      borderY='.2rem solid'
-      onMouseOver={onMouseOver}
-      onMouseDown={onMouseDown}
-      {...CellColorProps}
-      {...CellHoverProps}
-    ></Box>
-  );
+  if (disabled) {
+    return <Box {...SharedBoxProps} bg='gray.300' borderColor='gray.300' />;
+  } else if (booked) {
+    return (
+      <Box
+        {...SharedBoxProps}
+        bg='green.500'
+        borderColor='green.500'
+        _hover={{ bg: 'green.700', borderColor: 'green.700' }}
+      />
+    );
+  } else if (selected) {
+    return (
+      <Box
+        {...SharedBoxProps}
+        bg='blue.500'
+        borderColor='blue.500'
+        _hover={{ bg: 'blue.700', borderColor: 'blue.700' }}
+      />
+    );
+  } else {
+    return (
+      <Box
+        {...SharedBoxProps}
+        bg='gray.200'
+        borderColor='white'
+        onMouseOver={onMouseOver}
+        onMouseDown={onMouseDown}
+        _hover={{ bg: 'gray.300' }}
+      />
+    );
+  }
 };
 
 // Column of Time Grid Cells for a single venue
