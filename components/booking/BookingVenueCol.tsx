@@ -9,7 +9,7 @@ import {
   PopoverHeader,
   PopoverBody,
 } from '@chakra-ui/react';
-import { addMinutes, isAfter } from 'date-fns';
+import { addMinutes, isAfter, isEqual } from 'date-fns';
 import { useState, useRef, useEffect } from 'react';
 import { BoxProps } from '@chakra-ui/react';
 
@@ -71,7 +71,7 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
         {...SharedBoxProps}
         bg='green.500'
         borderColor='green.500'
-        _hover={{ bg: 'green.700', borderColor: 'green.700', transition: 'none' }}
+        _hover={{ bg: 'green.600', borderColor: 'green.600', transition: 'none' }}
       />
     );
   } else if (disabled) {
@@ -129,10 +129,8 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
     setLast(-1);
   });
 
-  const getStartEnd = () => [
-    Math.min(firstSelected, lastSelected),
-    Math.max(firstSelected, lastSelected),
-  ];
+  const start = Math.min(firstSelected, lastSelected);
+  const end = Math.max(firstSelected, lastSelected);
 
   return (
     <VStack ref={wrapperRef} spacing='0'>
@@ -153,21 +151,24 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
           setMouse.off();
           if (firstSelected === -1) return;
           // If selection has been made, open the booking modal
-          const [start, end] = getStartEnd();
           openBookingModal(timeIntervals[start], addMinutes(timeIntervals[end], 30));
         }}
       >
         {timeIntervals.map((el, i) => {
           // Check if the current cell is booked
           const isBooked = currentVenueBookings.some((booking) => {
-            return isAfter(el, booking.from) && isAfter(booking.to, el);
+            return (
+              (isEqual(el, booking.from) || isAfter(el, booking.from)) && isAfter(booking.to, el)
+            );
           });
 
-          // Check if there is a booking between start and end
+          // Prevent having an existing booking between start and end
           const disabledBooking = currentVenueBookings.some((booking) => {
-            const [start, _] = getStartEnd();
             const startInterval = timeIntervals[start];
-            return isAfter(booking.from, startInterval) && isAfter(el, booking.from);
+            return (
+              (isAfter(booking.from, startInterval) && isAfter(el, booking.from)) ||
+              (isAfter(startInterval, booking.from) && isAfter(booking.from, el))
+            );
           });
 
           return (
