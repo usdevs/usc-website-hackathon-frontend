@@ -40,6 +40,37 @@ import BookingVenueCol from '../components/booking/BookingVenueCol';
 const BOX_HEIGHT = 8; // Ensures time labels are aligned with grid cells
 const VENUES = ['CTPH', 'Chatterbox', "Maker's Studio", 'Amphi', 'TRR', 'TRB'];
 
+const testBookings: BookingDataDisplay[] = [
+  {
+    ig: VENUES[1],
+    venueId: 1,
+    bookedBy: 'John Doe',
+    from: new Date('2023-03-21T08:30:00+08:00'),
+    to: new Date('2023-03-21T10:00:00+08:00'),
+  },
+  {
+    ig: VENUES[2],
+    venueId: 2,
+    bookedBy: 'Jane Doe',
+    from: new Date('2023-03-21T10:30:00+08:00'),
+    to: new Date('2023-03-21T12:00:00+08:00'),
+  },
+  {
+    ig: VENUES[3],
+    venueId: 3,
+    bookedBy: 'James Smith',
+    from: new Date('2023-03-21T13:00:00+08:00'),
+    to: new Date('2023-03-21T14:30:00+08:00'),
+  },
+  {
+    ig: VENUES[4],
+    venueId: 1,
+    bookedBy: 'Jessica Brown',
+    from: new Date('2023-03-21T15:00:00+08:00'),
+    to: new Date('2023-03-21T16:30:00+08:00'),
+  },
+];
+
 const useUserInfo = () => useLocalStorage<AuthState>('token-value');
 
 const BookingSelector: React.FC = () => {
@@ -164,7 +195,6 @@ const BookingSelector: React.FC = () => {
       ) : (
         <></>
       )}
-      <Box maxWidth={'125px'}></Box>
 
       {/* Different tabs for day and month view */}
       <Tabs variant='solid-rounded' colorScheme='blue'>
@@ -197,7 +227,8 @@ const BookingSelector: React.FC = () => {
                     onModalOpen();
                   }}
                   bookingModalIsOpen={isOpen}
-                  currentVenueBookings={venueBookings[venueId]}
+                  // currentVenueBookings={venueBookings[venueId]}
+                  currentVenueBookings={testBookings}
                   boxHeight={BOX_HEIGHT}
                 />
               ))}

@@ -1,4 +1,14 @@
-import { useBoolean, VStack, Box, Text } from '@chakra-ui/react';
+import {
+  useBoolean,
+  VStack,
+  Box,
+  Text,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+} from '@chakra-ui/react';
 import { addMinutes, isAfter } from 'date-fns';
 import { useState, useRef, useEffect } from 'react';
 
@@ -19,6 +29,7 @@ interface BookingVenueTimeCellProps {
   booked: boolean;
   selected: boolean;
   boxHeight: number;
+  disabled: boolean;
 }
 
 // Detects clicks outside of the grid
@@ -41,25 +52,34 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
   booked,
   selected,
   boxHeight,
+  disabled,
 }) => {
   // Cell is coloured based on whether it's selected or not
 
-  const cellColor = booked ? 'green.500' : selected ? 'blue.500' : 'gray.200';
-  const cellHoverColor = booked ? 'green.700' : selected ? 'blue.700' : 'gray.300';
-  const borderColor = booked ? 'green.500' : selected ? 'blue.500' : 'white';
-  const borderHoverColor = booked ? 'green.700' : selected ? 'blue.700' : 'white';
+  const CellColorProps = {
+    bg: disabled ? 'gray.300' : booked ? 'green.500' : selected ? 'blue.500' : 'gray.200',
+    borderColor: disabled ? 'gray.300' : booked ? 'green.500' : selected ? 'blue.500' : 'white',
+  };
+
+  const CellHoverProps = disabled
+    ? {}
+    : {
+        _hover: {
+          bg: booked ? 'green.700' : selected ? 'blue.700' : 'gray.300',
+          borderColor: booked ? 'green.700' : selected ? 'blue.700' : 'white',
+        },
+      };
 
   return (
     <Box
       w='40'
       h={boxHeight}
-      bg={cellColor}
-      _hover={{ bg: cellHoverColor, borderColor: borderHoverColor }}
       boxSizing='content-box'
       borderY='.2rem solid'
-      borderColor={borderColor}
       onMouseOver={onMouseOver}
       onMouseDown={onMouseDown}
+      {...CellColorProps}
+      {...CellHoverProps}
     ></Box>
   );
 };
@@ -96,7 +116,9 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
 
   return (
     <VStack ref={wrapperRef} spacing='0'>
-      <Text fontSize='lg'>{venueName}</Text>
+      <Text fontSize='lg' position='sticky'>
+        {venueName}
+      </Text>
       <VStack
         spacing='0'
         onMouseDown={setMouse.on}
@@ -127,6 +149,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
                 mouseIsDown && !isBooked && setLast(i);
               }}
               selected={!isBooked && between(i, firstSelected, lastSelected)}
+              disabled={isAfter(new Date(), el)}
               boxHeight={boxHeight}
             />
           );
