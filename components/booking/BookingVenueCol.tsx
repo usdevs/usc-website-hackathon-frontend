@@ -62,26 +62,27 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
     h: boxHeight,
     boxSizing: 'content-box',
     borderY: '.2rem solid',
+    transition: '200ms ease-in',
   };
 
-  if (disabled) {
-    return <Box {...SharedBoxProps} bg='gray.300' borderColor='gray.300' />;
-  } else if (booked) {
+  if (booked) {
     return (
       <Box
         {...SharedBoxProps}
         bg='green.500'
         borderColor='green.500'
-        _hover={{ bg: 'green.700', borderColor: 'green.700' }}
+        _hover={{ bg: 'green.700', borderColor: 'green.700', transition: 'none' }}
       />
     );
+  } else if (disabled) {
+    return <Box {...SharedBoxProps} bg='gray.300' borderColor='gray.300' />;
   } else if (selected) {
     return (
       <Box
         {...SharedBoxProps}
         bg='blue.500'
         borderColor='blue.500'
-        _hover={{ bg: 'blue.700', borderColor: 'blue.700' }}
+        _hover={{ bg: 'blue.700', borderColor: 'blue.700', transition: 'none' }}
       />
     );
   } else {
@@ -92,7 +93,7 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
         borderColor='white'
         onMouseOver={onMouseOver}
         onMouseDown={onMouseDown}
-        _hover={{ bg: 'gray.300' }}
+        _hover={{ bg: 'gray.300', transition: 'none' }}
       />
     );
   }
@@ -128,6 +129,11 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
     setLast(-1);
   });
 
+  const getStartEnd = () => [
+    Math.min(firstSelected, lastSelected),
+    Math.max(firstSelected, lastSelected),
+  ];
+
   return (
     <VStack ref={wrapperRef} spacing='0'>
       <Text fontSize='lg' position='sticky'>
@@ -140,8 +146,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
           setMouse.off();
           if (firstSelected === -1) return;
           // If selection has been made, open the booking modal
-          const start = Math.min(firstSelected, lastSelected);
-          const end = Math.max(firstSelected, lastSelected);
+          const [start, end] = getStartEnd();
           openBookingModal(timeIntervals[start], addMinutes(timeIntervals[end], 30));
         }}
       >
@@ -150,6 +155,14 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
           const isBooked = currentVenueBookings.some((booking) => {
             return isAfter(el, booking.from) && isAfter(booking.to, el);
           });
+
+          // Check if there is a booking between start and end
+          const disabledBooking = currentVenueBookings.some((booking) => {
+            const [start, _] = getStartEnd();
+            const startInterval = timeIntervals[start];
+            return isAfter(booking.from, startInterval) && isAfter(el, booking.from);
+          });
+
           return (
             <BookingVenueTimeCell
               key={i}
@@ -163,7 +176,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
                 mouseIsDown && !isBooked && setLast(i);
               }}
               selected={!isBooked && between(i, firstSelected, lastSelected)}
-              disabled={isAfter(new Date(), el)}
+              disabled={isAfter(new Date(), el) || disabledBooking}
               boxHeight={boxHeight}
             />
           );

@@ -66,8 +66,8 @@ const testBookings: BookingDataDisplay[] = [
     ig: VENUES[4],
     venueId: 1,
     bookedBy: 'Jessica Brown',
-    from: new Date('2023-03-21T15:00:00+08:00'),
-    to: new Date('2023-03-21T16:30:00+08:00'),
+    from: new Date('2023-03-21T17:00:00+08:00'),
+    to: new Date('2023-03-21T18:30:00+08:00'),
   },
 ];
 
