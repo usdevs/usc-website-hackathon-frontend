@@ -19,10 +19,13 @@ const BookingsTimesCol: React.FC<BookingTimesProps> = ({ boxHeight }) => {
   return (
     <VStack spacing='0'>
       <Text
-        fontSize={'lg'}
+        fontSize='md'
         position='sticky'
         top='0'
-        bg='white'
+        py='1'
+        px='2'
+        bg='brand.primary'
+        color='white'
         alignSelf='stretch'
         textAlign='center'
       >

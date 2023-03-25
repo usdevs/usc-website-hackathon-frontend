@@ -67,4 +67,8 @@ declare global {
     description: string;
     verified: boolean;
   }
+  interface ToggleProps {
+    isOn: boolean;
+    setIsOn: (isOn: boolean) => void;
+  }
 }

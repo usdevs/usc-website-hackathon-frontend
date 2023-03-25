@@ -58,7 +58,7 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
   // Cell is coloured based on whether it's selected or not
 
   const SharedBoxProps: BoxProps = {
-    w: '40',
+    w: '32',
     h: boxHeight,
     boxSizing: 'content-box',
     borderY: '.2rem solid',
@@ -135,10 +135,12 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
   return (
     <VStack ref={wrapperRef} spacing='0'>
       <Text
-        fontSize='lg'
+        fontSize='md'
         position='sticky'
         top='0'
-        bg='white'
+        py="1"
+        bg='brand.primary'
+        color='white'
         alignSelf='stretch'
         textAlign='center'
       >
