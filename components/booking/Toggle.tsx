@@ -36,12 +36,10 @@ const Toggle: React.FC<ToggleProps> = ({ isOn, setIsOn }) => {
       <motion.div layout className='handle' style={STYLES.handle}>
         <AnimatePresence exitBeforeEnter initial={false}>
           <motion.span
-            className={`icon`}
             style={STYLES.icon}
             key={isOn ? 'moon' : 'sun'}
             initial={{ y: -30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 30, opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
             {isOn ? <FaCalendar /> : <FaSun />}

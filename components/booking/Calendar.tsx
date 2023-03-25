@@ -15,23 +15,6 @@ interface CalendarProps extends ToggleProps {
   setStartDate: (date: Date) => void;
 }
 
-const variants = {
-  initial: {
-    opacity: 0,
-    height: 0,
-  },
-  visible: {
-    opacity: 1,
-    height: '50px',
-    width: '50px',
-  },
-  expanded: {
-    opacity: 1,
-    height: '150px',
-    width: '150px',
-  },
-};
-
 const spring = {
   type: 'spring',
   damping: 50,
@@ -42,15 +25,13 @@ const CalendarCell: React.FC<CellProps> = ({ text, isHeader, isExpanded, isSelec
   if (isHeader) {
     return (
       <motion.div
-        initial='initial'
         style={{ textAlign: 'center', fontWeight: 'bold' }}
         animate={{
           opacity: 1,
-          height: isExpanded ? '50px' : '50px',
+          height: isExpanded ? '50px' : '70px',
           width: isExpanded ? '50px' : '10vw',
           transition: spring,
         }}
-        exit='initial'
       >
         {text}
       </motion.div>
@@ -59,7 +40,6 @@ const CalendarCell: React.FC<CellProps> = ({ text, isHeader, isExpanded, isSelec
 
   return (
     <motion.div
-      initial='initial'
       style={{ textAlign: 'center', cursor: 'pointer', position: 'relative' }}
       animate={{
         opacity: 1,
@@ -67,7 +47,6 @@ const CalendarCell: React.FC<CellProps> = ({ text, isHeader, isExpanded, isSelec
         width: isExpanded ? '50px' : '13vw',
         transition: spring,
       }}
-      exit='initial'
       onClick={onClick}
     >
       <Text

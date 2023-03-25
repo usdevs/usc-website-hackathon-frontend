@@ -1,17 +1,12 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 import {
   Box,
   HStack,
   VStack,
   Flex,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
   useToast,
   Menu,
   MenuButton,
@@ -28,7 +23,6 @@ import eachMinuteOfInterval from 'date-fns/eachMinuteOfInterval';
 import { BookingConfirmationPopup } from '../components/booking/BookingConfirmationPopup';
 import { BookingsContext, BookingsContextValue } from './BookingsContext';
 import { sub } from 'date-fns';
-import { SingleDatepicker } from 'chakra-dayzed-datepicker';
 import Footer from '../components/Footer';
 import { NextPage } from 'next';
 import NavMenu from '../components/NavMenu';
@@ -220,33 +214,41 @@ const BookingSelector: React.FC = () => {
 
         <Calendar isOn={!isOn} setIsOn={setIsOn} setStartDate={setStartDate} />
       </VStack>
-
-      <SlideFade in={!isOn}>
-        <HStack pt='6'>
-          <BookingsTimesCol boxHeight={BOX_HEIGHT} />
-          {VENUES.map((venueName, venueId) => (
-            <BookingVenueCol
-              timeIntervals={timeIntervals}
-              key={venueName}
-              venueName={venueName}
-              openBookingModal={(start, end) => {
-                setBookingDataFromSelection({
-                  ...bookingDataFromSelection,
-                  venueName,
-                  venueId: venueId + 1,
-                  start,
-                  end,
-                });
-                onModalOpen();
-              }}
-              bookingModalIsOpen={isOpen}
-              // currentVenueBookings={venueBookings[venueId]}
-              currentVenueBookings={testBookings}
-              boxHeight={BOX_HEIGHT}
-            />
-          ))}
-        </HStack>
-      </SlideFade>
+      <AnimatePresence>
+        {!isOn && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <HStack pt='6'>
+              <BookingsTimesCol boxHeight={BOX_HEIGHT} />
+              {VENUES.map((venueName, venueId) => (
+                <BookingVenueCol
+                  timeIntervals={timeIntervals}
+                  key={venueName}
+                  venueName={venueName}
+                  openBookingModal={(start, end) => {
+                    setBookingDataFromSelection({
+                      ...bookingDataFromSelection,
+                      venueName,
+                      venueId: venueId + 1,
+                      start,
+                      end,
+                    });
+                    onModalOpen();
+                  }}
+                  bookingModalIsOpen={isOpen}
+                  // currentVenueBookings={venueBookings[venueId]}
+                  currentVenueBookings={testBookings}
+                  boxHeight={BOX_HEIGHT}
+                />
+              ))}
+            </HStack>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </HStack>
   );
 };
