@@ -97,23 +97,25 @@ const CalendarCell: React.FC<CellProps> = ({ text, isHeader, isExpanded, isSelec
 };
 
 const Calendar: React.FC<CalendarProps> = ({ isOn, setIsOn, setStartDate }) => {
-  const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selected, setSelected] = useState(10);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selected, setSelected] = useState(selectedDate.getDate());
 
   const handlePrevMonth = () => {
-    setCurrentMonth(subMonths(currentMonth, 1));
+    setSelected(-1);
+    setSelectedDate(subMonths(selectedDate, 1));
   };
 
   const handleNextMonth = () => {
-    setCurrentMonth(addMonths(currentMonth, 1));
+    setSelected(-1);
+    setSelectedDate(addMonths(selectedDate, 1));
   };
 
-  const monthYearLabel = format(currentMonth, 'MMM yyyy');
+  const monthYearLabel = format(selectedDate, 'MMM yyyy');
   const daysInMonth = Array.from(
-    { length: new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate() },
+    { length: new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0).getDate() },
     (_, i) => i + 1,
   );
-  const firstDayOfMonth = startOfMonth(currentMonth).getDay();
+  const firstDayOfMonth = startOfMonth(selectedDate).getDay();
 
   return (
     <VStack alignItems='stretch' my='8' minW='400px'>
@@ -139,10 +141,10 @@ const Calendar: React.FC<CalendarProps> = ({ isOn, setIsOn, setStartDate }) => {
             ))}
             {daysInMonth.map((day) => (
               <CalendarCell
-                key={currentMonth.getMonth + '-' + day}
+                key={selectedDate.getMonth + '-' + day}
                 onClick={() => {
                   setSelected(day);
-                  const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+                  const date = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), day);
                   setStartDate(date);
                 }}
                 text={day.toString()}
