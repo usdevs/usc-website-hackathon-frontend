@@ -72,6 +72,10 @@ const CalendarCell: React.FC<CellProps> = ({ text, isHeader, isExpanded, isSelec
             opacity: 0.85,
             zIndex: -1,
           }}
+          transition={{
+            duration: 0.5,
+            ease: [0.2, 0.8, 0.2, 1],
+          }}
           layoutId='underline'
         />
       )}
