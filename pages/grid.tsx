@@ -201,23 +201,23 @@ const BookingSelector: React.FC = () => {
           <CalendarEventCard x={eventCardPos.x} y={eventCardPos.y} booking={bookingCard} />
         )}
       </AnimatePresence>
+      {auth ? (
+        <BookingConfirmationPopup
+          isOpen={isOpen}
+          onClose={onModalClose}
+          startDate={startDate}
+          setUnsuccessfulFormSubmitString={setUnsuccessfulFormSubmitString}
+          unsuccessfulFormSubmitString={unsuccessfulFormSubmitString}
+          bookingDataFromSelection={bookingDataFromSelection}
+          bookingData={bookingData}
+          setBookingData={setBookingData}
+          auth={auth}
+        />
+      ) : (
+        <></>
+      )}
       <HStack alignItems='start' gap='2' onClick={hideEventCard}>
         <VStack px={12} py={4} alignItems={'start'} position='sticky' top='20px'>
-          {auth ? (
-            <BookingConfirmationPopup
-              isOpen={isOpen}
-              onClose={onModalClose}
-              startDate={startDate}
-              setUnsuccessfulFormSubmitString={setUnsuccessfulFormSubmitString}
-              unsuccessfulFormSubmitString={unsuccessfulFormSubmitString}
-              bookingDataFromSelection={bookingDataFromSelection}
-              bookingData={bookingData}
-              setBookingData={setBookingData}
-              auth={auth}
-            />
-          ) : (
-            <></>
-          )}
           <HStack gap='4'>
             <Menu closeOnSelect={false}>
               <MenuButton as={Button} colorScheme='blue' rightIcon={<ChevronDownIcon />}>
