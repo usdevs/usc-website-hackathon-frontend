@@ -69,7 +69,7 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
       />
     );
   } else if (disabled) {
-    return <Box {...SharedBoxProps} bg='gray.300' borderColor='gray.300' onMouseUp={onMouseUp} />;
+    return <Box {...SharedBoxProps} bg='gray.200' borderColor='gray.200' onMouseUp={onMouseUp} />;
   } else if (selected) {
     return (
       <Box
