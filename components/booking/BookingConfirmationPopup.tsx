@@ -1,6 +1,7 @@
 import React, { useCallback, Dispatch, SetStateAction, useContext } from 'react';
 import {
   Box,
+  Button,
   FormControl,
   FormLabel,
   Input,
@@ -161,7 +162,7 @@ export const BookingConfirmationPopup: React.FC<BookingConfirmationPopupProps> =
                 id='event'
                 name='event'
                 aria-label='Event'
-                onChange={handleInputChange}
+                onBlur={handleInputChange}
                 required
               />
             </FormControl>
@@ -190,16 +191,15 @@ export const BookingConfirmationPopup: React.FC<BookingConfirmationPopupProps> =
               <Box>{format(bookingDataFromSelection?.end || new Date(), 'p')}</Box>
             </FormControl>
             <FormControl>
-              <Input
+              <Button
                 type='submit'
                 marginTop='1rem'
-                bg='#66cc99'
-                _hover={{ bg: '#e53e3e', color: '#fff' }}
                 width='fit-content'
                 borderRadius='0.2rem'
-                cursor='pointer'
-                value='Confirm Booking'
-              />
+                variant='success'
+              >
+                Confirm booking
+              </Button>
             </FormControl>
           </form>
         </ModalBody>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Box, Button, Grid, HStack, Text, VStack } from '@chakra-ui/react';
 import { format, startOfMonth, addMonths, subMonths } from 'date-fns';
-import { motion, AnimatePresence, AnimateSharedLayout } from 'framer-motion';
+import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 
 interface CellProps {
   text: string;
@@ -122,7 +122,7 @@ const Calendar: React.FC<CalendarProps> = ({ isOn, setStartDate }) => {
           <CalendarCell text={day} isHeader={true} key={day} isExpanded={isOn} />
         ))}
         <AnimatePresence>
-          <AnimateSharedLayout>
+          <LayoutGroup>
             {Array.from({ length: firstDayOfMonth }).map((_, index) => (
               <CalendarCell text={''} isHeader={false} key={'empty-' + index} isExpanded={isOn} />
             ))}
@@ -140,7 +140,7 @@ const Calendar: React.FC<CalendarProps> = ({ isOn, setStartDate }) => {
                 isSelected={selected === day}
               />
             ))}
-          </AnimateSharedLayout>
+          </LayoutGroup>
         </AnimatePresence>
       </Grid>
     </VStack>
