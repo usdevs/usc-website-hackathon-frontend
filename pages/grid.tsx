@@ -32,9 +32,11 @@ import { ChevronDownIcon } from '@chakra-ui/icons';
 import BookingsTimesCol from '../components/booking/BookingTimesCol';
 import BookingVenueCol from '../components/booking/BookingVenueCol';
 import Toggle from '../components/booking/Toggle';
+import CalendarEventCard from '../components/booking/CalendarEventCard';
+
+import { VENUES } from '../components/booking/CONSTANTS';
 
 const BOX_HEIGHT = 8; // Ensures time labels are aligned with grid cells
-const VENUES = ['CTPH', 'Chatterbox', "Maker's Studio", 'Amphi', 'TRR', 'TRB'];
 
 const testBookings: BookingDataDisplay[] = [
   {
@@ -53,14 +55,14 @@ const testBookings: BookingDataDisplay[] = [
   },
   {
     ig: VENUES[3],
-    venueId: 3,
+    venueId: 5,
     bookedBy: 'James Smith',
     from: new Date('2023-03-26T13:00:00+08:00'),
     to: new Date('2023-03-26T14:30:00+08:00'),
   },
   {
     ig: VENUES[4],
-    venueId: 1,
+    venueId: 4,
     bookedBy: 'Jessica Brown',
     from: new Date('2023-03-26T17:00:00+08:00'),
     to: new Date('2023-03-26T18:30:00+08:00'),
@@ -174,82 +176,111 @@ const BookingSelector: React.FC = () => {
     }
   };
 
-  const [isOn, setIsOn] = useState(false);
+  const [isExpandedCalendar, setExpandedCalendar] = useState(false);
+  // CALENDAR EVENT CARD
+  // Sets the state of the event card
+  const [eventCardPos, setEventCardPos] = useState({ x: 0, y: 0 });
+  // Sets the content of the event card
+  const [bookingCard, setBookingCard] = useState<BookingDataDisplay | null>(null);
+  const handleBookingCard = (event: React.MouseEvent, booking: BookingDataDisplay) => {
+    event.stopPropagation();
+    const el = event.target as HTMLElement;
+    const box = el.getBoundingClientRect();
+
+    setEventCardPos({ x: box.left - 390, y: box.top });
+    setBookingCard(booking);
+  };
+  const hideEventCard = () => {
+    setEventCardPos({ x: -1, y: -1 });
+  };
 
   return (
-    <HStack alignItems='start' gap='2'>
-      <VStack px={12} py={4} alignItems={'start'} position='sticky' top='20px'>
-        {auth ? (
-          <BookingConfirmationPopup
-            isOpen={isOpen}
-            onClose={onModalClose}
-            startDate={startDate}
-            setUnsuccessfulFormSubmitString={setUnsuccessfulFormSubmitString}
-            unsuccessfulFormSubmitString={unsuccessfulFormSubmitString}
-            bookingDataFromSelection={bookingDataFromSelection}
-            bookingData={bookingData}
-            setBookingData={setBookingData}
-            auth={auth}
-          />
-        ) : (
-          <></>
-        )}
-        <HStack gap='4'>
-          <Menu closeOnSelect={false}>
-            <MenuButton as={Button} colorScheme='blue' rightIcon={<ChevronDownIcon />}>
-              Venue
-            </MenuButton>
-            <MenuList>
-              <MenuOptionGroup defaultValue={VENUES[0]} type='radio'>
-                {VENUES.map((venue) => (
-                  <MenuItemOption key={venue} value={venue}>
-                    {venue}
-                  </MenuItemOption>
-                ))}
-              </MenuOptionGroup>
-            </MenuList>
-          </Menu>
-          <Toggle isOn={isOn} setIsOn={setIsOn} />
-        </HStack>
-
-        <Calendar isOn={!isOn} setIsOn={setIsOn} setStartDate={setStartDate} />
-      </VStack>
+    <>
       <AnimatePresence>
-        {!isOn && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <HStack pt='6'>
-              <BookingsTimesCol boxHeight={BOX_HEIGHT} />
-              {VENUES.map((venueName, venueId) => (
-                <BookingVenueCol
-                  timeIntervals={timeIntervals}
-                  key={venueName}
-                  venueName={venueName}
-                  openBookingModal={(start, end) => {
-                    setBookingDataFromSelection({
-                      ...bookingDataFromSelection,
-                      venueName,
-                      venueId: venueId + 1,
-                      start,
-                      end,
-                    });
-                    onModalOpen();
-                  }}
-                  bookingModalIsOpen={isOpen}
-                  // currentVenueBookings={venueBookings[venueId]}
-                  currentVenueBookings={testBookings}
-                  boxHeight={BOX_HEIGHT}
-                />
-              ))}
-            </HStack>
-          </motion.div>
+        {eventCardPos.x !== -1 && (
+          <CalendarEventCard x={eventCardPos.x} y={eventCardPos.y} booking={bookingCard} />
         )}
       </AnimatePresence>
-    </HStack>
+      <HStack alignItems='start' gap='2' onClick={hideEventCard}>
+        <VStack px={12} py={4} alignItems={'start'} position='sticky' top='20px'>
+          {auth ? (
+            <BookingConfirmationPopup
+              isOpen={isOpen}
+              onClose={onModalClose}
+              startDate={startDate}
+              setUnsuccessfulFormSubmitString={setUnsuccessfulFormSubmitString}
+              unsuccessfulFormSubmitString={unsuccessfulFormSubmitString}
+              bookingDataFromSelection={bookingDataFromSelection}
+              bookingData={bookingData}
+              setBookingData={setBookingData}
+              auth={auth}
+            />
+          ) : (
+            <></>
+          )}
+          <HStack gap='4'>
+            <Menu closeOnSelect={false}>
+              <MenuButton as={Button} colorScheme='blue' rightIcon={<ChevronDownIcon />}>
+                Venue
+              </MenuButton>
+              <MenuList>
+                <MenuOptionGroup defaultValue={VENUES[0]} type='radio'>
+                  {VENUES.map((venue) => (
+                    <MenuItemOption key={venue} value={venue}>
+                      {venue}
+                    </MenuItemOption>
+                  ))}
+                </MenuOptionGroup>
+              </MenuList>
+            </Menu>
+            <Toggle isOn={isExpandedCalendar} setIsOn={setExpandedCalendar} />
+          </HStack>
+          <Calendar
+            isOn={isExpandedCalendar}
+            setIsOn={setExpandedCalendar}
+            setStartDate={setStartDate}
+          />
+        </VStack>
+        <AnimatePresence>
+          {!isExpandedCalendar && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <HStack>
+                <BookingsTimesCol boxHeight={BOX_HEIGHT} />
+                {VENUES.map((venueName, venueId) => (
+                  <BookingVenueCol
+                    timeIntervals={timeIntervals}
+                    key={venueName}
+                    venueName={venueName}
+                    openBookingModal={(start, end) => {
+                      setBookingDataFromSelection({
+                        ...bookingDataFromSelection,
+                        venueName,
+                        venueId: venueId + 1,
+                        start,
+                        end,
+                      });
+                      onModalOpen();
+                    }}
+                    bookingModalIsOpen={isOpen}
+                    // currentVenueBookings={venueBookings[venueId]}
+                    currentVenueBookings={testBookings.filter(
+                      (booking) => VENUES[booking.venueId] === venueName,
+                    )}
+                    boxHeight={BOX_HEIGHT}
+                    openBookingCard={handleBookingCard}
+                  />
+                ))}
+              </HStack>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </HStack>
+    </>
   );
 };
 

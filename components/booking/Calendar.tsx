@@ -28,8 +28,8 @@ const CalendarCell: React.FC<CellProps> = ({ text, isHeader, isExpanded, isSelec
         style={{ textAlign: 'center', fontWeight: 'bold' }}
         animate={{
           opacity: 1,
-          height: isExpanded ? '50px' : '70px',
-          width: isExpanded ? '50px' : '10vw',
+          height: isExpanded ? '70px' : '50px',
+          width: isExpanded ? '10vw' : '50px',
           transition: spring,
         }}
       >
@@ -40,11 +40,15 @@ const CalendarCell: React.FC<CellProps> = ({ text, isHeader, isExpanded, isSelec
 
   return (
     <motion.div
-      style={{ textAlign: 'center', cursor: 'pointer', position: 'relative' }}
+      style={{
+        textAlign: 'center',
+        cursor: text !== '' ? 'pointer' : 'default',
+        position: 'relative',
+      }}
       animate={{
         opacity: 1,
-        height: isExpanded ? '50px' : '150px',
-        width: isExpanded ? '50px' : '13vw',
+        height: isExpanded ? '14vh' : '50px',
+        width: isExpanded ? '13vw' : '50px',
         transition: spring,
       }}
       onClick={onClick}
@@ -60,9 +64,9 @@ const CalendarCell: React.FC<CellProps> = ({ text, isHeader, isExpanded, isSelec
         <motion.div
           style={{
             position: 'absolute',
-            height: isExpanded ? '50px' : '150px',
-            width: isExpanded ? '50px' : '13vw',
-            bottom: '25%',
+            height: isExpanded ? '14vh' : '50px',
+            width: isExpanded ? '13vw' : '50px',
+            bottom: isExpanded ? '10%' : '25%',
             borderRadius: '15px',
             background: '#1F407B',
             opacity: 0.85,
@@ -75,7 +79,7 @@ const CalendarCell: React.FC<CellProps> = ({ text, isHeader, isExpanded, isSelec
   );
 };
 
-const Calendar: React.FC<CalendarProps> = ({ isOn, setIsOn, setStartDate }) => {
+const Calendar: React.FC<CalendarProps> = ({ isOn, setStartDate }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selected, setSelected] = useState(selectedDate.getDate());
 

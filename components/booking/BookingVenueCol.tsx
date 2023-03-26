@@ -1,32 +1,21 @@
-import {
-  useBoolean,
-  VStack,
-  Box,
-  Text,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverHeader,
-  PopoverBody,
-} from '@chakra-ui/react';
+import { useBoolean, VStack, Box, Text } from '@chakra-ui/react';
 import { addMinutes, isAfter, isEqual } from 'date-fns';
 import { useState, useRef, useEffect } from 'react';
 import { BoxProps } from '@chakra-ui/react';
 
 // Types for the BookingsOld Components
 // To be moved to global types file after replacing the old BookingsOld page
-interface BookingVenueColumnProps {
+interface BookingVenueColumnProps extends React.HTMLProps<HTMLDivElement> {
   venueName: String;
   openBookingModal: (start: Date, end: Date) => void;
   bookingModalIsOpen: boolean;
   timeIntervals: Date[];
   currentVenueBookings: Array<BookingDataDisplay>;
   boxHeight: number;
+  openBookingCard: (event: React.MouseEvent, booking: BookingDataDisplay) => void;
 }
 
-interface BookingVenueTimeCellProps {
-  onMouseDown: () => void;
-  onMouseOver: () => void;
+interface BookingVenueTimeCellProps extends React.HTMLProps<HTMLDivElement> {
   booked: boolean;
   selected: boolean;
   boxHeight: number;
@@ -50,6 +39,8 @@ function useOutsideAlerter(ref: any, callback: () => void) {
 const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
   onMouseDown,
   onMouseOver,
+  onMouseUp,
+  onClick,
   booked,
   selected,
   boxHeight,
@@ -69,31 +60,36 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
     return (
       <Box
         {...SharedBoxProps}
-        bg='green.500'
-        borderColor='green.500'
-        _hover={{ bg: 'green.600', borderColor: 'green.600', transition: 'none' }}
+        bg='brand.secondary'
+        borderColor='brand.secondary'
+        // _hover={{ bg: 'green.600', borderColor: 'green.600', transition: 'none' }}
+        cursor='pointer'
+        onMouseUp={onMouseUp}
+        onClick={onClick}
       />
     );
   } else if (disabled) {
-    return <Box {...SharedBoxProps} bg='gray.300' borderColor='gray.300' />;
+    return <Box {...SharedBoxProps} bg='gray.300' borderColor='gray.300' onMouseUp={onMouseUp} />;
   } else if (selected) {
     return (
       <Box
         {...SharedBoxProps}
-        bg='blue.500'
-        borderColor='blue.500'
-        _hover={{ bg: 'blue.700', borderColor: 'blue.700', transition: 'none' }}
+        bg='brand.success.light'
+        borderColor='brand.success.light'
+        _hover={{ bg: 'brand.success.dark', borderColor: 'brand.success.dark', transition: 'none' }}
+        onMouseUp={onMouseUp}
       />
     );
   } else {
     return (
       <Box
         {...SharedBoxProps}
-        bg='gray.200'
+        bg='gray.100'
         borderColor='white'
         onMouseOver={onMouseOver}
         onMouseDown={onMouseDown}
-        _hover={{ bg: 'gray.300', transition: 'none' }}
+        onMouseUp={onMouseUp}
+        _hover={{ bg: 'gray.200', transition: 'none' }}
       />
     );
   }
@@ -107,6 +103,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
   timeIntervals,
   currentVenueBookings,
   boxHeight,
+  openBookingCard,
 }) => {
   // Helper function to check if the current cell is between the first and last selected cells
   const between = (currentIndex: number, x: number, y: number): boolean => {
@@ -124,7 +121,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
 
   const wrapperRef = useRef(null); //  Used to detect clicks outside of the grid
   useOutsideAlerter(wrapperRef, () => {
-    if (bookingModalIsOpen) return; // Don't deselect if booking modal is open
+    setMouse.off();
     setFirst(-1);
     setLast(-1);
   });
@@ -138,7 +135,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
         fontSize='md'
         position='sticky'
         top='0'
-        py="1"
+        py='1'
         bg='brand.primary'
         color='white'
         alignSelf='stretch'
@@ -158,35 +155,40 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
       >
         {timeIntervals.map((el, i) => {
           // Check if the current cell is booked
-          const isBooked = currentVenueBookings.some((booking) => {
+          const venueBooking = currentVenueBookings.find((booking) => {
             return (
               (isEqual(el, booking.from) || isAfter(el, booking.from)) && isAfter(booking.to, el)
             );
           });
+          const isBooked = venueBooking !== undefined;
 
           // Prevent having an existing booking between start and end
-          const disabledBooking = currentVenueBookings.some((booking) => {
-            const startInterval = timeIntervals[start];
-            return (
-              (isAfter(booking.from, startInterval) && isAfter(el, booking.from)) ||
-              (isAfter(startInterval, booking.from) && isAfter(booking.from, el))
-            );
-          });
+          // Prevent selecting a time in the past
+          const isDisabled =
+            currentVenueBookings.some((booking) => {
+              const startInterval = timeIntervals[start];
+              return (
+                (isAfter(booking.from, startInterval) && isAfter(el, booking.from)) ||
+                (isAfter(startInterval, booking.from) && isAfter(booking.from, el))
+              );
+            }) || isAfter(new Date(), el);
 
           return (
             <BookingVenueTimeCell
               key={i}
               booked={isBooked}
               onMouseDown={() => {
-                if (isBooked) return;
                 setFirst(i);
                 setLast(i);
               }}
               onMouseOver={() => {
-                mouseIsDown && !isBooked && setLast(i);
+                if (mouseIsDown && !isBooked) setLast(i);
+              }}
+              onClick={(e) => {
+                if (venueBooking !== undefined) openBookingCard(e, venueBooking);
               }}
               selected={!isBooked && between(i, firstSelected, lastSelected)}
-              disabled={isAfter(new Date(), el) || disabledBooking}
+              disabled={isDisabled}
               boxHeight={boxHeight}
             />
           );

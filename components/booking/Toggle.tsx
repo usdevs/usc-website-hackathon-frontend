@@ -37,7 +37,7 @@ const Toggle: React.FC<ToggleProps> = ({ isOn, setIsOn }) => {
         <AnimatePresence exitBeforeEnter initial={false}>
           <motion.span
             style={STYLES.icon}
-            key={isOn ? 'moon' : 'sun'}
+            key={isOn ? 'month' : 'day'}
             initial={{ y: -30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.2 }}
