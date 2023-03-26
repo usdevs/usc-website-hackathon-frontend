@@ -216,8 +216,8 @@ const BookingSelector: React.FC = () => {
       ) : (
         <></>
       )}
-      <HStack alignItems='start' gap='2' onClick={hideEventCard}>
-        <VStack px={12} py={4} alignItems={'start'} position='sticky' top='20px'>
+      <HStack alignItems='start' py={4} gap='2' onClick={hideEventCard}>
+        <VStack px={12} alignItems={'start'} position='sticky' top='20px'>
           <HStack gap='4'>
             <Menu closeOnSelect={false}>
               <MenuButton as={Button} colorScheme='blue' rightIcon={<ChevronDownIcon />}>
