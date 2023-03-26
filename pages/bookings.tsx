@@ -194,11 +194,18 @@ const BookingSelector: React.FC = () => {
     setEventCardPos({ x: -1, y: -1 });
   };
 
+  const handleDeleteBooking = async () => {};
+
   return (
     <>
       <AnimatePresence>
         {eventCardPos.x !== -1 && (
-          <CalendarEventCard x={eventCardPos.x} y={eventCardPos.y} booking={bookingCard} />
+          <CalendarEventCard
+            x={eventCardPos.x}
+            y={eventCardPos.y}
+            booking={bookingCard}
+            onDelete={handleDeleteBooking}
+          />
         )}
       </AnimatePresence>
       {auth ? (

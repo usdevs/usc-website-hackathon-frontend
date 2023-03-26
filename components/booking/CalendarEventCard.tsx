@@ -9,6 +9,7 @@ import {
   HStack,
   Center,
   CardFooter,
+  Button,
 } from '@chakra-ui/react';
 import { FaRegCalendarAlt, FaRegBuilding, FaRegClock, FaRegUser, FaTrash } from 'react-icons/fa';
 import { motion } from 'framer-motion';
@@ -20,9 +21,10 @@ interface CalendarEventCardProps extends React.HTMLProps<HTMLDivElement> {
   x: number;
   y: number;
   booking: BookingDataDisplay | null;
+  onDelete: () => void;
 }
 
-const CalendarEventCard: React.FC<CalendarEventCardProps> = ({ onClick, x, y, booking }) => {
+const CalendarEventCard: React.FC<CalendarEventCardProps> = ({ x, y, booking, onDelete }) => {
   if (!booking) {
     return <></>;
   }
@@ -30,12 +32,11 @@ const CalendarEventCard: React.FC<CalendarEventCardProps> = ({ onClick, x, y, bo
   return (
     <motion.div
       style={{ position: 'fixed', zIndex: 20, top: 0, left: 0 }}
-      onClick={onClick}
       initial={{ x: x - 20, y: y - 100, opacity: 0 }}
       animate={{ x: x, y: y - 100, opacity: 1 }}
       exit={{ x: x - 20, opacity: 0, transition: { duration: 0.2 } }}
       transition={{
-        duration: 1.0,
+        duration: 0.7,
         ease: [0.2, 0.8, 0.2, 1],
         opacity: {
           duration: 0.2,
@@ -78,7 +79,15 @@ const CalendarEventCard: React.FC<CalendarEventCardProps> = ({ onClick, x, y, bo
           </VStack>
         </CardBody>
         <CardFooter justify='flex-end' pt='0'>
-          <Icon as={FaTrash} color='gray.500' _hover={{ color: 'black' }} />
+          <Button
+            size='sm'
+            variant='outline'
+            _hover={{ transform: 'scale(1.2)' }}
+            _active={{ transform: 'scale(0.9)' }}
+            onClick={onDelete}
+          >
+            <Icon as={FaTrash} color='gray.500' />
+          </Button>
         </CardFooter>
       </Card>
     </motion.div>
