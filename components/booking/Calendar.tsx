@@ -78,7 +78,7 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
       }}
       onClick={onClick}
     >
-      <Text
+      <Box
         zIndex='10'
         color={isSelected ? 'white' : 'black'}
         fontWeight={isSelected ? 'bold' : 'normal'}
@@ -108,7 +108,7 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
             </VStack>
           </motion.div>
         )}
-      </Text>
+      </Box>
       {isSelected && (
         <motion.div
           style={{
