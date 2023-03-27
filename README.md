@@ -54,13 +54,13 @@ Run the following in separate terminals
 1. EITHER go to https://usdevs.github.io/uscwebsite-hackathon-backend/, login, copy the token and paste it into `const NEXT_PUBLIC_BACKEND_JWT_DEV =` on line 8 in `components/Auth.tsx`. Copy your userId from the "Users" table in the DB to NEXT_PUBLIC_BACKEND_TELEGRAM_USER_ID on line 7.
 2. OR Tried to Dockerise this, view `docker` branch
 3. OR Linux set-up to set up nginx as a proxy (should be roughly similar for Mac, not sure about Windows)
-4. Install `mkcert` from https://github.com/FiloSottile/mkcert and generate certs for a domain. I am using `frontend.local.dev`. (run the commands in `certgen.sh` in the Docker folder)
+4. Install `mkcert` from https://github.com/FiloSottile/mkcert and generate certs for a domain. I am using `frontend.local.dev`. (run the commands in `certgen.sh` in the nginx folder)
 5. In your hosts file, add `127.0.0.1 frontend.local.dev`
-6. Copy the `app.conf` in the Docker folder over to `/etc/nginx/conf.d` or to a path that you have included in your `nginx.conf` (see the sample nginx.conf's line 17 to see how you can include the `conf.d` directory on a Mac machine - Linux should have this by default)
+6. Copy the `app.conf` in the nginx folder over to `/etc/nginx/conf.d` or to a path that you have included in your `nginx.conf` (see the sample `nginx.conf`'s line 17 to see how you can include the `conf.d` directory on a Mac machine - Linux should have this by default)
 7. `sudo nginx -t && sudo systemctl restart nginx` for Linux, `sudo nginx -t && sudo nginx -s stop && sudo nginx` for MacOS
 8. If you have `apache` running, need to deconflict it as pgadmin uses it as well. You can change the port it uses, or change nginx's port. Otherwise, you can just `sudo service apache2 stop` and not use pgadmin.
 9. You will have to update the Tele bot's BOT_TOKEN on the backend repo to '5980011686:AAHuxodOvlPYeftZTElSpC-13ybW5to9Y1M' if you used frontend.local.dev, or you can set up your own Tele login bot or let me know if you want to use another domain.
-10. Change NEXT_PUBLIC_NGINX_PROXY_ON in line 9 to true!
+10. Change NEXT_PUBLIC_NGINX_PROXY_ON in line 9 in Auth.tsx to true!
 
 ## YOU CAN FINALLY LAUNCH THE FRONTEND
 
