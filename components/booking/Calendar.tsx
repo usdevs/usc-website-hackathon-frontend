@@ -1,18 +1,21 @@
 import { useState } from 'react';
 import { Box, Button, Grid, HStack, Text, VStack } from '@chakra-ui/react';
-import { format, startOfMonth, addMonths, subMonths } from 'date-fns';
+import { format, startOfMonth, addMonths, subMonths, isSameDay } from 'date-fns';
 import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
+
+import { VENUES } from './CONSTANTS';
 
 interface CellProps {
   text: string;
-  isHeader?: boolean;
   isExpanded: boolean;
-  isSelected?: boolean;
+  isSelected: boolean;
   onClick?: () => void;
+  bookings: Array<BookingDataDisplay>;
 }
 
 interface CalendarProps extends ToggleProps {
   setStartDate: (date: Date) => void;
+  bookings: Array<BookingDataDisplay>;
 }
 
 const spring = {
@@ -21,22 +24,44 @@ const spring = {
   stiffness: 300,
 };
 
-const CalendarCell: React.FC<CellProps> = ({ text, isHeader, isExpanded, isSelected, onClick }) => {
-  if (isHeader) {
-    return (
-      <motion.div
-        style={{ textAlign: 'center', fontWeight: 'bold' }}
-        animate={{
-          opacity: 1,
-          height: isExpanded ? '70px' : '50px',
-          width: isExpanded ? '10vw' : '50px',
-          transition: spring,
-        }}
-      >
-        {text}
-      </motion.div>
-    );
-  }
+type DayCellProps = Pick<CellProps, 'text' | 'isExpanded'>;
+const CalendarDayCell: React.FC<DayCellProps> = ({ text, isExpanded }) => {
+  return (
+    <motion.div
+      style={{ textAlign: 'center', fontWeight: 'bold' }}
+      animate={{
+        opacity: 1,
+        height: isExpanded ? '70px' : '50px',
+        width: isExpanded ? '10vw' : '50px',
+        transition: spring,
+      }}
+    >
+      {text}
+    </motion.div>
+  );
+};
+
+const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onClick, bookings }) => {
+  const list = {
+    visible: {
+      opacity: 1,
+      transition: {
+        when: 'beforeChildren',
+        staggerChildren: 0.3,
+      },
+    },
+    hidden: {
+      opacity: 0,
+      transition: {
+        when: 'afterChildren',
+      },
+    },
+  };
+
+  const item = {
+    visible: { opacity: 1, x: 0 },
+    hidden: { opacity: 0, x: -10 },
+  };
 
   return (
     <motion.div
@@ -59,6 +84,30 @@ const CalendarCell: React.FC<CellProps> = ({ text, isHeader, isExpanded, isSelec
         fontWeight={isSelected ? 'bold' : 'normal'}
       >
         {text}
+        {isExpanded && (
+          <motion.div initial='hidden' animate='visible' variants={list}>
+            <VStack alignItems='flex-start' spacing='0' pl='4'>
+              {bookings?.map((booking, i) => {
+                return (
+                  <motion.div variants={item} key={i}>
+                    <Text
+                      overflow='hidden'
+                      h='2vh'
+                      w='100%'
+                      fontWeight='normal'
+                      fontSize='sm'
+                      textAlign='left'
+                    >
+                      {`${format(booking.from, 'h:mm')}-${format(booking.to, 'h:mm a')} ${
+                        VENUES[booking.venueId]
+                      }`}
+                    </Text>
+                  </motion.div>
+                );
+              })}
+            </VStack>
+          </motion.div>
+        )}
       </Text>
       {isSelected && (
         <motion.div
@@ -83,7 +132,7 @@ const CalendarCell: React.FC<CellProps> = ({ text, isHeader, isExpanded, isSelec
   );
 };
 
-const Calendar: React.FC<CalendarProps> = ({ isOn, setStartDate }) => {
+const Calendar: React.FC<CalendarProps> = ({ isOn, setStartDate, bookings }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selected, setSelected] = useState(selectedDate.getDate());
 
@@ -119,27 +168,40 @@ const Calendar: React.FC<CalendarProps> = ({ isOn, setStartDate }) => {
       </HStack>
       <Grid templateColumns='repeat(7, 1fr)' justifyItems='center'>
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-          <CalendarCell text={day} isHeader={true} key={day} isExpanded={isOn} />
+          <CalendarDayCell key={day} text={day} isExpanded={isOn} />
         ))}
         <AnimatePresence>
           <LayoutGroup>
             {Array.from({ length: firstDayOfMonth }).map((_, index) => (
-              <CalendarCell text={''} isHeader={false} key={'empty-' + index} isExpanded={isOn} />
-            ))}
-            {daysInMonth.map((day) => (
               <CalendarCell
-                key={selectedDate.getMonth + '-' + day}
-                onClick={() => {
-                  setSelected(day);
-                  const date = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), day);
-                  setStartDate(date);
-                }}
-                text={day.toString()}
-                isHeader={false}
+                text={''}
+                bookings={[]}
+                isSelected={false}
+                key={'empty-' + index}
                 isExpanded={isOn}
-                isSelected={selected === day}
               />
             ))}
+            {daysInMonth.map((day) => {
+              const date = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), day);
+              const bookingsForDay = bookings.filter((booking) => {
+                return isSameDay(booking.from, date);
+              });
+
+              return (
+                <CalendarCell
+                  key={selectedDate.getMonth + '-' + day}
+                  onClick={() => {
+                    setSelected(day);
+                    const date = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), day);
+                    setStartDate(date);
+                  }}
+                  text={day.toString()}
+                  isExpanded={isOn}
+                  isSelected={selected === day}
+                  bookings={bookingsForDay}
+                />
+              );
+            })}
           </LayoutGroup>
         </AnimatePresence>
       </Grid>

@@ -16,10 +16,11 @@ interface BookingVenueColumnProps extends React.HTMLProps<HTMLDivElement> {
 }
 
 interface BookingVenueTimeCellProps extends React.HTMLProps<HTMLDivElement> {
+  boxHeight: number;
   booked: boolean;
   selected: boolean;
-  boxHeight: number;
   disabled: boolean;
+  bookedBySelf: boolean;
 }
 
 // Detects clicks outside of the grid
@@ -41,10 +42,11 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
   onMouseOver,
   onMouseUp,
   onClick,
+  boxHeight,
   booked,
   selected,
-  boxHeight,
   disabled,
+  bookedBySelf,
 }) => {
   // Cell is coloured based on whether it's selected or not
 
@@ -56,21 +58,36 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
     transition: '200ms ease-in',
   };
 
+  // Cell is booked by someone
   if (booked) {
+    if (bookedBySelf) {
+      return (
+        <Box
+          {...SharedBoxProps}
+          bg='brand.primary'
+          borderColor='brand.primary'
+          cursor='pointer'
+          onMouseUp={onMouseUp}
+          onClick={onClick}
+        />
+      );
+    }
+
     return (
       <Box
         {...SharedBoxProps}
         bg='brand.secondary'
         borderColor='brand.secondary'
-        // _hover={{ bg: 'green.600', borderColor: 'green.600', transition: 'none' }}
         cursor='pointer'
         onMouseUp={onMouseUp}
         onClick={onClick}
       />
     );
   } else if (disabled) {
+    // Cell is disabled
     return <Box {...SharedBoxProps} bg='gray.200' borderColor='gray.200' onMouseUp={onMouseUp} />;
   } else if (selected) {
+    // Cell is selected
     return (
       <Box
         {...SharedBoxProps}
@@ -81,6 +98,7 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
       />
     );
   } else {
+    // Cell is available for booking
     return (
       <Box
         {...SharedBoxProps}
@@ -128,7 +146,6 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
 
   const start = Math.min(firstSelected, lastSelected);
   const end = Math.max(firstSelected, lastSelected);
-
   return (
     <VStack ref={wrapperRef} spacing='0'>
       <Text
@@ -162,9 +179,12 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
           });
           const isBooked = venueBooking !== undefined;
 
-          // Prevent having an existing booking between start and end
-          // Prevent selecting a time in the past
+          const isBookedBySelf = venueBooking !== undefined && venueBooking.bookedBy === 'John Doe';
+
+          // Prevent selecting a time that is already booked or is in the past
           const isDisabled =
+            // Okay to loop through all bookings as there are at most
+            // 24 bookings for this particular venue and day
             currentVenueBookings.some((booking) => {
               const startInterval = timeIntervals[start];
               return (
@@ -177,6 +197,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
             <BookingVenueTimeCell
               key={i}
               booked={isBooked}
+              bookedBySelf={isBookedBySelf}
               onMouseDown={() => {
                 setFirst(i);
                 setLast(i);

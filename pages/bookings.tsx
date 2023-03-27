@@ -35,40 +35,50 @@ import { VENUES } from '../components/booking/CONSTANTS';
 
 const BOX_HEIGHT = 8; // Ensures time labels are aligned with grid cells
 
-// const testBookings: BookingDataDisplay[] = [
-//   {
-//     ig: VENUES[1],
-//     venueId: 1,
-//     bookedBy: 'John Doe',
-//     from: new Date('2023-03-26T08:30:00+08:00'),
-//     to: new Date('2023-03-26T10:00:00+08:00'),
-//   },
-//   {
-//     ig: VENUES[2],
-//     venueId: 2,
-//     bookedBy: 'Jane Doe',
-//     from: new Date('2023-03-26T10:30:00+08:00'),
-//     to: new Date('2023-03-26T12:00:00+08:00'),
-//   },
-//   {
-//     ig: VENUES[3],
-//     venueId: 5,
-//     bookedBy: 'James Smith',
-//     from: new Date('2023-03-26T13:00:00+08:00'),
-//     to: new Date('2023-03-26T14:30:00+08:00'),
-//   },
-//   {
-//     ig: VENUES[4],
-//     venueId: 4,
-//     bookedBy: 'Jessica Brown',
-//     from: new Date('2023-03-26T17:00:00+08:00'),
-//     to: new Date('2023-03-26T18:30:00+08:00'),
-//   },
-// ];
+const testBookings: BookingDataDisplay[] = [
+  {
+    ig: VENUES[1],
+    venueId: 1,
+    bookedBy: 'John Doe',
+    from: new Date('2023-03-27T08:30:00+08:00'),
+    to: new Date('2023-03-27T10:00:00+08:00'),
+  },
+  {
+    ig: VENUES[2],
+    venueId: 2,
+    bookedBy: 'Jane Doe',
+    from: new Date('2023-03-27T10:30:00+08:00'),
+    to: new Date('2023-03-27T12:00:00+08:00'),
+  },
+  {
+    ig: VENUES[3],
+    venueId: 5,
+    bookedBy: 'James Smith',
+    from: new Date('2023-03-27T13:00:00+08:00'),
+    to: new Date('2023-03-27T14:30:00+08:00'),
+  },
+  {
+    ig: VENUES[4],
+    venueId: 4,
+    bookedBy: 'John Doe',
+    from: new Date('2023-03-27T17:00:00+08:00'),
+    to: new Date('2023-03-27T18:30:00+08:00'),
+  },
+];
 
 const useUserInfo = () => useLocalStorage<AuthState>('token-value');
 
 const BookingSelector: FC = () => {
+  useEffect(() => {
+    const scrollToPopularTimes = () => {
+      window.scrollTo({
+        top: document.documentElement.clientHeight * 1.3,
+        behavior: 'smooth',
+      });
+    };
+    scrollToPopularTimes();
+  }, []);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [bookingDataFromSelection, setBookingDataFromSelection] = useState<BookingDataSelection>({
     start: null,
@@ -222,9 +232,59 @@ const BookingSelector: FC = () => {
       });
     }
   };
+  // Placeholder function for deleting bookings
+  //todo change
+  const handleDeleteBookingTwo = async () => {
+    if (bookingCard) {
+      // Frontend login for removing the booking from venueBookings
+      // May have to change venueBookings to state to update it
+      // We want the booking to be removed from the grid immediately
+      // Regardless of whether the delete request is successful
+      // If it is unsuccessful, we can just add it back to venueBookings
+      const token = auth?.token;
+      const requestOptions = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify({ ...bookingCard }), // TODO: check data needed for delete
+      };
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings',
+        requestOptions,
+      );
+      const data = await response.json();
+      if (response.status === 400) {
+        setUnsuccessfulFormSubmitString(JSON.stringify(data.message));
+      } else if (response.status === 200) {
+        toast({
+          id: toast_id,
+          title: `Booking deleted!!`,
+          position: 'top',
+          duration: 3000,
+          status: 'success',
+          isClosable: true,
+        });
+        onClose();
+      } else {
+        toast({
+          id: toast_id,
+          title: JSON.stringify(data.message),
+          position: 'top',
+          duration: 3000,
+          status: 'error',
+          isClosable: true,
+        });
+        onClose();
+      }
+    }
+  };
 
   return (
     <>
+      {/* Put absolutely positioned elements here as they still cause slight
+      layout shifts for some reason */}
       <AnimatePresence>
         {eventCardPos.x !== -1 && (
           <CalendarEventCard
@@ -274,6 +334,7 @@ const BookingSelector: FC = () => {
             isOn={isExpandedCalendar}
             setIsOn={setExpandedCalendar}
             setStartDate={setStartDate}
+            bookings={testBookings} //todo change
           />
         </VStack>
         <AnimatePresence>
