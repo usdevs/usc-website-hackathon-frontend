@@ -304,6 +304,7 @@ const BookingSelector: React.FC = () => {
             isOn={isExpandedCalendar}
             setIsOn={setExpandedCalendar}
             setStartDate={setStartDate}
+            bookings={testBookings}
           />
         </VStack>
         <AnimatePresence>
