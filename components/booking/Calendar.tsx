@@ -42,6 +42,27 @@ const CalendarDayCell: React.FC<DayCellProps> = ({ text, isExpanded }) => {
 };
 
 const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onClick, bookings }) => {
+  const list = {
+    visible: {
+      opacity: 1,
+      transition: {
+        when: 'beforeChildren',
+        staggerChildren: 0.3,
+      },
+    },
+    hidden: {
+      opacity: 0,
+      transition: {
+        when: 'afterChildren',
+      },
+    },
+  };
+
+  const item = {
+    visible: { opacity: 1, x: 0 },
+    hidden: { opacity: 0, x: -10 },
+  };
+
   return (
     <motion.div
       style={{
@@ -64,25 +85,28 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
       >
         {text}
         {isExpanded && (
-          <VStack alignItems='flex-start' spacing='0' pl='4'>
-            {bookings?.map((booking, i) => {
-              return (
-                <Text
-                  overflow='hidden'
-                  h='2vh'
-                  w='100%'
-                  fontWeight='normal'
-                  fontSize='sm'
-                  key={i}
-                  textAlign='left'
-                >
-                  {`${format(booking.from, 'h:mm')}-${format(booking.to, 'h:mm a')} ${
-                    VENUES[booking.venueId]
-                  }`}
-                </Text>
-              );
-            })}
-          </VStack>
+          <motion.div initial='hidden' animate='visible' variants={list}>
+            <VStack alignItems='flex-start' spacing='0' pl='4'>
+              {bookings?.map((booking, i) => {
+                return (
+                  <motion.div variants={item} key={i}>
+                    <Text
+                      overflow='hidden'
+                      h='2vh'
+                      w='100%'
+                      fontWeight='normal'
+                      fontSize='sm'
+                      textAlign='left'
+                    >
+                      {`${format(booking.from, 'h:mm')}-${format(booking.to, 'h:mm a')} ${
+                        VENUES[booking.venueId]
+                      }`}
+                    </Text>
+                  </motion.div>
+                );
+              })}
+            </VStack>
+          </motion.div>
         )}
       </Text>
       {isSelected && (
