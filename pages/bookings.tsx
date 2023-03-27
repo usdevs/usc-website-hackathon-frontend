@@ -63,7 +63,7 @@ const testBookings: BookingDataDisplay[] = [
   {
     ig: VENUES[4],
     venueId: 4,
-    bookedBy: 'Jessica Brown',
+    bookedBy: 'John Doe',
     from: new Date('2023-03-27T17:00:00+08:00'),
     to: new Date('2023-03-27T18:30:00+08:00'),
   },
@@ -198,7 +198,7 @@ const BookingSelector: React.FC = () => {
   const handleDeleteBooking = async () => {
     if (bookingCard) {
       // Frontend login for removing the booking from venueBookings
-      // May have to change venueBookings to state to update it 
+      // May have to change venueBookings to state to update it
       // We want the booking to be removed from the grid immediately
       // Regardless of whether the delete request is successful
       // If it is unsuccessful, we can just add it back to venueBookings

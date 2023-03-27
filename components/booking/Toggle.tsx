@@ -32,7 +32,7 @@ const Toggle: React.FC<ToggleProps> = ({ isOn, setIsOn }) => {
   };
 
   return (
-    <div className='container' onClick={() => setIsOn(!isOn)} style={STYLES['container']}>
+    <div className='container' onClick={() => setIsOn(!isOn)} style={STYLES.container}>
       <motion.div layout className='handle' style={STYLES.handle}>
         <AnimatePresence exitBeforeEnter initial={false}>
           <motion.span
