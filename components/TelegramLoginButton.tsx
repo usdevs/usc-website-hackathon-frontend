@@ -1,26 +1,26 @@
-import PropTypes from 'prop-types';
-import React, { useRef, useEffect } from 'react';
-import { Box } from '@chakra-ui/react';
+import PropTypes from 'prop-types'
+import React, { useRef, useEffect } from 'react'
+import { Box } from '@chakra-ui/react'
 
 interface Props {
-  botName: string;
-  usePic?: boolean;
-  cornerRadius?: number;
-  requestAccess?: boolean;
-  dataOnauth: (user: TelegramUser) => void;
-  buttonSize?: 'large' | 'medium' | 'small';
+  botName: string
+  usePic?: boolean
+  cornerRadius?: number
+  requestAccess?: boolean
+  dataOnauth: (user: TelegramUser) => void
+  buttonSize?: 'large' | 'medium' | 'small'
 }
 
 declare global {
   interface Window {
     TelegramLoginWidget: {
-      dataOnauth: (user: TelegramUser) => void;
-    };
+      dataOnauth: (user: TelegramUser) => void
+    }
   }
 }
 
 const TelegramLoginButton: React.FC<Props> = (props) => {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null)
 
   const {
     usePic = false,
@@ -29,37 +29,37 @@ const TelegramLoginButton: React.FC<Props> = (props) => {
     dataOnauth,
     cornerRadius,
     requestAccess = true,
-  } = props;
+  } = props
 
   useEffect(() => {
-    if (ref.current === null) return;
+    if (ref.current === null) return
 
     window.TelegramLoginWidget = {
       dataOnauth: (user: TelegramUser) => dataOnauth(user),
-    };
+    }
 
-    const script = document.createElement('script');
-    script.src = 'https://telegram.org/js/telegram-widget.js?4';
-    script.setAttribute('data-telegram-login', botName);
-    script.setAttribute('data-size', buttonSize);
+    const script = document.createElement('script')
+    script.src = 'https://telegram.org/js/telegram-widget.js?4'
+    script.setAttribute('data-telegram-login', botName)
+    script.setAttribute('data-size', buttonSize)
 
     if (cornerRadius !== undefined) {
-      script.setAttribute('data-radius', cornerRadius.toString());
+      script.setAttribute('data-radius', cornerRadius.toString())
     }
 
     if (requestAccess) {
-      script.setAttribute('data-request-access', 'write');
+      script.setAttribute('data-request-access', 'write')
     }
 
-    script.setAttribute('data-userpic', usePic.toString());
-    script.setAttribute('data-onauth', 'TelegramLoginWidget.dataOnauth(user)');
-    script.async = true;
+    script.setAttribute('data-userpic', usePic.toString())
+    script.setAttribute('data-onauth', 'TelegramLoginWidget.dataOnauth(user)')
+    script.async = true
 
-    ref.current.appendChild(script);
-  }, [botName, buttonSize, cornerRadius, dataOnauth, requestAccess, usePic, ref]);
+    ref.current.appendChild(script)
+  }, [botName, buttonSize, cornerRadius, dataOnauth, requestAccess, usePic, ref])
 
-  return <Box ref={ref} />;
-};
+  return <Box ref={ref} />
+}
 
 TelegramLoginButton.propTypes = {
   botName: PropTypes.string.isRequired,
@@ -68,6 +68,6 @@ TelegramLoginButton.propTypes = {
   requestAccess: PropTypes.bool,
   dataOnauth: PropTypes.func.isRequired,
   buttonSize: PropTypes.oneOf(['large', 'medium', 'small']),
-};
+}
 
-export default TelegramLoginButton;
+export default TelegramLoginButton

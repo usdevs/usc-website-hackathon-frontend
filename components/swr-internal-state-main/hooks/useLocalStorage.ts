@@ -1,7 +1,7 @@
-import useSWR from 'swr';
+import useSWR from 'swr'
 
-import { LocalStorageHookResult } from '../types';
-import { isServerSide } from '../utils';
+import { LocalStorageHookResult } from '../types'
+import { isServerSide } from '../utils'
 
 /**
  * Gets and sets value to/from local storage.
@@ -15,11 +15,11 @@ const useLocalStorage = <T>(
   key: string,
   defaultValue: T | null = null,
 ): LocalStorageHookResult<T> => {
-  let initialValue = defaultValue;
+  let initialValue = defaultValue
 
   if (!isServerSide()) {
-    let storedValue = window.localStorage.getItem(key);
-    if (storedValue !== null && storedValue !== 'undefined') initialValue = JSON.parse(storedValue);
+    let storedValue = window.localStorage.getItem(key)
+    if (storedValue !== null && storedValue !== 'undefined') initialValue = JSON.parse(storedValue)
   }
 
   const { data: value = initialValue, mutate } = useSWR(key, null, {
@@ -27,34 +27,34 @@ const useLocalStorage = <T>(
     revalidateOnReconnect: false,
     refreshWhenHidden: false,
     refreshWhenOffline: false,
-  });
+  })
 
   // ========== Set value ==========
   const setValue = async (value: T): Promise<void> => {
-    await mutate(value, false);
+    await mutate(value, false)
 
     if (isServerSide()) {
-      return;
+      return
     }
 
     // Save to local storage
-    const localStorageValue = JSON.stringify(value);
-    window.localStorage.setItem(key, localStorageValue);
-  };
+    const localStorageValue = JSON.stringify(value)
+    window.localStorage.setItem(key, localStorageValue)
+  }
 
   // ========== Remove value ==========
   const removeValue = async (): Promise<void> => {
-    await mutate(defaultValue, false);
+    await mutate(defaultValue, false)
 
     if (isServerSide()) {
-      return;
+      return
     }
 
     // Remove value from local storage
-    window.localStorage.removeItem(key);
-  };
+    window.localStorage.removeItem(key)
+  }
 
-  return [value, setValue, removeValue];
-};
+  return [value, setValue, removeValue]
+}
 
-export default useLocalStorage;
+export default useLocalStorage

@@ -9,23 +9,27 @@ import {
   Center,
   CardFooter,
   Button,
-} from '@chakra-ui/react';
-import { FaRegCalendarAlt, FaRegBuilding, FaRegClock, FaRegUser, FaTrash } from 'react-icons/fa';
-import { motion } from 'framer-motion';
-import { format } from 'date-fns';
+} from '@chakra-ui/react'
+import { FaRegCalendarAlt, FaRegBuilding, FaRegClock, FaRegUser, FaTrash } from 'react-icons/fa'
+import { motion } from 'framer-motion'
+import { format } from 'date-fns'
 
-import { VENUES } from './CONSTANTS';
+import { VENUES } from './CONSTANTS'
+import { FC, HTMLProps } from 'react'
+import { useUserInfo } from '../../utils'
 
-interface CalendarEventCardProps extends React.HTMLProps<HTMLDivElement> {
-  x: number;
-  y: number;
-  booking: BookingDataDisplay | null;
-  onDelete: () => void;
+interface CalendarEventCardProps extends HTMLProps<HTMLDivElement> {
+  x: number
+  y: number
+  booking: BookingDataDisplay | null
+  onDelete: (userId: number) => void
 }
 
-const CalendarEventCard: React.FC<CalendarEventCardProps> = ({ x, y, booking, onDelete }) => {
+const CalendarEventCard: FC<CalendarEventCardProps> = ({ x, y, booking, onDelete }) => {
+  const [auth] = useUserInfo()
+
   if (!booking) {
-    return <></>;
+    return <></>
   }
 
   return (
@@ -66,25 +70,27 @@ const CalendarEventCard: React.FC<CalendarEventCardProps> = ({ x, y, booking, on
             <HStack>
               <Icon as={FaRegUser} />
               <Text as='span' fontSize='sm'>
-                {booking.bookedBy}
+                {booking.userId}
               </Text>
             </HStack>
             <HStack>
               <Icon as={FaRegBuilding} />
               <Text as='span' fontSize='sm'>
-                {VENUES[booking.venueId]}
+                {VENUES[booking.venueId - 1]}
               </Text>
             </HStack>
           </VStack>
         </CardBody>
         <CardFooter justify='flex-end' pt='0'>
-          {booking.bookedBy == 'John Doe' && (
+          {auth && booking.userId === auth.userId && (
             <Button
               size='sm'
               variant='outline'
               _hover={{ transform: 'scale(1.2)' }}
               _active={{ transform: 'scale(0.9)' }}
-              onClick={onDelete}
+              onClick={() => {
+                onDelete(booking.id)
+              }}
             >
               <Icon as={FaTrash} color='gray.500' />
             </Button>
@@ -92,7 +98,7 @@ const CalendarEventCard: React.FC<CalendarEventCardProps> = ({ x, y, booking, on
         </CardFooter>
       </Card>
     </motion.div>
-  );
-};
+  )
+}
 
-export default CalendarEventCard;
+export default CalendarEventCard

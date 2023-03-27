@@ -1,6 +1,6 @@
-import { useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FaSun, FaCalendar } from 'react-icons/fa';
+import { useRef, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { FaSun, FaCalendar } from 'react-icons/fa'
 
 const Toggle: React.FC<ToggleProps> = ({ isOn, setIsOn }) => {
   const STYLES = {
@@ -29,9 +29,9 @@ const Toggle: React.FC<ToggleProps> = ({ isOn, setIsOn }) => {
     icon: {
       color: isOn ? '#1F407B' : '#386DCD',
     },
-  };
+  }
 
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null)
 
   return (
     <div
@@ -44,9 +44,9 @@ const Toggle: React.FC<ToggleProps> = ({ isOn, setIsOn }) => {
               behavior: 'smooth',
             }),
           0,
-        );
-        console.log('Clicked!');
-        setIsOn(!isOn);
+        )
+        console.log('Clicked!')
+        setIsOn(!isOn)
       }}
       style={STYLES.container}
       ref={ref}
@@ -65,7 +65,7 @@ const Toggle: React.FC<ToggleProps> = ({ isOn, setIsOn }) => {
         </AnimatePresence>
       </motion.div>
     </div>
-  );
-};
+  )
+}
 
-export default Toggle;
+export default Toggle

@@ -10,14 +10,14 @@ import {
   Stack,
   Text,
   VStack,
-} from '@chakra-ui/react';
-import React from 'react';
-import { ExpandableText } from './ExpandableText';
-import { FaUserCircle } from 'react-icons/fa';
-import Link from 'next/link';
+} from '@chakra-ui/react'
+import React from 'react'
+import { ExpandableText } from './ExpandableText'
+import { FaUserCircle } from 'react-icons/fa'
+import Link from 'next/link'
 
 interface IGInfoProps {
-  ig_info: IGInfo;
+  ig_info: IGInfo
 }
 
 const LeftPane: React.FC<IGInfoProps> = (props) => {
@@ -52,8 +52,8 @@ const LeftPane: React.FC<IGInfoProps> = (props) => {
         </VStack>
       </CardFooter>
     </Box>
-  );
-};
+  )
+}
 
 const IGCard: React.FC<IGInfoProps> = (props) => {
   return (
@@ -75,7 +75,7 @@ const IGCard: React.FC<IGInfoProps> = (props) => {
         </CardBody>
       </Stack>
     </Card>
-  );
-};
+  )
+}
 
-export default IGCard;
+export default IGCard

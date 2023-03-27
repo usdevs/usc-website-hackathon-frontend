@@ -1,6 +1,6 @@
-import type { NextPage } from 'next';
-import React from 'react';
-import NavMenu from '../components/NavMenu';
+import type { NextPage } from 'next'
+import React from 'react'
+import NavMenu from '../components/NavMenu'
 import {
   Box,
   Card,
@@ -15,10 +15,10 @@ import {
   SimpleGrid,
   StackDivider,
   Stack,
-} from '@chakra-ui/react';
-import Footer from '../components/Footer';
-import IGCard from '../components/IGCard';
-import { SearchIcon } from '@chakra-ui/icons';
+} from '@chakra-ui/react'
+import Footer from '../components/Footer'
+import IGCard from '../components/IGCard'
+import { SearchIcon } from '@chakra-ui/icons'
 
 const IGDetails: IGInfo[] = [
   {
@@ -51,7 +51,7 @@ const IGDetails: IGInfo[] = [
       ' the National University of Singapore (NUS) University Scholars Programme (USP). The Summit aims to bring together undergraduates of diverse disciplines from Asia and provide them with the opportunity to engage in meaningful academic, cultural, and social exchange.',
     category: 'GUI',
   },
-];
+]
 
 const InterestGroups: NextPage = () => {
   return (
@@ -94,7 +94,7 @@ const InterestGroups: NextPage = () => {
       </HStack>
       <Footer />
     </Flex>
-  );
-};
+  )
+}
 
-export default InterestGroups;
+export default InterestGroups

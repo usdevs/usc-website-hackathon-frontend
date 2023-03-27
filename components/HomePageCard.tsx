@@ -1,5 +1,5 @@
-import React from 'react';
-import { LinkBox, LinkOverlay, Text } from '@chakra-ui/react';
+import React from 'react'
+import { LinkBox, LinkOverlay, Text } from '@chakra-ui/react'
 
 const HomePageCard: React.FC<ButtonInfo> = (props) => {
   return (
@@ -30,7 +30,7 @@ const HomePageCard: React.FC<ButtonInfo> = (props) => {
       <Text>{props.name}</Text>
       <LinkOverlay href={props.link} />
     </LinkBox>
-  );
-};
+  )
+}
 
-export default HomePageCard;
+export default HomePageCard
