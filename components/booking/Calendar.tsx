@@ -1,30 +1,30 @@
-import { useState } from 'react';
-import { Box, Button, Grid, HStack, Text, VStack } from '@chakra-ui/react';
-import { format, startOfMonth, addMonths, subMonths, isSameDay } from 'date-fns';
-import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
+import { useState } from 'react'
+import { Box, Button, Grid, HStack, Text, VStack } from '@chakra-ui/react'
+import { format, startOfMonth, addMonths, subMonths, isSameDay } from 'date-fns'
+import { motion, AnimatePresence, LayoutGroup } from 'framer-motion'
 
-import { VENUES } from './CONSTANTS';
+import { VENUES } from './CONSTANTS'
 
 interface CellProps {
-  text: string;
-  isExpanded: boolean;
-  isSelected: boolean;
-  onClick?: () => void;
-  bookings: Array<BookingDataDisplay>;
+  text: string
+  isExpanded: boolean
+  isSelected: boolean
+  onClick?: () => void
+  bookings: Array<BookingDataDisplay>
 }
 
 interface CalendarProps extends ToggleProps {
-  setStartDate: (date: Date) => void;
-  bookings: Array<BookingDataDisplay>;
+  setStartDate: (date: Date) => void
+  bookings: Array<BookingDataDisplay>
 }
 
 const spring = {
   type: 'spring',
   damping: 50,
   stiffness: 300,
-};
+}
 
-type DayCellProps = Pick<CellProps, 'text' | 'isExpanded'>;
+type DayCellProps = Pick<CellProps, 'text' | 'isExpanded'>
 const CalendarDayCell: React.FC<DayCellProps> = ({ text, isExpanded }) => {
   return (
     <motion.div
@@ -38,8 +38,8 @@ const CalendarDayCell: React.FC<DayCellProps> = ({ text, isExpanded }) => {
     >
       {text}
     </motion.div>
-  );
-};
+  )
+}
 
 const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onClick, bookings }) => {
   const list = {
@@ -56,12 +56,12 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
         when: 'afterChildren',
       },
     },
-  };
+  }
 
   const item = {
     visible: { opacity: 1, x: 0 },
     hidden: { opacity: 0, x: -10 },
-  };
+  }
 
   return (
     <motion.div
@@ -103,7 +103,7 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
                       }`}
                     </Text>
                   </motion.div>
-                );
+                )
               })}
             </VStack>
           </motion.div>
@@ -129,29 +129,29 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
         />
       )}
     </motion.div>
-  );
-};
+  )
+}
 
 const Calendar: React.FC<CalendarProps> = ({ isOn, setStartDate, bookings }) => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selected, setSelected] = useState(selectedDate.getDate());
+  const [selectedDate, setSelectedDate] = useState(new Date())
+  const [selected, setSelected] = useState(selectedDate.getDate())
 
   const handlePrevMonth = () => {
-    setSelected(-1);
-    setSelectedDate(subMonths(selectedDate, 1));
-  };
+    setSelected(-1)
+    setSelectedDate(subMonths(selectedDate, 1))
+  }
 
   const handleNextMonth = () => {
-    setSelected(-1);
-    setSelectedDate(addMonths(selectedDate, 1));
-  };
+    setSelected(-1)
+    setSelectedDate(addMonths(selectedDate, 1))
+  }
 
-  const monthYearLabel = format(selectedDate, 'MMM yyyy');
+  const monthYearLabel = format(selectedDate, 'MMM yyyy')
   const daysInMonth = Array.from(
     { length: new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0).getDate() },
     (_, i) => i + 1,
-  );
-  const firstDayOfMonth = startOfMonth(selectedDate).getDay();
+  )
+  const firstDayOfMonth = startOfMonth(selectedDate).getDay()
 
   return (
     <VStack alignItems='stretch' my='8' minW='400px'>
@@ -182,31 +182,31 @@ const Calendar: React.FC<CalendarProps> = ({ isOn, setStartDate, bookings }) => 
               />
             ))}
             {daysInMonth.map((day) => {
-              const date = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), day);
+              const date = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), day)
               const bookingsForDay = bookings.filter((booking) => {
-                return isSameDay(booking.from, date);
-              });
+                return isSameDay(booking.from, date)
+              })
 
               return (
                 <CalendarCell
                   key={selectedDate.getMonth + '-' + day}
                   onClick={() => {
-                    setSelected(day);
-                    const date = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), day);
-                    setStartDate(date);
+                    setSelected(day)
+                    const date = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), day)
+                    setStartDate(date)
                   }}
                   text={day.toString()}
                   isExpanded={isOn}
                   isSelected={selected === day}
                   bookings={bookingsForDay}
                 />
-              );
+              )
             })}
           </LayoutGroup>
         </AnimatePresence>
       </Grid>
     </VStack>
-  );
-};
+  )
+}
 
-export default Calendar;
+export default Calendar

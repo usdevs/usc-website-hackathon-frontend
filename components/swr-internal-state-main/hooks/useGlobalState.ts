@@ -1,6 +1,6 @@
-import useSWR from 'swr';
+import useSWR from 'swr'
 
-import { GlobalStateHookResult } from '../types';
+import { GlobalStateHookResult } from '../types'
 
 /**
  * Gets and sets value to/from global state.
@@ -21,13 +21,13 @@ const useGlobalState = <T>(
     revalidateOnReconnect: false,
     refreshWhenHidden: false,
     refreshWhenOffline: false,
-  });
+  })
 
   const setState = async (value: T): Promise<void> => {
-    await mutate(value, false);
-  };
+    await mutate(value, false)
+  }
 
-  return [state, setState];
-};
+  return [state, setState]
+}
 
-export default useGlobalState;
+export default useGlobalState

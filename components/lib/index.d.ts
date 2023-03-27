@@ -1,2 +1,2 @@
-import ScheduleSelector from './ScheduleSelector';
-export default ScheduleSelector;
+import ScheduleSelector from './ScheduleSelector'
+export default ScheduleSelector

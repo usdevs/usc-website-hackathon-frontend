@@ -1,5 +1,5 @@
-import { useState, useEffect, FC, MouseEvent } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, FC, MouseEvent } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 import {
   HStack,
@@ -12,29 +12,29 @@ import {
   MenuList,
   Button,
   MenuOptionGroup,
-} from '@chakra-ui/react';
-import { useDisclosure } from '@chakra-ui/react';
+} from '@chakra-ui/react'
+import { useDisclosure } from '@chakra-ui/react'
 
-import eachMinuteOfInterval from 'date-fns/eachMinuteOfInterval';
+import eachMinuteOfInterval from 'date-fns/eachMinuteOfInterval'
 
-import { BookingConfirmationPopup } from '../components/booking/BookingConfirmationPopup';
-import { BookingsContext } from './BookingsContext';
-import { sub } from 'date-fns';
-import Footer from '../components/Footer';
-import { NextPage } from 'next';
-import NavMenu from '../components/NavMenu';
-import { useLocalStorage } from '../components/swr-internal-state-main';
-import Calendar from '../components/booking/Calendar';
-import { ChevronDownIcon } from '@chakra-ui/icons';
-import BookingsTimesCol from '../components/booking/BookingTimesCol';
-import BookingVenueCol from '../components/booking/BookingVenueCol';
-import Toggle from '../components/booking/Toggle';
-import CalendarEventCard from '../components/booking/CalendarEventCard';
+import { BookingConfirmationPopup } from '../components/booking/BookingConfirmationPopup'
+import { BookingsContext } from './BookingsContext'
+import { sub } from 'date-fns'
+import Footer from '../components/Footer'
+import { NextPage } from 'next'
+import NavMenu from '../components/NavMenu'
+import { useLocalStorage } from '../components/swr-internal-state-main'
+import Calendar from '../components/booking/Calendar'
+import { ChevronDownIcon } from '@chakra-ui/icons'
+import BookingsTimesCol from '../components/booking/BookingTimesCol'
+import BookingVenueCol from '../components/booking/BookingVenueCol'
+import Toggle from '../components/booking/Toggle'
+import CalendarEventCard from '../components/booking/CalendarEventCard'
 
-import { VENUES } from '../components/booking/CONSTANTS';
-import { useUserInfo } from '../utils';
+import { VENUES } from '../components/booking/CONSTANTS'
+import { useUserInfo } from '../utils'
 
-const BOX_HEIGHT = 8; // Ensures time labels are aligned with grid cells
+const BOX_HEIGHT = 8 // Ensures time labels are aligned with grid cells
 
 // const testBookings: BookingDataDisplay[] = [
 //   {
@@ -73,91 +73,90 @@ const BookingSelector: FC = () => {
       window.scrollTo({
         top: document.documentElement.clientHeight * 1.3,
         behavior: 'smooth',
-      });
-    };
-    scrollToPopularTimes();
-  }, []);
+      })
+    }
+    scrollToPopularTimes()
+  }, [])
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const [bookingDataFromSelection, setBookingDataFromSelection] = useState<BookingDataSelection>({
     start: null,
     end: null,
     venueId: -1,
     venueName: '',
-  });
-  const [unsuccessfulFormSubmitString, setUnsuccessfulFormSubmitString] = useState<string>('');
-  const [startDate, setStartDate] = useState<Date>(new Date());
-  const [isBackendUpdated, setIsBackendUpdated] = useState<boolean>(false);
-  const [auth] = useUserInfo();
+  })
+  const [unsuccessfulFormSubmitString, setUnsuccessfulFormSubmitString] = useState<string>('')
+  const [startDate, setStartDate] = useState<Date>(new Date())
+  const [isBackendUpdated, setIsBackendUpdated] = useState<boolean>(false)
+  const [auth] = useUserInfo()
   const [bookingData, setBookingData] = useState<BookingDataForm>({
     event: '',
     orgId: auth ? auth.orgIds[0] : -1,
-  });
-  const toast = useToast();
-  const toast_id = 'auth-toast';
-  const [allBookings, setAllBookings] = useState<BookingDataBackend[]>([]);
+  })
+  const toast = useToast()
+  const toast_id = 'auth-toast'
+  const [allBookings, setAllBookings] = useState<BookingDataBackend[]>([])
 
   useEffect(() => {
-    (async () => {
-      const startOfDay = new Date(startDate);
-      startOfDay.setHours(0, 0, 0, 0);
-      const endOfDay = new Date(startDate);
-      endOfDay.setHours(23, 59, 59, 999);
+    ;(async () => {
+      const startOfDay = new Date(startDate)
+      startOfDay.setHours(0, 0, 0, 0)
+      const endOfDay = new Date(startDate)
+      endOfDay.setHours(23, 59, 59, 999)
       const currentBookings = await fetch(
         process.env.NEXT_PUBLIC_BACKEND_URL +
           'bookings/all?start=' +
           startOfDay.toISOString() +
           '&end=' +
           endOfDay,
-      );
-      const allBookings = await currentBookings.json();
-      setAllBookings(allBookings);
-    })();
-    return () => {};
-  }, [startDate, isBackendUpdated]);
+      )
+      const allBookings = await currentBookings.json()
+      setAllBookings(allBookings)
+    })()
+    return () => {}
+  }, [startDate, isBackendUpdated])
 
   // Create time intervals for the current date
   const timeIntervals = (() => {
-    const year = startDate.getFullYear();
-    const month = startDate.getMonth();
-    const day = startDate.getDate();
+    const year = startDate.getFullYear()
+    const month = startDate.getMonth()
+    const day = startDate.getDate()
     return eachMinuteOfInterval(
       {
         start: new Date(year, month, day, 0),
         end: new Date(year, month, day, 23, 59),
       },
       { step: 30 },
-    );
-  })();
+    )
+  })()
 
   const venueBookings: Array<Array<BookingDataDisplay>> = new Array(6)
     .fill(0)
-    .map(() => new Array(0));
-  const bookingsMappedForDisplay: Array<BookingDataDisplay> = allBookings
-    .map((booking) => ({
-      ...booking,
-      // Subtract 1 minute to the start time to properly display the booking
-      from: sub(Date.parse(booking.start), { minutes: 1 }),
-      to: new Date(booking.end),
-    }))
-    // Convert the bookings from the backend into a format that can be used by the grid
-    // Filter bookings to only show bookings for the current day and the current venue
-    // TODO fix, this is broken for some strange reason cuz of the +8; we do not need it anyways because we specify
-    //  start and end to backend now, but good to have
-    // .filter((booking) => isSameDay(booking.to, timeIntervals[0]))
-    bookingsMappedForDisplay.reduce(function (memo, x) {
-      memo[x['venueId'] - 1].push(x);
-      return memo;
-    }, venueBookings);
+    .map(() => new Array(0))
+  const bookingsMappedForDisplay: Array<BookingDataDisplay> = allBookings.map((booking) => ({
+    ...booking,
+    // Subtract 1 minute to the start time to properly display the booking
+    from: sub(Date.parse(booking.start), { minutes: 1 }),
+    to: new Date(booking.end),
+  }))
+  // Convert the bookings from the backend into a format that can be used by the grid
+  // Filter bookings to only show bookings for the current day and the current venue
+  // TODO fix, this is broken for some strange reason cuz of the +8; we do not need it anyways because we specify
+  //  start and end to backend now, but good to have
+  // .filter((booking) => isSameDay(booking.to, timeIntervals[0]))
+  bookingsMappedForDisplay.reduce(function (memo, x) {
+    memo[x['venueId'] - 1].push(x)
+    return memo
+  }, venueBookings)
 
   const onModalClose = () => {
-    setUnsuccessfulFormSubmitString('');
+    setUnsuccessfulFormSubmitString('')
     setBookingData({
       event: '',
       orgId: auth ? auth.orgIds[0] : -1,
-    });
-    onClose();
-  };
+    })
+    onClose()
+  }
 
   const onModalOpen = () => {
     if (!auth || auth.token === '') {
@@ -169,35 +168,35 @@ const BookingSelector: FC = () => {
           duration: 3000,
           status: 'error',
           isClosable: true,
-        });
+        })
       }
     } else {
       setBookingData({
         event: '',
         orgId: auth ? auth.orgIds[0] : -1,
-      });
-      onOpen();
+      })
+      onOpen()
     }
-  };
+  }
 
-  const [isExpandedCalendar, setExpandedCalendar] = useState(false);
+  const [isExpandedCalendar, setExpandedCalendar] = useState(false)
   // CALENDAR EVENT CARD
   // Sets the state of the event card
-  const [eventCardPos, setEventCardPos] = useState({ x: 0, y: 0 });
+  const [eventCardPos, setEventCardPos] = useState({ x: 0, y: 0 })
   // Sets the content of the event card
-  const [bookingCard, setBookingCard] = useState<BookingDataDisplay | null>(null);
+  const [bookingCard, setBookingCard] = useState<BookingDataDisplay | null>(null)
 
   const handleBookingCard = (event: MouseEvent, booking: BookingDataDisplay) => {
-    event.stopPropagation();
-    const el = event.target as HTMLElement;
-    const box = el.getBoundingClientRect();
+    event.stopPropagation()
+    const el = event.target as HTMLElement
+    const box = el.getBoundingClientRect()
 
-    setEventCardPos({ x: box.left - 390, y: box.top });
-    setBookingCard(booking);
-  };
+    setEventCardPos({ x: box.left - 390, y: box.top })
+    setBookingCard(booking)
+  }
   const hideEventCard = () => {
-    setEventCardPos({ x: -1, y: -1 });
-  };
+    setEventCardPos({ x: -1, y: -1 })
+  }
 
   //todo check
   // Frontend login for removing the booking from venueBookings
@@ -206,15 +205,15 @@ const BookingSelector: FC = () => {
   // Regardless of whether the delete request is successful
   // If it is unsuccessful, we can just add it back to venueBookings
   const handleDeleteBooking = async (bookingId: number) => {
-    const token = !auth || auth.token === '' ? '' : auth?.token;
+    const token = !auth || auth.token === '' ? '' : auth?.token
     const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings/' + bookingId, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
         Authorization: 'Bearer ' + token,
       },
-    });
-    const res = await response.json();
+    })
+    const res = await response.json()
     if (response.status === 200) {
       toast({
         id: toast_id,
@@ -223,9 +222,9 @@ const BookingSelector: FC = () => {
         duration: 3000,
         status: 'success',
         isClosable: true,
-      });
-      setIsBackendUpdated(!isBackendUpdated);
-      hideEventCard();
+      })
+      setIsBackendUpdated(!isBackendUpdated)
+      hideEventCard()
     } else {
       toast({
         id: toast_id,
@@ -234,9 +233,9 @@ const BookingSelector: FC = () => {
         duration: 3000,
         status: 'error',
         isClosable: true,
-      });
+      })
     }
-  };
+  }
 
   return (
     <>
@@ -316,8 +315,8 @@ const BookingSelector: FC = () => {
                         venueId: venueId + 1,
                         start,
                         end,
-                      });
-                      onModalOpen();
+                      })
+                      onModalOpen()
                     }}
                     bookingModalIsOpen={isOpen}
                     // currentVenueBookings={venueBookings[venueId]}
@@ -332,8 +331,8 @@ const BookingSelector: FC = () => {
         </AnimatePresence>
       </HStack>
     </>
-  );
-};
+  )
+}
 
 const Grid: NextPage<{ allOrgs: OrgInfo[] }> = ({ allOrgs }) => {
   return (
@@ -344,14 +343,14 @@ const Grid: NextPage<{ allOrgs: OrgInfo[] }> = ({ allOrgs }) => {
       </BookingsContext.Provider>
       <Footer />
     </Flex>
-  );
-};
+  )
+}
 
 // TODO we should use getStaticProps here
 export async function getServerSideProps() {
-  const orgs = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs');
-  const allOrgs = await orgs.json();
-  return { props: { allOrgs } };
+  const orgs = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs')
+  const allOrgs = await orgs.json()
+  return { props: { allOrgs } }
 }
 
-export default Grid;
+export default Grid

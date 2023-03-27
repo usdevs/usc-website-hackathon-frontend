@@ -59,12 +59,12 @@ Open [http://localhost:3001](http://localhost:3001) with your browser to see the
 1. EITHER go to https://usdevs.github.io/uscwebsite-hackathon-backend/, login, copy the token and paste it into `const NEXT_PUBLIC_BACKEND_JWT_DEV =` on line 8 in `components/Auth.tsx`. Copy your userId from the "Users" table in the DB to NEXT_PUBLIC_BACKEND_TELEGRAM_USER_ID on line 7.
 2. OR Tried to Dockerise this, view `docker` branch
 3. OR Linux set-up to set up nginx as a proxy (should be roughly similar for Mac, not sure about Windows)
-3. Install `mkcert` and generate certs for a domain. I am using `frontend.local.dev`. (check `certgen.sh` on the `docker` branch)
-3. In your hosts file, add `127.0.0.1 frontend.local.dev`
-3. Copy the `nginx.conf` on the docker branch over to `/etc/nginx/conf/default.conf` or somewhere
-3. `sudo nginx -t && sudo systemctl restart nginx`
-3. If you have `apache` running, need to deconflict it as pgadmin uses it as well. You can change the port it uses, or change nginx's port. Otherwise, you can just `sudo service apache2 stop` and not use pgadmin. 
-3. You will have to update the Tele bot's BOT_TOKEN on the backend repo to '5980011686:AAHuxodOvlPYeftZTElSpC-13ybW5to9Y1M' if you used frontend.local.dev, or you can set up your own Tele login bot or let me know if you want to use another domain.
+4. Install `mkcert` and generate certs for a domain. I am using `frontend.local.dev`. (check `certgen.sh` on the `docker` branch)
+5. In your hosts file, add `127.0.0.1 frontend.local.dev`
+6. Copy the `nginx.conf` on the docker branch over to `/etc/nginx/conf/default.conf` or somewhere
+7. `sudo nginx -t && sudo systemctl restart nginx`
+8. If you have `apache` running, need to deconflict it as pgadmin uses it as well. You can change the port it uses, or change nginx's port. Otherwise, you can just `sudo service apache2 stop` and not use pgadmin.
+9. You will have to update the Tele bot's BOT_TOKEN on the backend repo to '5980011686:AAHuxodOvlPYeftZTElSpC-13ybW5to9Y1M' if you used frontend.local.dev, or you can set up your own Tele login bot or let me know if you want to use another domain.
 
 ## Note
 

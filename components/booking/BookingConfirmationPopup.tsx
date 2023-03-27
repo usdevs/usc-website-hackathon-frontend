@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useContext, FC, FormEvent, ChangeEvent } from 'react';
+import { Dispatch, SetStateAction, useContext, FC, FormEvent, ChangeEvent } from 'react'
 import {
   Box,
   Button,
@@ -13,22 +13,22 @@ import {
   ModalOverlay,
   Select,
   useToast,
-} from '@chakra-ui/react';
-import format from 'date-fns/format';
-import { BookingsContext, BookingsContextValue } from '../../pages/BookingsContext';
+} from '@chakra-ui/react'
+import format from 'date-fns/format'
+import { BookingsContext, BookingsContextValue } from '../../pages/BookingsContext'
 
 type BookingConfirmationPopupProps = {
-  onClose: () => void;
-  isOpen: boolean;
-  bookingDataFromSelection: BookingDataSelection;
-  startDate: Date;
-  unsuccessfulFormSubmitString: string;
-  setUnsuccessfulFormSubmitString: Dispatch<SetStateAction<string>>;
-  bookingData: BookingDataForm;
-  setBookingData: Dispatch<SetStateAction<BookingDataForm>>;
-  auth: AuthState;
-  refreshData: () => void;
-};
+  onClose: () => void
+  isOpen: boolean
+  bookingDataFromSelection: BookingDataSelection
+  startDate: Date
+  unsuccessfulFormSubmitString: string
+  setUnsuccessfulFormSubmitString: Dispatch<SetStateAction<string>>
+  bookingData: BookingDataForm
+  setBookingData: Dispatch<SetStateAction<BookingDataForm>>
+  auth: AuthState
+  refreshData: () => void
+}
 
 export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
   onClose,
@@ -42,18 +42,18 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
   auth,
   refreshData,
 }) => {
-  const bookingsContextValue: BookingsContextValue = useContext(BookingsContext);
-  const toast = useToast();
-  const toast_id = 'response-toast';
+  const bookingsContextValue: BookingsContextValue = useContext(BookingsContext)
+  const toast = useToast()
+  const toast_id = 'response-toast'
 
   const getOrgNameFromId = (orgId: number) => {
-    return bookingsContextValue.allOrgs.find((o) => o.id === orgId)?.name || '';
-  };
+    return bookingsContextValue.allOrgs.find((o) => o.id === orgId)?.name || ''
+  }
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setUnsuccessfulFormSubmitString('');
-    const token = auth?.token;
+    event.preventDefault()
+    setUnsuccessfulFormSubmitString('')
+    const token = auth?.token
     const requestOptions = {
       method: 'POST',
       headers: {
@@ -61,11 +61,11 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
         Authorization: 'Bearer ' + token,
       },
       body: JSON.stringify({ ...bookingData, ...bookingDataFromSelection }),
-    };
-    const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings', requestOptions);
-    const data = await response.json();
+    }
+    const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings', requestOptions)
+    const data = await response.json()
     if (response.status === 400) {
-      setUnsuccessfulFormSubmitString(JSON.stringify(data.message));
+      setUnsuccessfulFormSubmitString(JSON.stringify(data.message))
     } else if (response.status === 200) {
       toast({
         id: toast_id,
@@ -74,9 +74,9 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
         duration: 3000,
         status: 'success',
         isClosable: true,
-      });
-      onClose();
-      refreshData();
+      })
+      onClose()
+      refreshData()
     } else {
       toast({
         id: toast_id,
@@ -85,22 +85,22 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
         duration: 3000,
         status: 'error',
         isClosable: true,
-      });
-      onClose();
+      })
+      onClose()
     }
-  };
+  }
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const newValue =
-      event.target.name === 'orgId' ? parseInt(event.target.value) : event.target.value;
+      event.target.name === 'orgId' ? parseInt(event.target.value) : event.target.value
     setBookingData((prevData) => ({
       ...prevData,
       [event.target.name]: newValue,
-    }));
-  };
+    }))
+  }
 
   if (!auth || auth.token === '' || auth.orgIds.length === 0 || !bookingDataFromSelection) {
-    return <></>;
+    return <></>
   }
 
   return (
@@ -152,7 +152,7 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
                         <option key={i + 1} value={auth.orgIds[i + 1]}>
                           {orgName}
                         </option>
-                      );
+                      )
                     })}
                 </Select>
               }
@@ -208,5 +208,5 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
         </ModalBody>
       </ModalContent>
     </Modal>
-  );
-};
+  )
+}

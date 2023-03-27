@@ -1,9 +1,9 @@
-import React from 'react';
-import type { AppProps } from 'next/app';
-import { ChakraProvider, extendTheme } from '@chakra-ui/react';
-import './global.css';
-import '@fontsource/domine/400.css';
-import '@fontsource/do-hyeon';
+import React from 'react'
+import type { AppProps } from 'next/app'
+import { ChakraProvider, extendTheme } from '@chakra-ui/react'
+import './global.css'
+import '@fontsource/domine/400.css'
+import '@fontsource/do-hyeon'
 
 const colors = {
   brand: {
@@ -15,13 +15,13 @@ const colors = {
       dark: '#379767',
     },
   },
-};
+}
 
 const fonts = {
   heading: `'Domine', serif`,
   body: `'Domine', serif`,
   // body: `'Do Hyeon', sans-serif`,
-};
+}
 
 const components = {
   Button: {
@@ -69,9 +69,9 @@ const components = {
       color: 'gray.500',
     },
   },
-};
+}
 
-const theme = extendTheme({ colors, fonts, components });
+const theme = extendTheme({ colors, fonts, components })
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -80,7 +80,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <Component {...pageProps} />
       </ChakraProvider>
     </React.StrictMode>
-  );
+  )
 }
 
-export default MyApp;
+export default MyApp

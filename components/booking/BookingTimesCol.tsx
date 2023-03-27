@@ -1,9 +1,9 @@
-import { VStack, Center, Text, Box } from '@chakra-ui/react';
-import { eachMinuteOfInterval, format } from 'date-fns';
+import { VStack, Center, Text, Box } from '@chakra-ui/react'
+import { eachMinuteOfInterval, format } from 'date-fns'
 
 type BookingTimesProps = {
-  boxHeight: number;
-};
+  boxHeight: number
+}
 
 // Labels for time 0000-2330
 const BookingsTimesCol: React.FC<BookingTimesProps> = ({ boxHeight }) => {
@@ -14,7 +14,7 @@ const BookingsTimesCol: React.FC<BookingTimesProps> = ({ boxHeight }) => {
       end: new Date(2000, 1, 1, 23, 59), // End at 2359
     },
     { step: 30 },
-  ).map((el) => format(el, 'HH:mm'));
+  ).map((el) => format(el, 'HH:mm'))
 
   return (
     <VStack spacing='0'>
@@ -46,7 +46,7 @@ const BookingsTimesCol: React.FC<BookingTimesProps> = ({ boxHeight }) => {
         ))}
       </VStack>
     </VStack>
-  );
-};
+  )
+}
 
-export default BookingsTimesCol;
+export default BookingsTimesCol

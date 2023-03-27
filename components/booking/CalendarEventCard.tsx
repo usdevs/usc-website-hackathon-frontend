@@ -9,27 +9,27 @@ import {
   Center,
   CardFooter,
   Button,
-} from '@chakra-ui/react';
-import { FaRegCalendarAlt, FaRegBuilding, FaRegClock, FaRegUser, FaTrash } from 'react-icons/fa';
-import { motion } from 'framer-motion';
-import { format } from 'date-fns';
+} from '@chakra-ui/react'
+import { FaRegCalendarAlt, FaRegBuilding, FaRegClock, FaRegUser, FaTrash } from 'react-icons/fa'
+import { motion } from 'framer-motion'
+import { format } from 'date-fns'
 
-import { VENUES } from './CONSTANTS';
-import { FC, HTMLProps } from 'react';
-import { useUserInfo } from '../../utils';
+import { VENUES } from './CONSTANTS'
+import { FC, HTMLProps } from 'react'
+import { useUserInfo } from '../../utils'
 
 interface CalendarEventCardProps extends HTMLProps<HTMLDivElement> {
-  x: number;
-  y: number;
-  booking: BookingDataDisplay | null;
-  onDelete: (userId: number) => void;
+  x: number
+  y: number
+  booking: BookingDataDisplay | null
+  onDelete: (userId: number) => void
 }
 
 const CalendarEventCard: FC<CalendarEventCardProps> = ({ x, y, booking, onDelete }) => {
-  const [auth] = useUserInfo();
+  const [auth] = useUserInfo()
 
   if (!booking) {
-    return <></>;
+    return <></>
   }
 
   return (
@@ -89,7 +89,7 @@ const CalendarEventCard: FC<CalendarEventCardProps> = ({ x, y, booking, onDelete
               _hover={{ transform: 'scale(1.2)' }}
               _active={{ transform: 'scale(0.9)' }}
               onClick={() => {
-                onDelete(booking.id);
+                onDelete(booking.id)
               }}
             >
               <Icon as={FaTrash} color='gray.500' />
@@ -98,7 +98,7 @@ const CalendarEventCard: FC<CalendarEventCardProps> = ({ x, y, booking, onDelete
         </CardFooter>
       </Card>
     </motion.div>
-  );
-};
+  )
+}
 
-export default CalendarEventCard;
+export default CalendarEventCard

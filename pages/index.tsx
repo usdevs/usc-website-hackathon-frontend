@@ -1,16 +1,16 @@
-import type { NextPage } from 'next';
-import React from 'react';
-import NavMenu from '../components/NavMenu';
-import { Flex, Box, Stack, Text, useBreakpointValue, VStack, SimpleGrid } from '@chakra-ui/react';
-import Footer from '../components/Footer';
-import HomePageCard from '../components/HomePageCard';
+import type { NextPage } from 'next'
+import React from 'react'
+import NavMenu from '../components/NavMenu'
+import { Flex, Box, Stack, Text, useBreakpointValue, VStack, SimpleGrid } from '@chakra-ui/react'
+import Footer from '../components/Footer'
+import HomePageCard from '../components/HomePageCard'
 
 const BUTTON_LINKS: ButtonInfo[] = [
   { name: 'IGs', link: '#' },
   { name: 'Houses', link: '#' },
   { name: 'NOW!', link: '#' },
   { name: 'NUSC Committee', link: '#' },
-];
+]
 
 const HeroSection = () => {
   return (
@@ -84,8 +84,8 @@ const HeroSection = () => {
         </Stack>
       </VStack>
     </Flex>
-  );
-};
+  )
+}
 
 const LandingPage: NextPage = () => {
   return (
@@ -102,7 +102,7 @@ const LandingPage: NextPage = () => {
       </Box>
       <Footer />
     </Flex>
-  );
-};
+  )
+}
 
-export default LandingPage;
+export default LandingPage

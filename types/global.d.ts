@@ -1,79 +1,79 @@
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction } from 'react'
 
-export {};
+export {}
 
 declare global {
   interface ButtonInfo {
-    name: string;
-    link: string;
+    name: string
+    link: string
   }
 
   interface IGInfo {
-    contact: string;
-    invite_link: string;
-    image: string;
-    title: string;
-    description: string;
-    category: string;
+    contact: string
+    invite_link: string
+    image: string
+    title: string
+    description: string
+    category: string
   }
 
   type BookingDataBackend = {
-    id: number;
-    venueId: number;
-    userId: number;
-    orgId: number;
-    start: string;
-    end: string;
-    bookedAt: string;
-  };
+    id: number
+    venueId: number
+    userId: number
+    orgId: number
+    start: string
+    end: string
+    bookedAt: string
+  }
 
   type BookingDataDisplay = {
-    id: number;
-    venueId: number;
-    userId: number;
-    orgId: number;
-    start: string;
-    end: string;
-    bookedAt: string;
-    from: Date;
-    to: Date;
-  };
+    id: number
+    venueId: number
+    userId: number
+    orgId: number
+    start: string
+    end: string
+    bookedAt: string
+    from: Date
+    to: Date
+  }
 
   interface BookingDataSelection {
-    start: Date | null;
-    end: Date | null;
-    venueId: number;
-    venueName: string;
+    start: Date | null
+    end: Date | null
+    venueId: number
+    venueName: string
   }
 
   interface TelegramUser {
-    id: number;
-    first_name: string;
-    username: string;
-    photo_url: string;
-    auth_date: number;
-    hash: string;
+    id: number
+    first_name: string
+    username: string
+    photo_url: string
+    auth_date: number
+    hash: string
   }
 
   interface AuthState {
-    token: string;
-    orgIds: Array<number>;
-    userId: number;
+    token: string
+    orgIds: Array<number>
+    userId: number
   }
 
   interface BookingDataForm {
-    event: string;
-    orgId: number;
+    event: string
+    orgId: number
   }
 
   interface OrgInfo {
-    id: number;
-    name: string;
-    description: string;
-    verified: boolean;
+    id: number
+    name: string
+    description: string
+    verified: boolean
   }
   interface ToggleProps {
-    isOn: boolean;
-    setIsOn: (isOn: boolean) => void;
+    isOn: boolean
+    setIsOn: (isOn: boolean) => void
   }
 }

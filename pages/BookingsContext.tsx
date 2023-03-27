@@ -1,9 +1,9 @@
-import { createContext } from 'react';
+import { createContext } from 'react'
 
 export type BookingsContextValue = {
-  allOrgs: OrgInfo[];
-};
+  allOrgs: OrgInfo[]
+}
 
 export const BookingsContext = createContext<BookingsContextValue>({
   allOrgs: [],
-});
+})
