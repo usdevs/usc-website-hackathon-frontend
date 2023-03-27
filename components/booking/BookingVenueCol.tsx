@@ -2,6 +2,7 @@ import { useBoolean, VStack, Box, Text } from '@chakra-ui/react';
 import { addMinutes, isAfter, isEqual } from 'date-fns';
 import { useState, useRef, useEffect } from 'react';
 import { BoxProps } from '@chakra-ui/react';
+import { useUserInfo } from '../../utils';
 
 // Types for the BookingsOld Components
 // To be moved to global types file after replacing the old BookingsOld page
@@ -21,6 +22,7 @@ interface BookingVenueTimeCellProps extends React.HTMLProps<HTMLDivElement> {
   selected: boolean;
   disabled: boolean;
   bookedBySelf: boolean;
+  isUserLoggedIn: boolean;
 }
 
 // Detects clicks outside of the grid
@@ -47,6 +49,7 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
   selected,
   disabled,
   bookedBySelf,
+  isUserLoggedIn,
 }) => {
   // Cell is coloured based on whether it's selected or not
 
@@ -97,6 +100,8 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
         onMouseUp={onMouseUp}
       />
     );
+  } else if (isUserLoggedIn) {
+    return <Box {...SharedBoxProps} bg='gray.100' borderColor='white' onMouseUp={onMouseUp} />;
   } else {
     // Cell is available for booking
     return (
@@ -136,6 +141,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
   const [mouseIsDown, setMouse] = useBoolean();
   const [firstSelected, setFirst] = useState(-1);
   const [lastSelected, setLast] = useState(-1);
+  const [auth] = useUserInfo();
 
   const wrapperRef = useRef(null); //  Used to detect clicks outside of the grid
   useOutsideAlerter(wrapperRef, () => {
@@ -179,7 +185,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
           });
           const isBooked = venueBooking !== undefined;
 
-          const isBookedBySelf = venueBooking !== undefined && venueBooking.bookedBy === 'John Doe';
+          const isBookedBySelf = venueBooking !== undefined && venueBooking.userId === auth?.userId;
 
           // Prevent selecting a time that is already booked or is in the past
           const isDisabled =
@@ -211,6 +217,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
               selected={!isBooked && between(i, firstSelected, lastSelected)}
               disabled={isDisabled}
               boxHeight={boxHeight}
+              isUserLoggedIn={!auth || auth.token === ""}
             />
           );
         })}

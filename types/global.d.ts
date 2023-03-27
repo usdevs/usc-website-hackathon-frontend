@@ -28,9 +28,13 @@ declare global {
   };
 
   type BookingDataDisplay = {
-    ig: string;
+    id: number;
     venueId: number;
-    bookedBy: string;
+    userId: number;
+    orgId: number;
+    start: string;
+    end: string;
+    bookedAt: string;
     from: Date;
     to: Date;
   };
@@ -54,6 +58,7 @@ declare global {
   interface AuthState {
     token: string;
     orgIds: Array<number>;
+    userId: number;
   }
 
   interface BookingDataForm {
