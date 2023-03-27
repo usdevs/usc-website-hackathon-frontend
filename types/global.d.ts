@@ -28,9 +28,13 @@ declare global {
   };
 
   type BookingDataDisplay = {
-    ig: string;
+    id: number;
     venueId: number;
-    bookedBy: string;
+    userId: number;
+    orgId: number;
+    start: string;
+    end: string;
+    bookedAt: string;
     from: Date;
     to: Date;
   };

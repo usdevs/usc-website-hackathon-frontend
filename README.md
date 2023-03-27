@@ -40,12 +40,14 @@ $ git checkout frontend
 
 - Make .env file
 - 1. Install pgadmin if you prefer that - https://www.pgadmin.org/download/
+
 2. Telegram login and add yourself as a user to the DB (like via pgadmin)
    https://usdevs.github.io/uscwebsite-hackathon-backend/
 
-
 ## Running it locally
+
 Run the following in separate terminals
+
 1. `npm run dev`
 2. `cd <backend repo> && yarn dev`
 3. `cd <backend repo> && docker-compose up`

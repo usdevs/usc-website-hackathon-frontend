@@ -1,4 +1,4 @@
-import React, { useCallback, Dispatch, SetStateAction, useContext } from 'react';
+import { Dispatch, SetStateAction, useContext, FC, FormEvent, ChangeEvent } from 'react';
 import {
   Box,
   Button,
@@ -27,9 +27,10 @@ type BookingConfirmationPopupProps = {
   bookingData: BookingDataForm;
   setBookingData: Dispatch<SetStateAction<BookingDataForm>>;
   auth: AuthState;
+  refreshData: () => void;
 };
 
-export const BookingConfirmationPopup: React.FC<BookingConfirmationPopupProps> = ({
+export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
   onClose,
   isOpen,
   bookingDataFromSelection,
@@ -39,6 +40,7 @@ export const BookingConfirmationPopup: React.FC<BookingConfirmationPopupProps> =
   bookingData,
   setBookingData,
   auth,
+  refreshData,
 }) => {
   const bookingsContextValue: BookingsContextValue = useContext(BookingsContext);
   const toast = useToast();
@@ -48,7 +50,7 @@ export const BookingConfirmationPopup: React.FC<BookingConfirmationPopupProps> =
     return bookingsContextValue.allOrgs.find((o) => o.id === orgId)?.name || '';
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setUnsuccessfulFormSubmitString('');
     const token = auth?.token;
@@ -74,6 +76,7 @@ export const BookingConfirmationPopup: React.FC<BookingConfirmationPopupProps> =
         isClosable: true,
       });
       onClose();
+      refreshData();
     } else {
       toast({
         id: toast_id,
@@ -87,7 +90,7 @@ export const BookingConfirmationPopup: React.FC<BookingConfirmationPopupProps> =
     }
   };
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const newValue =
       event.target.name === 'orgId' ? parseInt(event.target.value) : event.target.value;
     setBookingData((prevData) => ({
