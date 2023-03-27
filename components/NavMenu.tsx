@@ -17,8 +17,8 @@ import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons'
 import Image from 'next/image'
 import NUSCollegePic from '../public/nus-college-1@2x.png'
 import LoginModal from './LoginModal'
-import Auth from '../components/Auth'
 
+import dynamic from 'next/dynamic'
 const BUTTON_LINKS: ButtonInfo[] = [
   { name: 'Interest Groups', link: '/interest-groups' },
   { name: 'Houses', link: '#' },
@@ -47,6 +47,7 @@ const NavLink: React.FC<ButtonInfo> = (props) => (
   </LinkBox>
 )
 
+const Auth = dynamic(() => import('../components/Auth'), { ssr: false })
 const NavMenu = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
