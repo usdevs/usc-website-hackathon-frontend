@@ -194,7 +194,53 @@ const BookingSelector: React.FC = () => {
     setEventCardPos({ x: -1, y: -1 });
   };
 
-  const handleDeleteBooking = async () => {};
+  // Placeholder function for deleting bookings
+  const handleDeleteBooking = async () => {
+    if (bookingCard) {
+      // Frontend login for removing the booking from venueBookings
+      // May have to change venueBookings to state to update it 
+      // We want the booking to be removed from the grid immediately
+      // Regardless of whether the delete request is successful
+      // If it is unsuccessful, we can just add it back to venueBookings
+      const token = auth?.token;
+      const requestOptions = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify({ ...bookingCard }), // TODO: check data needed for delete
+      };
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings',
+        requestOptions,
+      );
+      const data = await response.json();
+      if (response.status === 400) {
+        setUnsuccessfulFormSubmitString(JSON.stringify(data.message));
+      } else if (response.status === 200) {
+        toast({
+          id: toast_id,
+          title: `Booking deleted!!`,
+          position: 'top',
+          duration: 3000,
+          status: 'success',
+          isClosable: true,
+        });
+        onClose();
+      } else {
+        toast({
+          id: toast_id,
+          title: JSON.stringify(data.message),
+          position: 'top',
+          duration: 3000,
+          status: 'error',
+          isClosable: true,
+        });
+        onClose();
+      }
+    }
+  };
 
   return (
     <>
