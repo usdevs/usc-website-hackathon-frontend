@@ -43,29 +43,29 @@ const testBookings: BookingDataDisplay[] = [
     ig: VENUES[1],
     venueId: 1,
     bookedBy: 'John Doe',
-    from: new Date('2023-03-26T08:30:00+08:00'),
-    to: new Date('2023-03-26T10:00:00+08:00'),
+    from: new Date('2023-03-27T08:30:00+08:00'),
+    to: new Date('2023-03-27T10:00:00+08:00'),
   },
   {
     ig: VENUES[2],
     venueId: 2,
     bookedBy: 'Jane Doe',
-    from: new Date('2023-03-26T10:30:00+08:00'),
-    to: new Date('2023-03-26T12:00:00+08:00'),
+    from: new Date('2023-03-27T10:30:00+08:00'),
+    to: new Date('2023-03-27T12:00:00+08:00'),
   },
   {
     ig: VENUES[3],
     venueId: 5,
     bookedBy: 'James Smith',
-    from: new Date('2023-03-26T13:00:00+08:00'),
-    to: new Date('2023-03-26T14:30:00+08:00'),
+    from: new Date('2023-03-27T13:00:00+08:00'),
+    to: new Date('2023-03-27T14:30:00+08:00'),
   },
   {
     ig: VENUES[4],
     venueId: 4,
     bookedBy: 'Jessica Brown',
-    from: new Date('2023-03-26T17:00:00+08:00'),
-    to: new Date('2023-03-26T18:30:00+08:00'),
+    from: new Date('2023-03-27T17:00:00+08:00'),
+    to: new Date('2023-03-27T18:30:00+08:00'),
   },
 ];
 
@@ -198,6 +198,8 @@ const BookingSelector: React.FC = () => {
 
   return (
     <>
+      {/* Put absolutely positioned elements here as they still cause slight 
+      layout shifts for some reason */}
       <AnimatePresence>
         {eventCardPos.x !== -1 && (
           <CalendarEventCard
