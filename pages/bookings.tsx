@@ -72,6 +72,16 @@ const testBookings: BookingDataDisplay[] = [
 const useUserInfo = () => useLocalStorage<AuthState>('token-value');
 
 const BookingSelector: React.FC = () => {
+  useEffect(() => {
+    const scrollToPopularTimes = () => {
+      window.scrollTo({
+        top: document.documentElement.clientHeight * 1.3,
+        behavior: 'smooth',
+      });
+    };
+    scrollToPopularTimes();
+  }, []);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [bookingDataFromSelection, setBookingDataFromSelection] = useState<BookingDataSelection>({
     start: null,

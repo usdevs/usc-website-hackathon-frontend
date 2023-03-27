@@ -146,7 +146,6 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
 
   const start = Math.min(firstSelected, lastSelected);
   const end = Math.max(firstSelected, lastSelected);
-
   return (
     <VStack ref={wrapperRef} spacing='0'>
       <Text

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaSun, FaCalendar } from 'react-icons/fa';
 
@@ -31,8 +31,26 @@ const Toggle: React.FC<ToggleProps> = ({ isOn, setIsOn }) => {
     },
   };
 
+  const ref = useRef<HTMLDivElement>(null);
+
   return (
-    <div className='container' onClick={() => setIsOn(!isOn)} style={STYLES.container}>
+    <div
+      className='container'
+      onClick={() => {
+        setTimeout(
+          () =>
+            window.scrollTo({
+              top: 0.1 * document.documentElement.clientHeight,
+              behavior: 'smooth',
+            }),
+          0,
+        );
+        console.log('Clicked!');
+        setIsOn(!isOn);
+      }}
+      style={STYLES.container}
+      ref={ref}
+    >
       <motion.div layout className='handle' style={STYLES.handle}>
         <AnimatePresence exitBeforeEnter initial={false}>
           <motion.span
