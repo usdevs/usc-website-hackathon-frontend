@@ -16,6 +16,7 @@ import { format } from 'date-fns';
 
 import { VENUES } from './CONSTANTS';
 import { FC, HTMLProps } from 'react';
+import { useUserInfo } from '../../utils';
 
 interface CalendarEventCardProps extends HTMLProps<HTMLDivElement> {
   x: number;
@@ -25,6 +26,8 @@ interface CalendarEventCardProps extends HTMLProps<HTMLDivElement> {
 }
 
 const CalendarEventCard: FC<CalendarEventCardProps> = ({ x, y, booking, onDelete }) => {
+  const [auth] = useUserInfo();
+
   if (!booking) {
     return <></>;
   }
@@ -79,29 +82,19 @@ const CalendarEventCard: FC<CalendarEventCardProps> = ({ x, y, booking, onDelete
           </VStack>
         </CardBody>
         <CardFooter justify='flex-end' pt='0'>
-          {booking.bookedBy == 'John Doe' && (
+          {auth && booking.userId === auth.userId && (
             <Button
               size='sm'
               variant='outline'
               _hover={{ transform: 'scale(1.2)' }}
               _active={{ transform: 'scale(0.9)' }}
-              onClick={onDelete}
+              onClick={() => {
+                onDelete(booking.id);
+              }}
             >
               <Icon as={FaTrash} color='gray.500' />
             </Button>
           )}
-          //todo change
-          {/*<Button*/}
-          {/*  size='sm'*/}
-          {/*  variant='outline'*/}
-          {/*  _hover={{ transform: 'scale(1.2)' }}*/}
-          {/*  _active={{ transform: 'scale(0.9)' }}*/}
-          {/*  onClick={() => {*/}
-          {/*    onDelete(booking.id);*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  <Icon as={FaTrash} color='gray.500' />*/}
-          {/*</Button>*/}
         </CardFooter>
       </Card>
     </motion.div>

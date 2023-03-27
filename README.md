@@ -56,7 +56,7 @@ Open [http://localhost:3001](http://localhost:3001) with your browser to see the
 
 ### Telegram login token
 
-1. EITHER go to https://usdevs.github.io/uscwebsite-hackathon-backend/, login, copy the token and paste it into `const NEXT_PUBLIC_BACKEND_JWT_DEV =` on line 7 in `components/Auth.tsx`.
+1. EITHER go to https://usdevs.github.io/uscwebsite-hackathon-backend/, login, copy the token and paste it into `const NEXT_PUBLIC_BACKEND_JWT_DEV =` on line 8 in `components/Auth.tsx`. Copy your userId from the "Users" table in the DB to NEXT_PUBLIC_BACKEND_TELEGRAM_USER_ID on line 7.
 2. OR Tried to Dockerise this, view `docker` branch
 3. OR Linux set-up to set up nginx as a proxy (should be roughly similar for Mac, not sure about Windows)
 3. Install `mkcert` and generate certs for a domain. I am using `frontend.local.dev`. (check `certgen.sh` on the `docker` branch)

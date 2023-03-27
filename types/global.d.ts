@@ -58,6 +58,7 @@ declare global {
   interface AuthState {
     token: string;
     orgIds: Array<number>;
+    userId: number;
   }
 
   interface BookingDataForm {

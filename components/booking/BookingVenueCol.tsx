@@ -2,6 +2,7 @@ import { useBoolean, VStack, Box, Text } from '@chakra-ui/react';
 import { addMinutes, isAfter, isEqual } from 'date-fns';
 import { useState, useRef, useEffect } from 'react';
 import { BoxProps } from '@chakra-ui/react';
+import { useUserInfo } from '../../utils';
 
 // Types for the BookingsOld Components
 // To be moved to global types file after replacing the old BookingsOld page
@@ -136,6 +137,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
   const [mouseIsDown, setMouse] = useBoolean();
   const [firstSelected, setFirst] = useState(-1);
   const [lastSelected, setLast] = useState(-1);
+  const [auth] = useUserInfo();
 
   const wrapperRef = useRef(null); //  Used to detect clicks outside of the grid
   useOutsideAlerter(wrapperRef, () => {
@@ -179,7 +181,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
           });
           const isBooked = venueBooking !== undefined;
 
-          const isBookedBySelf = venueBooking !== undefined && venueBooking.bookedBy === 'John Doe';
+          const isBookedBySelf = venueBooking !== undefined && venueBooking.userId === auth?.userId;
 
           // Prevent selecting a time that is already booked or is in the past
           const isDisabled =
