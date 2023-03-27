@@ -22,6 +22,7 @@ interface BookingVenueTimeCellProps extends React.HTMLProps<HTMLDivElement> {
   selected: boolean;
   disabled: boolean;
   bookedBySelf: boolean;
+  isUserLoggedIn: boolean;
 }
 
 // Detects clicks outside of the grid
@@ -48,6 +49,7 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
   selected,
   disabled,
   bookedBySelf,
+  isUserLoggedIn,
 }) => {
   // Cell is coloured based on whether it's selected or not
 
@@ -98,6 +100,8 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
         onMouseUp={onMouseUp}
       />
     );
+  } else if (isUserLoggedIn) {
+    return <Box {...SharedBoxProps} bg='gray.100' borderColor='white' onMouseUp={onMouseUp} />;
   } else {
     // Cell is available for booking
     return (
@@ -213,6 +217,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
               selected={!isBooked && between(i, firstSelected, lastSelected)}
               disabled={isDisabled}
               boxHeight={boxHeight}
+              isUserLoggedIn={!auth || auth.token === ""}
             />
           );
         })}
