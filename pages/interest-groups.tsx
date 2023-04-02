@@ -58,8 +58,10 @@ const InterestGroups: NextPage = () => {
     <Flex justify='center' flexDir='column' as='main'>
       <NavMenu />
       <HStack divider={<StackDivider borderColor='gray.200' />}>
-        // align='stretch' // spacing={30}
-        //todo align to top
+        {
+          // align='stretch' // spacing={30}
+          //todo align to top
+        }
         <Card
           direction={{ base: 'column', sm: 'row' }}
           overflow='hidden'
@@ -70,7 +72,9 @@ const InterestGroups: NextPage = () => {
         >
           <CardBody>
             <InputGroup>
-              <InputLeftElement pointerEvents='none' children={<SearchIcon color='gray.300' />} />
+              <InputLeftElement pointerEvents='none'>
+                <SearchIcon color='gray.300' />
+              </InputLeftElement>
               <Input type='text' placeholder='Search for groups' />
             </InputGroup>
             <CheckboxGroup colorScheme='green' defaultValue={['arts', 'sports', 'gui']}>
@@ -83,7 +87,6 @@ const InterestGroups: NextPage = () => {
             </CheckboxGroup>
           </CardBody>
         </Card>
-        //todo fix margin and padding for the IG cards
         <Box pt={'1vh'}>
           <SimpleGrid columns={[1, null, 2]} maxWidth={'1000px'} spacing='40px'>
             {IGDetails.map((IGDetail) => (
