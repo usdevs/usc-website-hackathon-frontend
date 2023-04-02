@@ -3,13 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3001",
+    "dev": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 next dev -p 3001",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -H 0.0.0.0 -p ${PORT:-8080}",
     "eslint": "npx eslint .",
     "lint": "next lint",
-    "format": "prettier --write '**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc",
-    "export": "npm run build && next export -o _static"
+    "format": "prettier --write '**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
   },
   "dependencies": {
     "@chakra-ui/icons": "2.0.13",
@@ -36,7 +35,6 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.7.1",
-    "react-schedule-selector-v2": "^1.0.1",
     "src": "^1.1.2",
     "styled-components": "^5.3.6",
     "styled-system": "^5.1.5",
@@ -55,6 +53,7 @@
     "@types/react-test-renderer": "^16.9.3",
     "@types/styled-components": "^5.1.26",
     "@types/styled-system": "^5.1.16",
+    "cross-env": "^7.0.3",
     "eslint": "^8.29.0",
     "eslint-config-next": "13.0.6",
     "eslint-config-prettier": "^8.7.0",
