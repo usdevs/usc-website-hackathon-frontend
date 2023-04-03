@@ -17,28 +17,42 @@ const useLocalStorage = <T>(
 ): LocalStorageHookResult<T> => {
   let initialValue = defaultValue
 
-  if (!isServerSide()) {
-    let storedValue = window.localStorage.getItem(key)
-    if (storedValue !== null && storedValue !== 'undefined') initialValue = JSON.parse(storedValue)
+  // @ts-ignore
+  const fetcher = (url) => {
+    if (!isServerSide()) {
+      let storedValue = window.localStorage.getItem(key)
+      if (storedValue !== null && storedValue !== 'undefined') {
+        const parsedValue = JSON.parse(storedValue)
+        if (Date.now() - parsedValue.setupTime <= 20 * 60 * 1000) {
+          // invalidate after 20 minutes
+          return parsedValue
+        }
+      }
+    }
+    return defaultValue
   }
 
-  const { data: value = initialValue, mutate } = useSWR(key, null, {
+  const { data: value = initialValue, mutate } = useSWR(key, fetcher, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
     refreshWhenHidden: false,
     refreshWhenOffline: false,
+    refreshInterval: 5 * 60 * 1000, // forces web app to fetch data again every 5 minutes, in essence triggering
+    // the setupTime check every 5 minutes
   })
 
   // ========== Set value ==========
   const setValue = async (value: T): Promise<void> => {
-    await mutate(value, false)
+    const valueWithSetupTime = { ...value, setupTime: Date.now() }
+
+    await mutate(valueWithSetupTime, false)
 
     if (isServerSide()) {
       return
     }
 
     // Save to local storage
-    const localStorageValue = JSON.stringify(value)
+    const localStorageValue = JSON.stringify(valueWithSetupTime)
     window.localStorage.setItem(key, localStorageValue)
   }
 

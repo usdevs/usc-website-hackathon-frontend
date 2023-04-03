@@ -56,7 +56,7 @@ const NavMenu = () => {
       <LinkBox>
         <Box display={'flex'} justifyContent={'center'}>
           <Image src={NUSCollegePic} alt={'NUS College'} height={500} width={185} />
-          <LinkOverlay href={'https://nuscollege.nus.edu.sg'} />
+          <LinkOverlay href={'/'} />
         </Box>
       </LinkBox>
       <Box px={4} bg='#1f407b'>

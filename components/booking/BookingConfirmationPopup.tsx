@@ -15,7 +15,7 @@ import {
   useToast,
 } from '@chakra-ui/react'
 import format from 'date-fns/format'
-import { BookingsContext, BookingsContextValue } from '../../pages/BookingsContext'
+import { BookingsContext, BookingsContextValue } from '../../context/BookingsContext'
 
 type BookingConfirmationPopupProps = {
   onClose: () => void
@@ -158,13 +158,13 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
               }
             </FormControl>
             <FormControl>
-              <FormLabel htmlFor='event' marginTop='0.5rem'>
+              <FormLabel htmlFor='eventName' marginTop='0.5rem'>
                 Event
               </FormLabel>
               <Input
-                id='event'
-                name='event'
-                aria-label='Event'
+                id='eventName'
+                name='eventName'
+                aria-label='eventName'
                 onBlur={handleInputChange}
                 required
               />
