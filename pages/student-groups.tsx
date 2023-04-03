@@ -53,7 +53,7 @@ const IGDetails: IGInfo[] = [
   },
 ]
 
-const InterestGroups: NextPage = () => {
+const StudentGroups: NextPage = () => {
   return (
     <Flex justify='center' flexDir='column' as='main'>
       <NavMenu />
@@ -79,9 +79,9 @@ const InterestGroups: NextPage = () => {
             </InputGroup>
             <CheckboxGroup colorScheme='green' defaultValue={['arts', 'sports', 'gui']}>
               <Stack spacing={[1, 5]} direction={['column', 'column']}>
-                <Checkbox value='arts'>Arts</Checkbox>
+                <Checkbox value='arts'>Socio-cultural</Checkbox>
                 <Checkbox value='sports'>Sports</Checkbox>
-                <Checkbox value='gui'>GUI</Checkbox>
+                <Checkbox value='gui'>GUIPs</Checkbox>
                 <Checkbox value='inactive'>Inactive</Checkbox>
               </Stack>
             </CheckboxGroup>
@@ -100,4 +100,4 @@ const InterestGroups: NextPage = () => {
   )
 }
 
-export default InterestGroups
+export default StudentGroups
