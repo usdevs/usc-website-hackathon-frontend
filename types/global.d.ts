@@ -26,7 +26,7 @@ declare global {
     end: string
     bookedAt: string
     eventName: string
-    bookedByName: string
+    bookedByUser: UserInfo
   }
 
   type BookingDataDisplay = {
@@ -39,8 +39,8 @@ declare global {
     bookedAt: string
     from: Date
     to: Date
-    bookedByName: string
     eventName: string
+    bookedByUser: UserInfo
   }
 
   interface BookingDataSelection {
@@ -84,6 +84,12 @@ declare global {
     description: string
     verified: boolean
   }
+
+  interface UserInfo {
+    id: number
+    name: string
+  }
+
   interface ToggleProps {
     isOn: boolean
     setIsOn: (isOn: boolean) => void
