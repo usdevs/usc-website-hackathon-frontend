@@ -1,54 +1,97 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from 'react'
 
-export {};
+export {}
 
 declare global {
-    interface ButtonInfo {
-        name: string,
-        link: string
-    }
+  interface ButtonInfo {
+    name: string
+    link: string
+  }
 
-    interface IGInfo {
-        contact: string,
-        invite_link: string,
-        image: string,
-        title: string,
-        description: string,
-        category: string
-    }
+  interface IGInfo {
+    contact: string
+    invite_link: string
+    image: string
+    title: string
+    description: string
+    category: string
+  }
 
-    //todo merge backend with frontend types, create types package
-    type BackendBookingInfo =   {
-        id: number,
-        venueId: number,
-        userId: number,
-        orgId: number,
-        start: string,
-        end: string,
-        bookedAt: string
-    }
+  type BookingDataBackend = {
+    id: number
+    venueId: number
+    userId: number
+    orgId: number
+    start: string
+    end: string
+    bookedAt: string
+    eventName: string
+    bookedByUser: UserInfo
+  }
 
-    type BookingInfoToDisplay = {
-        ig: string,
-        venue: string,
-        bookedBy: string,
-        from: number,
-        to: number,
-    }
+  type BookingDataDisplay = {
+    id: number
+    venueId: number
+    userId: number
+    orgId: number
+    start: string
+    end: string
+    bookedAt: string
+    from: Date
+    to: Date
+    eventName: string
+    bookedByUser: UserInfo
+  }
 
-    interface VenueBookingProps {
-        venue: string;
-        isTimeLabelsDisplayed: boolean;
-        startDate: Date;
-        onOpen: Dispatch<SetStateAction<Boolean>>;
-        setBookingDataFromSelection: Dispatch<SetStateAction<BookingDataFromSelection>>;
-        bookingDataFromSelection: BookingDataFromSelection;
-    }
+  interface BookingDataSelection {
+    start: Date | null
+    end: Date | null
+    venueId: number
+    venueName: string
+  }
 
-    interface BookingDataFromSelection {
-        start: Date | null;
-        end: Date | null;
-        venueId: number;
-        venue: string;
-    }
+  interface TelegramUser {
+    id: number
+    first_name: string
+    username: string
+    photo_url: string
+    auth_date: number
+    hash: string
+  }
+
+  interface UserInformation {
+    firstName: string
+    telegramId: number
+    photoUrl: string
+    username: string
+  }
+
+  interface AuthState {
+    token: string
+    orgIds: Array<number>
+    userInfo: UserInformation | null
+    userId: number
+  }
+
+  interface BookingDataForm {
+    eventName: string
+    orgId: number
+  }
+
+  interface OrgInfo {
+    id: number
+    name: string
+    description: string
+    verified: boolean
+  }
+
+  interface UserInfo {
+    id: number
+    name: string
+  }
+
+  interface ToggleProps {
+    isOn: boolean
+    setIsOn: (isOn: boolean) => void
+  }
 }
