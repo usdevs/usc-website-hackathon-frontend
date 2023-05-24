@@ -25,6 +25,8 @@ declare global {
     start: string
     end: string
     bookedAt: string
+    eventName: string
+    bookedByUser: UserInfo
   }
 
   type BookingDataDisplay = {
@@ -37,6 +39,8 @@ declare global {
     bookedAt: string
     from: Date
     to: Date
+    eventName: string
+    bookedByUser: UserInfo
   }
 
   interface BookingDataSelection {
@@ -55,14 +59,22 @@ declare global {
     hash: string
   }
 
+  interface UserInformation {
+    firstName: string
+    telegramId: number
+    photoUrl: string
+    username: string
+  }
+
   interface AuthState {
     token: string
     orgIds: Array<number>
+    userInfo: UserInformation | null
     userId: number
   }
 
   interface BookingDataForm {
-    event: string
+    eventName: string
     orgId: number
   }
 
@@ -72,6 +84,12 @@ declare global {
     description: string
     verified: boolean
   }
+
+  interface UserInfo {
+    id: number
+    name: string
+  }
+
   interface ToggleProps {
     isOn: boolean
     setIsOn: (isOn: boolean) => void

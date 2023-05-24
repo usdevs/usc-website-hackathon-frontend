@@ -54,7 +54,7 @@ const CalendarEventCard: FC<CalendarEventCardProps> = ({ x, y, booking, onDelete
               <Icon as={FaRegCalendarAlt} color='white' />
             </Center>
             <Text as='h2' fontSize='2xl' fontWeight='bold' color='brand.primary' display='inline'>
-              Event Name
+              {booking.eventName}
             </Text>
           </HStack>
         </CardHeader>
@@ -70,7 +70,7 @@ const CalendarEventCard: FC<CalendarEventCardProps> = ({ x, y, booking, onDelete
             <HStack>
               <Icon as={FaRegUser} />
               <Text as='span' fontSize='sm'>
-                {booking.userId}
+                {booking.bookedByUser.name}
               </Text>
             </HStack>
             <HStack>
@@ -82,7 +82,7 @@ const CalendarEventCard: FC<CalendarEventCardProps> = ({ x, y, booking, onDelete
           </VStack>
         </CardBody>
         <CardFooter justify='flex-end' pt='0'>
-          {auth && booking.userId === auth.userId && (
+          {auth && booking.userId === auth?.userId && (
             <Button
               size='sm'
               variant='outline'

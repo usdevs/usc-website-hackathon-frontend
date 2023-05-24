@@ -68,7 +68,7 @@ const HeroSection = () => {
             lineHeight={0.8}
             fontSize={useBreakpointValue({ base: '90px', md: '200px', xl: '240px' })}
           >
-            CINNAMON
+            NUSC
           </Text>
           <Text
             color={'white'}

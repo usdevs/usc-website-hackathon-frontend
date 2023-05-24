@@ -18,12 +18,11 @@ import { useDisclosure } from '@chakra-ui/react'
 import eachMinuteOfInterval from 'date-fns/eachMinuteOfInterval'
 
 import { BookingConfirmationPopup } from '../components/booking/BookingConfirmationPopup'
-import { BookingsContext } from './BookingsContext'
+import { BookingsContext } from '../context/BookingsContext'
 import { sub } from 'date-fns'
 import Footer from '../components/Footer'
 import { NextPage } from 'next'
 import NavMenu from '../components/NavMenu'
-import { useLocalStorage } from '../components/swr-internal-state-main'
 import Calendar from '../components/booking/Calendar'
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import BookingsTimesCol from '../components/booking/BookingTimesCol'
@@ -90,7 +89,7 @@ const BookingSelector: FC = () => {
   const [isBackendUpdated, setIsBackendUpdated] = useState<boolean>(false)
   const [auth] = useUserInfo()
   const [bookingData, setBookingData] = useState<BookingDataForm>({
-    event: '',
+    eventName: '',
     orgId: auth ? auth.orgIds[0] : -1,
   })
   const toast = useToast()
@@ -152,7 +151,7 @@ const BookingSelector: FC = () => {
   const onModalClose = () => {
     setUnsuccessfulFormSubmitString('')
     setBookingData({
-      event: '',
+      eventName: '',
       orgId: auth ? auth.orgIds[0] : -1,
     })
     onClose()
@@ -172,7 +171,7 @@ const BookingSelector: FC = () => {
       }
     } else {
       setBookingData({
-        event: '',
+        eventName: '',
         orgId: auth ? auth.orgIds[0] : -1,
       })
       onOpen()
@@ -346,7 +345,6 @@ const Grid: NextPage<{ allOrgs: OrgInfo[] }> = ({ allOrgs }) => {
   )
 }
 
-// TODO we should use getStaticProps here
 export async function getServerSideProps() {
   const orgs = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs')
   const allOrgs = await orgs.json()
