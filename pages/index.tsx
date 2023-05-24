@@ -1,26 +1,38 @@
 import type { NextPage } from 'next'
 import React from 'react'
 import NavMenu from '../components/NavMenu'
-import { Flex, Box, Stack, Text, useBreakpointValue, VStack, SimpleGrid } from '@chakra-ui/react'
+import {
+  Flex,
+  Box,
+  Stack,
+  Text,
+  useBreakpointValue,
+  VStack,
+  SimpleGrid,
+  GridItem,
+} from '@chakra-ui/react'
 import Footer from '../components/Footer'
 import HomePageCard from '../components/HomePageCard'
-
-const BUTTON_LINKS: ButtonInfo[] = [
-  { name: 'IGs', link: '#' },
-  { name: 'Houses', link: '#' },
-  { name: 'NOW!', link: '#' },
-  { name: 'NUSC Committee', link: '#' },
-]
+import HeroBg from '../public/image1.png'
+import Image from 'next/image'
+import {BUTTON_LINKS} from "../utils";
 
 const HeroSection = () => {
   return (
-    <Flex
-      w={'full'}
-      h={'90vh'}
-      backgroundImage={'url(/image1.png)'}
-      backgroundSize={'cover'}
-      backgroundPosition={'center center'}
-    >
+    <Flex position={'relative'} height='90vh' width='full'>
+      <Image
+        alt='Mountains'
+        src={HeroBg}
+        placeholder='blur'
+        quality={100}
+        fill
+        sizes='100vw'
+        style={{
+          objectFit: 'cover',
+          position: 'absolute',
+          zIndex: -1,
+        }}
+      />
       <VStack
         w={'full'}
         justify={'center'}
@@ -34,10 +46,11 @@ const HeroSection = () => {
         >
           <Text
             color={'white'}
-            // fontWeight={700}
+            fontWeight={500}
+            letterSpacing={'wide'}
             lineHeight={0.8}
             fontFamily={'Do Hyeon'}
-            fontSize={useBreakpointValue({ base: '60px', md: '120px' })}
+            fontSize={{ base: '60px', md: '90px', xl: '120px' }}
           >
             welcome to
           </Text>
@@ -45,7 +58,7 @@ const HeroSection = () => {
             color={'#f90'}
             fontFamily={'Do Hyeon'}
             lineHeight={0.8}
-            fontSize={useBreakpointValue({ base: '120px', md: '240px' })}
+            fontSize={useBreakpointValue({ base: '90px', md: '200px', xl: '240px' })}
           >
             NUSC
           </Text>
@@ -53,17 +66,18 @@ const HeroSection = () => {
             color={'white'}
             fontFamily={'Do Hyeon'}
             lineHeight={0.8}
-            fontSize={useBreakpointValue({ base: '60px', md: '120px' })}
+            fontSize={useBreakpointValue({ base: '60px', md: '90px', xl: '120px' })}
           >
             student life
           </Text>
           <Box
             as='button'
             rounded={'full'}
-            height='60px'
+            height='full'
             transition='all 0.2s cubic-bezier(.08,.52,.52,1)'
-            px='8px'
-            fontSize='40px'
+            py='2'
+            px='4'
+            fontSize={{ base: '2xl', md: '4xl' }}
             fontFamily={'Domine'}
             fontWeight='bold'
             bg='#f90'
@@ -78,8 +92,7 @@ const HeroSection = () => {
               boxShadow: '0 0 1px 2px rgba(88, 144, 255, .75), 0 1px 1px rgba(0, 0, 0, .15)',
             }}
           >
-            {' '}
-            Learn More{' '}
+            Learn More
           </Box>
         </Stack>
       </VStack>
@@ -89,15 +102,21 @@ const HeroSection = () => {
 
 const LandingPage: NextPage = () => {
   return (
-    <Flex justify='center' flexDir='column' as='main'>
+    <Flex justify='center' flexDir='column' as='main' gap='0'>
       <NavMenu />
       <HeroSection />
-      <Box mx={'80px'} my={'80px'}>
-        <SimpleGrid minChildWidth='500px' spacingX='20px' spacingY='20px'>
-          <HomePageCard name={BUTTON_LINKS[0].name} link={BUTTON_LINKS[0].link} key={0} />
-          <HomePageCard name={BUTTON_LINKS[1].name} link={BUTTON_LINKS[1].link} key={1} />
-          <HomePageCard name={BUTTON_LINKS[2].name} link={BUTTON_LINKS[2].link} key={2} />
-          <HomePageCard name={BUTTON_LINKS[3].name} link={BUTTON_LINKS[3].link} key={3} />
+      <Box mx={{ base: '2', md: '8', xl: '20' }} my={{ base: '16px', md: '80px' }}>
+        <SimpleGrid
+          templateColumns={{ base: '1fr', md: '1fr 1fr' }}
+          templateRows={{ base: '1fr 1fr' }}
+          spacingX='6'
+          spacingY={{ base: '2', md: '6' }}
+        >
+          {BUTTON_LINKS.map((buttonLink, index) =>
+            (<GridItem w='100%' key={index}>
+              <HomePageCard name={buttonLink.name} link={buttonLink.link}/>
+            </GridItem>)
+          )}
         </SimpleGrid>
       </Box>
       <Footer />

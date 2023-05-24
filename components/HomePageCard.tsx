@@ -11,7 +11,8 @@ const HomePageCard: React.FC<ButtonInfo> = (props) => {
       // alignContent={"flex-start"}
       // justifyItems={"flex-start"}
       transition='all 0.2s cubic-bezier(.08,.52,.52,1)'
-      height={'50vh'}
+      height={{base: '240px', md: '480px' }}
+      width={'100%'}
       // lineHeight={'16'}
       borderRadius='140px'
       fontSize='40px'
