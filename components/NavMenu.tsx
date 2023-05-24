@@ -1,30 +1,11 @@
-import React from 'react'
-import {
-  Box,
-  Container,
-  Flex,
-  HStack,
-  IconButton,
-  LinkBox,
-  LinkOverlay,
-  Menu,
-  MenuList,
-  Stack,
-  Text,
-  useDisclosure,
-} from '@chakra-ui/react'
-import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons'
-import Image from 'next/image'
-import NUSCollegePic from '../public/nus-college-1@2x.png'
-import LoginModal from './LoginModal'
+import React from "react";
+import { Box, Container, Flex, HStack, IconButton, LinkBox, LinkOverlay, Menu, MenuList, Stack, Text, useDisclosure } from "@chakra-ui/react";
+import { CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
+import Image from "next/image";
+import NUSCollegePic from "../public/nus-college-1@2x.png";
 
-import dynamic from 'next/dynamic'
-const BUTTON_LINKS: ButtonInfo[] = [
-  { name: 'Student Groups', link: '/student-groups' },
-  // { name: 'Houses', link: '#' },
-  // { name: 'NOW!', link: '#' },
-  { name: 'Bookings', link: '/bookings' },
-]
+import dynamic from "next/dynamic";
+import { BUTTON_LINKS } from "../utils";
 
 const NavLink: React.FC<ButtonInfo> = (props) => (
   <LinkBox

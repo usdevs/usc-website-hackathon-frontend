@@ -2,8 +2,6 @@ import type { NextPage } from 'next'
 import React from 'react'
 import NavMenu from '../components/NavMenu'
 import {
-  AspectRatio,
-  Heading,
   Flex,
   Box,
   Stack,
@@ -17,13 +15,7 @@ import Footer from '../components/Footer'
 import HomePageCard from '../components/HomePageCard'
 import HeroBg from '../public/image1.png'
 import Image from 'next/image'
-
-const BUTTON_LINKS: ButtonInfo[] = [
-  { name: 'IGs', link: '#' },
-  { name: 'Houses', link: '#' },
-  { name: 'NOW!', link: '#' },
-  { name: 'NUSC Committee', link: '#' },
-]
+import {BUTTON_LINKS} from "../utils";
 
 const HeroSection = () => {
   return (
@@ -120,18 +112,11 @@ const LandingPage: NextPage = () => {
           spacingX='6'
           spacingY={{ base: '2', md: '6' }}
         >
-          <GridItem w='100%'>
-            <HomePageCard name={BUTTON_LINKS[0].name} link={BUTTON_LINKS[0].link} key={0} />
-          </GridItem>
-          <GridItem>
-            <HomePageCard name={BUTTON_LINKS[1].name} link={BUTTON_LINKS[1].link} key={1} />
-          </GridItem>
-          <GridItem>
-            <HomePageCard name={BUTTON_LINKS[2].name} link={BUTTON_LINKS[2].link} key={2} />
-          </GridItem>
-          <GridItem>
-            <HomePageCard name={BUTTON_LINKS[3].name} link={BUTTON_LINKS[3].link} key={3} />
-          </GridItem>
+          {BUTTON_LINKS.map((buttonLink, index) =>
+            (<GridItem w='100%' key={index}>
+              <HomePageCard name={buttonLink.name} link={buttonLink.link}/>
+            </GridItem>)
+          )}
         </SimpleGrid>
       </Box>
       <Footer />
