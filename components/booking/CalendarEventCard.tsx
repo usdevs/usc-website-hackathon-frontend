@@ -14,7 +14,7 @@ import { FaRegCalendarAlt, FaRegBuilding, FaRegClock, FaRegUser, FaTrash } from 
 import { motion } from 'framer-motion'
 import { format } from 'date-fns'
 
-import { VENUES } from './CONSTANTS'
+import { VENUES } from '../../utils'
 import { FC, HTMLProps } from 'react'
 import { useUserInfo } from '../../utils'
 
