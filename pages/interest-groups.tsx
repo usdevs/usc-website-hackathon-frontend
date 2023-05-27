@@ -21,6 +21,7 @@ import Footer from '../components/Footer'
 import IGCard from '../components/IGCard'
 import IGMockDetails from '../constants/IGMockData'
 import { useEffect, useState } from 'react'
+import { SearchIcon } from '@chakra-ui/icons'
 
 const InterestGroups: NextPage = () => {
   const interestGroupDetails : IGInfo[] = IGMockDetails
@@ -79,9 +80,14 @@ const InterestGroups: NextPage = () => {
         >
           <CardBody>
             <InputGroup>
+              <InputLeftElement pointerEvents='none'>
+                <SearchIcon color='gray.300' />
+              </InputLeftElement>
               <Input 
                 type='text'
-                border='none' 
+                border='none'
+                _focusVisible={{outline: "none"}}
+                style={{borderBottom: '1px solid #a1a1a1', borderRadius: 0, outline: 'none'}}
                 placeholder='Search for groups'
                 onInput={onInput}
               />
