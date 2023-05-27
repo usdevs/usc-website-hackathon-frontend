@@ -3,43 +3,86 @@ import FooterMap from './FooterMap';
 import { FaInstagram, FaTelegram } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
 
-const linkStyles = {
-  pl : 7,
-  display: 'flex',
-  alignItems: 'center'
-}
+const Footer : React.FC = () => {
+  interface NavigationLink {
+    href: string,
+    label: string
+  }
 
-const iconStyles = {
-  mr : 1,
-  fontSize: '1.1rem'
-}
+  interface SocialLink {
+    href: string,
+    iconComponent: React.FC,
+    label: string
+  }
 
-const Footer = () => {
+  const navigationLinks : NavigationLink[] = [
+    {
+      href: '/',
+      label: 'About Us'
+    },
+    {
+      href: '/interest-groups',
+      label: 'Interest Groups'
+    },
+    {
+      href: '/bookings',
+      label: 'Bookings'
+    },
+    {
+      href: '/',
+      label: 'Events'
+    },
+    {
+      href: '/',
+      label: 'Admins'
+    }
+  ]
+
+  const socialLinks : SocialLink[] = [
+    {
+      href: 'https://www.instagram.com/nus.usc/',
+      iconComponent: FaInstagram,
+      label: 'Instagram'
+    },
+    {
+      href: 'https://t.me/USPChannel',
+      iconComponent: FaTelegram,
+      label: 'Telegram'
+    },
+    {
+      href: 'mailto: usc.hongensec@u.nus.edu',
+      iconComponent: MdEmail,
+      label: 'Email'
+    }
+  ]
+
+  const linkStyles = {
+    pl : 7,
+    display: 'flex',
+    alignItems: 'center'
+  }
+
+  const iconStyles = {
+    mr : 1,
+    fontSize: '1.1rem'
+  }
+
   return (
   <VStack pt="1.5rem" pb="1rem" bg='#1f407b' color='white' justifyContent='space-between'>
       <Flex w='100%' justify='space-around'>
         <VStack alignItems='flex-start'>
           <Heading as="h4" size="md">Navigate</Heading>
-          <Link sx={linkStyles} href='/'>About Us</Link>
-          <Link sx={linkStyles} href='/interest-groups'>Interest Groups</Link>
-          <Link sx={linkStyles} href='/bookings'>Bookings</Link>
-          <Link sx={linkStyles} href='/'>Events</Link>
-          <Link sx={linkStyles} href='/'>Admins</Link>
+          { navigationLinks.map(({href, label}) => <Link key={label} sx={linkStyles} href={href}>{label}</Link>) }
         </VStack>
         <VStack alignItems='flex-start'>
           <Heading as="h4" size="md">For more updates, follow us on:</Heading>
-          <Link sx={linkStyles} href='https://www.instagram.com/nus.usc/'>
-            <Icon sx={iconStyles} as={FaInstagram} />
-            Instagram
-          </Link>
-          <Link sx={linkStyles} href='https://t.me/USPChannel'>
-            <Icon sx={iconStyles} as={FaTelegram} />
-            Telegram
-          </Link>
-          <Link sx={linkStyles} href='mailto: usc.hongensec@u.nus.edu'>
-            <Icon sx={iconStyles} as={MdEmail} />
-            Email
-          </Link>
+          { 
+            socialLinks.map(({href, iconComponent, label}) => 
+              <Link key = {label} sx={linkStyles} href={href}>
+                <Icon sx={iconStyles} as={iconComponent} />
+                {label}
+              </Link>
+          )}
         </VStack>
         <VStack alignItems='flex-start' position='relative' w='23rem' h="12rem">
           <Heading as="h4" size="md">Locate us:</Heading>
