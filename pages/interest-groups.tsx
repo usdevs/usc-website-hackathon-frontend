@@ -1,31 +1,23 @@
 import type { NextPage } from 'next'
 import NavMenu from '../components/NavMenu'
 import {
-  Box,
-  Card,
-  CardBody,
-  Checkbox,
-  CheckboxGroup,
   Flex,
   Heading,
   HStack,
-  Input,
-  InputGroup,
-  InputLeftElement,
   SimpleGrid,
-  StackDivider,
-  Stack,
   VStack
-} from '@chakra-ui/react'
+} from '@chakra-ui/react' 
 import Footer from '../components/Footer'
 import IGCard from '../components/IGCard'
 import IGMockDetails from '../constants/IGMockData'
 import { useEffect, useState } from 'react'
-import { SearchIcon } from '@chakra-ui/icons'
+import IGSearchFilter from '../components/IGSearchFilter'
+
 
 const InterestGroups: NextPage = () => {
+  /* make requests to backend here */
   const interestGroupDetails : IGInfo[] = IGMockDetails
-  const interestGroupCategories = ['Arts', 'Sports', 'GUI', 'Inactive']
+  const interestGroupCategories = ['Socio-cultural', 'Sports', 'GUIPs', 'Inactive']
   const originalFilters : string[] = []
 
   const [interestGroupCards, setInterestGroupCards] = useState(interestGroupDetails);
@@ -56,51 +48,19 @@ const InterestGroups: NextPage = () => {
     setInterestGroupCards(filteredCards);
   }, [interestGroupFilters, interestGroupSearchString])
 
+  const igSearchFilterProps = {
+    onInput: onInput,
+    onChange: onChange,
+    interestGroupCategories: interestGroupCategories,
+  }
+
   return (
     <Flex justify='center' flexDir='column' as='main'>
       <NavMenu />
       <HStack pt='3rem' pb='3rem'>
-        {
-          // align='stretch' // spacing={30}
-          //todo align to top
-        }
-        <Card
-          direction={{ base: 'column', sm: 'row' }}
-          overflow='hidden'
-          variant='outline'
-          maxWidth='100rem'
-          width='100rem'
-          margin='0 1rem'
-          alignSelf='flex-start'
-          boxShadow='1px 1px #e9e9e9'
-          color='#a1a1a1'
-
-          // align='flex-start'
-          // alignItems="flex-start"
-        >
-          <CardBody>
-            <InputGroup>
-              <InputLeftElement pointerEvents='none'>
-                <SearchIcon color='gray.300' />
-              </InputLeftElement>
-              <Input 
-                type='text'
-                border='none'
-                _focusVisible={{outline: "none"}}
-                style={{borderBottom: '1px solid #a1a1a1', borderRadius: 0, outline: 'none'}}
-                placeholder='Search for groups'
-                onInput={onInput}
-              />
-            </InputGroup>
-            <CheckboxGroup colorScheme='green' defaultValue={['arts', 'sports', 'gui']}>
-              <Stack mt='0.5rem' direction={['column', 'column']}>
-                {interestGroupCategories.map(category=><Checkbox onChange={onChange}value={category}>{category}</Checkbox>)}
-              </Stack>
-            </CheckboxGroup>
-          </CardBody>
-        </Card>
-        <VStack flexGrow={1} pr='4rem'>
-          <Heading as='h3' size='lg' fontWeight='normal' alignSelf='flex-start'>
+        <IGSearchFilter {...igSearchFilterProps} />
+        <VStack flexGrow={1} pr='4rem' minH='45vh'>
+          <Heading as='h3' size='lg' fontWeight='normal' alignSelf='flex-start' mb='1.5rem'>
             {
               interestGroupCards.length > 0
               ? <><strong>{interestGroupCards.length}</strong> Interest Groups </>
@@ -108,7 +68,7 @@ const InterestGroups: NextPage = () => {
             }
             
           </Heading>
-          <SimpleGrid columns={[1, null, 2]} spacing='40px'>
+          <SimpleGrid columns={[1, null, 2]} spacing='2rem'>
             {interestGroupCards.map((interestGroupDetail, idx) => (
               <IGCard key={idx} ig_info={interestGroupDetail} />
             ))}

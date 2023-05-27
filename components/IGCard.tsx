@@ -2,9 +2,7 @@ import {
   Box,
   Button,
   Card,
-  Center,
   CardBody,
-  CardFooter,
   Heading,
   Image,
   Stack,
@@ -33,13 +31,13 @@ const LeftPane: React.FC<IGInfoProps> = ({ ig_info }) => {
       />
       <Button
         overflow='hidden'
-        textOverflow={'ellipsis'}
-        leftIcon={<FaUserCircle />}
+        textOverflow='ellipsis'
         variant='outline'
         colorScheme='blue'
+        leftIcon={<FaUserCircle />}
         minWidth='8vw'
         maxWidth='8vw'
-        style={{borderRadius: '0.5rem', color:'#1f407b', border: '1px solid #1f407b'}}
+        style={{ borderRadius: '0.5rem', color: '#1f407b', border: '1px solid #1f407b', display: 'flex', alignItems: 'center' }}
       >
         <Text noOfLines={[1]}>{contact}</Text>
       </Button>
