@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Card,
   CardBody,
@@ -65,7 +64,6 @@ const IGCard: React.FC<IGInfoProps> = ({ ig_info }) => {
       <Stack>
         <CardBody>
           <Heading
-            // color={useColorModeValue('gray.700', 'white')}
             fontSize={'2xl'}
             fontFamily={'body'}
           >

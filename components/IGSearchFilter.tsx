@@ -46,7 +46,7 @@ const IGSearchFilter : React.FC<IGSearchFilterProps> = ({onInput, onChange, inte
             </InputGroup>
             <CheckboxGroup colorScheme='green' defaultValue={['arts', 'sports', 'gui']}>
               <Stack mt='0.5rem' direction={['column', 'column']}>
-                {interestGroupCategories.map(category=><Checkbox onChange={onChange}value={category}>{category}</Checkbox>)}
+                {interestGroupCategories.map(category=><Checkbox onChange={onChange} value={category}>{category}</Checkbox>)}
               </Stack>
             </CheckboxGroup>
           </CardBody>

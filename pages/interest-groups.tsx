@@ -68,7 +68,7 @@ const InterestGroups: NextPage = () => {
             }
             
           </Heading>
-          <SimpleGrid columns={[1, null, 2]} spacing='2rem'>
+          <SimpleGrid columns={[1, null, 2]} spacing='2rem' overflowY='auto'>
             {interestGroupCards.map((interestGroupDetail, idx) => (
               <IGCard key={idx} ig_info={interestGroupDetail} />
             ))}
