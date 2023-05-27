@@ -20,45 +20,50 @@ interface IGInfoProps {
   ig_info: IGInfo
 }
 
-const LeftPane: React.FC<IGInfoProps> = (props) => {
+const LeftPane: React.FC<IGInfoProps> = ({ ig_info }) => {
+  const { contact, invite_link, image } = ig_info
+
   return (
-    <Box>
-      <Center>
-        <Image
-          objectFit='cover'
-          maxW={{ base: '100%', sm: '100px' }}
-          src={props.ig_info.image}
-          alt='IG Picture'
-        />
-      </Center>
-      <CardFooter>
-        <VStack>
-          <Button
-            overflow='hidden'
-            textOverflow={'ellipsis'}
-            leftIcon={<FaUserCircle />}
-            variant='outline'
-            colorScheme='blue'
-            minWidth={'8vw'}
-            maxWidth={'8vw'}
-          >
-            <Text noOfLines={[1]}>{props.ig_info.contact}</Text>
-          </Button>
-          <Link href={props.ig_info.invite_link} rel='noopener noreferrer' target='_blank'>
-            <Button variant='outline' colorScheme='blue' minWidth={'8vw'} maxWidth={'8vw'}>
-              Invite Link
-            </Button>
-          </Link>
-        </VStack>
-      </CardFooter>
-    </Box>
+    <VStack padding='1rem' borderRight='2px solid darkgrey'>
+      <Image
+        objectFit='cover'
+        maxW={{ base: '100%' }}
+        src={image}
+        alt='IG Picture'
+      />
+      <Button
+        overflow='hidden'
+        textOverflow={'ellipsis'}
+        leftIcon={<FaUserCircle />}
+        variant='outline'
+        colorScheme='blue'
+        minWidth='8vw'
+        maxWidth='8vw'
+        style={{borderRadius: '0.5rem', color:'#1f407b', border: '1px solid #1f407b'}}
+      >
+        <Text noOfLines={[1]}>{contact}</Text>
+      </Button>
+      <Button 
+        as={Link} 
+        href={invite_link} 
+        rel='noopener noreferrer' 
+        target='_blank' 
+        variant='outline' 
+        minWidth='8vw' 
+        maxWidth='8vw'
+        style={{borderRadius: '0.5rem', color:'#229ed9', border: '1px solid #229ed9'}}
+      >
+        Invite Link
+      </Button>
+    </VStack>
   )
 }
 
-const IGCard: React.FC<IGInfoProps> = (props) => {
+const IGCard: React.FC<IGInfoProps> = ({ ig_info }) => {
+  const { title, description } = ig_info
   return (
-    <Card direction={{ base: 'column', sm: 'row' }} overflow='hidden' variant='outline'>
-      <LeftPane ig_info={props.ig_info} />
+    <Card padding='1rem' direction={{ base: 'column', sm: 'row' }} overflow='hidden' variant='outline'>
+      <LeftPane ig_info={ig_info} />
       <Stack>
         <CardBody>
           <Heading
@@ -66,11 +71,11 @@ const IGCard: React.FC<IGInfoProps> = (props) => {
             fontSize={'2xl'}
             fontFamily={'body'}
           >
-            {props.ig_info.title}
+            {title}
           </Heading>
 
           <ExpandableText noOfLines={3}>
-            <Text color={'gray.500'}>{props.ig_info.description}</Text>
+            <Text color={'gray.500'}>{description}</Text>
           </ExpandableText>
         </CardBody>
       </Stack>
