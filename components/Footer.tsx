@@ -89,7 +89,7 @@ const Footer : React.FC = () => {
           <FooterMap />
         </VStack>
       </Flex>
-      <Heading as='h5' size='sm' pt='3rem' fontWeight="normal">Copyright @ 2023 NUS College Cinnamon Student Life</Heading>
+      <Heading as='h5' size='sm' pt='3rem' fontWeight="normal">Copyright © 2023 NUS College Cinnamon Student Life</Heading>
       
     </VStack>
   );
