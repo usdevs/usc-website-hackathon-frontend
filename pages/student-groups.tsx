@@ -15,6 +15,10 @@ import {
   SimpleGrid,
   StackDivider,
   Stack,
+  Spacer,
+  Grid,
+  GridItem,
+  Heading,
 } from '@chakra-ui/react'
 import Footer from '../components/Footer'
 import IGCard from '../components/IGCard'
@@ -55,48 +59,57 @@ const IGDetails: IGInfo[] = [
 
 const StudentGroups: NextPage = () => {
   return (
-    <Flex justify='center' flexDir='column' as='main'>
+    <>
       <NavMenu />
-      <HStack divider={<StackDivider borderColor='gray.200' />}>
-        {
-          // align='stretch' // spacing={30}
-          //todo align to top
-        }
-        <Card
-          direction={{ base: 'column', sm: 'row' }}
-          overflow='hidden'
-          variant='outline'
-          width={'20vw'}
-          // align='flex-start'
-          // alignItems="flex-start"
-        >
-          <CardBody>
-            <InputGroup>
-              <InputLeftElement pointerEvents='none'>
-                <SearchIcon color='gray.300' />
-              </InputLeftElement>
-              <Input type='text' placeholder='Search for groups' />
-            </InputGroup>
-            <CheckboxGroup colorScheme='green' defaultValue={['arts', 'sports', 'gui']}>
-              <Stack spacing={[1, 5]} direction={['column', 'column']}>
-                <Checkbox value='arts'>Socio-cultural</Checkbox>
-                <Checkbox value='sports'>Sports</Checkbox>
-                <Checkbox value='gui'>GUIPs</Checkbox>
-                <Checkbox value='inactive'>Inactive</Checkbox>
-              </Stack>
-            </CheckboxGroup>
-          </CardBody>
-        </Card>
-        <Box pt={'1vh'}>
-          <SimpleGrid columns={[1, null, 2]} maxWidth={'1000px'} spacing='40px'>
-            {IGDetails.map((IGDetail) => (
-              <IGCard key={IGDetail.title} ig_info={IGDetail} />
-            ))}
-          </SimpleGrid>
-        </Box>
-      </HStack>
+      <Grid templateColumns='repeat(4, 1fr)' gap={8}>
+        <GridItem colSpan={1}>
+          <Box p={'2vh'} pl={'7vh'}>
+            <Card
+              direction={{ base: 'column', sm: 'row' }}
+              overflow='hidden'
+              variant='outline'
+              shadow='lg'
+            >
+              <CardBody>
+                <InputGroup>
+                  <InputLeftElement pointerEvents='none'>
+                    <SearchIcon color='gray.300' />
+                  </InputLeftElement>
+                  <Input type='text' placeholder='Search for groups' />
+                </InputGroup>
+                <Box p={'2vh'}>
+                  <CheckboxGroup colorScheme='green' defaultValue={['arts', 'sports', 'gui']}>
+                    <Stack spacing={[1, 5]} direction={['column', 'column']}>
+                      <Checkbox value='arts'>Socio-cultural</Checkbox>
+                      <Checkbox value='sports'>Sports</Checkbox>
+                      <Checkbox value='gui'>GUIPs</Checkbox>
+                      <Checkbox value='inactive'>Inactive</Checkbox>
+                    </Stack>
+                  </CheckboxGroup>
+                </Box>
+              </CardBody>
+            </Card>
+          </Box>
+        </GridItem>
+
+        <GridItem colSpan={3}>
+          <Box pt={'2vh'}>
+            <Heading color={'gray.600'} fontSize={'2xl'} fontFamily={'header'}>
+              {IGDetails.length} Interest Groups
+            </Heading>
+          </Box>
+
+          <Box pt={'2vh'} pb={'3vh'}>
+            <SimpleGrid columns={[1, null, 2]} maxWidth={'95%'} spacing='40px'>
+              {IGDetails.map((IGDetail) => (
+                <IGCard key={IGDetail.title} ig_info={IGDetail} />
+              ))}
+            </SimpleGrid>
+          </Box>
+        </GridItem>
+      </Grid>
       <Footer />
-    </Flex>
+    </>
   )
 }
 
