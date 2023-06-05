@@ -34,24 +34,22 @@ const LandingPageBanner : React.FC<LandingPageBannerProps> = ({left, buttonUrl, 
     }
 
     const cardStyles = {
-
+        alignSelf: left ? 'flex-end' : 'flex-start',
+        flex: 1,
+        color: 'white',
+        justifyContent: 'space-between',
+        bg: '#1f407b',
+        p: '2.5rem 1.5rem 1.5rem 2.5rem',
+        m: '2rem',
+        maxW: '30rem',
+        maxH: '30rem',
+        borderRadius: '5rem'
     }
   return (
     <Box sx={bannerStyles}>
         <VStack h='100%'>
-            <Card 
-                alignSelf={left ? 'flex-end' : 'flex-start'} 
-                flex={1}
-                color='white' 
-                justifyContent='space-between'
-                bg='#1f407b' 
-                p='2.5rem 1.5rem 1.5rem 2.5rem' 
-                m='2rem' 
-                maxW='30rem'
-                maxH='30rem'
-                borderRadius='5rem'
-            >
-                <Text>{description}</Text>
+            <Card {...cardStyles}>
+                <Text noOfLines={12}>{description}</Text>
                 
                 <Button
                     as={Link}
@@ -61,9 +59,13 @@ const LandingPageBanner : React.FC<LandingPageBannerProps> = ({left, buttonUrl, 
                     fontWeight='bold'
                     w='fit-content'
                     rounded='full'
+                    mt='1rem'
                     p='1.75rem 1rem'
                     fontSize={{ base: '2xl', md: '3xl' }}
-                    alignSelf='center'>Find Out More</Button>
+                    alignSelf='center'
+                >
+                    Find Out More
+                </Button>
             </Card>
             <Heading
                 as='h2' 
@@ -71,7 +73,10 @@ const LandingPageBanner : React.FC<LandingPageBannerProps> = ({left, buttonUrl, 
                 size='3xl'
                 textAlign={left ? 'left' : 'right'}
                 p='2rem 4rem'
-                w='100%'>{header}</Heading>
+                w='100%'
+            >
+                {header}
+            </Heading>
         </VStack>
         
 
