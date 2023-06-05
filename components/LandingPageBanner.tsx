@@ -71,6 +71,7 @@ const LandingPageBanner : React.FC<LandingPageBannerProps> = ({left, buttonUrl, 
                         p='1.75rem 1rem'
                         fontSize={{ base: '2xl', md: '3xl' }}
                         alignSelf='center'
+                        _hover={{bg: '#ff9900', color: 'white'}}
                     >
                         Find Out More
                     </Button>
