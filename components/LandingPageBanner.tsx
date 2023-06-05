@@ -8,9 +8,7 @@ interface LandingPageBannerProps {
     imageUrl: string,
     header: string,
     buttonUrl: string
-}
-
-
+  }
 
 const LandingPageBanner : React.FC<LandingPageBannerProps> = ({left, buttonUrl, description, imageUrl, header}) => {
     const bannerStyles = {
@@ -49,7 +47,7 @@ const LandingPageBanner : React.FC<LandingPageBannerProps> = ({left, buttonUrl, 
     <Box sx={bannerStyles}>
         <VStack h='100%'>
             <Card {...cardStyles}>
-                <Text noOfLines={12}>{description}</Text>
+                <Text noOfLines={12} textAlign='center' fontSize={{ base: 'xl', md: '2xl' }}>{description}</Text>
                 
                 <Button
                     as={Link}
