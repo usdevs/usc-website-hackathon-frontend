@@ -12,8 +12,14 @@ export const isUserLoggedIn = (auth: AuthState | null): boolean => {
   return auth !== null && auth.token !== ''
 }
 export const BUTTON_LINKS: ButtonInfo[] = [
-  { name: "Student Groups", link: "/student-groups" },
+  { 
+    name: "Student Groups", 
+    link: "/student-groups",
+  },
   // { name: 'Houses', link: '#' },
   // { name: 'NOW!', link: '#' },
-  { name: "Bookings", link: "/bookings" }
+  { 
+    name: "Bookings", 
+    link: "/bookings" 
+  }
 ];
