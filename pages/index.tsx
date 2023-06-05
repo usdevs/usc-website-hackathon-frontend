@@ -16,6 +16,7 @@ import HomePageCard from '../components/HomePageCard'
 import HeroBg from '../public/image1.png'
 import Image from 'next/image'
 import {BUTTON_LINKS} from "../utils";
+import LandingPageBanner from '../components/LandingPageBanner'
 
 const HeroSection = () => {
   return (
@@ -105,20 +106,24 @@ const LandingPage: NextPage = () => {
     <Flex justify='center' flexDir='column' as='main' gap='0'>
       <NavMenu />
       <HeroSection />
-      <Box mx={{ base: '2', md: '8', xl: '20' }} my={{ base: '16px', md: '80px' }}>
-        <SimpleGrid
-          templateColumns={{ base: '1fr', md: '1fr 1fr' }}
-          templateRows={{ base: '1fr 1fr' }}
-          spacingX='6'
-          spacingY={{ base: '2', md: '6' }}
-        >
-          {BUTTON_LINKS.map((buttonLink, index) =>
-            (<GridItem w='100%' key={index}>
-              <HomePageCard name={buttonLink.name} link={buttonLink.link}/>
-            </GridItem>)
+      {/* <Box mx={{ base: '2', md: '8', xl: '20' }} my={{ base: '16px', md: '80px' }}> */}
+      <Box>
+
+      
+      {BUTTON_LINKS.map((buttonLink, index) =>
+
+              <LandingPageBanner 
+                key={index} 
+                left={index % 2 == 1} 
+                description={`Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.`} 
+                imageUrl='/samplebanner.png'
+                buttonUrl='/student-groups' 
+                header='Houses'
+              />
+
           )}
-        </SimpleGrid>
-      </Box>
+          </Box>
+
       <Footer />
     </Flex>
   )
