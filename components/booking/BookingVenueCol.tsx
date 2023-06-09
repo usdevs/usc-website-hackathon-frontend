@@ -2,7 +2,7 @@ import { useBoolean, VStack, Box, Text } from '@chakra-ui/react'
 import { addMinutes, isAfter, isEqual } from 'date-fns'
 import { useState, useRef, useEffect } from 'react'
 import { BoxProps } from '@chakra-ui/react'
-import { isUserLoggedIn, useUserInfo } from "../../utils";
+import { isUserLoggedIn, useUserInfo } from '../../utils'
 
 // Types for the BookingsOld Components
 // To be moved to global types file after replacing the old BookingsOld page

@@ -1,7 +1,7 @@
-import type { Icon, LatLngExpression } from 'leaflet';
-import React, { useEffect, useState } from 'react';
+import type { Icon, LatLngExpression } from 'leaflet'
+import React, { useEffect, useState } from 'react'
 
-import Map, { CustomMarkerProps, VenueMapProps } from './map';
+import Map, { CustomMarkerProps, VenueMapProps } from './map'
 
 // routing information obtained via http://map.project-osrm.org/
 const yncToCinna: LatLngExpression[] = [
@@ -38,7 +38,7 @@ const yncToCinna: LatLngExpression[] = [
   [1.30672, 103.77321],
   [1.30639, 103.7733],
   [1.30634, 103.77336],
-];
+]
 
 const utownToCtph: LatLngExpression[] = [
   [1.30891, 103.77279],
@@ -61,13 +61,13 @@ const utownToCtph: LatLngExpression[] = [
   [1.30706, 103.77284],
   [1.30711, 103.77293],
   [1.30715, 103.77313],
-];
+]
 
 const captToCtph: LatLngExpression[] = [
   [1.30715, 103.77313],
-  [1.30688,103.77319],
-  [1.30689, 103.7733]
-];
+  [1.30688, 103.77319],
+  [1.30689, 103.7733],
+]
 
 const tembuMphToUtownBus: LatLngExpression[] = [
   [1.30596, 103.77366],
@@ -102,49 +102,49 @@ const tembuMphToUtownBus: LatLngExpression[] = [
   [1.30346, 103.77431],
   [1.30355, 103.77444],
   [1.30355, 103.77444],
-];
+]
 
 const diningToTembu: LatLngExpression[] = [
   [1.30634, 103.77336],
   [1.30609, 103.77347],
-  [1.30596, 103.77366]
-];
+  [1.30596, 103.77366],
+]
 
 const diningToCtph: LatLngExpression[] = [
   [1.30672, 103.77321],
   [1.30689, 103.7733],
-];
+]
 
-const DEFAULT_CENTER: LatLngExpression = [1.30669, 103.77344];
+const DEFAULT_CENTER: LatLngExpression = [1.30669, 103.77344]
 
 type markerInfo = {
-  position: LatLngExpression;
-  popupMessage: string;
-  isShowPopup?: boolean;
-};
+  position: LatLngExpression
+  popupMessage: string
+  isShowPopup?: boolean
+}
 
 type polygonBounds = {
-  bounds: LatLngExpression[];
-};
+  bounds: LatLngExpression[]
+}
 
-type venueInfo = markerInfo & polygonBounds;
+type venueInfo = markerInfo & polygonBounds
 
 const venues: venueInfo[] = [
   {
     position: [1.3067336768196218, 103.77347056901343],
     popupMessage: 'Cinnamon College',
     bounds: [
-      [1.3071307, 103.7731240],
+      [1.3071307, 103.773124],
       [1.3068614, 103.7728723],
       [1.3066952, 103.7730027],
       [1.3063825, 103.7730905],
       [1.3066676, 103.7737439],
       [1.3071818, 103.7735022],
-      [1.3071307, 103.7731240],
+      [1.3071307, 103.773124],
     ],
     isShowPopup: false, // default to false, because the map is too small to display a popup
   },
-];
+]
 
 const privateTransportMarkers: markerInfo[] = [
   {
@@ -159,7 +159,7 @@ const privateTransportMarkers: markerInfo[] = [
     position: [1.30384, 103.77341],
     popupMessage: 'Public parking at Create Tower',
   },
-];
+]
 
 const publicTransportMarkers: markerInfo[] = [
   {
@@ -174,24 +174,19 @@ const publicTransportMarkers: markerInfo[] = [
     position: [1.30796, 103.7717],
     popupMessage: 'Yale-NUS bus stop',
   },
-];
+]
 
 const VenueMap: React.FC = () => {
   // avoid rendering Tabulator in SSR
-  const [isSsr, setIsSsr] = useState(true);
+  const [isSsr, setIsSsr] = useState(true)
   useEffect(() => {
-    setIsSsr(false);
-  }, []);
+    setIsSsr(false)
+  }, [])
 
   return (
     <>
       {!isSsr && (
-        <Map
-          width="2"
-          height="1"
-          center={DEFAULT_CENTER}
-          zoom={17}
-        >
+        <Map width='2' height='1' center={DEFAULT_CENTER} zoom={17}>
           {(
             { TileLayer, Polygon, Polyline }: VenueMapProps,
             TempIcon: typeof Icon,
@@ -199,7 +194,7 @@ const VenueMap: React.FC = () => {
           ) => (
             <>
               <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
                 attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
               />
               {venues.map((venue, index) => (
@@ -237,7 +232,7 @@ const VenueMap: React.FC = () => {
                       popupMessage={marker.popupMessage}
                     />
                   </>
-                );
+                )
               })}
               {publicTransportMarkers.map((marker, index) => {
                 return (
@@ -256,34 +251,16 @@ const VenueMap: React.FC = () => {
                       popupMessage={marker.popupMessage}
                     />
                   </>
-                );
+                )
               })}
               {
                 <>
-                  <Polyline
-                    positions={yncToCinna}
-                    pathOptions={{ color: 'green' }}
-                  />
-                  <Polyline
-                    positions={utownToCtph}
-                    pathOptions={{ color: 'green' }}
-                  />
-                  <Polyline
-                    positions={tembuMphToUtownBus}
-                    pathOptions={{ color: 'green' }}
-                  />
-                  <Polyline
-                    positions={diningToTembu}
-                    pathOptions={{ color: 'green' }}
-                  />
-                  <Polyline
-                    positions={diningToCtph}
-                    pathOptions={{ color: 'green' }}
-                  />
-                  <Polyline
-                    positions={captToCtph}
-                    pathOptions={{ color: 'green' }}
-                  />
+                  <Polyline positions={yncToCinna} pathOptions={{ color: 'green' }} />
+                  <Polyline positions={utownToCtph} pathOptions={{ color: 'green' }} />
+                  <Polyline positions={tembuMphToUtownBus} pathOptions={{ color: 'green' }} />
+                  <Polyline positions={diningToTembu} pathOptions={{ color: 'green' }} />
+                  <Polyline positions={diningToCtph} pathOptions={{ color: 'green' }} />
+                  <Polyline positions={captToCtph} pathOptions={{ color: 'green' }} />
                 </>
               }
             </>
@@ -291,7 +268,7 @@ const VenueMap: React.FC = () => {
         </Map>
       )}
     </>
-  );
-};
+  )
+}
 
-export default VenueMap;
+export default VenueMap

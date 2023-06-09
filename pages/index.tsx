@@ -1,14 +1,7 @@
 import type { NextPage } from 'next'
 import React from 'react'
 import NavMenu from '../components/NavMenu'
-import {
-  Flex,
-  Box,
-  Stack,
-  Text,
-  useBreakpointValue,
-  VStack,
-} from '@chakra-ui/react'
+import { Flex, Box, Stack, Text, useBreakpointValue, VStack } from '@chakra-ui/react'
 import Footer from '../components/Footer'
 import HeroBg from '../public/image1.png'
 import Image from 'next/image'
@@ -16,8 +9,6 @@ import LandingPageBanner from '../components/LandingPageBanner'
 import landingPageMockData from '../constants/LandingPageMockData'
 
 const HeroSection = () => {
-
-
   return (
     <Flex position={'relative'} height='90vh' width='full'>
       <Image
@@ -101,21 +92,16 @@ const HeroSection = () => {
 }
 
 const LandingPage: NextPage = () => {
-  const landingPageData = landingPageMockData;
+  const landingPageData = landingPageMockData
   return (
     <Flex justify='center' flexDir='column' as='main' gap='0'>
       <NavMenu />
       <HeroSection />
       {/* <Box mx={{ base: '2', md: '8', xl: '20' }} my={{ base: '16px', md: '80px' }}> */}
       <Box>
-        {
-          landingPageData.map((data, index) =>
-            <LandingPageBanner
-              key={index}
-              left={index % 2 == 1}
-              {...data}
-            />
-          )}
+        {landingPageData.map((data, index) => (
+          <LandingPageBanner key={index} left={index % 2 == 1} {...data} />
+        ))}
       </Box>
 
       <Footer />

@@ -21,11 +21,11 @@ const Auth: React.FC = () => {
           userId: NEXT_PUBLIC_BACKEND_TELEGRAM_USER_ID,
           // userInfo is not needed for now, so can just add filler values
           userInfo: {
-            firstName: "Parth",
+            firstName: 'Parth',
             telegramId: -1,
-            photoUrl: "",
-            username: "gparth26"
-          }
+            photoUrl: '',
+            username: 'gparth26',
+          },
         })
       }}
     >
