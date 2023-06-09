@@ -1,10 +1,10 @@
 import type { NextPage } from 'next'
 import NavMenu from '../components/NavMenu'
-import { Flex, Heading, HStack, SimpleGrid, VStack } from '@chakra-ui/react'
+import { Box, Flex, Heading, HStack, SimpleGrid, VStack } from '@chakra-ui/react'
 import Footer from '../components/Footer'
 import IGCard from '../components/IGCard'
 import IGMockDetails from '../constants/IGMockData'
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import IGSearchFilter from '../components/IGSearchFilter'
 
 const StudentGroups: NextPage = () => {
@@ -18,12 +18,12 @@ const StudentGroups: NextPage = () => {
   const [interestGroupFilters, setInterestGroupFilters] = useState(originalFilters)
   const [interestGroupSearchString, setInterestGroupSearchString] = useState('')
 
-  const onInput = (ev: React.ChangeEvent<HTMLInputElement>) => {
+  const onInput = (ev: ChangeEvent<HTMLInputElement>) => {
     const { value } = ev.target
     setInterestGroupSearchString(value.toLowerCase())
   }
 
-  const onChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
+  const onChange = (ev: ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = ev.target
     if (checked) {
       setInterestGroupFilters([...interestGroupFilters, value])
@@ -53,9 +53,18 @@ const StudentGroups: NextPage = () => {
     <Flex justify='center' flexDir='column' as='main'>
       <NavMenu />
       <HStack pt='3rem' pb='3rem'>
-        <IGSearchFilter {...igSearchFilterProps} />
+        <Box p={'2vh'} pl={'7vh'}>
+          <IGSearchFilter {...igSearchFilterProps} />
+        </Box>
         <VStack flexGrow={1} pr='4rem' minH='45vh'>
-          <Heading as='h3' size='lg' fontWeight='normal' alignSelf='flex-start' mb='1.5rem'>
+          {/*<Box pt={"2vh"}>*/}
+          <Heading
+            fontFamily={'header'}
+            size='lg'
+            fontWeight='normal'
+            alignSelf='flex-start'
+            mb='1.5rem'
+          >
             {interestGroupCards.length > 0 ? (
               <>
                 <strong>{interestGroupCards.length}</strong> Interest Groups{' '}
@@ -64,12 +73,16 @@ const StudentGroups: NextPage = () => {
               <>No Interest Groups Found</>
             )}
           </Heading>
-          <SimpleGrid columns={[1, null, 2]} spacing='2rem' overflowY='auto'>
+          {/*</Box>*/}
+
+          {/*<Box pt={"2vh"} pb={"3vh"}>*/}
+          <SimpleGrid columns={[1, null, 2]} maxWidth={'95%'} spacing='2rem' overflowY='auto'>
             {interestGroupCards.map((interestGroupDetail, idx) => (
               <IGCard key={idx} ig_info={interestGroupDetail} />
             ))}
           </SimpleGrid>
         </VStack>
+        {/*</Box>*/}
       </HStack>
       <Footer />
     </Flex>

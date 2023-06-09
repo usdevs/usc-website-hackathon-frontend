@@ -1,5 +1,6 @@
 import React from 'react'
 import {
+  Box,
   Card,
   CardBody,
   Checkbox,
@@ -48,15 +49,17 @@ const IGSearchFilter: React.FC<IGSearchFilterProps> = ({
             onInput={onInput}
           />
         </InputGroup>
-        <CheckboxGroup colorScheme='green' defaultValue={['arts', 'sports', 'gui']}>
-          <Stack mt='0.5rem' direction={['column', 'column']}>
-            {interestGroupCategories.map((category) => (
-              <Checkbox onChange={onChange} key={category} value={category}>
-                {category}
-              </Checkbox>
-            ))}
-          </Stack>
-        </CheckboxGroup>
+        <Box p={'2vh'}>
+          <CheckboxGroup colorScheme='green' defaultValue={['arts', 'sports', 'gui']}>
+            <Stack mt='0.5rem' spacing={[1, 5]} direction={['column', 'column']}>
+              {interestGroupCategories.map((category) => (
+                <Checkbox onChange={onChange} key={category} value={category}>
+                  {category}
+                </Checkbox>
+              ))}
+            </Stack>
+          </CheckboxGroup>
+        </Box>
       </CardBody>
     </Card>
   )
