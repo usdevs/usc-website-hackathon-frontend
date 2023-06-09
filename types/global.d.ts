@@ -1,11 +1,9 @@
-import { Dispatch, SetStateAction } from 'react'
-
 export {}
 
 declare global {
-  interface ButtonInfo {
-    name: string
-    link: string
+  interface NavigationLink {
+    href: string
+    label: string
   }
 
   interface IGInfo {
