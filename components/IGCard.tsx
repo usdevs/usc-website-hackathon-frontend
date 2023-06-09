@@ -1,13 +1,4 @@
-import {
-  Button,
-  Card,
-  CardBody,
-  Heading,
-  Image,
-  Stack,
-  Text,
-  VStack,
-} from '@chakra-ui/react'
+import { Button, Card, CardBody, Heading, Image, Stack, Text, VStack } from '@chakra-ui/react'
 import React from 'react'
 import { ExpandableText } from './ExpandableText'
 import { FaUserCircle } from 'react-icons/fa'
@@ -22,12 +13,7 @@ const LeftPane: React.FC<IGInfoProps> = ({ ig_info }) => {
 
   return (
     <VStack padding='1rem' borderRight='2px solid darkgrey'>
-      <Image
-        objectFit='cover'
-        maxW={{ base: '100%' }}
-        src={image}
-        alt='IG Picture'
-      />
+      <Image objectFit='cover' maxW={{ base: '100%' }} src={image} alt='IG Picture' />
       <Button
         overflow='hidden'
         textOverflow='ellipsis'
@@ -36,19 +22,25 @@ const LeftPane: React.FC<IGInfoProps> = ({ ig_info }) => {
         leftIcon={<FaUserCircle />}
         minWidth='8vw'
         maxWidth='8vw'
-        style={{ borderRadius: '0.5rem', color: '#1f407b', border: '1px solid #1f407b', display: 'flex', alignItems: 'center' }}
+        style={{
+          borderRadius: '0.5rem',
+          color: '#1f407b',
+          border: '1px solid #1f407b',
+          display: 'flex',
+          alignItems: 'center',
+        }}
       >
         <Text noOfLines={[1]}>{contact}</Text>
       </Button>
-      <Button 
-        as={Link} 
-        href={invite_link} 
-        rel='noopener noreferrer' 
-        target='_blank' 
-        variant='outline' 
-        minWidth='8vw' 
+      <Button
+        as={Link}
+        href={invite_link}
+        rel='noopener noreferrer'
+        target='_blank'
+        variant='outline'
+        minWidth='8vw'
         maxWidth='8vw'
-        style={{borderRadius: '0.5rem', color:'#229ed9', border: '1px solid #229ed9'}}
+        style={{ borderRadius: '0.5rem', color: '#229ed9', border: '1px solid #229ed9' }}
       >
         Invite Link
       </Button>
@@ -59,14 +51,16 @@ const LeftPane: React.FC<IGInfoProps> = ({ ig_info }) => {
 const IGCard: React.FC<IGInfoProps> = ({ ig_info }) => {
   const { title, description } = ig_info
   return (
-    <Card padding='1rem' direction={{ base: 'column', sm: 'row' }} overflow='hidden' variant='outline'>
+    <Card
+      padding='1rem'
+      direction={{ base: 'column', sm: 'row' }}
+      overflow='hidden'
+      variant='outline'
+    >
       <LeftPane ig_info={ig_info} />
       <Stack>
         <CardBody>
-          <Heading
-            fontSize={'2xl'}
-            fontFamily={'body'}
-          >
+          <Heading fontSize={'2xl'} fontFamily={'body'}>
             {title}
           </Heading>
 

@@ -16,7 +16,7 @@ import {
 } from '@chakra-ui/react'
 import format from 'date-fns/format'
 import { BookingsContext, BookingsContextValue } from '../../context/BookingsContext'
-import { isUserLoggedIn } from "../../utils";
+import { isUserLoggedIn } from '../../utils'
 
 type BookingConfirmationPopupProps = {
   onClose: () => void

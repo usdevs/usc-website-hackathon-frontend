@@ -30,7 +30,7 @@ import BookingVenueCol from '../components/booking/BookingVenueCol'
 import Toggle from '../components/booking/Toggle'
 import CalendarEventCard from '../components/booking/CalendarEventCard'
 
-import { VENUES, ALL_VENUES_KEYWORD, isUserLoggedIn } from "../utils";
+import { VENUES, ALL_VENUES_KEYWORD, isUserLoggedIn } from '../utils'
 import { useUserInfo } from '../utils'
 
 const BOX_HEIGHT = 8 // Ensures time labels are aligned with grid cells
@@ -242,12 +242,16 @@ const BookingSelector: FC = () => {
           <HStack gap='4'>
             <Menu closeOnSelect={false}>
               <MenuButton as={Button} colorScheme='blue' rightIcon={<ChevronDownIcon />}>
-                {venueToFilterBy === ALL_VENUES_KEYWORD ? "Venue" : venueToFilterBy}
+                {venueToFilterBy === ALL_VENUES_KEYWORD ? 'Venue' : venueToFilterBy}
               </MenuButton>
               <MenuList>
                 <MenuOptionGroup defaultValue={ALL_VENUES_KEYWORD} type='radio'>
                   {[ALL_VENUES_KEYWORD, ...VENUES].map((venue) => (
-                    <MenuItemOption onClick={() => setVenueToFilterBy(venue)} key={venue} value={venue}>
+                    <MenuItemOption
+                      onClick={() => setVenueToFilterBy(venue)}
+                      key={venue}
+                      value={venue}
+                    >
                       {venue}
                     </MenuItemOption>
                   ))}
@@ -260,7 +264,11 @@ const BookingSelector: FC = () => {
             isOn={isExpandedCalendar}
             setIsOn={setExpandedCalendar}
             setStartDate={setStartDate}
-            bookings={venueToFilterBy === ALL_VENUES_KEYWORD ? bookingsMappedForDisplay : bookingsSortedByVenue[VENUES.findIndex(venue => venue === venueToFilterBy)]}
+            bookings={
+              venueToFilterBy === ALL_VENUES_KEYWORD
+                ? bookingsMappedForDisplay
+                : bookingsSortedByVenue[VENUES.findIndex((venue) => venue === venueToFilterBy)]
+            }
           />
         </VStack>
         <AnimatePresence>
@@ -273,34 +281,35 @@ const BookingSelector: FC = () => {
             >
               <HStack>
                 <BookingsTimesCol boxHeight={BOX_HEIGHT} />
-                {VENUES.filter(venue => {
+                {VENUES.filter((venue) => {
                   if (venueToFilterBy === ALL_VENUES_KEYWORD) {
                     return true
                   }
                   return venue === venueToFilterBy
                 }).map((venueName) => {
-                  const venueId = VENUES.findIndex(venue => venue === venueName)
+                  const venueId = VENUES.findIndex((venue) => venue === venueName)
                   return (
-                  <BookingVenueCol
-                    timeIntervals={timeIntervals}
-                    key={venueName}
-                    venueName={venueName}
-                    openBookingModal={(start, end) => {
-                      setBookingDataFromSelection({
-                        ...bookingDataFromSelection,
-                        venueName,
-                        venueId: venueId + 1,
-                        start,
-                        end,
-                      })
-                      onModalOpen()
-                    }}
-                    bookingModalIsOpen={isOpen}
-                    currentVenueBookings={bookingsSortedByVenue[venueId]}
-                    boxHeight={BOX_HEIGHT}
-                    openBookingCard={handleBookingCard}
-                  />
-                )})}
+                    <BookingVenueCol
+                      timeIntervals={timeIntervals}
+                      key={venueName}
+                      venueName={venueName}
+                      openBookingModal={(start, end) => {
+                        setBookingDataFromSelection({
+                          ...bookingDataFromSelection,
+                          venueName,
+                          venueId: venueId + 1,
+                          start,
+                          end,
+                        })
+                        onModalOpen()
+                      }}
+                      bookingModalIsOpen={isOpen}
+                      currentVenueBookings={bookingsSortedByVenue[venueId]}
+                      boxHeight={BOX_HEIGHT}
+                      openBookingCard={handleBookingCard}
+                    />
+                  )
+                })}
               </HStack>
             </motion.div>
           )}

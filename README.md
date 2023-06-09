@@ -17,11 +17,11 @@ Install the following:
 ### Spinning up your own backend locally
 
 Currently, the frontend will connect to the same DigitalOcean server (to avoid spinning up a Docker instance on your local machine). If you are going to be doing heavy development work and thus will make lots of calls to the database, you may wish to spin up your own backend locally to avoid affecting other developers. Run the following commands:
+
 1. `cd <backend repo> && npm run dev`
 2. `cd <backend repo> && docker-compose up`
 
-Make sure to change the value of the `NEXT_PUBLIC_BACKEND_URL` constant in the  `.env.development` file to `http://localhost:3000/`.
-
+Make sure to change the value of the `NEXT_PUBLIC_BACKEND_URL` constant in the `.env.development` file to `http://localhost:3000/`.
 
 ### Telegram login token
 

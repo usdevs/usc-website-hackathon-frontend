@@ -1,10 +1,23 @@
-import React from "react";
-import { Box, Container, Flex, HStack, IconButton, LinkBox, LinkOverlay, Menu, MenuList, Stack, Text, useDisclosure } from "@chakra-ui/react";
-import { CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
-import Image from "next/image";
-import NUSCollegePic from "../public/nus-college-1@2x.png";
-import dynamic from "next/dynamic";
-import { BUTTON_LINKS } from "../utils";
+import React from 'react'
+import {
+  Box,
+  Container,
+  Flex,
+  HStack,
+  IconButton,
+  LinkBox,
+  LinkOverlay,
+  Menu,
+  MenuList,
+  Stack,
+  Text,
+  useDisclosure,
+} from '@chakra-ui/react'
+import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons'
+import Image from 'next/image'
+import NUSCollegePic from '../public/nus-college-1@2x.png'
+import dynamic from 'next/dynamic'
+import { BUTTON_LINKS } from '../utils'
 
 const NavLink: React.FC<NavigationLink> = (props) => (
   <LinkBox
@@ -62,14 +75,13 @@ const NavMenu = () => {
           <Container centerContent>
             {/* Links to various pages in the Nav bar (IGs, NOW, etc.) */}
             <HStack as={'nav'} spacing={36} display={{ base: 'none', md: 'flex' }}>
-              <NavLinks/>
+              <NavLinks />
             </HStack>
           </Container>
           <Flex alignItems={'center'}>
             <Menu>
               <Auth />
-              <MenuList>
-              </MenuList>
+              <MenuList></MenuList>
             </Menu>
           </Flex>
         </Flex>
@@ -77,7 +89,7 @@ const NavMenu = () => {
         {isOpen ? (
           <Box pb={4} display={{ md: 'none' }}>
             <Stack as={'nav'} spacing={4}>
-              <NavLinks/>
+              <NavLinks />
             </Stack>
           </Box>
         ) : null}
