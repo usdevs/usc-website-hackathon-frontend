@@ -1,7 +1,8 @@
 import { Heading, VStack, Link, Flex, Icon } from '@chakra-ui/react'
-import FooterMap from './FooterMap';
+import VenueMap from "./VenueMap";
 import { FaInstagram, FaTelegram } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
+import React from "react";
 
 const Footer : React.FC = () => {
   interface NavigationLink {
@@ -76,8 +77,8 @@ const Footer : React.FC = () => {
         </VStack>
         <VStack alignItems='flex-start'>
           <Heading as="h4" size="md">For more updates, follow us on:</Heading>
-          { 
-            socialLinks.map(({href, iconComponent, label}) => 
+          {
+            socialLinks.map(({href, iconComponent, label}) =>
               <Link key = {label} sx={linkStyles} href={href}>
                 <Icon sx={iconStyles} as={iconComponent} />
                 {label}
@@ -86,11 +87,10 @@ const Footer : React.FC = () => {
         </VStack>
         <VStack alignItems='flex-start' position='relative' w='23rem' h="12rem">
           <Heading as="h4" size="md">Locate us:</Heading>
-          <FooterMap />
+          <VenueMap/>
         </VStack>
       </Flex>
       <Heading as='h5' size='sm' pt='3rem' fontWeight="normal">Copyright © 2023 NUS College Cinnamon Student Life</Heading>
-      
     </VStack>
   );
 }
