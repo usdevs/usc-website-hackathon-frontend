@@ -8,20 +8,16 @@ import {
   Text,
   useBreakpointValue,
   VStack,
-  SimpleGrid,
-  GridItem,
 } from '@chakra-ui/react'
 import Footer from '../components/Footer'
-import HomePageCard from '../components/HomePageCard'
 import HeroBg from '../public/image1.png'
 import Image from 'next/image'
-import {BUTTON_LINKS} from "../utils";
 import LandingPageBanner from '../components/LandingPageBanner'
 import landingPageMockData from '../constants/LandingPageMockData'
 
 const HeroSection = () => {
 
-  
+
   return (
     <Flex position={'relative'} height='90vh' width='full'>
       <Image
@@ -114,8 +110,8 @@ const LandingPage: NextPage = () => {
       <Box>
         {
           landingPageData.map((data, index) =>
-            <LandingPageBanner 
-              key={index} 
+            <LandingPageBanner
+              key={index}
               left={index % 2 == 1}
               {...data}
             />

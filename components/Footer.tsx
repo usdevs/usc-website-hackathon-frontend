@@ -4,70 +4,63 @@ import { FaInstagram, FaTelegram } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
 import React from "react";
 
+interface SocialLink extends NavigationLink {
+  iconComponent: React.FC,
+}
+
+const navigationLinks : NavigationLink[] = [
+  {
+    href: '/',
+    label: 'About Us'
+  },
+  {
+    href: '/student-groups',
+    label: 'Student Groups'
+  },
+  {
+    href: '/bookings',
+    label: 'Bookings'
+  },
+  {
+    href: '/',
+    label: 'Events'
+  },
+  {
+    href: '/',
+    label: 'Admins'
+  }
+]
+
+const socialLinks : SocialLink[] = [
+  {
+    href: 'https://www.instagram.com/nus.usc/',
+    iconComponent: FaInstagram,
+    label: 'Instagram'
+  },
+  {
+    href: 'https://t.me/USPChannel',
+    iconComponent: FaTelegram,
+    label: 'Telegram'
+  },
+  {
+    href: 'mailto: usc.hongensec@u.nus.edu',
+    iconComponent: MdEmail,
+    label: 'Email'
+  }
+]
+
+const linkStyles = {
+  pl : 7,
+  display: 'flex',
+  alignItems: 'center'
+}
+
+const iconStyles = {
+  mr : 1,
+  fontSize: '1.1rem'
+}
+
 const Footer : React.FC = () => {
-  interface NavigationLink {
-    href: string,
-    label: string
-  }
-
-  interface SocialLink {
-    href: string,
-    iconComponent: React.FC,
-    label: string
-  }
-
-  const navigationLinks : NavigationLink[] = [
-    {
-      href: '/',
-      label: 'About Us'
-    },
-    {
-      href: '/interest-groups',
-      label: 'Interest Groups'
-    },
-    {
-      href: '/bookings',
-      label: 'Bookings'
-    },
-    {
-      href: '/',
-      label: 'Events'
-    },
-    {
-      href: '/',
-      label: 'Admins'
-    }
-  ]
-
-  const socialLinks : SocialLink[] = [
-    {
-      href: 'https://www.instagram.com/nus.usc/',
-      iconComponent: FaInstagram,
-      label: 'Instagram'
-    },
-    {
-      href: 'https://t.me/USPChannel',
-      iconComponent: FaTelegram,
-      label: 'Telegram'
-    },
-    {
-      href: 'mailto: usc.hongensec@u.nus.edu',
-      iconComponent: MdEmail,
-      label: 'Email'
-    }
-  ]
-
-  const linkStyles = {
-    pl : 7,
-    display: 'flex',
-    alignItems: 'center'
-  }
-
-  const iconStyles = {
-    mr : 1,
-    fontSize: '1.1rem'
-  }
-
   return (
   <VStack pt="1.5rem" pb="1rem" bg='#1f407b' color='white' justifyContent='space-between'>
       <Flex w='100%' justify='space-around'>

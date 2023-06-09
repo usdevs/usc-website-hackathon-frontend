@@ -3,11 +3,10 @@ import { Box, Container, Flex, HStack, IconButton, LinkBox, LinkOverlay, Menu, M
 import { CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
 import Image from "next/image";
 import NUSCollegePic from "../public/nus-college-1@2x.png";
-
 import dynamic from "next/dynamic";
 import { BUTTON_LINKS } from "../utils";
 
-const NavLink: React.FC<ButtonInfo> = (props) => (
+const NavLink: React.FC<NavigationLink> = (props) => (
   <LinkBox
     px={2}
     py={1}
@@ -22,13 +21,24 @@ const NavLink: React.FC<ButtonInfo> = (props) => (
     }}
   >
     <Text fontFamily={'Domine'} fontSize={'24px'}>
-      {props.name}
+      {props.label}
     </Text>
-    <LinkOverlay href={props.link} />
+    <LinkOverlay href={props.href} />
   </LinkBox>
 )
 
 const Auth = dynamic(() => import('../components/Auth'), { ssr: false })
+
+const NavLinks = () => {
+  return (
+    <>
+      {BUTTON_LINKS.map((info) => (
+        <NavLink key={info.label} {...info} />
+      ))}
+    </>
+  )
+}
+
 const NavMenu = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -52,9 +62,7 @@ const NavMenu = () => {
           <Container centerContent>
             {/* Links to various pages in the Nav bar (IGs, NOW, etc.) */}
             <HStack as={'nav'} spacing={36} display={{ base: 'none', md: 'flex' }}>
-              {BUTTON_LINKS.map((info) => (
-                <NavLink key={info.name} name={info.name} link={info.link} />
-              ))}
+              <NavLinks/>
             </HStack>
           </Container>
           <Flex alignItems={'center'}>
@@ -69,9 +77,7 @@ const NavMenu = () => {
         {isOpen ? (
           <Box pb={4} display={{ md: 'none' }}>
             <Stack as={'nav'} spacing={4}>
-              {BUTTON_LINKS.map((info) => (
-                <NavLink key={info.name} name={info.name} link={info.link} />
-              ))}
+              <NavLinks/>
             </Stack>
           </Box>
         ) : null}
