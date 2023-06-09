@@ -53,7 +53,7 @@ const StudentGroups: NextPage = () => {
     <Flex justify='center' flexDir='column' as='main'>
       <NavMenu />
       <HStack pt='3rem' pb='3rem'>
-        <Box p={'2vh'} pl={'7vh'}>
+        <Box alignSelf='flex-start' p={'2vh'} pl={'7vh'}>
           <IGSearchFilter {...igSearchFilterProps} />
         </Box>
         <VStack flexGrow={1} pr='4rem' minH='45vh'>
@@ -67,7 +67,7 @@ const StudentGroups: NextPage = () => {
           >
             {interestGroupCards.length > 0 ? (
               <>
-                <strong>{interestGroupCards.length}</strong> Interest Groups{' '}
+                <strong>{interestGroupCards.length}</strong> Interest Group{interestGroupCards.length === 1 ? '' : 's'}
               </>
             ) : (
               <>No Interest Groups Found</>
