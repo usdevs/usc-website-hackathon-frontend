@@ -319,7 +319,7 @@ const BookingSelector: FC = () => {
   )
 }
 
-const Grid: NextPage<{ allOrgs: OrgInfo[] }> = ({ allOrgs }) => {
+const Grid: NextPage<{ allOrgs: Organisation[] }> = ({ allOrgs }) => {
   return (
     <Flex justify='center' flexDir='column' as='main'>
       <NavMenu />

@@ -3,18 +3,17 @@ import NavMenu from '../components/NavMenu'
 import { Box, Flex, Heading, HStack, SimpleGrid, VStack } from '@chakra-ui/react'
 import Footer from '../components/Footer'
 import IGCard from '../components/IGCard'
-import IGMockDetails from '../constants/IGMockData'
 import { ChangeEvent, useEffect, useState } from 'react'
 import IGSearchFilter from '../components/IGSearchFilter'
 
 const StudentGroups: NextPage = () => {
-  /* make requests to backend here */
-  const interestGroupDetails: IGInfo[] = IGMockDetails
   const interestGroupCategories = ['Socio-cultural', 'Sports', 'GUIPs', 'Inactive']
   const originalFilters: string[] = []
 
-  const [interestGroupCards, setInterestGroupCards] = useState(interestGroupDetails)
-  const [originalInterestGroupCards] = useState(interestGroupDetails)
+  const [interestGroupCards, setInterestGroupCards] = useState<OrganisationWithIGHead[]>([])
+  const [originalInterestGroupCards, setOriginalInterestGroupCards] = useState<
+    OrganisationWithIGHead[]
+  >([])
   const [interestGroupFilters, setInterestGroupFilters] = useState(originalFilters)
   const [interestGroupSearchString, setInterestGroupSearchString] = useState('')
 
@@ -33,12 +32,22 @@ const StudentGroups: NextPage = () => {
   }
 
   useEffect(() => {
+    ;(async () => {
+      const allOrgs = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs')
+      const allBookings = await allOrgs.json()
+      setInterestGroupCards(allBookings)
+      setOriginalInterestGroupCards(allBookings)
+    })()
+    return () => {}
+  }, [])
+
+  useEffect(() => {
     let filteredCards = originalInterestGroupCards
     if (interestGroupFilters.length > 0) {
       filteredCards = filteredCards.filter((card) => interestGroupFilters.includes(card.category))
     }
     filteredCards = filteredCards.filter((ig) =>
-      ig.title.toLowerCase().includes(interestGroupSearchString),
+      ig.name.toLowerCase().includes(interestGroupSearchString),
     )
     setInterestGroupCards(filteredCards)
   }, [interestGroupFilters, interestGroupSearchString, originalInterestGroupCards])
