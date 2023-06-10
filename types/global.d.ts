@@ -1,20 +1,27 @@
-import { Dispatch, SetStateAction } from 'react'
-
 export {}
 
 declare global {
-  interface ButtonInfo {
-    name: string
-    link: string
+  interface NavigationLink {
+    href: string
+    label: string
   }
 
-  interface IGInfo {
-    contact: string
-    invite_link: string
-    image: string
-    title: string
+  type Organisation = {
+    id: number
+    name: string
     description: string
-    category: string
+    verified: boolean
+    inviteLink: string
+    slug: string
+    category: IGCategory
+  }
+
+  type UserOnOrg = {
+    user: User
+  }
+
+  type OrganisationWithIGHead = Organisation & {
+    userOrg: UserOnOrg[]
   }
 
   type BookingDataBackend = {
@@ -26,7 +33,7 @@ declare global {
     end: string
     bookedAt: string
     eventName: string
-    bookedByUser: UserInfo
+    bookedByUser: User
   }
 
   type BookingDataDisplay = {
@@ -40,7 +47,7 @@ declare global {
     from: Date
     to: Date
     eventName: string
-    bookedByUser: UserInfo
+    bookedByUser: User
   }
 
   interface BookingDataSelection {
@@ -78,16 +85,10 @@ declare global {
     orgId: number
   }
 
-  interface OrgInfo {
+  interface User {
     id: number
     name: string
-    description: string
-    verified: boolean
-  }
-
-  interface UserInfo {
-    id: number
-    name: string
+    telegramUserName: string
   }
 
   interface ToggleProps {

@@ -1,7 +1,7 @@
 import React from 'react'
 import { LinkBox, LinkOverlay, Text } from '@chakra-ui/react'
 
-const HomePageCard: React.FC<ButtonInfo> = (props) => {
+const HomePageCard: React.FC<NavigationLink> = (props) => {
   return (
     <LinkBox
       as='button'
@@ -11,7 +11,8 @@ const HomePageCard: React.FC<ButtonInfo> = (props) => {
       // alignContent={"flex-start"}
       // justifyItems={"flex-start"}
       transition='all 0.2s cubic-bezier(.08,.52,.52,1)'
-      height={'50vh'}
+      height={{ base: '240px', md: '480px' }}
+      width={'100%'}
       // lineHeight={'16'}
       borderRadius='140px'
       fontSize='40px'
@@ -27,8 +28,8 @@ const HomePageCard: React.FC<ButtonInfo> = (props) => {
         boxShadow: '0 0 1px 2px rgba(88, 144, 255, .75), 0 1px 1px rgba(0, 0, 0, .15)',
       }}
     >
-      <Text>{props.name}</Text>
-      <LinkOverlay href={props.link} />
+      <Text>{props.label}</Text>
+      <LinkOverlay href={props.href} />
     </LinkBox>
   )
 }

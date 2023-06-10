@@ -16,6 +16,7 @@ import {
 } from '@chakra-ui/react'
 import format from 'date-fns/format'
 import { BookingsContext, BookingsContextValue } from '../../context/BookingsContext'
+import { isUserLoggedIn } from '../../utils'
 
 type BookingConfirmationPopupProps = {
   onClose: () => void
@@ -99,7 +100,7 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
     }))
   }
 
-  if (!auth || auth.token === '' || auth.orgIds.length === 0 || !bookingDataFromSelection) {
+  if (!isUserLoggedIn(auth) || auth.orgIds.length === 0 || !bookingDataFromSelection) {
     return <></>
   }
 

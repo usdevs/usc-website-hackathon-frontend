@@ -3,8 +3,7 @@ import { Box, Button, Grid, HStack, Text, VStack } from '@chakra-ui/react'
 import { format, startOfMonth, addMonths, subMonths, isSameDay } from 'date-fns'
 import { motion, AnimatePresence, LayoutGroup } from 'framer-motion'
 
-import { VENUES } from './CONSTANTS'
-
+import { VENUES } from '../../utils'
 interface CellProps {
   text: string
   isExpanded: boolean

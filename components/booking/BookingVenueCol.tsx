@@ -2,7 +2,7 @@ import { useBoolean, VStack, Box, Text } from '@chakra-ui/react'
 import { addMinutes, isAfter, isEqual } from 'date-fns'
 import { useState, useRef, useEffect } from 'react'
 import { BoxProps } from '@chakra-ui/react'
-import { useUserInfo } from '../../utils'
+import { isUserLoggedIn, useUserInfo } from '../../utils'
 
 // Types for the BookingsOld Components
 // To be moved to global types file after replacing the old BookingsOld page
@@ -100,7 +100,7 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
         onMouseUp={onMouseUp}
       />
     )
-  } else if (isUserLoggedIn) {
+  } else if (!isUserLoggedIn) {
     return <Box {...SharedBoxProps} bg='gray.100' borderColor='white' onMouseUp={onMouseUp} />
   } else {
     // Cell is available for booking
@@ -217,7 +217,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
               selected={!isBooked && between(i, firstSelected, lastSelected)}
               disabled={isDisabled}
               boxHeight={boxHeight}
-              isUserLoggedIn={!auth || auth.token === ''}
+              isUserLoggedIn={isUserLoggedIn(auth)}
             />
           )
         })}

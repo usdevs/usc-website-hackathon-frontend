@@ -16,17 +16,10 @@ import {
 import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons'
 import Image from 'next/image'
 import NUSCollegePic from '../public/nus-college-1@2x.png'
-import LoginModal from './LoginModal'
-
 import dynamic from 'next/dynamic'
-const BUTTON_LINKS: ButtonInfo[] = [
-  { name: 'Interest Groups', link: '/interest-groups' },
-  { name: 'Houses', link: '#' },
-  { name: 'NOW!', link: '#' },
-  { name: 'Bookings', link: '/bookings' },
-]
+import { BUTTON_LINKS } from '../utils'
 
-const NavLink: React.FC<ButtonInfo> = (props) => (
+const NavLink: React.FC<NavigationLink> = (props) => (
   <LinkBox
     px={2}
     py={1}
@@ -41,13 +34,24 @@ const NavLink: React.FC<ButtonInfo> = (props) => (
     }}
   >
     <Text fontFamily={'Domine'} fontSize={'24px'}>
-      {props.name}
+      {props.label}
     </Text>
-    <LinkOverlay href={props.link} />
+    <LinkOverlay href={props.href} />
   </LinkBox>
 )
 
 const Auth = dynamic(() => import('../components/Auth'), { ssr: false })
+
+const NavLinks = () => {
+  return (
+    <>
+      {BUTTON_LINKS.map((info) => (
+        <NavLink key={info.label} {...info} />
+      ))}
+    </>
+  )
+}
+
 const NavMenu = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -71,30 +75,13 @@ const NavMenu = () => {
           <Container centerContent>
             {/* Links to various pages in the Nav bar (IGs, NOW, etc.) */}
             <HStack as={'nav'} spacing={36} display={{ base: 'none', md: 'flex' }}>
-              {BUTTON_LINKS.map((info) => (
-                <NavLink key={info.name} name={info.name} link={info.link} />
-              ))}
+              <NavLinks />
             </HStack>
           </Container>
           <Flex alignItems={'center'}>
             <Menu>
-              {/* <MenuButton as={Button} rounded={'full'} variant={'link'} cursor={'pointer'} minW={0}>
-                <Avatar
-                  size={'sm'}
-                  src={
-                    'https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9'
-                  }
-                />
-              </MenuButton> */}
-              {/*<LoginModal />*/}
               <Auth />
-
-              <MenuList>
-                {/*<MenuItem>Link 1</MenuItem>*/}
-                {/*<MenuItem>Link 2</MenuItem>*/}
-                {/*<MenuDivider/>*/}
-                {/*<MenuItem>Link 3</MenuItem>*/}
-              </MenuList>
+              <MenuList></MenuList>
             </Menu>
           </Flex>
         </Flex>
@@ -102,9 +89,7 @@ const NavMenu = () => {
         {isOpen ? (
           <Box pb={4} display={{ md: 'none' }}>
             <Stack as={'nav'} spacing={4}>
-              {BUTTON_LINKS.map((info) => (
-                <NavLink key={info.name} name={info.name} link={info.link} />
-              ))}
+              <NavLinks />
             </Stack>
           </Box>
         ) : null}

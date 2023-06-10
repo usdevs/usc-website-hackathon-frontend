@@ -30,41 +30,10 @@ import BookingVenueCol from '../components/booking/BookingVenueCol'
 import Toggle from '../components/booking/Toggle'
 import CalendarEventCard from '../components/booking/CalendarEventCard'
 
-import { VENUES } from '../components/booking/CONSTANTS'
+import { VENUES, ALL_VENUES_KEYWORD, isUserLoggedIn } from '../utils'
 import { useUserInfo } from '../utils'
 
 const BOX_HEIGHT = 8 // Ensures time labels are aligned with grid cells
-
-// const testBookings: BookingDataDisplay[] = [
-//   {
-//     ig: VENUES[1],
-//     venueId: 1,
-//     userId: 1,
-//     from: new Date('2023-03-27T08:30:00+08:00'),
-//     to: new Date('2023-03-27T10:00:00+08:00'),
-//   },
-//   {
-//     ig: VENUES[2],
-//     venueId: 2,
-//     userId: 'Jane Doe',
-//     from: new Date('2023-03-27T10:30:00+08:00'),
-//     to: new Date('2023-03-27T12:00:00+08:00'),
-//   },
-//   {
-//     ig: VENUES[3],
-//     venueId: 5,
-//     userId: 'James Smith',
-//     from: new Date('2023-03-27T13:00:00+08:00'),
-//     to: new Date('2023-03-27T14:30:00+08:00'),
-//   },
-//   {
-//     ig: VENUES[4],
-//     venueId: 4,
-//     userId: 1,
-//     from: new Date('2023-03-27T17:00:00+08:00'),
-//     to: new Date('2023-03-27T18:30:00+08:00'),
-//   },
-// ];
 
 const BookingSelector: FC = () => {
   useEffect(() => {
@@ -129,7 +98,8 @@ const BookingSelector: FC = () => {
     )
   })()
 
-  const venueBookings: Array<Array<BookingDataDisplay>> = new Array(6)
+  // TODO cleanup this stuff, refactor this component
+  const bookingsSortedByVenue: Array<Array<BookingDataDisplay>> = new Array(6)
     .fill(0)
     .map(() => new Array(0))
   const bookingsMappedForDisplay: Array<BookingDataDisplay> = allBookings.map((booking) => ({
@@ -146,7 +116,7 @@ const BookingSelector: FC = () => {
   bookingsMappedForDisplay.reduce(function (memo, x) {
     memo[x['venueId'] - 1].push(x)
     return memo
-  }, venueBookings)
+  }, bookingsSortedByVenue)
 
   const onModalClose = () => {
     setUnsuccessfulFormSubmitString('')
@@ -158,7 +128,7 @@ const BookingSelector: FC = () => {
   }
 
   const onModalOpen = () => {
-    if (!auth || auth.token === '') {
+    if (!isUserLoggedIn(auth)) {
       if (!toast.isActive(toast_id)) {
         toast({
           id: toast_id,
@@ -178,6 +148,7 @@ const BookingSelector: FC = () => {
     }
   }
 
+  const [venueToFilterBy, setVenueToFilterBy] = useState<string>(ALL_VENUES_KEYWORD)
   const [isExpandedCalendar, setExpandedCalendar] = useState(false)
   // CALENDAR EVENT CARD
   // Sets the state of the event card
@@ -198,13 +169,13 @@ const BookingSelector: FC = () => {
   }
 
   //todo check
-  // Frontend login for removing the booking from venueBookings
-  // May have to change venueBookings to state to update it
+  // Frontend login for removing the booking from bookingsSortedByVenue
+  // May have to change bookingsSortedByVenue to state to update it
   // We want the booking to be removed from the grid immediately
   // Regardless of whether the delete request is successful
-  // If it is unsuccessful, we can just add it back to venueBookings
+  // If it is unsuccessful, we can just add it back to bookingsSortedByVenue
   const handleDeleteBooking = async (bookingId: number) => {
-    const token = !auth || auth.token === '' ? '' : auth?.token
+    const token = isUserLoggedIn(auth) ? auth?.token : ''
     const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings/' + bookingId, {
       method: 'DELETE',
       headers: {
@@ -271,12 +242,16 @@ const BookingSelector: FC = () => {
           <HStack gap='4'>
             <Menu closeOnSelect={false}>
               <MenuButton as={Button} colorScheme='blue' rightIcon={<ChevronDownIcon />}>
-                Venue
+                {venueToFilterBy === ALL_VENUES_KEYWORD ? 'Venue' : venueToFilterBy}
               </MenuButton>
               <MenuList>
-                <MenuOptionGroup defaultValue={VENUES[0]} type='radio'>
-                  {VENUES.map((venue) => (
-                    <MenuItemOption key={venue} value={venue}>
+                <MenuOptionGroup defaultValue={ALL_VENUES_KEYWORD} type='radio'>
+                  {[ALL_VENUES_KEYWORD, ...VENUES].map((venue) => (
+                    <MenuItemOption
+                      onClick={() => setVenueToFilterBy(venue)}
+                      key={venue}
+                      value={venue}
+                    >
                       {venue}
                     </MenuItemOption>
                   ))}
@@ -289,7 +264,11 @@ const BookingSelector: FC = () => {
             isOn={isExpandedCalendar}
             setIsOn={setExpandedCalendar}
             setStartDate={setStartDate}
-            bookings={bookingsMappedForDisplay}
+            bookings={
+              venueToFilterBy === ALL_VENUES_KEYWORD
+                ? bookingsMappedForDisplay
+                : bookingsSortedByVenue[VENUES.findIndex((venue) => venue === venueToFilterBy)]
+            }
           />
         </VStack>
         <AnimatePresence>
@@ -302,28 +281,35 @@ const BookingSelector: FC = () => {
             >
               <HStack>
                 <BookingsTimesCol boxHeight={BOX_HEIGHT} />
-                {VENUES.map((venueName, venueId) => (
-                  <BookingVenueCol
-                    timeIntervals={timeIntervals}
-                    key={venueName}
-                    venueName={venueName}
-                    openBookingModal={(start, end) => {
-                      setBookingDataFromSelection({
-                        ...bookingDataFromSelection,
-                        venueName,
-                        venueId: venueId + 1,
-                        start,
-                        end,
-                      })
-                      onModalOpen()
-                    }}
-                    bookingModalIsOpen={isOpen}
-                    // currentVenueBookings={venueBookings[venueId]}
-                    currentVenueBookings={venueBookings[venueId]}
-                    boxHeight={BOX_HEIGHT}
-                    openBookingCard={handleBookingCard}
-                  />
-                ))}
+                {VENUES.filter((venue) => {
+                  if (venueToFilterBy === ALL_VENUES_KEYWORD) {
+                    return true
+                  }
+                  return venue === venueToFilterBy
+                }).map((venueName) => {
+                  const venueId = VENUES.findIndex((venue) => venue === venueName)
+                  return (
+                    <BookingVenueCol
+                      timeIntervals={timeIntervals}
+                      key={venueName}
+                      venueName={venueName}
+                      openBookingModal={(start, end) => {
+                        setBookingDataFromSelection({
+                          ...bookingDataFromSelection,
+                          venueName,
+                          venueId: venueId + 1,
+                          start,
+                          end,
+                        })
+                        onModalOpen()
+                      }}
+                      bookingModalIsOpen={isOpen}
+                      currentVenueBookings={bookingsSortedByVenue[venueId]}
+                      boxHeight={BOX_HEIGHT}
+                      openBookingCard={handleBookingCard}
+                    />
+                  )
+                })}
               </HStack>
             </motion.div>
           )}
@@ -333,7 +319,7 @@ const BookingSelector: FC = () => {
   )
 }
 
-const Grid: NextPage<{ allOrgs: OrgInfo[] }> = ({ allOrgs }) => {
+const Grid: NextPage<{ allOrgs: Organisation[] }> = ({ allOrgs }) => {
   return (
     <Flex justify='center' flexDir='column' as='main'>
       <NavMenu />
