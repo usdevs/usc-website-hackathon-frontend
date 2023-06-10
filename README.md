@@ -12,16 +12,47 @@ Install the following:
 ## Initial setup
 
 1. `npm install`
-2. `cd <frontend repo> && npm run dev`
 
-### Spinning up your own backend locally
+### Setting up the backend
 
-Currently, the frontend will connect to the same DigitalOcean server (to avoid spinning up a Docker instance on your local machine). If you are going to be doing heavy development work and thus will make lots of calls to the database, you may wish to spin up your own backend locally to avoid affecting other developers. Run the following commands:
+Add your Tele handle to the Users sheet in the Excel file, and your organisations you are a member of to the userOnOrg sheet in the file. Otherwise, you can manually add it yourself (steps below)
 
-1. `cd <backend repo> && npm run dev`
-2. `cd <backend repo> && docker-compose up`
+#### Set up the POSTGRESQL server
 
-Make sure to change the value of the `NEXT_PUBLIC_BACKEND_URL` constant in the `.env.development` file to `http://localhost:3000/`.
+1. Install pgadmin (or your own preferrend software, or the CLI if you prefer that) - https://www.pgadmin.org/download/
+1. Launch it - the default password is 'admin'
+2. Right-click on "Servers" and click on "Register"
+3. Ensure that you have launched the docker POSTGRE DB
+4. Put the "name" in the "General" tab as "nusc"
+5. In the "Connection" tab, "Host name" is "localhost" and "port" is 5433. The password is "1234" (you can leave the username as "postgres")
+6. Save it! Note that to save changes to pgadmin, need to use "F6" or click on the tiny save changes button after you add your new rows.
+7. Login to the Telegram via [this link](https://usdevs.github.io/uscwebsite-hackathon-backend/) and add yourself as a user to the "Users" table in pgadmin.
+3. Add yourself to an IG/organisation in the "UserOnOrg" table
+
+#### Set up the repo
+
+```bash
+$ docker-compose up
+$ npm install
+$ npm run prisma:migrate
+$ npm run prisma:seed
+$ # update env files
+$ git checkout frontend
+$ npm install
+$ npm run prisma:reset
+```
+
+#### Final steps
+
+1. Add the .env file - get it from an existing person using the repo.
+
+## Running it locally
+
+Run the following in separate terminals
+
+1. `cd <frontend repo> && npm run dev`
+2. `cd <backend repo> && npm run dev`
+3. `cd <backend repo> && docker-compose up`
 
 ### Telegram login token
 
