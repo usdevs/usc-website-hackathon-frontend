@@ -303,7 +303,6 @@ const BookingSelector: FC = () => {
                         })
                         onModalOpen()
                       }}
-                      bookingModalIsOpen={isOpen}
                       currentVenueBookings={bookingsSortedByVenue[venueId]}
                       boxHeight={BOX_HEIGHT}
                       openBookingCard={handleBookingCard}
