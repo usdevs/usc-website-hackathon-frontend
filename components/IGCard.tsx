@@ -3,7 +3,6 @@ import {
   Card,
   CardBody,
   Heading,
-  Image,
   Box,
   Center,
   Divider,
@@ -22,14 +21,17 @@ import { motion } from 'framer-motion'
 import React from 'react'
 import { FaUserCircle } from 'react-icons/fa'
 import Link from 'next/link'
+import ImageWithFallback from './ImageWithFallback'
 
 interface IGInfoProps {
   ig_info: OrganisationWithIGHead
+  imageKey: number
 }
 
 type LeftPaneProps = {
+  imageKey: number
   igHead: string
-  slug: string
+  imageSrc: string
   inviteLink: string
 }
 
@@ -80,15 +82,19 @@ const getInviteLinkButton = (inviteLink: string) => {
   )
 }
 
-const LeftPane: React.FC<LeftPaneProps> = ({ igHead, slug, inviteLink }) => {
+const LeftPane: React.FC<LeftPaneProps> = ({ imageKey, igHead, imageSrc, inviteLink }) => {
   return (
     <VStack padding='1rem' borderRight='2px solid darkgrey'>
       <Center>
-        <Image
-          objectFit='cover'
-          maxW={{ base: '100%', sm: '130px' }}
-          src={'/orgs/' + slug + '.jpeg'}
-          alt='IG Picture'
+        <ImageWithFallback
+          key={imageKey}
+          fallbackSrc={'/orgs/Default.png'}
+          width={100}
+          height={100}
+          src={imageSrc}
+          alt={imageSrc}
+          style={{ objectFit: 'contain' }}
+          sizes='(max-width: 130) 100vw'
         />
       </Center>
       {getContactButton(igHead)}
@@ -97,13 +103,14 @@ const LeftPane: React.FC<LeftPaneProps> = ({ igHead, slug, inviteLink }) => {
   )
 }
 
-const IGCard: React.FC<IGInfoProps> = ({ ig_info }) => {
+const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const firstUserOnOrg: UserOnOrg = ig_info?.userOrg[0]
+  const firstUserOnOrg: UserOnOrg | null = ig_info?.userOrg?.length > 0 ? ig_info?.userOrg[0] : null
   const igHead: string = firstUserOnOrg?.user?.name || 'No name'
-  const slug = ig_info.slug || 'Default.png'
-  const inviteLink = ig_info.inviteLink
+  const slug = ig_info?.slug || 'Default.png'
+  const imageSrc = '/orgs/' + slug + '.png'
+  const inviteLink = ig_info?.inviteLink || 'https://t.me/' + firstUserOnOrg?.user?.telegramUserName
 
   return (
     <>
@@ -115,7 +122,12 @@ const IGCard: React.FC<IGInfoProps> = ({ ig_info }) => {
           shadow='md'
           onClick={onOpen}
         >
-          <LeftPane igHead={igHead} slug={slug} inviteLink={inviteLink} />
+          <LeftPane
+            imageKey={imageKey - 1}
+            igHead={igHead}
+            imageSrc={imageSrc}
+            inviteLink={inviteLink}
+          />
           <Divider
             orientation='vertical'
             borderColor='blackAlpha.400'
@@ -148,7 +160,16 @@ const IGCard: React.FC<IGInfoProps> = ({ ig_info }) => {
       <Modal isOpen={isOpen} onClose={onClose} size='xl'>
         <ModalOverlay />
         <ModalContent>
-          <Image src={'/orgs/' + slug + '.jpeg'} alt='Modal Image' maxH='350px' objectFit='cover' />
+          <ImageWithFallback
+            key={imageKey}
+            fallbackSrc={'/orgs/Default.png'}
+            src={imageSrc}
+            alt='Modal Image'
+            width={300}
+            height={300}
+            style={{ objectFit: 'contain' }}
+            sizes='(max-height: 350) 100vh'
+          />
           <ModalHeader>{ig_info.name}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>

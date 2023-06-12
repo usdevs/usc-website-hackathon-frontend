@@ -3,7 +3,7 @@ import MockedLocalStorage from '../__mocks__/mockedLocalStorage'
 
 let mockedMutate = jest.fn()
 
-jest.mock('swr', () => (key, persistentFetcher) => ({
+jest.mock('swr', () => (key: any, persistentFetcher: any) => ({
   data: persistentFetcher(key),
   mutate: mockedMutate,
 }))
