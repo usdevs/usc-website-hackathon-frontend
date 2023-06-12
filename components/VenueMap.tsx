@@ -183,6 +183,8 @@ const VenueMap: React.FC = () => {
     setIsSsr(false)
   }, [])
 
+  const venuesLength = venues.length
+
   return (
     <>
       {!isSsr && (
@@ -198,9 +200,8 @@ const VenueMap: React.FC = () => {
                 attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
               />
               {venues.map((venue, index) => (
-                <>
+                <div key={index}>
                   <CustomMarker
-                    hkey={index}
                     position={venue.position}
                     icon={
                       new TempIcon({
@@ -213,44 +214,40 @@ const VenueMap: React.FC = () => {
                     popupMessage={venue.popupMessage}
                   />
                   <Polygon positions={venue.bounds} />
-                </>
+                </div>
               ))}
               {privateTransportMarkers.map((marker, index) => {
                 return (
-                  <>
-                    <CustomMarker
-                      hkey={index}
-                      position={marker.position}
-                      icon={
-                        new TempIcon({
-                          iconUrl: 'leaflet/red-marker.png',
-                          iconSize: [25, 41],
-                          iconAnchor: [12, 41],
-                        })
-                      }
-                      isShowPopup={!!marker.isShowPopup}
-                      popupMessage={marker.popupMessage}
-                    />
-                  </>
+                  <CustomMarker
+                    key={venuesLength * 2 + index}
+                    position={marker.position}
+                    icon={
+                      new TempIcon({
+                        iconUrl: 'leaflet/red-marker.png',
+                        iconSize: [25, 41],
+                        iconAnchor: [12, 41],
+                      })
+                    }
+                    isShowPopup={!!marker.isShowPopup}
+                    popupMessage={marker.popupMessage}
+                  />
                 )
               })}
               {publicTransportMarkers.map((marker, index) => {
                 return (
-                  <>
-                    <CustomMarker
-                      hkey={index}
-                      position={marker.position}
-                      icon={
-                        new TempIcon({
-                          iconUrl: 'leaflet/green-marker.png',
-                          iconSize: [25, 41],
-                          iconAnchor: [12, 41],
-                        })
-                      }
-                      isShowPopup={!!marker.isShowPopup}
-                      popupMessage={marker.popupMessage}
-                    />
-                  </>
+                  <CustomMarker
+                    key={venuesLength * 3 + index}
+                    position={marker.position}
+                    icon={
+                      new TempIcon({
+                        iconUrl: 'leaflet/green-marker.png',
+                        iconSize: [25, 41],
+                        iconAnchor: [12, 41],
+                      })
+                    }
+                    isShowPopup={!!marker.isShowPopup}
+                    popupMessage={marker.popupMessage}
+                  />
                 )
               })}
               {

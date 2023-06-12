@@ -40,7 +40,7 @@ const CustomMarker: React.FC<CustomMarkerProps> = (props) => {
   }, [props.isShowPopup])
 
   return (
-    <Marker ref={markerRef} key={props.hkey} position={props.position} icon={props.icon}>
+    <Marker ref={markerRef} position={props.position} icon={props.icon}>
       <Popup autoClose={false}>
         {props.popupMessage}
         <a

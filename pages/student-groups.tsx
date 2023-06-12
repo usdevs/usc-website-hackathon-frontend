@@ -62,7 +62,7 @@ const StudentGroups: NextPage = () => {
     <Flex justify='center' flexDir='column' as='main'>
       <NavMenu />
       <HStack pt='3rem' pb='3rem'>
-        <Box p={'2vh'} pl={'7vh'}>
+        <Box alignSelf='flex-start' p={'2vh'} pl={'7vh'}>
           <IGSearchFilter {...igSearchFilterProps} />
         </Box>
         <VStack flexGrow={1} pr='4rem' minH='45vh'>
@@ -76,7 +76,8 @@ const StudentGroups: NextPage = () => {
           >
             {interestGroupCards.length > 0 ? (
               <>
-                <strong>{interestGroupCards.length}</strong> Interest Groups{' '}
+                <strong>{interestGroupCards.length}</strong> Interest Group
+                {interestGroupCards.length > 1 && 's'}
               </>
             ) : (
               <>No Interest Groups Found</>
@@ -85,9 +86,15 @@ const StudentGroups: NextPage = () => {
           {/*</Box>*/}
 
           {/*<Box pt={"2vh"} pb={"3vh"}>*/}
-          <SimpleGrid columns={[1, null, 2]} maxWidth={'95%'} spacing='2rem' overflowY='auto'>
+          <SimpleGrid
+            columns={[1, null, 2]}
+            maxWidth={'95%'}
+            maxH='55vh'
+            spacing='2rem'
+            overflowY='auto'
+          >
             {interestGroupCards.map((interestGroupDetail, idx) => (
-              <IGCard key={idx} ig_info={interestGroupDetail} />
+              <IGCard key={idx * 2} imageKey={idx * 2} ig_info={interestGroupDetail} />
             ))}
           </SimpleGrid>
         </VStack>

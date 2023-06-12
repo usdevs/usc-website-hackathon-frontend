@@ -4,10 +4,10 @@ import { Button } from '@chakra-ui/react'
 import TelegramLoginButton from './TelegramLoginButton'
 import { useUserInfo } from '../utils'
 
-// { Parth: 4, Zhi Sheng: 5, Megan: 6, Conrad: 7 } based on 2 April seed file
-const NEXT_PUBLIC_BACKEND_TELEGRAM_USER_ID = 5
+// { Parth: 22, Zhi Sheng: 23, Megan: 24, Conrad: 25 } based on 2 April seed file
+const NEXT_PUBLIC_BACKEND_TELEGRAM_USER_ID = 25
 const NEXT_PUBLIC_BACKEND_JWT_DEV =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTExMzY0ODY1MCwiZmlyc3RfbmFtZSI6IlBhcnRoIiwidXNlcm5hbWUiOiJncGFydGgyNiIsImF1dGhfZGF0ZSI6MTY4MDQ5MDc0NywicGhvdG9fdXJsIjoiaHR0cHM6Ly90Lm1lL2kvdXNlcnBpYy8zMjAvZ0VtVHBfbDR1WUJueWQ3elZFZTQxVGRuQWhQczgtMmJnbXY3MXc4ZzM2US5qcGciLCJoYXNoIjoiNzVkNTc3ZmNhMjk0NGM2ZmE3ZTU3OTgwOGRhZDM1Yjg4M2U3ZTRkNTkzMTlhNjM3ZGUxNjA1N2VlNzhjYzAyNSIsImlhdCI6MTY4MDQ5MDc0OSwiZXhwIjoxNjgwNDk0MzQ5fQ.spKGHWq8Mmg-jARg2J3mgsN6wupsHl6xxMfom3DeqSs'
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NzA1MjQ0MTIwLCJmaXJzdF9uYW1lIjoiTGV3IEtpYW4gTG9vbmcsIENvbnJhZCIsInVzZXJuYW1lIjoib3Jxb2kiLCJhdXRoX2RhdGUiOjE2ODY1ODUwNzIsInBob3RvX3VybCI6Imh0dHBzOi8vdC5tZS9pL3VzZXJwaWMvMzIwL1otOHNvYk1MbEVOVkt4bEIxNXpDWG0zRmFRVnI1SF9TVGRZWjRqVFA1anMuanBnIiwiaGFzaCI6IjhkNzhlYmU3ZTNhZWFmNWE3ZTExZmU1NjUzMDJjNjBiMTNmZTIzZDEwNjZmMjMyMjljOGUyZmZhNGRlMTZiMzEiLCJpYXQiOjE2ODY1ODUwNzQsImV4cCI6MTY4NjU4ODY3NH0.KhUr-wcw7CZtYbsPuADdRhVxMX6Zj5nHD_1Buxo2kL0'
 const NEXT_PUBLIC_NGINX_PROXY_ON = false
 
 const Auth: React.FC = () => {
@@ -18,15 +18,15 @@ const Auth: React.FC = () => {
       onClick={() => {
         setAuth({
           token: NEXT_PUBLIC_BACKEND_JWT_DEV,
-          orgIds: [0],
+          orgIds: [66, 67],
           userId: NEXT_PUBLIC_BACKEND_TELEGRAM_USER_ID,
           // userInfo is not needed for now, so can just add filler values
           userInfo: {
-            firstName: "Parth",
+            firstName: 'Parth',
             telegramId: -1,
-            photoUrl: "",
-            username: "gparth26"
-          }
+            photoUrl: '',
+            username: 'gparth26',
+          },
         })
       }}
     >

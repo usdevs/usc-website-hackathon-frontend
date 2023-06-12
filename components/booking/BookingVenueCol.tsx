@@ -4,12 +4,16 @@ import { useState, useRef, useEffect } from 'react'
 import { BoxProps } from '@chakra-ui/react'
 import { isUserLoggedIn, useUserInfo } from '../../utils'
 
-// Types for the BookingsOld Components
-// To be moved to global types file after replacing the old BookingsOld page
+enum CellStatus {
+  Available,
+  Booked,
+  BookedBySelf,
+  Selected,
+  Disabled,
+}
 interface BookingVenueColumnProps extends React.HTMLProps<HTMLDivElement> {
   venueName: String
   openBookingModal: (start: Date, end: Date) => void
-  bookingModalIsOpen: boolean
   timeIntervals: Date[]
   currentVenueBookings: Array<BookingDataDisplay>
   boxHeight: number
@@ -18,11 +22,8 @@ interface BookingVenueColumnProps extends React.HTMLProps<HTMLDivElement> {
 
 interface BookingVenueTimeCellProps extends React.HTMLProps<HTMLDivElement> {
   boxHeight: number
-  booked: boolean
-  selected: boolean
-  disabled: boolean
-  bookedBySelf: boolean
   isUserLoggedIn: boolean
+  cellStatus: CellStatus
 }
 
 // Detects clicks outside of the grid
@@ -38,6 +39,7 @@ function useOutsideAlerter(ref: any, callback: () => void) {
   }, [ref, callback])
 }
 
+// TODO put setLast in a Context provider to avoid these kind of props passing
 // Individual Grid Cells for the time intervals
 const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
   onMouseDown,
@@ -45,11 +47,8 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
   onMouseUp,
   onClick,
   boxHeight,
-  booked,
-  selected,
-  disabled,
-  bookedBySelf,
   isUserLoggedIn,
+  cellStatus,
 }) => {
   // Cell is coloured based on whether it's selected or not
 
@@ -61,21 +60,7 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
     transition: '200ms ease-in',
   }
 
-  // Cell is booked by someone
-  if (booked) {
-    if (bookedBySelf) {
-      return (
-        <Box
-          {...SharedBoxProps}
-          bg='brand.primary'
-          borderColor='brand.primary'
-          cursor='pointer'
-          onMouseUp={onMouseUp}
-          onClick={onClick}
-        />
-      )
-    }
-
+  if (cellStatus === CellStatus.Booked) {
     return (
       <Box
         {...SharedBoxProps}
@@ -84,13 +69,24 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
         cursor='pointer'
         onMouseUp={onMouseUp}
         onClick={onClick}
+      >
+        t
+      </Box>
+    )
+  } else if (cellStatus === CellStatus.BookedBySelf) {
+    return (
+      <Box
+        {...SharedBoxProps}
+        bg='brand.primary'
+        borderColor='brand.primary'
+        cursor='pointer'
+        onMouseUp={onMouseUp}
+        onClick={onClick}
       />
     )
-  } else if (disabled) {
-    // Cell is disabled
+  } else if (cellStatus === CellStatus.Disabled) {
     return <Box {...SharedBoxProps} bg='gray.200' borderColor='gray.200' onMouseUp={onMouseUp} />
-  } else if (selected) {
-    // Cell is selected
+  } else if (cellStatus === CellStatus.Selected) {
     return (
       <Box
         {...SharedBoxProps}
@@ -122,14 +118,16 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
 const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
   venueName,
   openBookingModal,
-  bookingModalIsOpen,
   timeIntervals,
   currentVenueBookings,
   boxHeight,
   openBookingCard,
 }) => {
-  // Helper function to check if the current cell is between the first and last selected cells
-  const between = (currentIndex: number, x: number, y: number): boolean => {
+  const isCellBetweenFirstAndLastSelected = (
+    currentIndex: number,
+    x: number,
+    y: number,
+  ): boolean => {
     const startIndex = Math.min(x, y)
     const endIndex = Math.max(x, y)
 
@@ -152,6 +150,58 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
 
   const start = Math.min(firstSelected, lastSelected)
   const end = Math.max(firstSelected, lastSelected)
+
+  function getMappedVenueCells() {
+    return timeIntervals.map((el, i) => {
+      let cellStatus = CellStatus.Available
+      // Prevent selecting a time that is already booked or is in the past
+      const isCellDisabled =
+        // Okay to loop through all bookings as there are at most
+        // 24 bookings for this particular venue and day
+        currentVenueBookings.some((booking) => {
+          const startInterval = timeIntervals[start]
+          return (
+            (isAfter(booking.from, startInterval) && isAfter(el, booking.from)) ||
+            (isAfter(startInterval, booking.from) && isAfter(booking.from, el))
+          )
+        }) || isAfter(new Date(), el)
+
+      const venueBooking: BookingDataDisplay | undefined = currentVenueBookings.find((booking) => {
+        return (isEqual(el, booking.from) || isAfter(el, booking.from)) && isAfter(booking.to, el)
+      })
+      const isBooked = venueBooking !== undefined
+      if (isBooked) {
+        cellStatus = CellStatus.Booked
+        if (venueBooking?.userId === auth?.userId) {
+          cellStatus = CellStatus.BookedBySelf
+        }
+      } else if (!isBooked && isCellBetweenFirstAndLastSelected(i, firstSelected, lastSelected)) {
+        cellStatus = CellStatus.Selected
+      } else if (isCellDisabled) {
+        cellStatus = CellStatus.Disabled
+      }
+
+      return (
+        <BookingVenueTimeCell
+          key={i}
+          cellStatus={cellStatus}
+          onMouseDown={() => {
+            setFirst(i)
+            setLast(i)
+          }}
+          onMouseOver={() => {
+            if (mouseIsDown && !isBooked) setLast(i)
+          }}
+          onClick={(e) => {
+            if (isBooked) openBookingCard(e, venueBooking)
+          }}
+          boxHeight={boxHeight}
+          isUserLoggedIn={isUserLoggedIn(auth)}
+        />
+      )
+    })
+  }
+
   return (
     <VStack ref={wrapperRef} spacing='0'>
       <Text
@@ -176,51 +226,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
           openBookingModal(timeIntervals[start], addMinutes(timeIntervals[end], 30))
         }}
       >
-        {timeIntervals.map((el, i) => {
-          // Check if the current cell is booked
-          const venueBooking = currentVenueBookings.find((booking) => {
-            return (
-              (isEqual(el, booking.from) || isAfter(el, booking.from)) && isAfter(booking.to, el)
-            )
-          })
-          const isBooked = venueBooking !== undefined
-
-          const isBookedBySelf = venueBooking !== undefined && venueBooking.userId === auth?.userId
-
-          // Prevent selecting a time that is already booked or is in the past
-          const isDisabled =
-            // Okay to loop through all bookings as there are at most
-            // 24 bookings for this particular venue and day
-            currentVenueBookings.some((booking) => {
-              const startInterval = timeIntervals[start]
-              return (
-                (isAfter(booking.from, startInterval) && isAfter(el, booking.from)) ||
-                (isAfter(startInterval, booking.from) && isAfter(booking.from, el))
-              )
-            }) || isAfter(new Date(), el)
-
-          return (
-            <BookingVenueTimeCell
-              key={i}
-              booked={isBooked}
-              bookedBySelf={isBookedBySelf}
-              onMouseDown={() => {
-                setFirst(i)
-                setLast(i)
-              }}
-              onMouseOver={() => {
-                if (mouseIsDown && !isBooked) setLast(i)
-              }}
-              onClick={(e) => {
-                if (venueBooking !== undefined) openBookingCard(e, venueBooking)
-              }}
-              selected={!isBooked && between(i, firstSelected, lastSelected)}
-              disabled={isDisabled}
-              boxHeight={boxHeight}
-              isUserLoggedIn={isUserLoggedIn(auth)}
-            />
-          )
-        })}
+        {getMappedVenueCells()}
       </VStack>
     </VStack>
   )
