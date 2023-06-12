@@ -23,7 +23,6 @@ export type VenueMapProps = {
 
 export type CustomMarkerProps = {
   position: LatLngExpression
-  hkey: number
   icon: Icon
   isShowPopup: boolean
   popupMessage: string
