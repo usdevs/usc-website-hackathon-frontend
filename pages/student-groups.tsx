@@ -87,7 +87,7 @@ const StudentGroups: NextPage = () => {
           {/*<Box pt={"2vh"} pb={"3vh"}>*/}
           <SimpleGrid columns={[1, null, 2]} maxWidth={'95%'} spacing='2rem' overflowY='auto'>
             {interestGroupCards.map((interestGroupDetail, idx) => (
-              <IGCard key={idx} ig_info={interestGroupDetail} />
+              <IGCard key={idx * 2} imageKey={idx * 2} ig_info={interestGroupDetail} />
             ))}
           </SimpleGrid>
         </VStack>
