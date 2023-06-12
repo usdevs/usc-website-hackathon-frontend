@@ -7,7 +7,7 @@ import { useUserInfo } from '../utils'
 // { Parth: 22, Zhi Sheng: 23, Megan: 24, Conrad: 25 } based on 2 April seed file
 const NEXT_PUBLIC_BACKEND_TELEGRAM_USER_ID = 22
 const NEXT_PUBLIC_BACKEND_JWT_DEV =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTExMzY0ODY1MCwiZmlyc3RfbmFtZSI6IlBhcnRoIiwidXNlcm5hbWUiOiJncGFydGgyNiIsImF1dGhfZGF0ZSI6MTY4NjQwMDEzNCwicGhvdG9fdXJsIjoiaHR0cHM6Ly90Lm1lL2kvdXNlcnBpYy8zMjAvZ0VtVHBfbDR1WUJueWQ3elZFZTQxVGRuQWhQczgtMmJnbXY3MXc4ZzM2US5qcGciLCJoYXNoIjoiNGNkOWE1YzQ1NTJiMjQ5MDc3ZGVlYTQ4MDhmYmZhNDVmMjg4Zjg1MDNlYTE1YTliMzFiNmQzM2M1ODE3ZWQ2MCIsImlhdCI6MTY4NjQwMDEzNywiZXhwIjoxNjg2NDAzNzM3fQ.xG7DIGg3ZFZ5flEzl_nqz-LRDPaUfpWl9jP9kjhffE8'
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTExMzY0ODY1MCwiZmlyc3RfbmFtZSI6IlBhcnRoIiwidXNlcm5hbWUiOiJncGFydGgyNiIsImF1dGhfZGF0ZSI6MTY4NjQ5MzQwMiwicGhvdG9fdXJsIjoiaHR0cHM6Ly90Lm1lL2kvdXNlcnBpYy8zMjAvZ0VtVHBfbDR1WUJueWQ3elZFZTQxVGRuQWhQczgtMmJnbXY3MXc4ZzM2US5qcGciLCJoYXNoIjoiODgyNTk5ODg5MGM4ZDM2OGQ2YzhhYmQ3ZmQzZWE1Yjk0MjI5MTU5NDhjZGQ3MzEzYWExNDlmMzQ1NmRmYWRiYyIsImlhdCI6MTY4NjQ5MzQwNCwiZXhwIjoxNjg2NDk3MDA0fQ.c9XfWDBsZckj2ehbPikWotqx7dHpL9VmNyTtK6DAVSs'
 const NEXT_PUBLIC_NGINX_PROXY_ON = false
 
 const Auth: React.FC = () => {
@@ -22,11 +22,11 @@ const Auth: React.FC = () => {
           userId: NEXT_PUBLIC_BACKEND_TELEGRAM_USER_ID,
           // userInfo is not needed for now, so can just add filler values
           userInfo: {
-            firstName: "Parth",
+            firstName: 'Parth',
             telegramId: -1,
-            photoUrl: "",
-            username: "gparth26"
-          }
+            photoUrl: '',
+            username: 'gparth26',
+          },
         })
       }}
     >
