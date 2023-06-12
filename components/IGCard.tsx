@@ -88,7 +88,7 @@ const LeftPane: React.FC<LeftPaneProps> = ({ imageKey, igHead, imageSrc, inviteL
       <Center>
         <ImageWithFallback
           key={imageKey}
-          fallbackSrc={'/orgs/Default.png'}
+          fallbackSrc={'/orgs/default.png'}
           width={100}
           height={100}
           src={imageSrc}
@@ -108,7 +108,7 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
 
   const firstUserOnOrg: UserOnOrg | null = ig_info?.userOrg?.length > 0 ? ig_info?.userOrg[0] : null
   const igHead: string = firstUserOnOrg?.user?.name || 'No name'
-  const slug = ig_info?.slug || 'Default.png'
+  const slug = ig_info?.slug || 'default.png'
   const imageSrc = '/orgs/' + slug + '.png'
   const inviteLink = ig_info?.inviteLink || 'https://t.me/' + firstUserOnOrg?.user?.telegramUserName
 
@@ -162,7 +162,7 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
         <ModalContent>
           <ImageWithFallback
             key={imageKey}
-            fallbackSrc={'/orgs/Default.png'}
+            fallbackSrc={'/orgs/default.png'}
             src={imageSrc}
             alt='Modal Image'
             width={300}
