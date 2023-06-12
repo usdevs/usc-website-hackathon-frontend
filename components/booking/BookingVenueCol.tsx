@@ -9,7 +9,7 @@ enum CellStatus {
   Booked,
   BookedBySelf,
   Selected,
-  Disabled
+  Disabled,
 }
 interface BookingVenueColumnProps extends React.HTMLProps<HTMLDivElement> {
   venueName: String
@@ -48,7 +48,7 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
   onClick,
   boxHeight,
   isUserLoggedIn,
-  cellStatus
+  cellStatus,
 }) => {
   // Cell is coloured based on whether it's selected or not
 
@@ -68,12 +68,12 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
         borderColor='brand.secondary'
         cursor='pointer'
         onMouseUp={onMouseUp}
-        onClick={onClick}>
+        onClick={onClick}
+      >
         t
       </Box>
     )
-  }
-  else if (cellStatus === CellStatus.BookedBySelf) {
+  } else if (cellStatus === CellStatus.BookedBySelf) {
     return (
       <Box
         {...SharedBoxProps}
@@ -84,11 +84,9 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
         onClick={onClick}
       />
     )
-  }
-  else if (cellStatus === CellStatus.Disabled) {
+  } else if (cellStatus === CellStatus.Disabled) {
     return <Box {...SharedBoxProps} bg='gray.200' borderColor='gray.200' onMouseUp={onMouseUp} />
-  }
-  else if (cellStatus === CellStatus.Selected) {
+  } else if (cellStatus === CellStatus.Selected) {
     return (
       <Box
         {...SharedBoxProps}
@@ -125,7 +123,11 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
   boxHeight,
   openBookingCard,
 }) => {
-  const isCellBetweenFirstAndLastSelected = (currentIndex: number, x: number, y: number): boolean => {
+  const isCellBetweenFirstAndLastSelected = (
+    currentIndex: number,
+    x: number,
+    y: number,
+  ): boolean => {
     const startIndex = Math.min(x, y)
     const endIndex = Math.max(x, y)
 
@@ -151,36 +153,32 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
 
   function getMappedVenueCells() {
     return timeIntervals.map((el, i) => {
-      let cellStatus = CellStatus.Available;
+      let cellStatus = CellStatus.Available
       // Prevent selecting a time that is already booked or is in the past
       const isCellDisabled =
         // Okay to loop through all bookings as there are at most
         // 24 bookings for this particular venue and day
         currentVenueBookings.some((booking) => {
-          const startInterval = timeIntervals[start];
+          const startInterval = timeIntervals[start]
           return (
             (isAfter(booking.from, startInterval) && isAfter(el, booking.from)) ||
             (isAfter(startInterval, booking.from) && isAfter(booking.from, el))
-          );
-        }) || isAfter(new Date(), el);
+          )
+        }) || isAfter(new Date(), el)
 
       const venueBooking: BookingDataDisplay | undefined = currentVenueBookings.find((booking) => {
-        return (
-          (isEqual(el, booking.from) || isAfter(el, booking.from)) && isAfter(booking.to, el)
-        );
-      });
-      const isBooked = venueBooking !== undefined;
+        return (isEqual(el, booking.from) || isAfter(el, booking.from)) && isAfter(booking.to, el)
+      })
+      const isBooked = venueBooking !== undefined
       if (isBooked) {
-        cellStatus = CellStatus.Booked;
+        cellStatus = CellStatus.Booked
         if (venueBooking?.userId === auth?.userId) {
-          cellStatus = CellStatus.BookedBySelf;
+          cellStatus = CellStatus.BookedBySelf
         }
-      }
-      else if (!isBooked && isCellBetweenFirstAndLastSelected(i, firstSelected, lastSelected)) {
+      } else if (!isBooked && isCellBetweenFirstAndLastSelected(i, firstSelected, lastSelected)) {
         cellStatus = CellStatus.Selected
-      }
-      else if (isCellDisabled) {
-        cellStatus = CellStatus.Disabled;
+      } else if (isCellDisabled) {
+        cellStatus = CellStatus.Disabled
       }
 
       return (
@@ -188,20 +186,20 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
           key={i}
           cellStatus={cellStatus}
           onMouseDown={() => {
-            setFirst(i);
-            setLast(i);
+            setFirst(i)
+            setLast(i)
           }}
           onMouseOver={() => {
-            if (mouseIsDown && !isBooked) setLast(i);
+            if (mouseIsDown && !isBooked) setLast(i)
           }}
           onClick={(e) => {
-            if (isBooked) openBookingCard(e, venueBooking);
+            if (isBooked) openBookingCard(e, venueBooking)
           }}
           boxHeight={boxHeight}
           isUserLoggedIn={isUserLoggedIn(auth)}
         />
-      );
-    });
+      )
+    })
   }
 
   return (
