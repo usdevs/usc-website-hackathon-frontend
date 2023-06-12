@@ -141,6 +141,7 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
                   aria-label='Organisation'
                   onChange={handleInputChange}
                   required
+                  {...(auth.orgIds.length === 1 ? { pointerEvents: "none" } : {})}
                 >
                   <option key={0} value={auth.orgIds[0]}>
                     {getOrgNameFromId(auth.orgIds[0])}
