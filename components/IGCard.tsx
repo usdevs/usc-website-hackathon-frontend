@@ -24,7 +24,13 @@ import { FaUserCircle } from 'react-icons/fa'
 import Link from 'next/link'
 
 interface IGInfoProps {
-  ig_info: IGInfo
+  ig_info: OrganisationWithIGHead
+}
+
+type LeftPaneProps = {
+  igHead: string
+  slug: string
+  inviteLink: string
 }
 
 const MotionBox = motion(Box)
@@ -55,9 +61,9 @@ const getContactButton = (contact: string) => {
   )
 }
 
-const getInviteLinkButton = (invite_link: string) => {
+const getInviteLinkButton = (inviteLink: string) => {
   return (
-    <Link href={invite_link} rel='noopener noreferrer' target='_blank'>
+    <Link href={inviteLink} rel='noopener noreferrer' target='_blank'>
       <Button
         overflow='hidden'
         textOverflow={'ellipsis'}
@@ -74,27 +80,30 @@ const getInviteLinkButton = (invite_link: string) => {
   )
 }
 
-const LeftPane: React.FC<IGInfoProps> = ({ ig_info }) => {
-  const { contact, invite_link, image } = ig_info
-
+const LeftPane: React.FC<LeftPaneProps> = ({ igHead, slug, inviteLink }) => {
   return (
     <VStack padding='1rem' borderRight='2px solid darkgrey'>
       <Center>
         <Image
           objectFit='cover'
           maxW={{ base: '100%', sm: '130px' }}
-          src={image}
+          src={'/orgs/' + slug + '.jpeg'}
           alt='IG Picture'
         />
       </Center>
-      {getContactButton(contact)}
-      {getInviteLinkButton(invite_link)}
+      {getContactButton(igHead)}
+      {getInviteLinkButton(inviteLink)}
     </VStack>
   )
 }
 
 const IGCard: React.FC<IGInfoProps> = ({ ig_info }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
+
+  const firstUserOnOrg: UserOnOrg = ig_info?.userOrg[0]
+  const igHead: string = firstUserOnOrg?.user?.name || 'No name'
+  const slug = ig_info.slug || 'Default.png'
+  const inviteLink = ig_info.inviteLink
 
   return (
     <>
@@ -106,7 +115,7 @@ const IGCard: React.FC<IGInfoProps> = ({ ig_info }) => {
           shadow='md'
           onClick={onOpen}
         >
-          <LeftPane ig_info={ig_info} />
+          <LeftPane igHead={igHead} slug={slug} inviteLink={inviteLink} />
           <Divider
             orientation='vertical'
             borderColor='blackAlpha.400'
@@ -117,7 +126,7 @@ const IGCard: React.FC<IGInfoProps> = ({ ig_info }) => {
           <Center>
             <CardBody>
               <Heading fontSize={'2xl'} fontFamily={'body'}>
-                {ig_info.title}
+                {ig_info.name}
               </Heading>
               <Text
                 color='gray.500'
@@ -139,15 +148,15 @@ const IGCard: React.FC<IGInfoProps> = ({ ig_info }) => {
       <Modal isOpen={isOpen} onClose={onClose} size='xl'>
         <ModalOverlay />
         <ModalContent>
-          <Image src={ig_info.image} alt='Modal Image' maxH='350px' objectFit='cover' />
-          <ModalHeader>{ig_info.title}</ModalHeader>
+          <Image src={'/orgs/' + slug + '.jpeg'} alt='Modal Image' maxH='350px' objectFit='cover' />
+          <ModalHeader>{ig_info.name}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Text color={'gray.500'}>{ig_info.description}</Text>
           </ModalBody>
           <ModalFooter justifyContent='flex-start'>
-            <Box mr={2}>{getContactButton(ig_info.contact)}</Box>
-            {getInviteLinkButton(ig_info.invite_link)}
+            <Box mr={2}>{getContactButton(igHead)}</Box>
+            {getInviteLinkButton(inviteLink)}
           </ModalFooter>
         </ModalContent>
       </Modal>
