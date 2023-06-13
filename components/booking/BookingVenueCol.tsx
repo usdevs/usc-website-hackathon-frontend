@@ -2,7 +2,7 @@ import { useBoolean, VStack, Box, Text } from '@chakra-ui/react'
 import { addMinutes, isAfter, isEqual } from 'date-fns'
 import { useState, useRef, useEffect } from 'react'
 import { BoxProps } from '@chakra-ui/react'
-import { isUserLoggedIn, useUserInfo } from '../../utils'
+import { BOOKING_CELL_BORDER_Y_REM, BOOKING_CELL_HEIGHT_REM, isUserLoggedIn, useBookingCellStyles, useUserInfo } from "../../utils";
 
 enum CellStatus {
   Available,
@@ -11,19 +11,20 @@ enum CellStatus {
   Selected,
   Disabled,
 }
+
 interface BookingVenueColumnProps extends React.HTMLProps<HTMLDivElement> {
   venueName: String
   openBookingModal: (start: Date, end: Date) => void
   timeIntervals: Date[]
   currentVenueBookings: Array<BookingDataDisplay>
-  boxHeight: number
   openBookingCard: (event: React.MouseEvent, booking: BookingDataDisplay) => void
 }
 
 interface BookingVenueTimeCellProps extends React.HTMLProps<HTMLDivElement> {
-  boxHeight: number
   isUserLoggedIn: boolean
   cellStatus: CellStatus
+  numberOfCells: number
+  rootFontSize: number
 }
 
 // Detects clicks outside of the grid
@@ -39,24 +40,25 @@ function useOutsideAlerter(ref: any, callback: () => void) {
   }, [ref, callback])
 }
 
-// TODO put setLast in a Context provider to avoid these kind of props passing
+const BOX_WIDTH_REM = 8;
+
 // Individual Grid Cells for the time intervals
 const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
   onMouseDown,
   onMouseOver,
   onMouseUp,
   onClick,
-  boxHeight,
   isUserLoggedIn,
   cellStatus,
+  numberOfCells,
+  rootFontSize
 }) => {
   // Cell is coloured based on whether it's selected or not
-
   const SharedBoxProps: BoxProps = {
-    w: '32',
-    h: boxHeight,
+    w: BOX_WIDTH_REM * rootFontSize + 'px',
+    h: Math.floor(BOOKING_CELL_HEIGHT_REM * numberOfCells * rootFontSize + rootFontSize * (numberOfCells - 1) * BOOKING_CELL_BORDER_Y_REM * 2) + 'px',
     boxSizing: 'content-box',
-    borderY: '.2rem solid',
+    borderY: BOOKING_CELL_BORDER_Y_REM + 'rem solid',
     transition: '200ms ease-in',
   }
 
@@ -68,10 +70,7 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
         borderColor='brand.secondary'
         cursor='pointer'
         onMouseUp={onMouseUp}
-        onClick={onClick}
-      >
-        t
-      </Box>
+        onClick={onClick}/>
     )
   } else if (cellStatus === CellStatus.BookedBySelf) {
     return (
@@ -120,7 +119,6 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
   openBookingModal,
   timeIntervals,
   currentVenueBookings,
-  boxHeight,
   openBookingCard,
 }) => {
   const isCellBetweenFirstAndLastSelected = (
@@ -140,6 +138,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
   const [firstSelected, setFirst] = useState(-1)
   const [lastSelected, setLast] = useState(-1)
   const [auth] = useUserInfo()
+  const [rootFontSize] = useBookingCellStyles();
 
   const wrapperRef = useRef(null) //  Used to detect clicks outside of the grid
   useOutsideAlerter(wrapperRef, () => {
@@ -153,7 +152,23 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
 
   function getMappedVenueCells() {
     return timeIntervals.map((el, i) => {
-      let cellStatus = CellStatus.Available
+      const props = {
+        numberOfCells: 1,
+        onMouseDown: () => {
+          setFirst(i);
+          setLast(i);
+        },
+        onMouseOver: () => {
+          if (mouseIsDown && !isBooked) setLast(i);
+        },
+        onClick: (e: React.MouseEvent) => {
+          if (isBooked) openBookingCard(e, venueBooking);
+        },
+        isUserLoggedIn: isUserLoggedIn(auth),
+        rootFontSize: rootFontSize ?? 16
+      }
+
+      let cellStatus = CellStatus.Available;
       // Prevent selecting a time that is already booked or is in the past
       const isCellDisabled =
         // Okay to loop through all bookings as there are at most
@@ -182,24 +197,9 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
       }
 
       return (
-        <BookingVenueTimeCell
-          key={i}
-          cellStatus={cellStatus}
-          onMouseDown={() => {
-            setFirst(i)
-            setLast(i)
-          }}
-          onMouseOver={() => {
-            if (mouseIsDown && !isBooked) setLast(i)
-          }}
-          onClick={(e) => {
-            if (isBooked) openBookingCard(e, venueBooking)
-          }}
-          boxHeight={boxHeight}
-          isUserLoggedIn={isUserLoggedIn(auth)}
-        />
-      )
-    })
+        <BookingVenueTimeCell key={i} {...props} cellStatus={cellStatus}/>
+      );
+    });
   }
 
   return (

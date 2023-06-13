@@ -1,4 +1,6 @@
-import { useLocalStorage } from './components/swr-internal-state-main'
+import { useLocalStorage, useGlobalState } from './components/swr-internal-state-main'
+
+export const useBookingCellStyles = () => useGlobalState<number>('root-font-size', 16);
 
 export const useUserInfo = () =>
   useLocalStorage<AuthState>('user-profile', { token: '', orgIds: [], userInfo: null, userId: -1 })
@@ -21,3 +23,7 @@ export const BUTTON_LINKS: NavigationLink[] = [
     href: '/bookings',
   },
 ]
+
+export const BOOKING_CELL_BORDER_Y_REM = 0.2;
+
+export const BOOKING_CELL_HEIGHT_REM = 2; // Ensures time labels are aligned with grid cells

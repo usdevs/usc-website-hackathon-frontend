@@ -14,9 +14,7 @@ import {
   MenuOptionGroup,
 } from '@chakra-ui/react'
 import { useDisclosure } from '@chakra-ui/react'
-
 import eachMinuteOfInterval from 'date-fns/eachMinuteOfInterval'
-
 import { BookingConfirmationPopup } from '../components/booking/BookingConfirmationPopup'
 import { BookingsContext } from '../context/BookingsContext'
 import { sub } from 'date-fns'
@@ -29,14 +27,16 @@ import BookingsTimesCol from '../components/booking/BookingTimesCol'
 import BookingVenueCol from '../components/booking/BookingVenueCol'
 import Toggle from '../components/booking/Toggle'
 import CalendarEventCard from '../components/booking/CalendarEventCard'
-
-import { VENUES, ALL_VENUES_KEYWORD, isUserLoggedIn } from '../utils'
+import { VENUES, ALL_VENUES_KEYWORD, isUserLoggedIn, useBookingCellStyles } from "../utils";
 import { useUserInfo } from '../utils'
 
-const BOX_HEIGHT = 8 // Ensures time labels are aligned with grid cells
-
 const BookingSelector: FC = () => {
+  const [_, setRootFontSize] = useBookingCellStyles();
   useEffect(() => {
+    (async () => {
+      const browserRootFontSize = window.getComputedStyle(document.documentElement).fontSize;
+      await setRootFontSize(Number(browserRootFontSize.replace('px', '')));
+    })()
     const scrollToPopularTimes = () => {
       window.scrollTo({
         top: document.documentElement.clientHeight * 1.3,
@@ -44,7 +44,7 @@ const BookingSelector: FC = () => {
       })
     }
     scrollToPopularTimes()
-  }, [])
+  }, [setRootFontSize])
 
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [bookingDataFromSelection, setBookingDataFromSelection] = useState<BookingDataSelection>({
@@ -156,7 +156,7 @@ const BookingSelector: FC = () => {
   // Sets the content of the event card
   const [bookingCard, setBookingCard] = useState<BookingDataDisplay | null>(null)
 
-  const handleBookingCard = (event: MouseEvent, booking: BookingDataDisplay) => {
+  const openBookingCard = (event: MouseEvent, booking: BookingDataDisplay) => {
     event.stopPropagation()
     const el = event.target as HTMLElement
     const box = el.getBoundingClientRect()
@@ -280,7 +280,7 @@ const BookingSelector: FC = () => {
               transition={{ duration: 0.5 }}
             >
               <HStack>
-                <BookingsTimesCol boxHeight={BOX_HEIGHT} />
+                <BookingsTimesCol/>
                 {VENUES.filter((venue) => {
                   if (venueToFilterBy === ALL_VENUES_KEYWORD) {
                     return true
@@ -304,8 +304,7 @@ const BookingSelector: FC = () => {
                         onModalOpen()
                       }}
                       currentVenueBookings={bookingsSortedByVenue[venueId]}
-                      boxHeight={BOX_HEIGHT}
-                      openBookingCard={handleBookingCard}
+                      openBookingCard={openBookingCard}
                     />
                   )
                 })}
