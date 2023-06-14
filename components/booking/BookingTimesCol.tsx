@@ -1,10 +1,14 @@
 import { VStack, Center, Text, Box } from '@chakra-ui/react'
 import { eachMinuteOfInterval, format } from 'date-fns'
-import { BOOKING_CELL_BORDER_Y_REM, BOOKING_CELL_HEIGHT_REM, useBookingCellStyles } from "../../utils";
+import {
+  BOOKING_CELL_BORDER_Y_REM,
+  BOOKING_CELL_HEIGHT_REM,
+  useBookingCellStyles,
+} from '../../utils'
 
 // Labels for time 0000-2330
 const BookingsTimesCol: React.FC = () => {
-  const [rootFontSize] = useBookingCellStyles();
+  const [rootFontSize] = useBookingCellStyles()
   // Format the time intervals into strings
   const timeStrings = eachMinuteOfInterval(
     {

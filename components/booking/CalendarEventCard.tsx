@@ -21,7 +21,7 @@ import { useUserInfo } from '../../utils'
 interface CalendarEventCardProps extends HTMLProps<HTMLDivElement> {
   x: number
   y: number
-  booking: BookingDataDisplay | null
+  booking: BookingDataDisplay | undefined
   onDelete: (userId: number) => void
 }
 

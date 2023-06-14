@@ -27,15 +27,15 @@ import BookingsTimesCol from '../components/booking/BookingTimesCol'
 import BookingVenueCol from '../components/booking/BookingVenueCol'
 import Toggle from '../components/booking/Toggle'
 import CalendarEventCard from '../components/booking/CalendarEventCard'
-import { VENUES, ALL_VENUES_KEYWORD, isUserLoggedIn, useBookingCellStyles } from "../utils";
+import { VENUES, ALL_VENUES_KEYWORD, isUserLoggedIn, useBookingCellStyles } from '../utils'
 import { useUserInfo } from '../utils'
 
 const BookingSelector: FC = () => {
-  const [_, setRootFontSize] = useBookingCellStyles();
+  const [_, setRootFontSize] = useBookingCellStyles()
   useEffect(() => {
-    (async () => {
-      const browserRootFontSize = window.getComputedStyle(document.documentElement).fontSize;
-      await setRootFontSize(Number(browserRootFontSize.replace('px', '')));
+    ;(async () => {
+      const browserRootFontSize = window.getComputedStyle(document.documentElement).fontSize
+      await setRootFontSize(Number(browserRootFontSize.replace('px', '')))
     })()
     const scrollToPopularTimes = () => {
       window.scrollTo({
@@ -44,7 +44,7 @@ const BookingSelector: FC = () => {
       })
     }
     scrollToPopularTimes()
-  }, [setRootFontSize])
+  }, [])
 
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [bookingDataFromSelection, setBookingDataFromSelection] = useState<BookingDataSelection>({
@@ -154,9 +154,9 @@ const BookingSelector: FC = () => {
   // Sets the state of the event card
   const [eventCardPos, setEventCardPos] = useState({ x: 0, y: 0 })
   // Sets the content of the event card
-  const [bookingCard, setBookingCard] = useState<BookingDataDisplay | null>(null)
+  const [bookingCard, setBookingCard] = useState<BookingDataDisplay | undefined>(undefined)
 
-  const openBookingCard = (event: MouseEvent, booking: BookingDataDisplay) => {
+  const openBookingCard = (event: MouseEvent, booking: BookingDataDisplay | undefined) => {
     event.stopPropagation()
     const el = event.target as HTMLElement
     const box = el.getBoundingClientRect()
@@ -280,7 +280,7 @@ const BookingSelector: FC = () => {
               transition={{ duration: 0.5 }}
             >
               <HStack>
-                <BookingsTimesCol/>
+                <BookingsTimesCol />
                 {VENUES.filter((venue) => {
                   if (venueToFilterBy === ALL_VENUES_KEYWORD) {
                     return true
