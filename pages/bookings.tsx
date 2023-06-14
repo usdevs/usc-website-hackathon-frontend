@@ -27,6 +27,7 @@ import Toggle from '../components/booking/Toggle'
 import CalendarEventCard from '../components/booking/CalendarEventCard'
 import { VENUES, ALL_VENUES_KEYWORD, isUserLoggedIn, useBookingCellStyles } from '../utils'
 import { useUserInfo } from '../utils'
+import { useCurrentHalfHourTime } from '../hooks/useCurrentHalfHourTime'
 
 const BookingSelector: FC = () => {
   const [_, setRootFontSize] = useBookingCellStyles()
@@ -53,7 +54,8 @@ const BookingSelector: FC = () => {
     venueName: '',
   })
   const [unsuccessfulFormSubmitString, setUnsuccessfulFormSubmitString] = useState<string>('')
-  const [startDate, setStartDate] = useState<Date>(new Date())
+  const currentRoundedHalfHourTime = useCurrentHalfHourTime()
+  const [startDate, setStartDate] = useState<Date>(currentRoundedHalfHourTime)
   const [isBackendUpdated, setIsBackendUpdated] = useState<boolean>(false)
   const [auth] = useUserInfo()
   const [bookingData, setBookingData] = useState<BookingDataForm>({

@@ -9,6 +9,7 @@ import {
   useBookingCellStyles,
   useUserInfo,
 } from '../../utils'
+import { useCurrentHalfHourTime } from '../../hooks/useCurrentHalfHourTime'
 
 enum CellStatus {
   Available = 'Available',
@@ -61,7 +62,7 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
   cellStatus,
   numberOfCells,
   rootFontSize,
-  venueBooking
+  venueBooking,
 }) => {
   // Cell is coloured based on whether it's selected or not
   const SharedBoxProps: BoxProps = {
@@ -99,9 +100,9 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
         onClick={onClick}
       >
         <Text color={'white'}>{venueBooking?.eventName}</Text>
-        <Text>{"Booked by you"}</Text>
+        <Text>{'Booked by you'}</Text>
       </Box>
-        )
+    )
   } else if (
     cellStatus === CellStatus.CellInPast ||
     cellStatus === CellStatus.CellIsAfterBookingAndSelection
@@ -149,6 +150,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
   const [largerSelected, setLargerSelected] = useState(INITIAL_LAST_SELECTED_INDEX)
   const [auth] = useUserInfo()
   const [rootFontSize] = useBookingCellStyles()
+  const currentRoundedHalfHourTime = useCurrentHalfHourTime()
 
   const wrapperRef = useRef(null) //  Used to detect clicks outside of the grid
   useOutsideAlerter(wrapperRef, () => {
@@ -161,7 +163,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
     const getCellStatus = (el: Date, i: number) => {
       let cellStatus = CellStatus.Available
 
-      const isTimePast = isAfter(new Date(), el)
+      const isTimePast = isAfter(currentRoundedHalfHourTime, el)
       // Disables cell if there is a booking before the cell and the user is selecting
       // cells before that booking
       const isCellAfterSelectionAndBooking =
@@ -224,7 +226,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
         },
         isUserLoggedIn: isUserLoggedIn(auth),
         rootFontSize: rootFontSize ?? 16,
-        venueBooking
+        venueBooking,
       }
 
       return <BookingVenueTimeCell key={cellIndex} {...props} cellStatus={cellStatus} />
