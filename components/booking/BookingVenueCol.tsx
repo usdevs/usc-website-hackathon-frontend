@@ -79,7 +79,7 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
       <Box
         {...SharedBoxProps}
         bg='brand.secondary'
-        borderColor='brand.secondary'
+        borderColor='white'
         cursor='pointer'
         onClick={onClick}
       />
@@ -89,7 +89,7 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
       <Box
         {...SharedBoxProps}
         bg='brand.primary'
-        borderColor='brand.primary'
+        borderColor='white'
         cursor='pointer'
         onClick={onClick}
       />
@@ -221,11 +221,27 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
       return <BookingVenueTimeCell key={cellIndex} {...props} cellStatus={cellStatus} />
     }
 
-    const venueCells = []
+    const cellBlocks = []
     let numberOfCells = 1
     let countOfDisplayedBlocks = 0
     let { cellStatus: statusOfPreviousCell, venueBooking: venueBookingOfPreviousCell } =
       getCellStatus(timeIntervals[0], 0)
+
+    const pushPreviousBlockIntoArray = (cellIndex: number, isBooked: boolean) => {
+      cellBlocks.push(
+        getVenueCell(
+          cellIndex,
+          countOfDisplayedBlocks,
+          numberOfCells,
+          isBooked,
+          venueBookingOfPreviousCell,
+          statusOfPreviousCell,
+        ),
+      )
+      numberOfCells = 1
+      countOfDisplayedBlocks++
+    }
+
     for (let i = 1; i < timeIntervals.length; i++) {
       const { cellStatus: statusOfCurrentCell, venueBooking: venueBookingOfCurrentCell } =
         getCellStatus(timeIntervals[i], i)
@@ -234,41 +250,23 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
         statusOfPreviousCell === CellStatus.BookedBySelf
       ) {
         if (statusOfCurrentCell !== statusOfPreviousCell) {
-          venueCells.push(
-            getVenueCell(
-              i - 1,
-              countOfDisplayedBlocks,
-              numberOfCells,
-              true,
-              venueBookingOfPreviousCell,
-              statusOfPreviousCell,
-            ),
-          )
-          numberOfCells = 1
-          countOfDisplayedBlocks++
+          pushPreviousBlockIntoArray(i - 1, true)
         } else {
-          numberOfCells++
+          if (venueBookingOfPreviousCell?.userId !== venueBookingOfCurrentCell?.userId) {
+            pushPreviousBlockIntoArray(i - 1, true)
+          } else {
+            numberOfCells++
+          }
         }
       } else {
-        venueCells.push(
-          getVenueCell(
-            i - 1,
-            countOfDisplayedBlocks,
-            numberOfCells,
-            false,
-            venueBookingOfPreviousCell,
-            statusOfPreviousCell,
-          ),
-        )
-        countOfDisplayedBlocks++
-        numberOfCells = 1
+        pushPreviousBlockIntoArray(i - 1, false)
       }
       statusOfPreviousCell = statusOfCurrentCell
       venueBookingOfPreviousCell = venueBookingOfCurrentCell
     }
     const isBooked =
       statusOfPreviousCell === CellStatus.Booked || statusOfPreviousCell === CellStatus.BookedBySelf
-    venueCells.push(
+    cellBlocks.push(
       getVenueCell(
         timeIntervals.length - 1,
         countOfDisplayedBlocks,
@@ -278,7 +276,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
         statusOfPreviousCell,
       ),
     )
-    return venueCells
+    return cellBlocks
   }
 
   return (
@@ -304,7 +302,8 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
           if (isSelectionMade) {
             openBookingModal(
               timeIntervals[smallerSelected],
-              addMinutes(timeIntervals[largerSelected], 30),            )
+              addMinutes(timeIntervals[largerSelected], 30),
+            )
           }
         }}
       >
