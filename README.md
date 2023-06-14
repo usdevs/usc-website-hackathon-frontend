@@ -9,6 +9,10 @@ Install the following:
 - Node.JS version - 18.12.1 LTS (would recommend that you install through [nvm](https://github.com/nvm-sh/nvm))
 - npm - 8.19.2
 
+## Deployment
+
+The API is accessible through [api.nusc.club](api.nusc.club) and the website is deployed at [nusc.club](nusc.club).
+
 ## UI Mockup
 
 https://www.figma.com/file/ugpNsd5OkAfdPHJQYStQbA/NUSC-website?node-id=0%3A1&t=yy9jhvx6KWpgYHxF-0

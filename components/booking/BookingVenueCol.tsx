@@ -32,6 +32,7 @@ interface BookingVenueTimeCellProps extends React.HTMLProps<HTMLDivElement> {
   cellStatus: CellStatus
   numberOfCells: number
   rootFontSize: number
+  venueBooking: BookingDataDisplay | undefined
 }
 
 const BOX_WIDTH_REM = 8
@@ -60,6 +61,7 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
   cellStatus,
   numberOfCells,
   rootFontSize,
+  venueBooking
 }) => {
   // Cell is coloured based on whether it's selected or not
   const SharedBoxProps: BoxProps = {
@@ -82,7 +84,10 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
         borderColor='white'
         cursor='pointer'
         onClick={onClick}
-      />
+      >
+        <Text color={'white'}>{venueBooking?.eventName}</Text>
+        <Text>{'Booked by ' + venueBooking?.bookedByUser.name}</Text>
+      </Box>
     )
   } else if (cellStatus === CellStatus.BookedBySelf) {
     return (
@@ -92,8 +97,11 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
         borderColor='white'
         cursor='pointer'
         onClick={onClick}
-      />
-    )
+      >
+        <Text color={'white'}>{venueBooking?.eventName}</Text>
+        <Text>{"Booked by you"}</Text>
+      </Box>
+        )
   } else if (
     cellStatus === CellStatus.CellInPast ||
     cellStatus === CellStatus.CellIsAfterBookingAndSelection
@@ -216,6 +224,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
         },
         isUserLoggedIn: isUserLoggedIn(auth),
         rootFontSize: rootFontSize ?? 16,
+        venueBooking
       }
 
       return <BookingVenueTimeCell key={cellIndex} {...props} cellStatus={cellStatus} />
