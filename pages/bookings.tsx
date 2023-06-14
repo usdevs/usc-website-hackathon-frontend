@@ -1,6 +1,5 @@
 import { useState, useEffect, FC, MouseEvent } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-
+import { motion, AnimatePresence, useMotionValueEvent, useScroll } from 'framer-motion'
 import {
   HStack,
   VStack,
@@ -17,7 +16,6 @@ import { useDisclosure } from '@chakra-ui/react'
 import eachMinuteOfInterval from 'date-fns/eachMinuteOfInterval'
 import { BookingConfirmationPopup } from '../components/booking/BookingConfirmationPopup'
 import { BookingsContext } from '../context/BookingsContext'
-import { sub } from 'date-fns'
 import Footer from '../components/Footer'
 import { NextPage } from 'next'
 import NavMenu from '../components/NavMenu'
@@ -44,6 +42,7 @@ const BookingSelector: FC = () => {
       })
     }
     scrollToPopularTimes()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -104,8 +103,7 @@ const BookingSelector: FC = () => {
     .map(() => new Array(0))
   const bookingsMappedForDisplay: Array<BookingDataDisplay> = allBookings.map((booking) => ({
     ...booking,
-    // Subtract 1 minute to the start time to properly display the booking
-    from: sub(Date.parse(booking.start), { minutes: 1 }),
+    from: new Date(booking.start),
     to: new Date(booking.end),
   }))
   // Convert the bookings from the backend into a format that can be used by the grid
@@ -155,6 +153,7 @@ const BookingSelector: FC = () => {
   const [eventCardPos, setEventCardPos] = useState({ x: 0, y: 0 })
   // Sets the content of the event card
   const [bookingCard, setBookingCard] = useState<BookingDataDisplay | undefined>(undefined)
+  const { scrollY } = useScroll()
 
   const openBookingCard = (event: MouseEvent, booking: BookingDataDisplay | undefined) => {
     event.stopPropagation()
@@ -167,6 +166,10 @@ const BookingSelector: FC = () => {
   const hideEventCard = () => {
     setEventCardPos({ x: -1, y: -1 })
   }
+
+  useMotionValueEvent(scrollY, 'change', () => {
+    hideEventCard()
+  })
 
   //todo check
   // Frontend login for removing the booking from bookingsSortedByVenue
@@ -295,7 +298,6 @@ const BookingSelector: FC = () => {
                       venueName={venueName}
                       openBookingModal={(start, end) => {
                         setBookingDataFromSelection({
-                          ...bookingDataFromSelection,
                           venueName,
                           venueId: venueId + 1,
                           start,

@@ -154,7 +154,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
       let cellStatus = CellStatus.Available
 
       const isTimePast = isAfter(new Date(), el)
-      // Disables cell if it is in the past, or if there is a booking before the cell and the user is selecting
+      // Disables cell if there is a booking before the cell and the user is selecting
       // cells before that booking
       const isCellAfterSelectionAndBooking =
         // Okay to loop through all bookings as there are at most
@@ -300,12 +300,12 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
         onMouseDown={setMouse.on}
         onMouseUp={() => {
           setMouse.off()
-          const isSelectionMade = smallerSelected === INITIAL_LAST_SELECTED_INDEX
-          if (isSelectionMade) return
-          openBookingModal(
-            timeIntervals[smallerSelected],
-            addMinutes(timeIntervals[largerSelected], 30),
-          )
+          const isSelectionMade = smallerSelected !== INITIAL_FIRST_SELECTED_INDEX
+          if (isSelectionMade) {
+            openBookingModal(
+              timeIntervals[smallerSelected],
+              addMinutes(timeIntervals[largerSelected], 30),            )
+          }
         }}
       >
         {getMappedVenueCells()}
