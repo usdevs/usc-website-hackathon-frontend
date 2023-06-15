@@ -1,10 +1,10 @@
-import useSWR from 'swr';
+import useSWR from 'swr'
 
-import { GlobalStateHookResult } from '../types';
+import { GlobalStateHookResult } from '../types'
 
 /**
  * Gets and sets value to/from global state.
- * 
+ *
  * All states with the same key are shared with each other.
  *
  * @param key key to get and set value to/from local storage.
@@ -12,21 +12,22 @@ import { GlobalStateHookResult } from '../types';
  *
  * @returns an array of (the saved value, set value function) in the same order.
  */
-const useGlobalState = <T>(key: string, defaultValue: T|null = null): GlobalStateHookResult<T>  => {
-  const { data: state = defaultValue, mutate } = useSWR(
-    key, 
-    null, 
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      refreshWhenHidden: false,
-      refreshWhenOffline: false,
-    }
-  );
+const useGlobalState = <T>(
+  key: string,
+  defaultValue: T | null = null,
+): GlobalStateHookResult<T> => {
+  const { data: state = defaultValue, mutate } = useSWR(key, null, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    refreshWhenHidden: false,
+    refreshWhenOffline: false,
+  })
 
-  const setState = async (value: T): Promise<void> => { await mutate(value, false); };
+  const setState = async (value: T): Promise<void> => {
+    await mutate(value, false)
+  }
 
-  return [state, setState];
-};
+  return [state, setState]
+}
 
-export default useGlobalState;
+export default useGlobalState

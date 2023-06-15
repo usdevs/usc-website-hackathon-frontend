@@ -3,11 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3001",
+    "dev": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 next dev -p 3001",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "format": "prettier --write '**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
+    "start": "next start -H 0.0.0.0 -p ${PORT:-8080}",
+    "linter-eslint": "npx eslint .",
+    "linter-next": "next lint",
+    "linter-prettier": "prettier --write '**/*.{css,html,js,json,jsx,md,sass,scss,ts,tsx,vue,yaml,yml}' --config ./.prettierrc"
   },
   "dependencies": {
     "@chakra-ui/icons": "2.0.13",
@@ -25,8 +26,10 @@
     "core-js": "^3.27.0",
     "date-fns": "^2.29.3",
     "dayzed": "^3.2.3",
-    "framer-motion": "^6.5.1",
+    "framer-motion": "^10.12.16",
     "jsdom": "^12.0.0",
+    "leaflet": "^1.9.4",
+    "leaflet-defaulticon-compatibility": "^0.1.1",
     "moment": "^2.22.2",
     "next": "13.0.6",
     "node-forge": "^1.3.1",
@@ -34,7 +37,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.7.1",
-    "react-schedule-selector-v2": "^1.0.1",
+    "react-leaflet": "^4.2.1",
     "src": "^1.1.2",
     "styled-components": "^5.3.6",
     "styled-system": "^5.1.5",
@@ -43,19 +46,20 @@
     "typescript-plugin-styled-components": "^1.4.4",
     "web-vitals": "^2.1.4"
   },
-  "comment": "bump framer-motion to v8 later",
   "devDependencies": {
     "@types/enzyme": "^3.10.7",
     "@types/jest": "^27.5.2",
+    "@types/leaflet": "^1.9.3",
     "@types/node": "18.11.10",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.10",
     "@types/react-test-renderer": "^16.9.3",
     "@types/styled-components": "^5.1.26",
     "@types/styled-system": "^5.1.16",
+    "cross-env": "^7.0.3",
     "eslint": "^8.29.0",
     "eslint-config-next": "13.0.6",
-    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-prettier": "^8.7.0",
     "prettier": "^2.8.0"
   },
   "eslintConfig": {
