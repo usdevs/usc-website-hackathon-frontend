@@ -84,8 +84,8 @@ const getInviteLinkButton = (inviteLink: string) => {
 
 const LeftPane: React.FC<LeftPaneProps> = ({ imageKey, igHead, imageSrc, inviteLink }) => {
   return (
-    <VStack padding='1rem' borderRight='2px solid darkgrey'>
-      <Center>
+    <VStack padding='1rem' borderRight='2px solid darkgrey' justifyContent='space-apart'>
+      <Center flex={1}>
         <ImageWithFallback
           key={imageKey}
           fallbackSrc={'/orgs/Default.png'}
@@ -99,6 +99,7 @@ const LeftPane: React.FC<LeftPaneProps> = ({ imageKey, igHead, imageSrc, inviteL
       </Center>
       {getContactButton(igHead)}
       {getInviteLinkButton(inviteLink)}
+      
     </VStack>
   )
 }
@@ -117,7 +118,7 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
       <MotionBox
         whileHover={{ scale: 1.03, cursor: 'pointer' }}
         transition={{ duration: 0.3 }}
-        style={{ minWidth: '100%' }}
+        style={{ minWidth: '100%', minHeight: '15rem' }}
       >
         <Card
           direction={{ base: 'column', sm: 'row' }}
