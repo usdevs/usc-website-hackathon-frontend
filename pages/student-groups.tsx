@@ -62,7 +62,10 @@ const StudentGroups: NextPage = () => {
   const pageSize = 10
   const [page, setPage] = useState(1)
   const paginateArray = (pageNumber: number) => {
-      return interestGroupCards.slice((pageNumber - 1) * pageSize, (pageNumber - 1) * pageSize + pageSize)
+    return interestGroupCards.slice(
+      (pageNumber - 1) * pageSize,
+      (pageNumber - 1) * pageSize + pageSize,
+    )
   }
   const totalPages = Math.ceil(interestGroupCards.length / pageSize)
 
@@ -92,16 +95,24 @@ const StudentGroups: NextPage = () => {
           </Heading>
           <SimpleGrid columns={[1, null, 2]} width={'95%'} spacing='2rem'>
             {paginateArray(page).map((interestGroupDetail, idx) => (
-              <IGCard key={interestGroupDetail.name} imageKey={idx * 2} ig_info={interestGroupDetail} />
+              <IGCard
+                key={interestGroupDetail.name}
+                imageKey={idx * 2}
+                ig_info={interestGroupDetail}
+              />
             ))}
           </SimpleGrid>
-          <HStack style={{ width: "80%", justifyContent: "center", marginTop: "3rem"}}>
-            { Array.from({ length: totalPages }, (_, i) => i + 1)
-                .map(pageNumber => 
-                    <Button style={{height: 60, width: 60}} key={pageNumber} onClick={() => setPage(pageNumber)}>{pageNumber}</Button>
-                )
-            }
-        </HStack>
+          <HStack style={{ width: '80%', justifyContent: 'center', marginTop: '3rem' }}>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
+              <Button
+                style={{ height: 60, width: 60 }}
+                key={pageNumber}
+                onClick={() => setPage(pageNumber)}
+              >
+                {pageNumber}
+              </Button>
+            ))}
+          </HStack>
         </VStack>
       </HStack>
       <Footer />

@@ -88,7 +88,7 @@ const LeftPane: React.FC<LeftPaneProps> = ({ imageKey, igHead, imageSrc, inviteL
       <Center>
         <ImageWithFallback
           key={imageKey}
-          fallbackSrc={'/orgs/default.png'}
+          fallbackSrc={'/orgs/Default.png'}
           width={100}
           height={100}
           src={imageSrc}
@@ -108,20 +108,24 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
 
   const firstUserOnOrg: UserOnOrg | null = ig_info?.userOrg?.length > 0 ? ig_info?.userOrg[0] : null
   const igHead: string = firstUserOnOrg?.user?.name || 'No name'
-  const slug = ig_info?.slug || 'default.png'
+  const slug = ig_info?.slug || 'Default.png'
   const imageSrc = '/orgs/' + slug + '.png'
   const inviteLink = ig_info?.inviteLink || 'https://t.me/' + firstUserOnOrg?.user?.telegramUserName
 
   return (
     <>
-      <MotionBox whileHover={{ scale: 1.03, cursor: "pointer" }} transition={{ duration: 0.3 }} style={{minWidth: "100%"}}>
+      <MotionBox
+        whileHover={{ scale: 1.03, cursor: 'pointer' }}
+        transition={{ duration: 0.3 }}
+        style={{ minWidth: '100%' }}
+      >
         <Card
           direction={{ base: 'column', sm: 'row' }}
           overflow='hidden'
           variant='outline'
           shadow='md'
           onClick={onOpen}
-          style={{height: "100%"}}
+          style={{ height: '100%' }}
         >
           <LeftPane
             imageKey={imageKey - 1}
@@ -129,11 +133,7 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
             imageSrc={imageSrc}
             inviteLink={inviteLink}
           />
-          <Divider
-            orientation='vertical'
-            h='85%'
-            my='auto'
-          />
+          <Divider orientation='vertical' h='85%' my='auto' />
           <Center>
             <CardBody>
               <Heading fontSize={'2xl'} fontFamily={'body'}>
@@ -161,7 +161,7 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
         <ModalContent>
           <ImageWithFallback
             key={imageKey}
-            fallbackSrc={'/orgs/default.png'}
+            fallbackSrc={'/orgs/Default.png'}
             src={imageSrc}
             alt='Modal Image'
             width={300}
