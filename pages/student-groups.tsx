@@ -83,7 +83,8 @@ const StudentGroups: NextPage = () => {
           >
             {interestGroupCards.length > 0 ? (
               <>
-                <strong>{interestGroupCards.length}</strong> Interest Group{interestGroupCards.length > 1 && 's'}
+                <strong>{interestGroupCards.length}</strong> Interest Group
+                {interestGroupCards.length > 1 && 's'}
               </>
             ) : (
               <>No Interest Groups Found</>
