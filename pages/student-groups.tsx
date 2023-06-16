@@ -61,7 +61,7 @@ const StudentGroups: NextPage = () => {
 
   const pageSize = 10
   const [page, setPage] = useState(1)
-  const paginateArray = (pageNumber: any) => {
+  const paginateArray = (pageNumber: number) => {
       return interestGroupCards.slice((pageNumber - 1) * pageSize, (pageNumber - 1) * pageSize + pageSize)
   }
   const totalPages = Math.ceil(interestGroupCards.length / pageSize)
