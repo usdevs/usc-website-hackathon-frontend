@@ -99,7 +99,6 @@ const LeftPane: React.FC<LeftPaneProps> = ({ imageKey, igHead, imageSrc, inviteL
       </Center>
       {getContactButton(igHead)}
       {getInviteLinkButton(inviteLink)}
-      
     </VStack>
   )
 }
