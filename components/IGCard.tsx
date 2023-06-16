@@ -114,13 +114,14 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
 
   return (
     <>
-      <MotionBox whileHover={{ scale: 1.03 }} transition={{ duration: 0.3 }}>
+      <MotionBox whileHover={{ scale: 1.03, cursor: "pointer" }} transition={{ duration: 0.3 }} style={{minWidth: "100%"}}>
         <Card
           direction={{ base: 'column', sm: 'row' }}
           overflow='hidden'
           variant='outline'
           shadow='md'
           onClick={onOpen}
+          style={{height: "100%"}}
         >
           <LeftPane
             imageKey={imageKey - 1}
@@ -130,8 +131,6 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
           />
           <Divider
             orientation='vertical'
-            borderColor='blackAlpha.400'
-            borderLeftWidth='2px'
             h='85%'
             my='auto'
           />
