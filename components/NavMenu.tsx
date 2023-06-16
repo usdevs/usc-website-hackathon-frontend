@@ -29,8 +29,7 @@ const NavLink: React.FC<NavigationLink> = (props) => (
     padding='0.25rem'
     transition='color .3s ease-in-out, box-shadow .3s ease-in-out'
     _hover={{
-      boxShadow: 'inset 200px 0 0 0 white',
-      color: 'brand.primary',
+      color: '#ff9900',
     }}
   >
     <Text fontFamily={'Domine'} fontSize={'24px'}>
