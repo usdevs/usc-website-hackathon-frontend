@@ -159,16 +159,19 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
       <Modal isOpen={isOpen} onClose={onClose} size='xl'>
         <ModalOverlay />
         <ModalContent>
-          <ImageWithFallback
-            key={imageKey}
-            fallbackSrc={'/orgs/Default.png'}
-            src={imageSrc}
-            alt='Modal Image'
-            width={300}
-            height={300}
-            style={{ objectFit: 'contain' }}
-            sizes='(max-height: 350) 100vh'
-          />
+          <Center>
+            <ImageWithFallback
+              key={imageKey}
+              fallbackSrc={'/orgs/Default.png'}
+              src={imageSrc}
+              alt='Modal Image'
+              width={300}
+              height={300}
+              style={{ padding: '2rem', objectFit: 'contain' }}
+              sizes='(max-height: 350) 100vh'
+            />
+          </Center>
+
           <ModalHeader>{ig_info.name}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
