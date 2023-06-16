@@ -5,6 +5,7 @@ import Footer from '../components/Footer'
 import IGCard from '../components/IGCard'
 import { ChangeEvent, useEffect, useState } from 'react'
 import IGSearchFilter from '../components/IGSearchFilter'
+import Pagination from '../components/booking/Pagination'
 
 const StudentGroups: NextPage = () => {
   const interestGroupCategories = ['Socio-cultural', 'Sports', 'GUIPs', 'Inactive']
@@ -66,7 +67,6 @@ const StudentGroups: NextPage = () => {
           <IGSearchFilter {...igSearchFilterProps} />
         </Box>
         <VStack flexGrow={1} pr='4rem' minH='45vh'>
-          {/*<Box pt={"2vh"}>*/}
           <Heading
             fontFamily={'header'}
             size='lg'
@@ -82,16 +82,13 @@ const StudentGroups: NextPage = () => {
               <>No Interest Groups Found</>
             )}
           </Heading>
-          {/*</Box>*/}
-
-          {/*<Box pt={"2vh"} pb={"3vh"}>*/}
-          <SimpleGrid columns={[1, null, 2]} maxWidth={'95%'} maxH='55vh' spacing='2rem' overflowY='auto'>
+          <SimpleGrid columns={[1, null, 2]} maxWidth={'95%'} maxH='55vh' spacing='2rem' overflowY='auto' overflowX='hidden'>
             {interestGroupCards.map((interestGroupDetail, idx) => (
-              <IGCard key={idx * 2} imageKey={idx * 2} ig_info={interestGroupDetail} />
+              <IGCard key={interestGroupDetail.name} imageKey={idx * 2} ig_info={interestGroupDetail} />
             ))}
           </SimpleGrid>
+          <Pagination />
         </VStack>
-        {/*</Box>*/}
       </HStack>
       <Footer />
     </Flex>
