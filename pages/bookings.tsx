@@ -28,6 +28,20 @@ import CalendarEventCard from '../components/booking/CalendarEventCard'
 import { VENUES, ALL_VENUES_KEYWORD, isUserLoggedIn, useBookingCellStyles } from '../utils'
 import { useUserInfo } from '../utils'
 import { useCurrentHalfHourTime } from '../hooks/useCurrentHalfHourTime'
+import { addDays, isAfter, isSameDay } from 'date-fns'
+
+const getOnlyMonthAndYearFromDate = (dateToParse: Date) => {
+  const month = dateToParse.getMonth()
+  const year = dateToParse.getFullYear()
+  return new Date(year, month)
+}
+
+const getOnlyDayMonthAndYearFromDate = (dateToParse: Date) => {
+  const dateWithMonthAndYear = getOnlyMonthAndYearFromDate(dateToParse)
+  const date = dateToParse.getDate()
+  dateWithMonthAndYear.setDate(date)
+  return dateWithMonthAndYear
+}
 
 const BookingSelector: FC = () => {
   const [_, setRootFontSize] = useBookingCellStyles()
@@ -55,7 +69,10 @@ const BookingSelector: FC = () => {
   })
   const [unsuccessfulFormSubmitString, setUnsuccessfulFormSubmitString] = useState<string>('')
   const currentRoundedHalfHourTime = useCurrentHalfHourTime()
-  const [startDate, setStartDate] = useState<Date>(currentRoundedHalfHourTime)
+  const [userSelectedDate, setUserSelectedDate] = useState<Date>(currentRoundedHalfHourTime)
+  const [userSelectedMonth, setUserSelectedMonth] = useState<Date>(
+    getOnlyMonthAndYearFromDate(userSelectedDate),
+  )
   const [isBackendUpdated, setIsBackendUpdated] = useState<boolean>(false)
   const [auth] = useUserInfo()
   const [bookingData, setBookingData] = useState<BookingDataForm>({
@@ -64,32 +81,50 @@ const BookingSelector: FC = () => {
   })
   const toast = useToast()
   const toast_id = 'auth-toast'
-  const [allBookings, setAllBookings] = useState<BookingDataBackend[]>([])
+  const [allBookingsInMonth, setAllBookingsInMonth] = useState<BookingDataDisplay[]>([])
+
+  const startOfDay = getOnlyDayMonthAndYearFromDate(userSelectedDate)
+  const allBookingsInSelectedDay = allBookingsInMonth.filter((booking) => {
+    return isSameDay(booking.from, startOfDay)
+  })
+
+  useEffect(() => {
+    const newPossibleMonth = getOnlyMonthAndYearFromDate(userSelectedDate)
+    if (newPossibleMonth.getTime() !== userSelectedMonth.getTime()) {
+      setUserSelectedMonth(newPossibleMonth)
+    }
+    // we can disable eslint here because this is the only place where userSelectedMonth is set
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userSelectedDate])
 
   useEffect(() => {
     ;(async () => {
-      const startOfDay = new Date(startDate)
-      startOfDay.setHours(0, 0, 0, 0)
-      const endOfDay = new Date(startDate)
-      endOfDay.setHours(23, 59, 59, 999)
+      const endOfMonth = addDays(userSelectedMonth, 31)
       const currentBookings = await fetch(
         process.env.NEXT_PUBLIC_BACKEND_URL +
           'bookings/all?start=' +
-          startOfDay.toISOString() +
+          userSelectedMonth.toISOString() +
           '&end=' +
-          endOfDay,
+          endOfMonth.toISOString(),
       )
-      const allBookings = await currentBookings.json()
-      setAllBookings(allBookings)
+      const allBookingsInMonthBackend: BookingDataBackend[] = await currentBookings.json()
+      const bookingsMappedForDisplay: Array<BookingDataDisplay> = allBookingsInMonthBackend.map(
+        (booking) => ({
+          ...booking,
+          from: new Date(booking.start),
+          to: new Date(booking.end),
+        }),
+      )
+      setAllBookingsInMonth(bookingsMappedForDisplay)
     })()
     return () => {}
-  }, [startDate, isBackendUpdated])
+  }, [userSelectedMonth, isBackendUpdated])
 
   // Create time intervals for the current date
   const timeIntervals = (() => {
-    const year = startDate.getFullYear()
-    const month = startDate.getMonth()
-    const day = startDate.getDate()
+    const year = userSelectedDate.getFullYear()
+    const month = userSelectedDate.getMonth()
+    const day = userSelectedDate.getDate()
     return eachMinuteOfInterval(
       {
         start: new Date(year, month, day, 0),
@@ -100,20 +135,11 @@ const BookingSelector: FC = () => {
   })()
 
   // TODO cleanup this stuff, refactor this component
-  const bookingsSortedByVenue: Array<Array<BookingDataDisplay>> = new Array(6)
+  const bookingsSortedByVenue: Array<Array<BookingDataDisplay>> = new Array(VENUES.length)
     .fill(0)
     .map(() => new Array(0))
-  const bookingsMappedForDisplay: Array<BookingDataDisplay> = allBookings.map((booking) => ({
-    ...booking,
-    from: new Date(booking.start),
-    to: new Date(booking.end),
-  }))
-  // Convert the bookings from the backend into a format that can be used by the grid
   // Filter bookings to only show bookings for the current day and the current venue
-  // TODO fix, this is broken for some strange reason cuz of the +8; we do not need it anyways because we specify
-  //  start and end to backend now, but good to have
-  // .filter((booking) => isSameDay(booking.to, timeIntervals[0]))
-  bookingsMappedForDisplay.reduce(function (memo, x) {
+  allBookingsInMonth.reduce(function (memo, x) {
     memo[x['venueId'] - 1].push(x)
     return memo
   }, bookingsSortedByVenue)
@@ -230,7 +256,7 @@ const BookingSelector: FC = () => {
         <BookingConfirmationPopup
           isOpen={isOpen}
           onClose={onModalClose}
-          startDate={startDate}
+          startDate={userSelectedDate}
           setUnsuccessfulFormSubmitString={setUnsuccessfulFormSubmitString}
           unsuccessfulFormSubmitString={unsuccessfulFormSubmitString}
           bookingDataFromSelection={bookingDataFromSelection}
@@ -268,10 +294,10 @@ const BookingSelector: FC = () => {
           <Calendar
             isOn={isExpandedCalendar}
             setIsOn={setExpandedCalendar}
-            setStartDate={setStartDate}
+            setStartDate={setUserSelectedDate}
             bookings={
               venueToFilterBy === ALL_VENUES_KEYWORD
-                ? bookingsMappedForDisplay
+                ? allBookingsInMonth
                 : bookingsSortedByVenue[VENUES.findIndex((venue) => venue === venueToFilterBy)]
             }
           />
