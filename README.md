@@ -64,6 +64,14 @@ Run the following in separate terminals
 
 If you wish to run the backend locally and not use the shared development instance on DigitalOcean, run: 2. `cd <backend repo> && npm run dev` 3. `cd <backend repo> && docker-compose up`
 
+Also, do run the linters before pushing:
+
+```
+npm run linter-prettier
+npm run linter-eslint
+npm run linter-next
+```
+
 ### Telegram login token (you only need this to create or update a booking)
 
 #### First method
@@ -79,7 +87,7 @@ If you wish to run the backend locally and not use the shared development instan
 3. Set-up to set up nginx as a proxy (should be roughly similar for Mac, not sure about Windows)
 4. Install `mkcert` from https://github.com/FiloSottile/mkcert and generate certs for a domain. I am using `frontend.local.dev`. (run the commands in `certgen.sh` in the nginx folder)
 5. In your hosts file, add `127.0.0.1 frontend.local.dev`
-6. Copy the `app.conf` in the nginx folder over to `/etc/nginx/conf.d` or to a path that you have included in your `nginx.conf` (see the sample `nginx.conf`'s line 17 to see how you can include the `conf.d` directory on a Mac machine - Linux should have this by default)
+6. Copy the `app.conf` in the `config/To set up Telegram Auth` folder over to `/etc/nginx/conf.d` or to a path that you have included in your `nginx.conf` (see the sample `nginx.conf`'s line 17 to see how you can include the `conf.d` directory on a Mac machine - Linux should have this by default)
 7. `sudo nginx -t && sudo systemctl restart nginx` for Linux, `sudo nginx -t && sudo nginx -s stop && sudo nginx` for MacOS
 8. If you have `apache` running, need to deconflict it as pgadmin uses it as well. You can change the port it uses, or change nginx's port. Otherwise, you can just `sudo service apache2 stop` and not use pgadmin.
 9. You will have to update the Tele bot's BOT_TOKEN on the backend repo to '5980011686:AAHuxodOvlPYeftZTElSpC-13ybW5to9Y1M' if you used frontend.local.dev, or you can set up your own Tele login bot or let me know if you want to use another domain.
@@ -87,7 +95,7 @@ If you wish to run the backend locally and not use the shared development instan
 
 #### Third method
 
-Should Dockerise this, view `docker` branch, it's incomplete.
+Should Dockerise this, view the `Archive` folder in `To set up Telegram Auth`.
 
 ## Launch the frontend
 
@@ -98,18 +106,3 @@ Open [http://localhost:3001](http://localhost:3001) with your browser to see the
 [API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3001/api/hello](http://localhost:3001/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
 
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

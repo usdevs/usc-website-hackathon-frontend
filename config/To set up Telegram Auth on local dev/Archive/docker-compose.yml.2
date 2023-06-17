@@ -1,0 +1,82 @@
+services:
+  nginx:
+    container_name: nginx
+    image: nginxproxy/nginx-proxy
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /var/docker/nginx/html:/usr/share/nginx/html
+      - /var/docker/nginx/certs:/etc/nginx/certs
+      - /var/docker/nginx/vhost:/etc/nginx/vhost.d
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+        
+        
+  nginxold:
+    container_name: nginx
+    image: nginxproxy/nginx-proxy
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /var/docker/nginx/html:/usr/share/nginx/html
+      - /var/docker/nginx/certs:/etc/nginx/certs
+      - /var/docker/nginx/vhost:/etc/nginx/vhost.d
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    ports:
+      - "8000:80"
+      - "8001:443"
+
+  nginx:
+    restart: always
+    build:
+      context: ./nginx
+      dockerfile: dockerfile
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/certs:/etc/nginx/certs
+    ports:
+      - "8000:80"
+      - "8001:443"
+
+
+  letsencrypt-companion:
+    container_name: letsencrypt-companion
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    restart: unless-stopped
+    volumes_from:
+      - nginx
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/docker/nginx/acme:/etc/acme.sh
+    environment:
+      DEFAULT_EMAIL: test@mail.com
+
+  frontend:
+    build:
+      context: ./app
+      dockerfile: dockerfile
+    volumes:
+      - /app/node_modules
+      - ${PWD}/app:/app
+    environment:
+      # requests will be forwarded to http://<DOCKER_HOST>:<TARGET_PORT>
+      # This will be similar to accessing: http://localhost:3001
+      - TARGET_PORT=3001
+      - CHOKIDAR_USEPOLLING=true
+      - VIRTUAL_HOST=let.trythisveryfunnilylong.com
+    ports:
+      - "3001:3001"
+    container_name: frontend
+    extra_hosts:
+      - "let.trythisveryfunnilylong.com:127.0.0.1"
