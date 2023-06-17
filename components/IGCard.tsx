@@ -22,6 +22,7 @@ import React from 'react'
 import { FaUserCircle } from 'react-icons/fa'
 import Link from 'next/link'
 import ImageWithFallback from './ImageWithFallback'
+import { DEFAULT_PNG_NAME } from '../utils'
 
 interface IGInfoProps {
   ig_info: OrganisationWithIGHead
@@ -84,11 +85,11 @@ const getInviteLinkButton = (inviteLink: string) => {
 
 const LeftPane: React.FC<LeftPaneProps> = ({ imageKey, igHead, imageSrc, inviteLink }) => {
   return (
-    <VStack padding='1rem' borderRight='2px solid darkgrey'>
-      <Center>
+    <VStack padding='1rem' borderRight='2px solid darkgrey' justifyContent='space-apart'>
+      <Center flex={1}>
         <ImageWithFallback
           key={imageKey}
-          fallbackSrc={'/orgs/default.png'}
+          fallbackSrc={'/orgs/' + DEFAULT_PNG_NAME}
           width={100}
           height={100}
           src={imageSrc}
@@ -108,19 +109,24 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
 
   const firstUserOnOrg: UserOnOrg | null = ig_info?.userOrg?.length > 0 ? ig_info?.userOrg[0] : null
   const igHead: string = firstUserOnOrg?.user?.name || 'No name'
-  const slug = ig_info?.slug || 'default.png'
+  const slug = ig_info?.slug || DEFAULT_PNG_NAME
   const imageSrc = '/orgs/' + slug + '.png'
   const inviteLink = ig_info?.inviteLink || 'https://t.me/' + firstUserOnOrg?.user?.telegramUserName
 
   return (
     <>
-      <MotionBox whileHover={{ scale: 1.03 }} transition={{ duration: 0.3 }}>
+      <MotionBox
+        whileHover={{ scale: 1.03, cursor: 'pointer' }}
+        transition={{ duration: 0.3 }}
+        style={{ minWidth: '100%', minHeight: '15rem' }}
+      >
         <Card
           direction={{ base: 'column', sm: 'row' }}
           overflow='hidden'
           variant='outline'
           shadow='md'
           onClick={onOpen}
+          style={{ height: '100%' }}
         >
           <LeftPane
             imageKey={imageKey - 1}
@@ -128,13 +134,7 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
             imageSrc={imageSrc}
             inviteLink={inviteLink}
           />
-          <Divider
-            orientation='vertical'
-            borderColor='blackAlpha.400'
-            borderLeftWidth='2px'
-            h='85%'
-            my='auto'
-          />
+          <Divider orientation='vertical' h='85%' my='auto' />
           <Center>
             <CardBody>
               <Heading fontSize={'2xl'} fontFamily={'body'}>
@@ -160,16 +160,19 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
       <Modal isOpen={isOpen} onClose={onClose} size='xl'>
         <ModalOverlay />
         <ModalContent>
-          <ImageWithFallback
-            key={imageKey}
-            fallbackSrc={'/orgs/default.png'}
-            src={imageSrc}
-            alt='Modal Image'
-            width={300}
-            height={300}
-            style={{ objectFit: 'contain' }}
-            sizes='(max-height: 350) 100vh'
-          />
+          <Center>
+            <ImageWithFallback
+              key={imageKey}
+              fallbackSrc={'/orgs/' + DEFAULT_PNG_NAME}
+              src={imageSrc}
+              alt='Modal Image'
+              width={300}
+              height={300}
+              style={{ padding: '2rem', objectFit: 'contain' }}
+              sizes='(max-height: 350) 100vh'
+            />
+          </Center>
+
           <ModalHeader>{ig_info.name}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>

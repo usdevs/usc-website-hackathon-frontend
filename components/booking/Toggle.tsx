@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FaSun, FaCalendar } from 'react-icons/fa'
 
@@ -52,7 +52,7 @@ const Toggle: React.FC<ToggleProps> = ({ isOn, setIsOn }) => {
       ref={ref}
     >
       <motion.div layout className='handle' style={STYLES.handle}>
-        <AnimatePresence exitBeforeEnter initial={false}>
+        <AnimatePresence mode='wait' initial={false}>
           <motion.span
             style={STYLES.icon}
             key={isOn ? 'month' : 'day'}

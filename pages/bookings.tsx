@@ -1,6 +1,5 @@
 import { useState, useEffect, FC, MouseEvent } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-
+import { motion, AnimatePresence, useMotionValueEvent, useScroll } from 'framer-motion'
 import {
   HStack,
   VStack,
@@ -14,12 +13,9 @@ import {
   MenuOptionGroup,
 } from '@chakra-ui/react'
 import { useDisclosure } from '@chakra-ui/react'
-
 import eachMinuteOfInterval from 'date-fns/eachMinuteOfInterval'
-
 import { BookingConfirmationPopup } from '../components/booking/BookingConfirmationPopup'
 import { BookingsContext } from '../context/BookingsContext'
-import { sub } from 'date-fns'
 import Footer from '../components/Footer'
 import { NextPage } from 'next'
 import NavMenu from '../components/NavMenu'
@@ -29,14 +25,31 @@ import BookingsTimesCol from '../components/booking/BookingTimesCol'
 import BookingVenueCol from '../components/booking/BookingVenueCol'
 import Toggle from '../components/booking/Toggle'
 import CalendarEventCard from '../components/booking/CalendarEventCard'
-
-import { VENUES, ALL_VENUES_KEYWORD, isUserLoggedIn } from '../utils'
+import { VENUES, ALL_VENUES_KEYWORD, isUserLoggedIn, useBookingCellStyles } from '../utils'
 import { useUserInfo } from '../utils'
+import { useCurrentHalfHourTime } from '../hooks/useCurrentHalfHourTime'
+import { addDays, isAfter, isSameDay } from 'date-fns'
 
-const BOX_HEIGHT = 8 // Ensures time labels are aligned with grid cells
+const getOnlyMonthAndYearFromDate = (dateToParse: Date) => {
+  const month = dateToParse.getMonth()
+  const year = dateToParse.getFullYear()
+  return new Date(year, month)
+}
+
+const getOnlyDayMonthAndYearFromDate = (dateToParse: Date) => {
+  const dateWithMonthAndYear = getOnlyMonthAndYearFromDate(dateToParse)
+  const date = dateToParse.getDate()
+  dateWithMonthAndYear.setDate(date)
+  return dateWithMonthAndYear
+}
 
 const BookingSelector: FC = () => {
+  const [_, setRootFontSize] = useBookingCellStyles()
   useEffect(() => {
+    ;(async () => {
+      const browserRootFontSize = window.getComputedStyle(document.documentElement).fontSize
+      await setRootFontSize(Number(browserRootFontSize.replace('px', '')))
+    })()
     const scrollToPopularTimes = () => {
       window.scrollTo({
         top: document.documentElement.clientHeight * 1.3,
@@ -44,6 +57,7 @@ const BookingSelector: FC = () => {
       })
     }
     scrollToPopularTimes()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -54,7 +68,11 @@ const BookingSelector: FC = () => {
     venueName: '',
   })
   const [unsuccessfulFormSubmitString, setUnsuccessfulFormSubmitString] = useState<string>('')
-  const [startDate, setStartDate] = useState<Date>(new Date())
+  const currentRoundedHalfHourTime = useCurrentHalfHourTime()
+  const [userSelectedDate, setUserSelectedDate] = useState<Date>(currentRoundedHalfHourTime)
+  const [userSelectedMonth, setUserSelectedMonth] = useState<Date>(
+    getOnlyMonthAndYearFromDate(userSelectedDate),
+  )
   const [isBackendUpdated, setIsBackendUpdated] = useState<boolean>(false)
   const [auth] = useUserInfo()
   const [bookingData, setBookingData] = useState<BookingDataForm>({
@@ -63,32 +81,50 @@ const BookingSelector: FC = () => {
   })
   const toast = useToast()
   const toast_id = 'auth-toast'
-  const [allBookings, setAllBookings] = useState<BookingDataBackend[]>([])
+  const [allBookingsInMonth, setAllBookingsInMonth] = useState<BookingDataDisplay[]>([])
+
+  const startOfDay = getOnlyDayMonthAndYearFromDate(userSelectedDate)
+  const allBookingsInSelectedDay = allBookingsInMonth.filter((booking) => {
+    return isSameDay(booking.from, startOfDay)
+  })
+
+  useEffect(() => {
+    const newPossibleMonth = getOnlyMonthAndYearFromDate(userSelectedDate)
+    if (newPossibleMonth.getTime() !== userSelectedMonth.getTime()) {
+      setUserSelectedMonth(newPossibleMonth)
+    }
+    // we can disable eslint here because this is the only place where userSelectedMonth is set
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userSelectedDate])
 
   useEffect(() => {
     ;(async () => {
-      const startOfDay = new Date(startDate)
-      startOfDay.setHours(0, 0, 0, 0)
-      const endOfDay = new Date(startDate)
-      endOfDay.setHours(23, 59, 59, 999)
+      const endOfMonth = addDays(userSelectedMonth, 31)
       const currentBookings = await fetch(
         process.env.NEXT_PUBLIC_BACKEND_URL +
           'bookings/all?start=' +
-          startOfDay.toISOString() +
+          userSelectedMonth.toISOString() +
           '&end=' +
-          endOfDay,
+          endOfMonth.toISOString(),
       )
-      const allBookings = await currentBookings.json()
-      setAllBookings(allBookings)
+      const allBookingsInMonthBackend: BookingDataBackend[] = await currentBookings.json()
+      const bookingsMappedForDisplay: Array<BookingDataDisplay> = allBookingsInMonthBackend.map(
+        (booking) => ({
+          ...booking,
+          from: new Date(booking.start),
+          to: new Date(booking.end),
+        }),
+      )
+      setAllBookingsInMonth(bookingsMappedForDisplay)
     })()
     return () => {}
-  }, [startDate, isBackendUpdated])
+  }, [userSelectedMonth, isBackendUpdated])
 
   // Create time intervals for the current date
   const timeIntervals = (() => {
-    const year = startDate.getFullYear()
-    const month = startDate.getMonth()
-    const day = startDate.getDate()
+    const year = userSelectedDate.getFullYear()
+    const month = userSelectedDate.getMonth()
+    const day = userSelectedDate.getDate()
     return eachMinuteOfInterval(
       {
         start: new Date(year, month, day, 0),
@@ -99,21 +135,11 @@ const BookingSelector: FC = () => {
   })()
 
   // TODO cleanup this stuff, refactor this component
-  const bookingsSortedByVenue: Array<Array<BookingDataDisplay>> = new Array(6)
+  const bookingsSortedByVenue: Array<Array<BookingDataDisplay>> = new Array(VENUES.length)
     .fill(0)
     .map(() => new Array(0))
-  const bookingsMappedForDisplay: Array<BookingDataDisplay> = allBookings.map((booking) => ({
-    ...booking,
-    // Subtract 1 minute to the start time to properly display the booking
-    from: sub(Date.parse(booking.start), { minutes: 1 }),
-    to: new Date(booking.end),
-  }))
-  // Convert the bookings from the backend into a format that can be used by the grid
   // Filter bookings to only show bookings for the current day and the current venue
-  // TODO fix, this is broken for some strange reason cuz of the +8; we do not need it anyways because we specify
-  //  start and end to backend now, but good to have
-  // .filter((booking) => isSameDay(booking.to, timeIntervals[0]))
-  bookingsMappedForDisplay.reduce(function (memo, x) {
+  allBookingsInMonth.reduce(function (memo, x) {
     memo[x['venueId'] - 1].push(x)
     return memo
   }, bookingsSortedByVenue)
@@ -154,9 +180,10 @@ const BookingSelector: FC = () => {
   // Sets the state of the event card
   const [eventCardPos, setEventCardPos] = useState({ x: 0, y: 0 })
   // Sets the content of the event card
-  const [bookingCard, setBookingCard] = useState<BookingDataDisplay | null>(null)
+  const [bookingCard, setBookingCard] = useState<BookingDataDisplay | undefined>(undefined)
+  const { scrollY } = useScroll()
 
-  const handleBookingCard = (event: MouseEvent, booking: BookingDataDisplay) => {
+  const openBookingCard = (event: MouseEvent, booking: BookingDataDisplay | undefined) => {
     event.stopPropagation()
     const el = event.target as HTMLElement
     const box = el.getBoundingClientRect()
@@ -167,6 +194,10 @@ const BookingSelector: FC = () => {
   const hideEventCard = () => {
     setEventCardPos({ x: -1, y: -1 })
   }
+
+  useMotionValueEvent(scrollY, 'change', () => {
+    hideEventCard()
+  })
 
   //todo check
   // Frontend login for removing the booking from bookingsSortedByVenue
@@ -225,7 +256,7 @@ const BookingSelector: FC = () => {
         <BookingConfirmationPopup
           isOpen={isOpen}
           onClose={onModalClose}
-          startDate={startDate}
+          startDate={userSelectedDate}
           setUnsuccessfulFormSubmitString={setUnsuccessfulFormSubmitString}
           unsuccessfulFormSubmitString={unsuccessfulFormSubmitString}
           bookingDataFromSelection={bookingDataFromSelection}
@@ -263,10 +294,10 @@ const BookingSelector: FC = () => {
           <Calendar
             isOn={isExpandedCalendar}
             setIsOn={setExpandedCalendar}
-            setStartDate={setStartDate}
+            setStartDate={setUserSelectedDate}
             bookings={
               venueToFilterBy === ALL_VENUES_KEYWORD
-                ? bookingsMappedForDisplay
+                ? allBookingsInMonth
                 : bookingsSortedByVenue[VENUES.findIndex((venue) => venue === venueToFilterBy)]
             }
           />
@@ -280,7 +311,7 @@ const BookingSelector: FC = () => {
               transition={{ duration: 0.5 }}
             >
               <HStack>
-                <BookingsTimesCol boxHeight={BOX_HEIGHT} />
+                <BookingsTimesCol />
                 {VENUES.filter((venue) => {
                   if (venueToFilterBy === ALL_VENUES_KEYWORD) {
                     return true
@@ -295,7 +326,6 @@ const BookingSelector: FC = () => {
                       venueName={venueName}
                       openBookingModal={(start, end) => {
                         setBookingDataFromSelection({
-                          ...bookingDataFromSelection,
                           venueName,
                           venueId: venueId + 1,
                           start,
@@ -304,8 +334,7 @@ const BookingSelector: FC = () => {
                         onModalOpen()
                       }}
                       currentVenueBookings={bookingsSortedByVenue[venueId]}
-                      boxHeight={BOX_HEIGHT}
-                      openBookingCard={handleBookingCard}
+                      openBookingCard={openBookingCard}
                     />
                   )
                 })}

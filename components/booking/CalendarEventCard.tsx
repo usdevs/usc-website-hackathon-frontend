@@ -13,7 +13,6 @@ import {
 import { FaRegCalendarAlt, FaRegBuilding, FaRegClock, FaRegUser, FaTrash } from 'react-icons/fa'
 import { motion } from 'framer-motion'
 import { format } from 'date-fns'
-
 import { VENUES } from '../../utils'
 import { FC, HTMLProps } from 'react'
 import { useUserInfo } from '../../utils'
@@ -21,7 +20,7 @@ import { useUserInfo } from '../../utils'
 interface CalendarEventCardProps extends HTMLProps<HTMLDivElement> {
   x: number
   y: number
-  booking: BookingDataDisplay | null
+  booking: BookingDataDisplay | undefined
   onDelete: (userId: number) => void
 }
 

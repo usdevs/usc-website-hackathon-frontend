@@ -97,8 +97,8 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
                       fontSize='sm'
                       textAlign='left'
                     >
-                      {`${format(booking.from, 'h:mm')}-${format(booking.to, 'h:mm a')} ${
-                        VENUES[booking.venueId]
+                      {`${format(booking.from, 'H:mm')}-${format(booking.to, 'H:mm')} ${
+                        VENUES[booking.venueId - 1]
                       }`}
                     </Text>
                   </motion.div>
