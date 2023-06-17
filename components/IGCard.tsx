@@ -22,6 +22,7 @@ import React from 'react'
 import { FaUserCircle } from 'react-icons/fa'
 import Link from 'next/link'
 import ImageWithFallback from './ImageWithFallback'
+import { DEFAULT_PNG_NAME } from '../utils'
 
 interface IGInfoProps {
   ig_info: OrganisationWithIGHead
@@ -88,7 +89,7 @@ const LeftPane: React.FC<LeftPaneProps> = ({ imageKey, igHead, imageSrc, inviteL
       <Center flex={1}>
         <ImageWithFallback
           key={imageKey}
-          fallbackSrc={'/orgs/Default.png'}
+          fallbackSrc={'/orgs/' + DEFAULT_PNG_NAME}
           width={100}
           height={100}
           src={imageSrc}
@@ -108,7 +109,7 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
 
   const firstUserOnOrg: UserOnOrg | null = ig_info?.userOrg?.length > 0 ? ig_info?.userOrg[0] : null
   const igHead: string = firstUserOnOrg?.user?.name || 'No name'
-  const slug = ig_info?.slug || 'Default.png'
+  const slug = ig_info?.slug || DEFAULT_PNG_NAME
   const imageSrc = '/orgs/' + slug + '.png'
   const inviteLink = ig_info?.inviteLink || 'https://t.me/' + firstUserOnOrg?.user?.telegramUserName
 
@@ -162,7 +163,7 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
           <Center>
             <ImageWithFallback
               key={imageKey}
-              fallbackSrc={'/orgs/Default.png'}
+              fallbackSrc={'/orgs/' + DEFAULT_PNG_NAME}
               src={imageSrc}
               alt='Modal Image'
               width={300}
