@@ -1,0 +1,16 @@
+version: “3.8”
+services:
+  frontend:
+    stdin_open:  true
+    build:
+#      context: ./app
+      dockerfile: dockerfile
+    volumes:
+      - /app/node_modules
+      - ${PWD}/:/app
+    environment:
+      - TARGET_PORT=3001
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - "3001:3001"
+    container_name: frontend
