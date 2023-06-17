@@ -6,6 +6,11 @@ declare global {
     label: string
   }
 
+  type Venue = {
+    id: number
+    name: string
+  }
+
   type Organisation = {
     id: number
     name: string
@@ -53,8 +58,7 @@ declare global {
   interface BookingDataSelection {
     start: Date | null
     end: Date | null
-    venueId: number
-    venueName: string
+    venue: Venue
   }
 
   interface TelegramUser {

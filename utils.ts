@@ -5,10 +5,7 @@ export const useBookingCellStyles = () => useGlobalState<number>('root-font-size
 export const useUserInfo = () =>
   useLocalStorage<AuthState>('user-profile', { token: '', orgIds: [], userInfo: null, userId: -1 })
 
-// TODO this should be fetched from the backend, and in the same order always
-export const VENUES = ['CTPH', 'Chatterbox', "Maker's Studio", 'Amphi', 'TRR', 'TRB']
-
-export const ALL_VENUES_KEYWORD = 'All Venues'
+export const ALL_VENUES_KEYWORD: Venue = {id: 0, name: 'All Venues' }
 
 export const isUserLoggedIn = (auth: AuthState | null): boolean => {
   return auth !== null && auth.token !== ''

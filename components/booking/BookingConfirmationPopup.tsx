@@ -49,6 +49,7 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
   const toast_id = 'response-toast'
   const currentRoundedHalfHourTime = useCurrentHalfHourTime()
 
+  // todo do better than querying all orgs lol <-- do with GraphQL
   const getOrgNameFromId = (orgId: number) => {
     return bookingsContextValue.allOrgs.find((o) => o.id === orgId)?.name || ''
   }
@@ -177,7 +178,7 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
               <FormLabel htmlFor='venue' marginTop='0.5rem'>
                 Venue
               </FormLabel>
-              <Box>{bookingDataFromSelection?.venueName}</Box>
+              <Box>{bookingDataFromSelection?.venue.name}</Box>
             </FormControl>
             <FormControl>
               <FormLabel htmlFor='date' marginTop='0.5rem'>
