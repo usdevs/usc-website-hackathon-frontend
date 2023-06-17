@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react'
 import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons'
 import Image from 'next/image'
-import NUSCollegePic from '../public/nus-college-1@2x.png'
+import NUSCollegePic from '../public/club-logo.png'
 import dynamic from 'next/dynamic'
 import { BUTTON_LINKS } from '../utils'
 
@@ -58,7 +58,7 @@ const NavMenu = () => {
     <>
       <LinkBox>
         <Box display={'flex'} justifyContent={'center'}>
-          <Image src={NUSCollegePic} alt={'NUS College'} height={500} width={185} />
+          <Image src={NUSCollegePic} alt={'NUS College'} height={60} width={65} />
           <LinkOverlay href={'/'} />
         </Box>
       </LinkBox>

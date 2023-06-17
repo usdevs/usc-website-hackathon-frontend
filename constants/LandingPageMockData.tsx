@@ -1,16 +1,16 @@
 const landingPageMockData = [
-  {
-    buttonUrl: '/student-groups',
-    imageUrl: '/samplebanner.png',
-    description: `Each student in NUS College is assigned a House as a family for them to lean on and make memories together that will last a lifetime. #KALEIDOSCOPE`,
-    header: 'Houses',
-  },
   // {
-  //     buttonUrl: '/student-groups',
-  //     imageUrl: '/samplebanner.png',
-  //     description: `NUS College offers many Interest Groups that covers a wide array of activities. Students with any level of experience are welcomed to join IGs of their interest.`,
-  //     header: 'Interest Groups',
+  //   buttonUrl: '/student-groups',
+  //   imageUrl: '/samplebanner.png',
+  //   description: `Each student in NUS College is assigned a House as a family for them to lean on and make memories together that will last a lifetime. #KALEIDOSCOPE`,
+  //   header: 'Houses',
   // },
+  {
+      buttonUrl: '/student-groups',
+      imageUrl: '/samplebanner.png',
+      description: `Student Groups cover a wide array of activities. Students with any level of experience are welcome to join IGs of their interest.`,
+      header: 'Student Groups',
+  },
   // {
   //     buttonUrl: '/student-groups',
   //     imageUrl: '/samplebanner.png',
