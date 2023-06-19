@@ -19,6 +19,9 @@ const AdminPage: NextPage = () => {
           if (isUserLoggedIn(auth)) {
             console.log(auth?.token)
           }
+          else {
+            console.log("Log in first!");
+          }
         }}
       >
         Get it

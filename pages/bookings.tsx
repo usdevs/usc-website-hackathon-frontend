@@ -25,7 +25,7 @@ import BookingsTimesCol from '../components/booking/BookingTimesCol'
 import BookingVenueCol from '../components/booking/BookingVenueCol'
 import Toggle from '../components/booking/Toggle'
 import CalendarEventCard from '../components/booking/CalendarEventCard'
-import { ALL_VENUES_KEYWORD, isUserLoggedIn, useBookingCellStyles } from '../utils'
+import { ALL_VENUES_KEYWORD, throwsErrorIfNullOrUndefined, isUserLoggedIn, useBookingCellStyles } from '../utils'
 import { useUserInfo } from '../utils'
 import { useCurrentHalfHourTime } from '../hooks/useCurrentHalfHourTime'
 import { addDays, isSameDay } from 'date-fns'
@@ -79,6 +79,7 @@ const BookingSelector: FC = () => {
   )
   const [isBackendUpdated, setIsBackendUpdated] = useState<boolean>(false)
   const [auth] = useUserInfo()
+  //TODO this state shouldn't be here
   const [bookingData, setBookingData] = useState<BookingDataForm>({
     eventName: '',
     orgId: auth ? auth.orgIds[0] : -1,
@@ -151,9 +152,7 @@ const BookingSelector: FC = () => {
     })
   // Filter bookings to only show bookings for the current day and the current venue
   allBookingsInMonth.reduce(function (memo, x) {
-    memo.find(y => {
-      return y.venueId === x.venueId
-    })?.bookings.push(x)
+    throwsErrorIfNullOrUndefined(memo.find(y => y.venueId === x.venueId)).bookings.push(x)
     return memo
   }, bookingsSortedByVenue)
 
@@ -275,7 +274,6 @@ const BookingSelector: FC = () => {
           bookingDataFromSelection={bookingDataFromSelection}
           bookingData={bookingData}
           setBookingData={setBookingData}
-          auth={auth}
           refreshData={() => setIsBackendUpdated(!isBackendUpdated)}
         />
       ) : (
@@ -286,7 +284,7 @@ const BookingSelector: FC = () => {
           <HStack gap='4'>
             <Menu closeOnSelect={false}>
               <MenuButton as={Button} colorScheme='blue' rightIcon={<ChevronDownIcon />}>
-                {venueIdToFilterBy === 0 ? 'Venue' : VENUES.find((v) => venueIdToFilterBy === v.id)?.name}
+                {venueIdToFilterBy === 0 ? 'Venue' : throwsErrorIfNullOrUndefined(VENUES.find((v) => venueIdToFilterBy === v.id)).name}
               </MenuButton>
               <MenuList>
                 <MenuOptionGroup defaultValue={ALL_VENUES_KEYWORD.name} type='radio'>
@@ -311,7 +309,7 @@ const BookingSelector: FC = () => {
             bookings={
               venueIdToFilterBy === ALL_VENUES_KEYWORD.id
                 ? allBookingsInMonth
-                : (bookingsSortedByVenue.find(x => x.venueId === venueIdToFilterBy)?.bookings || [])
+                : (throwsErrorIfNullOrUndefined(bookingsSortedByVenue.find(x => x.venueId === venueIdToFilterBy)).bookings)
             }
           />
         </VStack>
@@ -344,7 +342,7 @@ const BookingSelector: FC = () => {
                         })
                         onModalOpen()
                       }}
-                      currentVenueBookings={allBookingsInSelectedDay(bookingsSortedByVenue.find(x => x.venueId === venue.id)?.bookings || [])}
+                      currentVenueBookings={allBookingsInSelectedDay(throwsErrorIfNullOrUndefined(bookingsSortedByVenue.find(x => x.venueId === venue.id)).bookings)}
                       openBookingCard={openBookingCard}
                     />
                   )

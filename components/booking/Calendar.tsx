@@ -3,6 +3,7 @@ import { Box, Button, Grid, HStack, Text, VStack } from '@chakra-ui/react'
 import { format, startOfMonth, addMonths, subMonths, isSameDay } from 'date-fns'
 import { motion, AnimatePresence, LayoutGroup } from 'framer-motion'
 import { BookingsContext, BookingsContextValue } from "../../context/BookingsContext";
+import { throwsErrorIfNullOrUndefined } from '../../utils';
 
 interface CellProps {
   text: string
@@ -89,7 +90,7 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
         {isExpanded && (
           <motion.div initial='hidden' animate='visible' variants={list}>
             <VStack alignItems='flex-start' spacing='0' pl='4'>
-              {bookings?.map((booking, i) => {
+              {bookings.map((booking, i) => {
                 return (
                   <motion.div variants={item} key={i}>
                     <Text
@@ -101,7 +102,7 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
                       textAlign='left'
                     >
                       {`${format(booking.from, 'HH:mm')}-${format(booking.to, 'HH:mm')} ${
-                        VENUES.find((v) => v.id === booking.venueId)?.name
+                        throwsErrorIfNullOrUndefined(VENUES.find((v) => v.id === booking.venueId)).name
                       }`}
                     </Text>
                   </motion.div>

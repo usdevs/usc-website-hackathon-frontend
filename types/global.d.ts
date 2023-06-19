@@ -21,12 +21,16 @@ declare global {
     category: IGCategory
   }
 
-  type UserOnOrg = {
+  type UserOnOrgWithUser = {
     user: User
   }
 
+  type UserOnOrgWithVenue = {
+    org: Organisation
+  }
+
   type OrganisationWithIGHead = Organisation & {
-    userOrg: UserOnOrg[]
+    userOrg: UserOnOrgWithUser[]
   }
 
   type BookingDataBackend = {
@@ -39,6 +43,7 @@ declare global {
     bookedAt: string
     eventName: string
     bookedByUser: User
+    bookedBy: UserOnOrgWithVenue
   }
 
   type BookingDataDisplay = {
@@ -53,6 +58,7 @@ declare global {
     to: Date
     eventName: string
     bookedByUser: User
+    bookedBy: UserOnOrgWithVenue
   }
 
   interface BookingDataSelection {

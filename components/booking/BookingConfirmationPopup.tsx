@@ -16,7 +16,7 @@ import {
 } from '@chakra-ui/react'
 import format from 'date-fns/format'
 import { BookingsContext, BookingsContextValue } from '../../context/BookingsContext'
-import { isUserLoggedIn } from '../../utils'
+import { throwsErrorIfNullOrUndefined, isUserLoggedIn, useUserInfo } from "../../utils";
 import { useCurrentHalfHourTime } from '../../hooks/useCurrentHalfHourTime'
 
 type BookingConfirmationPopupProps = {
@@ -28,7 +28,6 @@ type BookingConfirmationPopupProps = {
   setUnsuccessfulFormSubmitString: Dispatch<SetStateAction<string>>
   bookingData: BookingDataForm
   setBookingData: Dispatch<SetStateAction<BookingDataForm>>
-  auth: AuthState
   refreshData: () => void
 }
 
@@ -41,23 +40,24 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
   setUnsuccessfulFormSubmitString,
   bookingData,
   setBookingData,
-  auth,
   refreshData,
 }) => {
   const bookingsContextValue: BookingsContextValue = useContext(BookingsContext)
   const toast = useToast()
   const toast_id = 'response-toast'
   const currentRoundedHalfHourTime = useCurrentHalfHourTime()
+  const [authOrNull] = useUserInfo()
+  const auth: AuthState = throwsErrorIfNullOrUndefined(authOrNull)
 
   // todo do better than querying all orgs lol <-- do with GraphQL
   const getOrgNameFromId = (orgId: number) => {
-    return bookingsContextValue.allOrgs.find((o) => o.id === orgId)?.name || ''
+    return throwsErrorIfNullOrUndefined(bookingsContextValue.allOrgs.find((o) => o.id === orgId)).name || ''
   }
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setUnsuccessfulFormSubmitString('')
-    const token = auth?.token
+    const token = auth.token
     const requestOptions = {
       method: 'POST',
       headers: {
@@ -178,7 +178,7 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
               <FormLabel htmlFor='venue' marginTop='0.5rem'>
                 Venue
               </FormLabel>
-              <Box>{bookingDataFromSelection?.venue.name}</Box>
+              <Box>{bookingDataFromSelection.venue.name}</Box>
             </FormControl>
             <FormControl>
               <FormLabel htmlFor='date' marginTop='0.5rem'>
@@ -191,14 +191,14 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
                 Start Time
               </FormLabel>
               <Box>
-                {format(bookingDataFromSelection?.start || currentRoundedHalfHourTime, 'p')}
+                {format(bookingDataFromSelection.start || currentRoundedHalfHourTime, 'p')}
               </Box>
             </FormControl>
             <FormControl>
               <FormLabel htmlFor='end' marginTop='0.5rem'>
                 End Time
               </FormLabel>
-              <Box>{format(bookingDataFromSelection?.end || currentRoundedHalfHourTime, 'p')}</Box>
+              <Box>{format(bookingDataFromSelection.end || currentRoundedHalfHourTime, 'p')}</Box>
             </FormControl>
             <FormControl>
               <Button
