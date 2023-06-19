@@ -1,4 +1,4 @@
-import { useState, useEffect, FC, MouseEvent } from 'react'
+import { useState, useEffect, FC, MouseEvent, useContext } from 'react'
 import { motion, AnimatePresence, useMotionValueEvent, useScroll } from 'framer-motion'
 import {
   HStack,
@@ -15,7 +15,7 @@ import {
 import { useDisclosure } from '@chakra-ui/react'
 import eachMinuteOfInterval from 'date-fns/eachMinuteOfInterval'
 import { BookingConfirmationPopup } from '../components/booking/BookingConfirmationPopup'
-import { BookingsContext } from '../context/BookingsContext'
+import { BookingsContext, BookingsContextValue } from '../context/BookingsContext'
 import Footer from '../components/Footer'
 import { NextPage } from 'next'
 import NavMenu from '../components/NavMenu'
@@ -25,10 +25,15 @@ import BookingsTimesCol from '../components/booking/BookingTimesCol'
 import BookingVenueCol from '../components/booking/BookingVenueCol'
 import Toggle from '../components/booking/Toggle'
 import CalendarEventCard from '../components/booking/CalendarEventCard'
-import { VENUES, ALL_VENUES_KEYWORD, isUserLoggedIn, useBookingCellStyles } from '../utils'
+import {
+  ALL_VENUES_KEYWORD,
+  throwsErrorIfNullOrUndefined,
+  isUserLoggedIn,
+  useBookingCellStyles,
+} from '../utils'
 import { useUserInfo } from '../utils'
 import { useCurrentHalfHourTime } from '../hooks/useCurrentHalfHourTime'
-import { addDays, isAfter, isSameDay } from 'date-fns'
+import { addDays, isSameDay } from 'date-fns'
 
 const getOnlyMonthAndYearFromDate = (dateToParse: Date) => {
   const month = dateToParse.getMonth()
@@ -64,10 +69,14 @@ const BookingSelector: FC = () => {
   const [bookingDataFromSelection, setBookingDataFromSelection] = useState<BookingDataSelection>({
     start: null,
     end: null,
-    venueId: -1,
-    venueName: '',
+    venue: {
+      id: -1,
+      name: '',
+    },
   })
   const [unsuccessfulFormSubmitString, setUnsuccessfulFormSubmitString] = useState<string>('')
+  const bookingsContextValue: BookingsContextValue = useContext(BookingsContext)
+  const VENUES: Venue[] = bookingsContextValue.allVenues
   const currentRoundedHalfHourTime = useCurrentHalfHourTime()
   const [userSelectedDate, setUserSelectedDate] = useState<Date>(currentRoundedHalfHourTime)
   const [userSelectedMonth, setUserSelectedMonth] = useState<Date>(
@@ -75,6 +84,7 @@ const BookingSelector: FC = () => {
   )
   const [isBackendUpdated, setIsBackendUpdated] = useState<boolean>(false)
   const [auth] = useUserInfo()
+  //TODO this state shouldn't be here
   const [bookingData, setBookingData] = useState<BookingDataForm>({
     eventName: '',
     orgId: auth ? auth.orgIds[0] : -1,
@@ -84,9 +94,10 @@ const BookingSelector: FC = () => {
   const [allBookingsInMonth, setAllBookingsInMonth] = useState<BookingDataDisplay[]>([])
 
   const startOfDay = getOnlyDayMonthAndYearFromDate(userSelectedDate)
-  const allBookingsInSelectedDay = allBookingsInMonth.filter((booking) => {
-    return isSameDay(booking.from, startOfDay)
-  })
+  const allBookingsInSelectedDay = (bookingsToFilterBy: BookingDataDisplay[]) =>
+    bookingsToFilterBy.filter((booking) => {
+      return isSameDay(booking.from, startOfDay)
+    })
 
   useEffect(() => {
     const newPossibleMonth = getOnlyMonthAndYearFromDate(userSelectedDate)
@@ -134,13 +145,19 @@ const BookingSelector: FC = () => {
     )
   })()
 
+  type sorted = {
+    bookings: Array<BookingDataDisplay>
+    venueId: number
+  }
+
+  const venueIndices = VENUES.map((venue) => venue.id)
   // TODO cleanup this stuff, refactor this component
-  const bookingsSortedByVenue: Array<Array<BookingDataDisplay>> = new Array(VENUES.length)
-    .fill(0)
-    .map(() => new Array(0))
+  const bookingsSortedByVenue: Array<sorted> = venueIndices.map((index) => {
+    return { bookings: [], venueId: index }
+  })
   // Filter bookings to only show bookings for the current day and the current venue
   allBookingsInMonth.reduce(function (memo, x) {
-    memo[x['venueId'] - 1].push(x)
+    throwsErrorIfNullOrUndefined(memo.find((y) => y.venueId === x.venueId)).bookings.push(x)
     return memo
   }, bookingsSortedByVenue)
 
@@ -174,7 +191,7 @@ const BookingSelector: FC = () => {
     }
   }
 
-  const [venueToFilterBy, setVenueToFilterBy] = useState<string>(ALL_VENUES_KEYWORD)
+  const [venueIdToFilterBy, setVenueIdToFilterBy] = useState<number>(ALL_VENUES_KEYWORD.id)
   const [isExpandedCalendar, setExpandedCalendar] = useState(false)
   // CALENDAR EVENT CARD
   // Sets the state of the event card
@@ -262,7 +279,6 @@ const BookingSelector: FC = () => {
           bookingDataFromSelection={bookingDataFromSelection}
           bookingData={bookingData}
           setBookingData={setBookingData}
-          auth={auth}
           refreshData={() => setIsBackendUpdated(!isBackendUpdated)}
         />
       ) : (
@@ -273,17 +289,20 @@ const BookingSelector: FC = () => {
           <HStack gap='4'>
             <Menu closeOnSelect={false}>
               <MenuButton as={Button} colorScheme='blue' rightIcon={<ChevronDownIcon />}>
-                {venueToFilterBy === ALL_VENUES_KEYWORD ? 'Venue' : venueToFilterBy}
+                {venueIdToFilterBy === 0
+                  ? 'Venue'
+                  : throwsErrorIfNullOrUndefined(VENUES.find((v) => venueIdToFilterBy === v.id))
+                      .name}
               </MenuButton>
               <MenuList>
-                <MenuOptionGroup defaultValue={ALL_VENUES_KEYWORD} type='radio'>
+                <MenuOptionGroup defaultValue={ALL_VENUES_KEYWORD.name} type='radio'>
                   {[ALL_VENUES_KEYWORD, ...VENUES].map((venue) => (
                     <MenuItemOption
-                      onClick={() => setVenueToFilterBy(venue)}
-                      key={venue}
-                      value={venue}
+                      onClick={() => setVenueIdToFilterBy(venue.id)}
+                      key={venue.id}
+                      value={venue.name}
                     >
-                      {venue}
+                      {venue.name}
                     </MenuItemOption>
                   ))}
                 </MenuOptionGroup>
@@ -296,9 +315,11 @@ const BookingSelector: FC = () => {
             setIsOn={setExpandedCalendar}
             setStartDate={setUserSelectedDate}
             bookings={
-              venueToFilterBy === ALL_VENUES_KEYWORD
+              venueIdToFilterBy === ALL_VENUES_KEYWORD.id
                 ? allBookingsInMonth
-                : bookingsSortedByVenue[VENUES.findIndex((venue) => venue === venueToFilterBy)]
+                : throwsErrorIfNullOrUndefined(
+                    bookingsSortedByVenue.find((x) => x.venueId === venueIdToFilterBy),
+                  ).bookings
             }
           />
         </VStack>
@@ -313,27 +334,29 @@ const BookingSelector: FC = () => {
               <HStack>
                 <BookingsTimesCol />
                 {VENUES.filter((venue) => {
-                  if (venueToFilterBy === ALL_VENUES_KEYWORD) {
+                  if (venueIdToFilterBy === ALL_VENUES_KEYWORD.id) {
                     return true
                   }
-                  return venue === venueToFilterBy
-                }).map((venueName) => {
-                  const venueId = VENUES.findIndex((venue) => venue === venueName)
+                  return venue.id === venueIdToFilterBy
+                }).map((venue: Venue) => {
                   return (
                     <BookingVenueCol
                       timeIntervals={timeIntervals}
-                      key={venueName}
-                      venueName={venueName}
+                      key={venue.id}
+                      venueName={venue.name}
                       openBookingModal={(start, end) => {
                         setBookingDataFromSelection({
-                          venueName,
-                          venueId: venueId + 1,
+                          venue,
                           start,
                           end,
                         })
                         onModalOpen()
                       }}
-                      currentVenueBookings={bookingsSortedByVenue[venueId]}
+                      currentVenueBookings={allBookingsInSelectedDay(
+                        throwsErrorIfNullOrUndefined(
+                          bookingsSortedByVenue.find((x) => x.venueId === venue.id),
+                        ).bookings,
+                      )}
                       openBookingCard={openBookingCard}
                     />
                   )
@@ -347,11 +370,15 @@ const BookingSelector: FC = () => {
   )
 }
 
-const Grid: NextPage<{ allOrgs: Organisation[] }> = ({ allOrgs }) => {
+const Grid: NextPage<{ allOrgs: Organisation[]; allVenues: Venue[]; allIGCategories: object }> = ({
+  allOrgs,
+  allVenues,
+  allIGCategories,
+}) => {
   return (
     <Flex justify='center' flexDir='column' as='main'>
       <NavMenu />
-      <BookingsContext.Provider value={{ allOrgs }}>
+      <BookingsContext.Provider value={{ allOrgs, allVenues, allIGCategories }}>
         <BookingSelector />
       </BookingsContext.Provider>
       <Footer />
@@ -360,9 +387,15 @@ const Grid: NextPage<{ allOrgs: Organisation[] }> = ({ allOrgs }) => {
 }
 
 export async function getServerSideProps() {
-  const orgs = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs')
-  const allOrgs = await orgs.json()
-  return { props: { allOrgs } }
+  const [orgs, venues, igCategories] = await Promise.all([
+    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs'),
+    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'venues'),
+    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs/categories'),
+  ])
+  const allOrgs = await (await orgs).json()
+  const allVenues = await (await venues).json()
+  const allIGCategories = await (await igCategories).json()
+  return { props: { allOrgs, allVenues, allIGCategories } }
 }
 
 export default Grid

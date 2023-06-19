@@ -88,6 +88,7 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
       >
         <Text color={'white'}>{venueBooking?.eventName}</Text>
         <Text>{'Booked by ' + venueBooking?.bookedByUser.name}</Text>
+        <Text>{venueBooking?.bookedBy?.org?.name}</Text>
       </Box>
     )
   } else if (cellStatus === CellStatus.BookedBySelf) {
@@ -100,7 +101,7 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
         onClick={onClick}
       >
         <Text color={'white'}>{venueBooking?.eventName}</Text>
-        <Text>{'Booked by you'}</Text>
+        <Text>{'Booked by you for ' + venueBooking?.bookedBy?.org?.name}</Text>
       </Box>
     )
   } else if (

@@ -107,11 +107,14 @@ const LeftPane: React.FC<LeftPaneProps> = ({ imageKey, igHead, imageSrc, inviteL
 const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const firstUserOnOrg: UserOnOrg | null = ig_info?.userOrg?.length > 0 ? ig_info?.userOrg[0] : null
+  const firstUserOnOrg: UserOnOrgWithUser | null =
+    ig_info?.userOrg?.length > 0 ? ig_info?.userOrg[0] : null
   const igHead: string = firstUserOnOrg?.user?.name || 'No name'
   const slug = ig_info?.slug || DEFAULT_PNG_NAME
   const imageSrc = '/orgs/' + slug + '.png'
-  const inviteLink = ig_info?.inviteLink || 'https://t.me/' + firstUserOnOrg?.user?.telegramUserName
+  const inviteLink =
+    ig_info?.inviteLink ||
+    (firstUserOnOrg ? 'https://t.me/' + firstUserOnOrg?.user?.telegramUserName : '')
 
   return (
     <>

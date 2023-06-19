@@ -86,11 +86,11 @@ const StudentGroups: NextPage = () => {
           >
             {interestGroupCards.length > 0 ? (
               <>
-                <strong>{interestGroupCards.length}</strong> Interest Group
+                <strong>{interestGroupCards.length}</strong> Student Group
                 {interestGroupCards.length > 1 && 's'}
               </>
             ) : (
-              <>No Interest Groups Found</>
+              <>No Student Groups Found</>
             )}
           </Heading>
           <SimpleGrid columns={[1, null, 2]} width={'95%'} spacing='2rem'>

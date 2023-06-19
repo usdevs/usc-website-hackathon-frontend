@@ -18,6 +18,8 @@ const AdminPage: NextPage = () => {
         onClick={() => {
           if (isUserLoggedIn(auth)) {
             console.log(auth?.token)
+          } else {
+            console.log('Log in first!')
           }
         }}
       >

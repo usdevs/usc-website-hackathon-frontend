@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { Box, Button, Grid, HStack, Text, VStack } from '@chakra-ui/react'
 import { format, startOfMonth, addMonths, subMonths, isSameDay } from 'date-fns'
 import { motion, AnimatePresence, LayoutGroup } from 'framer-motion'
+import { BookingsContext, BookingsContextValue } from '../../context/BookingsContext'
+import { throwsErrorIfNullOrUndefined } from '../../utils'
 
-import { VENUES } from '../../utils'
 interface CellProps {
   text: string
   isExpanded: boolean
@@ -41,6 +42,9 @@ const CalendarDayCell: React.FC<DayCellProps> = ({ text, isExpanded }) => {
 }
 
 const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onClick, bookings }) => {
+  const bookingsContextValue: BookingsContextValue = useContext(BookingsContext)
+  const VENUES: Venue[] = bookingsContextValue.allVenues
+
   const list = {
     visible: {
       opacity: 1,
@@ -86,7 +90,7 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
         {isExpanded && (
           <motion.div initial='hidden' animate='visible' variants={list}>
             <VStack alignItems='flex-start' spacing='0' pl='4'>
-              {bookings?.map((booking, i) => {
+              {bookings.map((booking, i) => {
                 return (
                   <motion.div variants={item} key={i}>
                     <Text
@@ -97,8 +101,9 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
                       fontSize='sm'
                       textAlign='left'
                     >
-                      {`${format(booking.from, 'H:mm')}-${format(booking.to, 'H:mm')} ${
-                        VENUES[booking.venueId - 1]
+                      {`${format(booking.from, 'HH:mm')}-${format(booking.to, 'HH:mm')} ${
+                        throwsErrorIfNullOrUndefined(VENUES.find((v) => v.id === booking.venueId))
+                          .name
                       }`}
                     </Text>
                   </motion.div>
@@ -132,8 +137,9 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
 }
 
 const Calendar: React.FC<CalendarProps> = ({ isOn, setStartDate, bookings }) => {
-  const [selectedDate, setSelectedDate] = useState(new Date())
-  const [selected, setSelected] = useState(selectedDate.getDate())
+  //todo remove these duplicate states, use parent's state
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date())
+  const [selected, setSelected] = useState<number>(selectedDate.getDate())
 
   const handlePrevMonth = () => {
     setSelected(-1)
