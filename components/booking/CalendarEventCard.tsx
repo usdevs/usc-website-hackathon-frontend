@@ -15,7 +15,7 @@ import { motion } from 'framer-motion'
 import { format } from 'date-fns'
 import { FC, HTMLProps, useContext } from 'react'
 import { throwsErrorIfNullOrUndefined, useUserInfo } from '../../utils'
-import { BookingsContext, BookingsContextValue } from "../../context/BookingsContext";
+import { BookingsContext, BookingsContextValue } from '../../context/BookingsContext'
 
 interface CalendarEventCardProps extends HTMLProps<HTMLDivElement> {
   x: number
@@ -27,7 +27,7 @@ interface CalendarEventCardProps extends HTMLProps<HTMLDivElement> {
 const CalendarEventCard: FC<CalendarEventCardProps> = ({ x, y, booking, onDelete }) => {
   const [auth] = useUserInfo()
   const bookingsContextValue: BookingsContextValue = useContext(BookingsContext)
-  const VENUES: Venue[] = bookingsContextValue.allVenues;
+  const VENUES: Venue[] = bookingsContextValue.allVenues
 
   if (!booking) {
     return <></>

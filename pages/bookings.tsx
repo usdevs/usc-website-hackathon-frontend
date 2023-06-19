@@ -15,7 +15,7 @@ import {
 import { useDisclosure } from '@chakra-ui/react'
 import eachMinuteOfInterval from 'date-fns/eachMinuteOfInterval'
 import { BookingConfirmationPopup } from '../components/booking/BookingConfirmationPopup'
-import { BookingsContext, BookingsContextValue } from "../context/BookingsContext";
+import { BookingsContext, BookingsContextValue } from '../context/BookingsContext'
 import Footer from '../components/Footer'
 import { NextPage } from 'next'
 import NavMenu from '../components/NavMenu'
@@ -25,7 +25,12 @@ import BookingsTimesCol from '../components/booking/BookingTimesCol'
 import BookingVenueCol from '../components/booking/BookingVenueCol'
 import Toggle from '../components/booking/Toggle'
 import CalendarEventCard from '../components/booking/CalendarEventCard'
-import { ALL_VENUES_KEYWORD, throwsErrorIfNullOrUndefined, isUserLoggedIn, useBookingCellStyles } from '../utils'
+import {
+  ALL_VENUES_KEYWORD,
+  throwsErrorIfNullOrUndefined,
+  isUserLoggedIn,
+  useBookingCellStyles,
+} from '../utils'
 import { useUserInfo } from '../utils'
 import { useCurrentHalfHourTime } from '../hooks/useCurrentHalfHourTime'
 import { addDays, isSameDay } from 'date-fns'
@@ -66,12 +71,12 @@ const BookingSelector: FC = () => {
     end: null,
     venue: {
       id: -1,
-      name: ''
-    }
+      name: '',
+    },
   })
   const [unsuccessfulFormSubmitString, setUnsuccessfulFormSubmitString] = useState<string>('')
   const bookingsContextValue: BookingsContextValue = useContext(BookingsContext)
-  const VENUES: Venue[] = bookingsContextValue.allVenues;
+  const VENUES: Venue[] = bookingsContextValue.allVenues
   const currentRoundedHalfHourTime = useCurrentHalfHourTime()
   const [userSelectedDate, setUserSelectedDate] = useState<Date>(currentRoundedHalfHourTime)
   const [userSelectedMonth, setUserSelectedMonth] = useState<Date>(
@@ -89,9 +94,10 @@ const BookingSelector: FC = () => {
   const [allBookingsInMonth, setAllBookingsInMonth] = useState<BookingDataDisplay[]>([])
 
   const startOfDay = getOnlyDayMonthAndYearFromDate(userSelectedDate)
-  const allBookingsInSelectedDay = (bookingsToFilterBy: BookingDataDisplay[]) => bookingsToFilterBy.filter((booking) => {
-    return isSameDay(booking.from, startOfDay)
-  })
+  const allBookingsInSelectedDay = (bookingsToFilterBy: BookingDataDisplay[]) =>
+    bookingsToFilterBy.filter((booking) => {
+      return isSameDay(booking.from, startOfDay)
+    })
 
   useEffect(() => {
     const newPossibleMonth = getOnlyMonthAndYearFromDate(userSelectedDate)
@@ -144,15 +150,14 @@ const BookingSelector: FC = () => {
     venueId: number
   }
 
-  const venueIndices = VENUES.map(venue => venue.id);
+  const venueIndices = VENUES.map((venue) => venue.id)
   // TODO cleanup this stuff, refactor this component
-  const bookingsSortedByVenue: Array<sorted> = venueIndices
-    .map(index => {
-      return { bookings: [], venueId: index}
-    })
+  const bookingsSortedByVenue: Array<sorted> = venueIndices.map((index) => {
+    return { bookings: [], venueId: index }
+  })
   // Filter bookings to only show bookings for the current day and the current venue
   allBookingsInMonth.reduce(function (memo, x) {
-    throwsErrorIfNullOrUndefined(memo.find(y => y.venueId === x.venueId)).bookings.push(x)
+    throwsErrorIfNullOrUndefined(memo.find((y) => y.venueId === x.venueId)).bookings.push(x)
     return memo
   }, bookingsSortedByVenue)
 
@@ -284,7 +289,10 @@ const BookingSelector: FC = () => {
           <HStack gap='4'>
             <Menu closeOnSelect={false}>
               <MenuButton as={Button} colorScheme='blue' rightIcon={<ChevronDownIcon />}>
-                {venueIdToFilterBy === 0 ? 'Venue' : throwsErrorIfNullOrUndefined(VENUES.find((v) => venueIdToFilterBy === v.id)).name}
+                {venueIdToFilterBy === 0
+                  ? 'Venue'
+                  : throwsErrorIfNullOrUndefined(VENUES.find((v) => venueIdToFilterBy === v.id))
+                      .name}
               </MenuButton>
               <MenuList>
                 <MenuOptionGroup defaultValue={ALL_VENUES_KEYWORD.name} type='radio'>
@@ -309,7 +317,9 @@ const BookingSelector: FC = () => {
             bookings={
               venueIdToFilterBy === ALL_VENUES_KEYWORD.id
                 ? allBookingsInMonth
-                : (throwsErrorIfNullOrUndefined(bookingsSortedByVenue.find(x => x.venueId === venueIdToFilterBy)).bookings)
+                : throwsErrorIfNullOrUndefined(
+                    bookingsSortedByVenue.find((x) => x.venueId === venueIdToFilterBy),
+                  ).bookings
             }
           />
         </VStack>
@@ -342,7 +352,11 @@ const BookingSelector: FC = () => {
                         })
                         onModalOpen()
                       }}
-                      currentVenueBookings={allBookingsInSelectedDay(throwsErrorIfNullOrUndefined(bookingsSortedByVenue.find(x => x.venueId === venue.id)).bookings)}
+                      currentVenueBookings={allBookingsInSelectedDay(
+                        throwsErrorIfNullOrUndefined(
+                          bookingsSortedByVenue.find((x) => x.venueId === venue.id),
+                        ).bookings,
+                      )}
                       openBookingCard={openBookingCard}
                     />
                   )
@@ -356,7 +370,11 @@ const BookingSelector: FC = () => {
   )
 }
 
-const Grid: NextPage<{ allOrgs: Organisation[], allVenues: Venue[], allIGCategories: object }> = ({ allOrgs, allVenues, allIGCategories }) => {
+const Grid: NextPage<{ allOrgs: Organisation[]; allVenues: Venue[]; allIGCategories: object }> = ({
+  allOrgs,
+  allVenues,
+  allIGCategories,
+}) => {
   return (
     <Flex justify='center' flexDir='column' as='main'>
       <NavMenu />
@@ -369,7 +387,11 @@ const Grid: NextPage<{ allOrgs: Organisation[], allVenues: Venue[], allIGCategor
 }
 
 export async function getServerSideProps() {
-  const [ orgs, venues, igCategories ] = await Promise.all([ fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs'), fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'venues'), fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs/categories') ]);
+  const [orgs, venues, igCategories] = await Promise.all([
+    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs'),
+    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'venues'),
+    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs/categories'),
+  ])
   const allOrgs = await (await orgs).json()
   const allVenues = await (await venues).json()
   const allIGCategories = await (await igCategories).json()

@@ -16,7 +16,7 @@ import {
 } from '@chakra-ui/react'
 import format from 'date-fns/format'
 import { BookingsContext, BookingsContextValue } from '../../context/BookingsContext'
-import { throwsErrorIfNullOrUndefined, isUserLoggedIn, useUserInfo } from "../../utils";
+import { throwsErrorIfNullOrUndefined, isUserLoggedIn, useUserInfo } from '../../utils'
 import { useCurrentHalfHourTime } from '../../hooks/useCurrentHalfHourTime'
 
 type BookingConfirmationPopupProps = {
@@ -51,7 +51,10 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
 
   // todo do better than querying all orgs lol <-- do with GraphQL
   const getOrgNameFromId = (orgId: number) => {
-    return throwsErrorIfNullOrUndefined(bookingsContextValue.allOrgs.find((o) => o.id === orgId)).name || ''
+    return (
+      throwsErrorIfNullOrUndefined(bookingsContextValue.allOrgs.find((o) => o.id === orgId)).name ||
+      ''
+    )
   }
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -190,9 +193,7 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
               <FormLabel htmlFor='start' marginTop='0.5rem'>
                 Start Time
               </FormLabel>
-              <Box>
-                {format(bookingDataFromSelection.start || currentRoundedHalfHourTime, 'p')}
-              </Box>
+              <Box>{format(bookingDataFromSelection.start || currentRoundedHalfHourTime, 'p')}</Box>
             </FormControl>
             <FormControl>
               <FormLabel htmlFor='end' marginTop='0.5rem'>

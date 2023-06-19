@@ -9,5 +9,5 @@ export type BookingsContextValue = {
 export const BookingsContext = createContext<BookingsContextValue>({
   allOrgs: [],
   allVenues: [],
-  allIGCategories: null
+  allIGCategories: null,
 })
