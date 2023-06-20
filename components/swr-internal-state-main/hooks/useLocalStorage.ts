@@ -11,10 +11,12 @@ import { isServerSide } from '../utils'
  *
  * @returns an array of (the saved value, set value function, and remove value function) in the same order.
  */
-const useLocalStorage = <T>(
+const useLocalStorage = <T extends ObjectWithSetupTime>(
   key: string,
   defaultValue: T | null = null,
 ): LocalStorageHookResult<T> => {
+  //Note that this file is modified to be able to invalidate local storage after 20 minute - see commit
+  // b918ac409cedf11db27a11f2df974473d13e4146 for what changed
   let initialValue = defaultValue
 
   // @ts-ignore

@@ -11,11 +11,12 @@ import {
   Stack,
 } from '@chakra-ui/react'
 import { SearchIcon } from '@chakra-ui/icons'
+import { DEFAULT_FILTERS } from '../pages/student-groups'
 
-interface IGSearchFilterProps {
+type IGSearchFilterProps = {
   onInput: React.FormEventHandler<HTMLInputElement>
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-  interestGroupCategories: string[]
+  interestGroupCategories: StringJSObject
 }
 
 const IGSearchFilter: React.FC<IGSearchFilterProps> = ({
@@ -50,11 +51,11 @@ const IGSearchFilter: React.FC<IGSearchFilterProps> = ({
           />
         </InputGroup>
         <Box p={'2vh'}>
-          <CheckboxGroup colorScheme='green' defaultValue={['arts', 'sports', 'gui']}>
+          <CheckboxGroup colorScheme='green' defaultValue={DEFAULT_FILTERS}>
             <Stack mt='0.5rem' spacing={[1, 5]} direction={['column', 'column']}>
-              {interestGroupCategories.map((category) => (
-                <Checkbox onChange={onChange} key={category} value={category}>
-                  {category}
+              {Object.entries(interestGroupCategories).map((category) => (
+                <Checkbox onChange={onChange} key={category[0]} value={category[0]}>
+                  {category[1]}
                 </Checkbox>
               ))}
             </Stack>

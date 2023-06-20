@@ -6,6 +6,11 @@ declare global {
     label: string
   }
 
+  type Venue = {
+    id: number
+    name: string
+  }
+
   type Organisation = {
     id: number
     name: string
@@ -16,12 +21,16 @@ declare global {
     category: IGCategory
   }
 
-  type UserOnOrg = {
+  type UserOnOrgWithUser = {
     user: User
   }
 
+  type UserOnOrgWithVenue = {
+    org: Organisation
+  }
+
   type OrganisationWithIGHead = Organisation & {
-    userOrg: UserOnOrg[]
+    userOrg: UserOnOrgWithUser[]
   }
 
   type BookingDataBackend = {
@@ -34,6 +43,7 @@ declare global {
     bookedAt: string
     eventName: string
     bookedByUser: User
+    bookedBy: UserOnOrgWithVenue
   }
 
   type BookingDataDisplay = {
@@ -48,13 +58,13 @@ declare global {
     to: Date
     eventName: string
     bookedByUser: User
+    bookedBy: UserOnOrgWithVenue
   }
 
   interface BookingDataSelection {
     start: Date | null
     end: Date | null
-    venueId: number
-    venueName: string
+    venue: Venue
   }
 
   interface TelegramUser {
@@ -73,7 +83,7 @@ declare global {
     username: string
   }
 
-  interface AuthState {
+  interface AuthState extends ObjectWithSetupTime {
     token: string
     orgIds: Array<number>
     userInfo: UserInformation | null
@@ -94,5 +104,19 @@ declare global {
   interface ToggleProps {
     isOn: boolean
     setIsOn: (isOn: boolean) => void
+  }
+
+  export interface ObjectWithSetupTime {
+    setupTime: Date
+  }
+
+  export type FetcherFn = <T extends ObjectWithSetupTime>(
+    url: URL,
+    key: string,
+    defaultValue: T | null,
+  ) => (url: URL) => Promise<T | null>
+
+  export interface StringJSObject {
+    [key: string]: string
   }
 }

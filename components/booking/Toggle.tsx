@@ -45,7 +45,6 @@ const Toggle: React.FC<ToggleProps> = ({ isOn, setIsOn }) => {
             }),
           0,
         )
-        console.log('Clicked!')
         setIsOn(!isOn)
       }}
       style={STYLES.container}

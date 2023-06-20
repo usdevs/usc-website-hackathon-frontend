@@ -2,7 +2,8 @@ import React from 'react'
 
 import { Button } from '@chakra-ui/react'
 import TelegramLoginButton from './TelegramLoginButton'
-import { useUserInfo } from '../utils'
+import { isUserLoggedIn } from '../utils'
+import { useUserInfo } from '../hooks/useUserInfo'
 
 // { Parth: 22, Zhi Sheng: 23, Megan: 24, Conrad: 25 } based on 2 April seed file
 const NEXT_PUBLIC_BACKEND_TELEGRAM_USER_ID = 25
@@ -27,6 +28,7 @@ const Auth: React.FC = () => {
             photoUrl: '',
             username: 'gparth26',
           },
+          setupTime: new Date(),
         })
       }}
     >
@@ -59,7 +61,7 @@ const Auth: React.FC = () => {
               photoUrl: userCredentials.photo_url,
               username: userCredentials.username,
             }
-            setAuth({ token, orgIds, userInfo, userId })
+            setAuth({ token, orgIds, userInfo, userId, setupTime: new Date() })
           })
           .catch((error) => {
             alert(error)
@@ -78,12 +80,12 @@ const Auth: React.FC = () => {
     </Button>
   )
 
-  return auth?.token === ''
-    ? process.env.NODE_ENV === 'development'
-      ? NEXT_PUBLIC_NGINX_PROXY_ON
-        ? loginButtonWidget
-        : loginButtonDev
-      : loginButtonWidget
-    : logoutButton
+  return isUserLoggedIn(auth)
+    ? logoutButton
+    : process.env.NODE_ENV === 'development'
+    ? NEXT_PUBLIC_NGINX_PROXY_ON
+      ? loginButtonWidget
+      : loginButtonDev
+    : loginButtonWidget
 }
 export default Auth
