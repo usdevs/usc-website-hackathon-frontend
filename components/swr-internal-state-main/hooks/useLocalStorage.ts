@@ -11,7 +11,7 @@ import { isServerSide } from '../utils'
  *
  * @returns an array of (the saved value, set value function, and remove value function) in the same order.
  */
-const useLocalStorage = <T>(
+const useLocalStorage = <T extends ObjectWithSetupTime>(
   key: string,
   defaultValue: T | null = null,
 ): LocalStorageHookResult<T> => {

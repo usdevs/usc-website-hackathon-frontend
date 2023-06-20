@@ -1,8 +1,6 @@
-import { useLocalStorage, useGlobalState } from './components/swr-internal-state-main'
+import { useGlobalState } from './components/swr-internal-state-main'
 
 export const useBookingCellStyles = () => useGlobalState<number>('root-font-size', 16)
-
-export const useUserInfo = () => useLocalStorage<AuthState>('user-profile')
 
 export const ALL_VENUES_KEYWORD: Venue = { id: 0, name: 'All Venues' }
 

@@ -3,6 +3,7 @@ import VenueMap from './VenueMap'
 import { FaInstagram, FaTelegram } from 'react-icons/fa'
 import { MdEmail } from 'react-icons/md'
 import React from 'react'
+import { BUTTON_LINKS } from '../utils'
 
 interface SocialLink extends NavigationLink {
   iconComponent: React.FC
@@ -11,24 +12,9 @@ interface SocialLink extends NavigationLink {
 const navigationLinks: NavigationLink[] = [
   {
     href: '/',
-    label: 'About Us',
+    label: 'Home',
   },
-  {
-    href: '/student-groups',
-    label: 'Student Groups',
-  },
-  {
-    href: '/bookings',
-    label: 'Bookings',
-  },
-  {
-    href: '/',
-    label: 'Events',
-  },
-  {
-    href: '/',
-    label: 'Admins',
-  },
+  ...BUTTON_LINKS,
 ]
 
 const socialLinks: SocialLink[] = [

@@ -31,9 +31,9 @@ import {
   isUserLoggedIn,
   useBookingCellStyles,
 } from '../utils'
-import { useUserInfo } from '../utils'
 import { useCurrentHalfHourTime } from '../hooks/useCurrentHalfHourTime'
 import { addDays, isSameDay } from 'date-fns'
+import { useUserInfo } from '../hooks/useUserInfo'
 
 const getOnlyMonthAndYearFromDate = (dateToParse: Date) => {
   const month = dateToParse.getMonth()
@@ -370,15 +370,14 @@ const BookingSelector: FC = () => {
   )
 }
 
-const Grid: NextPage<{ allOrgs: Organisation[]; allVenues: Venue[]; allIGCategories: object }> = ({
+const Grid: NextPage<{ allOrgs: Organisation[]; allVenues: Venue[] }> = ({
   allOrgs,
   allVenues,
-  allIGCategories,
 }) => {
   return (
     <Flex justify='center' flexDir='column' as='main'>
       <NavMenu />
-      <BookingsContext.Provider value={{ allOrgs, allVenues, allIGCategories }}>
+      <BookingsContext.Provider value={{ allOrgs, allVenues }}>
         <BookingSelector />
       </BookingsContext.Provider>
       <Footer />
@@ -387,15 +386,13 @@ const Grid: NextPage<{ allOrgs: Organisation[]; allVenues: Venue[]; allIGCategor
 }
 
 export async function getServerSideProps() {
-  const [orgs, venues, igCategories] = await Promise.all([
+  const [orgs, venues] = await Promise.all([
     fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs'),
     fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'venues'),
-    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs/categories'),
   ])
   const allOrgs = await (await orgs).json()
   const allVenues = await (await venues).json()
-  const allIGCategories = await (await igCategories).json()
-  return { props: { allOrgs, allVenues, allIGCategories } }
+  return { props: { allOrgs, allVenues } }
 }
 
 export default Grid
