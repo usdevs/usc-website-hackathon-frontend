@@ -3,7 +3,7 @@ import React from 'react'
 import { Button } from '@chakra-ui/react'
 import TelegramLoginButton from './TelegramLoginButton'
 import { isUserLoggedIn } from '../utils'
-import { useUserInfo } from "../hooks/useUserInfo";
+import { useUserInfo } from '../hooks/useUserInfo'
 
 // { Parth: 22, Zhi Sheng: 23, Megan: 24, Conrad: 25 } based on 2 April seed file
 const NEXT_PUBLIC_BACKEND_TELEGRAM_USER_ID = 25
@@ -28,7 +28,7 @@ const Auth: React.FC = () => {
             photoUrl: '',
             username: 'gparth26',
           },
-          setupTime: new Date()
+          setupTime: new Date(),
         })
       }}
     >

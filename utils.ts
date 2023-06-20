@@ -1,4 +1,4 @@
-import { useGlobalState } from "./components/swr-internal-state-main";
+import { useGlobalState } from './components/swr-internal-state-main'
 
 export const useBookingCellStyles = () => useGlobalState<number>('root-font-size', 16)
 

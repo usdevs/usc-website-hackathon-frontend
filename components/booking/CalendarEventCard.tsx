@@ -16,7 +16,7 @@ import { format } from 'date-fns'
 import { FC, HTMLProps, useContext } from 'react'
 import { throwsErrorIfNullOrUndefined } from '../../utils'
 import { BookingsContext, BookingsContextValue } from '../../context/BookingsContext'
-import { useUserInfo } from "../../hooks/useUserInfo";
+import { useUserInfo } from '../../hooks/useUserInfo'
 
 interface CalendarEventCardProps extends HTMLProps<HTMLDivElement> {
   x: number

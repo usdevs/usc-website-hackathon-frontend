@@ -7,10 +7,9 @@ import {
   BOOKING_CELL_HEIGHT_REM,
   isUserLoggedIn,
   useBookingCellStyles,
-
 } from '../../utils'
 import { useCurrentHalfHourTime } from '../../hooks/useCurrentHalfHourTime'
-import { useUserInfo } from "../../hooks/useUserInfo";
+import { useUserInfo } from '../../hooks/useUserInfo'
 
 enum CellStatus {
   Available = 'Available',
