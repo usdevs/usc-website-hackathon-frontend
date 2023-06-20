@@ -1,3 +1,5 @@
+import { ObjectWithSetupTime } from "../components/swr-internal-state-main/hooks/useLocalStorage";
+
 export {}
 
 declare global {
@@ -83,7 +85,7 @@ declare global {
     username: string
   }
 
-  interface AuthState {
+  interface AuthState extends ObjectWithSetupTime {
     token: string
     orgIds: Array<number>
     userInfo: UserInformation | null
@@ -105,4 +107,10 @@ declare global {
     isOn: boolean
     setIsOn: (isOn: boolean) => void
   }
+
+  export interface ObjectWithSetupTime {
+    setupTime: Date;
+  }
+
+  export type FetcherFn = <T extends ObjectWithSetupTime>(url: URL, key: string, defaultValue: (T | null)) => (url: URL) => Promise<T | null>;
 }

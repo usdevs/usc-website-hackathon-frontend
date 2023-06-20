@@ -16,8 +16,9 @@ import {
 } from '@chakra-ui/react'
 import format from 'date-fns/format'
 import { BookingsContext, BookingsContextValue } from '../../context/BookingsContext'
-import { throwsErrorIfNullOrUndefined, isUserLoggedIn, useUserInfo } from '../../utils'
+import { throwsErrorIfNullOrUndefined, isUserLoggedIn } from '../../utils'
 import { useCurrentHalfHourTime } from '../../hooks/useCurrentHalfHourTime'
+import { useUserInfo } from "../../hooks/useUserInfo";
 
 type BookingConfirmationPopupProps = {
   onClose: () => void

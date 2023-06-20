@@ -31,9 +31,9 @@ import {
   isUserLoggedIn,
   useBookingCellStyles,
 } from '../utils'
-import { useUserInfo } from '../utils'
 import { useCurrentHalfHourTime } from '../hooks/useCurrentHalfHourTime'
 import { addDays, isSameDay } from 'date-fns'
+import { useUserInfo } from "../hooks/useUserInfo";
 
 const getOnlyMonthAndYearFromDate = (dateToParse: Date) => {
   const month = dateToParse.getMonth()
