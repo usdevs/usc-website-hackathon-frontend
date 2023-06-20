@@ -1,5 +1,3 @@
-import { ObjectWithSetupTime } from "../components/swr-internal-state-main/hooks/useLocalStorage";
-
 export {}
 
 declare global {
@@ -109,8 +107,16 @@ declare global {
   }
 
   export interface ObjectWithSetupTime {
-    setupTime: Date;
+    setupTime: Date
   }
 
-  export type FetcherFn = <T extends ObjectWithSetupTime>(url: URL, key: string, defaultValue: (T | null)) => (url: URL) => Promise<T | null>;
+  export type FetcherFn = <T extends ObjectWithSetupTime>(
+    url: URL,
+    key: string,
+    defaultValue: T | null,
+  ) => (url: URL) => Promise<T | null>
+
+  export interface StringJSObject {
+    [key: string]: string
+  }
 }
