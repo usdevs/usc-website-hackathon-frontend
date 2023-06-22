@@ -114,7 +114,11 @@ declare global {
     defaultValue: T | null,
   ) => (url: URL) => Promise<T | null>
 
-  export interface StringJSObject {
-    [key: string]: string
+  export interface StringToStringJSObject {
+    [index: string]: string
+  }
+
+  export interface NumberToStringJSObject {
+    [index: number]: string
   }
 }

@@ -16,7 +16,7 @@ import { DEFAULT_FILTERS } from '../pages/student-groups'
 type IGSearchFilterProps = {
   onInput: React.FormEventHandler<HTMLInputElement>
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-  interestGroupCategories: StringJSObject
+  interestGroupCategories: StringToStringJSObject
 }
 
 const IGSearchFilter: React.FC<IGSearchFilterProps> = ({

@@ -34,6 +34,7 @@ import {
 import { useCurrentHalfHourTime } from '../hooks/useCurrentHalfHourTime'
 import { addDays, isSameDay } from 'date-fns'
 import { useUserInfo } from '../hooks/useUserInfo'
+import { useIdsToColoursMap } from '../hooks/useIdsToColoursMap'
 
 const getOnlyMonthAndYearFromDate = (dateToParse: Date) => {
   const month = dateToParse.getMonth()
@@ -82,6 +83,7 @@ const BookingSelector: FC = () => {
   const [userSelectedMonth, setUserSelectedMonth] = useState<Date>(
     getOnlyMonthAndYearFromDate(userSelectedDate),
   )
+  //todo this is a silly way to update
   const [isBackendUpdated, setIsBackendUpdated] = useState<boolean>(false)
   const [auth] = useUserInfo()
   //TODO this state shouldn't be here
@@ -92,6 +94,9 @@ const BookingSelector: FC = () => {
   const toast = useToast()
   const toast_id = 'auth-toast'
   const [allBookingsInMonth, setAllBookingsInMonth] = useState<BookingDataDisplay[]>([])
+  // we use LocalStorage to persist the colours indefinitely
+  const [orgsIdsToColoursMapString, setOrgsIdsToColoursMapString] = useIdsToColoursMap()
+  // const orgIdsToColoursMap = useRef<NumberToStringJSObject>({})
 
   const startOfDay = getOnlyDayMonthAndYearFromDate(userSelectedDate)
   const allBookingsInSelectedDay = (bookingsToFilterBy: BookingDataDisplay[]) =>
@@ -127,9 +132,36 @@ const BookingSelector: FC = () => {
         }),
       )
       setAllBookingsInMonth(bookingsMappedForDisplay)
+      const mappedOrgIds: number[] = bookingsMappedForDisplay.map(
+        (booking) => booking.bookedBy.org.id,
+      )
+      let uniqueOrgIds: number[] = [...new Set(mappedOrgIds)]
+      console.log(orgsIdsToColoursMapString)
+      const map =
+        orgsIdsToColoursMapString === null ? Object.create(null) : orgsIdsToColoursMapString
+      for (const uniqueOrgId of uniqueOrgIds) {
+        if (!Object.hasOwn(map, uniqueOrgId)) {
+          while (true) {
+            let randomColour =
+              '#' +
+              Math.floor(Math.random() * 16777215)
+                .toString(16)
+                .padStart(6, '0')
+            if (Object.values(map).indexOf(randomColour) === -1) {
+              map[uniqueOrgId] = randomColour
+              break
+            }
+          }
+        }
+      }
+      console.log(map)
+      await setOrgsIdsToColoursMapString(map)
+      // orgIdsToColoursMap.current = map
     })()
     return () => {}
-  }, [userSelectedMonth, isBackendUpdated])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userSelectedMonth, isBackendUpdated]) // since we call setOrgIdsToColoursMapString, need to remove it from
+  // the dependencies array
 
   // Create time intervals for the current date
   const timeIntervals = (() => {
@@ -341,6 +373,7 @@ const BookingSelector: FC = () => {
                 }).map((venue: Venue) => {
                   return (
                     <BookingVenueCol
+                      orgIdsToColoursMap={orgsIdsToColoursMapString || {}}
                       timeIntervals={timeIntervals}
                       key={venue.id}
                       venueName={venue.name}

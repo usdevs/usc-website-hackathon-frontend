@@ -9,7 +9,7 @@ import { StudentGroupsContext } from '../context/StudentGroupsContext'
 
 export const DEFAULT_FILTERS: string[] = ['Sports', 'SocioCultural', 'Others']
 
-const mappingsCategoriesEnumToDisplayName: StringJSObject = {
+const mappingsCategoriesEnumToDisplayName: StringToStringJSObject = {
   SocioCultural: 'Socio-cultural',
   Guips: 'GUIPs',
 }
@@ -123,7 +123,7 @@ export async function getServerSideProps() {
   const allIGCategories: { [key: string]: string } = await (await igCategories).json()
   for (const mappingKey in mappingsCategoriesEnumToDisplayName) {
     allIGCategories[mappingKey] =
-      mappingsCategoriesEnumToDisplayName[mappingKey as keyof StringJSObject]
+      mappingsCategoriesEnumToDisplayName[mappingKey as keyof StringToStringJSObject]
   }
   return { props: { allOrgs, allIGCategories } }
 }
