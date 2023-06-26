@@ -11,50 +11,34 @@ import { isServerSide } from '../utils'
  *
  * @returns an array of (the saved value, set value function, and remove value function) in the same order.
  */
-const useLocalStorage = <T extends ObjectWithSetupTime>(
+const useLocalStorageWithPersistence = <T>(
   key: string,
   defaultValue: T | null = null,
 ): LocalStorageHookResult<T> => {
-  //Note that this file is modified to be able to invalidate local storage after 20 minute - see commit
-  // b918ac409cedf11db27a11f2df974473d13e4146 for what changed
   let initialValue = defaultValue
 
-  // @ts-ignore
-  const fetcher = (url) => {
-    if (!isServerSide()) {
-      let storedValue = window.localStorage.getItem(key)
-      if (storedValue !== null && storedValue !== 'undefined') {
-        const parsedValue = JSON.parse(storedValue)
-        if (Date.now() - parsedValue.setupTime <= 20 * 60 * 1000) {
-          // invalidate after 20 minutes
-          return parsedValue
-        }
-      }
-    }
-    return defaultValue
+  if (!isServerSide()) {
+    let storedValue = window.localStorage.getItem(key)
+    if (storedValue !== null && storedValue !== 'undefined') initialValue = JSON.parse(storedValue)
   }
 
-  const { data: value = initialValue, mutate } = useSWR(key, fetcher, {
+  const { data: value = initialValue, mutate } = useSWR(key, null, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
     refreshWhenHidden: false,
     refreshWhenOffline: false,
-    refreshInterval: 5 * 60 * 1000, // forces web app to fetch data again every 5 minutes, in essence triggering
-    // the setupTime check every 5 minutes
   })
 
   // ========== Set value ==========
   const setValue = async (value: T): Promise<void> => {
-    const valueWithSetupTime = { ...value, setupTime: Date.now() }
-
-    await mutate(valueWithSetupTime, false)
+    await mutate(value, false)
 
     if (isServerSide()) {
       return
     }
 
     // Save to local storage
-    const localStorageValue = JSON.stringify(valueWithSetupTime)
+    const localStorageValue = JSON.stringify(value)
     window.localStorage.setItem(key, localStorageValue)
   }
 
@@ -73,4 +57,4 @@ const useLocalStorage = <T extends ObjectWithSetupTime>(
   return [value, setValue, removeValue]
 }
 
-export default useLocalStorage
+export default useLocalStorageWithPersistence

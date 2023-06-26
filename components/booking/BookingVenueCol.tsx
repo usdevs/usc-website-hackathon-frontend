@@ -26,6 +26,7 @@ interface BookingVenueColumnProps extends React.HTMLProps<HTMLDivElement> {
   timeIntervals: Date[]
   currentVenueBookings: Array<BookingDataDisplay>
   openBookingCard: (event: React.MouseEvent, booking: BookingDataDisplay | undefined) => void
+  orgIdsToColoursMap: NumberToStringJSObject
 }
 
 interface BookingVenueTimeCellProps extends React.HTMLProps<HTMLDivElement> {
@@ -34,6 +35,7 @@ interface BookingVenueTimeCellProps extends React.HTMLProps<HTMLDivElement> {
   numberOfCells: number
   rootFontSize: number
   venueBooking: BookingDataDisplay | undefined
+  orgColour: string
 }
 
 const BOX_WIDTH_REM = 8
@@ -63,6 +65,7 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
   numberOfCells,
   rootFontSize,
   venueBooking,
+  orgColour,
 }) => {
   // Cell is coloured based on whether it's selected or not
   const SharedBoxProps: BoxProps = {
@@ -81,14 +84,14 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
     return (
       <Box
         {...SharedBoxProps}
-        bg='brand.secondary'
+        bg={orgColour}
         borderColor='white'
         cursor='pointer'
         onClick={onClick}
       >
         <Text color={'white'}>{venueBooking?.eventName}</Text>
-        <Text>{'Booked by ' + venueBooking?.bookedByUser.name}</Text>
-        <Text>{venueBooking?.bookedBy?.org?.name}</Text>
+        {/*<Text>{'Booked by ' + venueBooking?.bookedByUser.name}</Text>*/}
+        <Text>{'Booked for ' + venueBooking?.bookedBy?.org?.name}</Text>
       </Box>
     )
   } else if (cellStatus === CellStatus.BookedBySelf) {
@@ -142,6 +145,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
   timeIntervals,
   currentVenueBookings,
   openBookingCard,
+  orgIdsToColoursMap,
 }) => {
   const isCurrentCellBetweenFirstAndLastSelectedCells = (currentIndex: number): boolean => {
     return smallerSelected <= currentIndex && currentIndex <= largerSelected
@@ -228,6 +232,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
         isUserLoggedIn: isUserLoggedIn(auth),
         rootFontSize: rootFontSize ?? 16,
         venueBooking,
+        orgColour: venueBooking ? orgIdsToColoursMap[venueBooking.orgId] : 'brand.secondary',
       }
 
       return <BookingVenueTimeCell key={cellIndex} {...props} cellStatus={cellStatus} />

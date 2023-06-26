@@ -107,11 +107,14 @@ const LeftPane: React.FC<LeftPaneProps> = ({ imageKey, primaryIGHead, imageSrc, 
 const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const igHeads: UserOnOrg[] = ig_info.userOrg.filter(userOnOrg => userOnOrg.isIGHead)
-  const igHeadsNames: string[] = igHeads.map(igHead => igHead.user.name)
-  const igHeadsDisplay: string = igHeadsNames.length > 0
-    ? (igHeadsNames.length === 1 ? igHeadsNames[0] : igHeadsNames.join(', ') )
-    : 'No IG Heads'
+  const igHeads: UserOnOrg[] = ig_info.userOrg.filter((userOnOrg) => userOnOrg.isIGHead)
+  const igHeadsNames: string[] = igHeads.map((igHead) => igHead.user.name)
+  const igHeadsDisplay: string =
+    igHeadsNames.length > 0
+      ? igHeadsNames.length === 1
+        ? igHeadsNames[0]
+        : igHeadsNames.join(', ')
+      : 'No IG Heads'
   const primaryIGHead: User | null = igHeads.length > 0 ? igHeads[0].user : null
   const slug = ig_info.slug || DEFAULT_PNG_NAME
   const imageSrc = '/orgs/' + slug + '.png'
