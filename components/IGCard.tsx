@@ -31,14 +31,14 @@ interface IGInfoProps {
 
 type LeftPaneProps = {
   imageKey: number
-  igHead: string
+  primaryIGHead: User | null
   imageSrc: string
   inviteLink: string
 }
 
 const MotionBox = motion(Box)
 
-const getContactButton = (contact: string) => {
+const getContactButton = (contact: User | null) => {
   return (
     <Button
       overflow='hidden'
@@ -58,7 +58,7 @@ const getContactButton = (contact: string) => {
       }}
     >
       <Text noOfLines={[1]} display='inline'>
-        {contact}
+        {contact?.name || 'No contact found'}
       </Text>
     </Button>
   )
@@ -83,7 +83,7 @@ const getInviteLinkButton = (inviteLink: string) => {
   )
 }
 
-const LeftPane: React.FC<LeftPaneProps> = ({ imageKey, igHead, imageSrc, inviteLink }) => {
+const LeftPane: React.FC<LeftPaneProps> = ({ imageKey, primaryIGHead, imageSrc, inviteLink }) => {
   return (
     <VStack padding='1rem' borderRight='2px solid darkgrey' justifyContent='space-apart'>
       <Center flex={1}>
@@ -98,7 +98,7 @@ const LeftPane: React.FC<LeftPaneProps> = ({ imageKey, igHead, imageSrc, inviteL
           sizes='(max-width: 130) 100vw'
         />
       </Center>
-      {getContactButton(igHead)}
+      {getContactButton(primaryIGHead)}
       {getInviteLinkButton(inviteLink)}
     </VStack>
   )
@@ -107,14 +107,20 @@ const LeftPane: React.FC<LeftPaneProps> = ({ imageKey, igHead, imageSrc, inviteL
 const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const firstUserOnOrg: UserOnOrgWithUser | null =
-    ig_info?.userOrg?.length > 0 ? ig_info?.userOrg[0] : null
-  const igHead: string = firstUserOnOrg?.user?.name || 'No name'
-  const slug = ig_info?.slug || DEFAULT_PNG_NAME
+  const igHeads: UserOnOrg[] = ig_info.userOrg.filter((userOnOrg) => userOnOrg.isIGHead)
+  const igHeadsNames: string[] = igHeads.map((igHead) => igHead.user.name)
+  const igHeadsDisplay: string =
+    igHeadsNames.length > 0
+      ? igHeadsNames.length === 1
+        ? igHeadsNames[0]
+        : igHeadsNames.join(', ')
+      : 'No IG Heads'
+  const primaryIGHead: User | null = igHeads.length > 0 ? igHeads[0].user : null
+  const slug = ig_info.slug || DEFAULT_PNG_NAME
   const imageSrc = '/orgs/' + slug + '.png'
   const inviteLink =
-    ig_info?.inviteLink ||
-    (firstUserOnOrg ? 'https://t.me/' + firstUserOnOrg?.user?.telegramUserName : '')
+    ig_info.inviteLink ||
+    (igHeads.length > 0 ? 'https://t.me/' + primaryIGHead?.telegramUserName : '')
 
   return (
     <>
@@ -133,7 +139,7 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
         >
           <LeftPane
             imageKey={imageKey - 1}
-            igHead={igHead}
+            primaryIGHead={primaryIGHead}
             imageSrc={imageSrc}
             inviteLink={inviteLink}
           />
@@ -179,10 +185,11 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
           <ModalHeader>{ig_info.name}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
+            <Text color={'gray.500'}>{'Heads: ' + igHeadsDisplay}</Text>
             <Text color={'gray.500'}>{ig_info.description}</Text>
           </ModalBody>
           <ModalFooter justifyContent='flex-start'>
-            <Box mr={2}>{getContactButton(igHead)}</Box>
+            <Box mr={2}>{getContactButton(primaryIGHead)}</Box>
             {getInviteLinkButton(inviteLink)}
           </ModalFooter>
         </ModalContent>

@@ -33,3 +33,11 @@ export const throwsErrorIfNullOrUndefined = <T>(
   }
   return argument
 }
+
+export const getOrgFromId = (orgsToSearch: Organisation[], orgId: number) => {
+  return throwsErrorIfNullOrUndefined(orgsToSearch.find((o) => o.id === orgId))
+}
+
+export const getVenueFromId = (venuesToSearch: Venue[], venueId: number) => {
+  return throwsErrorIfNullOrUndefined(venuesToSearch.find((v) => v.id === venueId))
+}

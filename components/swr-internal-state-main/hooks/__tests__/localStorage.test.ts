@@ -1,4 +1,4 @@
-import useLocalStorage from '../useLocalStorage'
+import useLocalStorageWithTTL from '../useLocalStorageWithTTL'
 import MockedLocalStorage from '../__mocks__/mockedLocalStorage'
 
 let mockedMutate = jest.fn()
@@ -20,7 +20,7 @@ describe('persistent-storage', () => {
   })
 
   it('should set item in local-storage and call mutate in swr', () => {
-    const [, setPersistentKey] = useLocalStorage<any>('key')
+    const [, setPersistentKey] = useLocalStorageWithTTL<any>('key')
     setPersistentKey('value')
     expect(mockedLocalStorage.setItem).toBeCalled()
     expect(mockedMutate).toBeCalled()
@@ -29,14 +29,14 @@ describe('persistent-storage', () => {
 
   it('should get item from local-storage', () => {
     mockedLocalStorage.store['key'] = JSON.stringify('value')
-    const [persistentValue] = useLocalStorage<any>('key')
+    const [persistentValue] = useLocalStorageWithTTL<any>('key')
     expect(mockedLocalStorage.getItem).toBeCalled()
     expect(persistentValue).toEqual('value')
   })
 
   it('should remove item from local-storage', () => {
     mockedLocalStorage.store['key'] = JSON.stringify('value')
-    const [, , removePersistentKeyValue] = useLocalStorage<any>('key')
+    const [, , removePersistentKeyValue] = useLocalStorageWithTTL<any>('key')
     removePersistentKeyValue()
     expect(mockedLocalStorage.removeItem).toBeCalled()
     expect(mockedMutate).toBeCalled()
