@@ -16,7 +16,12 @@ import {
 } from '@chakra-ui/react'
 import format from 'date-fns/format'
 import { BookingsContext, BookingsContextValue } from '../../context/BookingsContext'
-import { throwsErrorIfNullOrUndefined, isUserLoggedIn } from '../../utils'
+import {
+  throwsErrorIfNullOrUndefined,
+  isUserLoggedIn,
+  getOrgFromId,
+  getVenueFromId,
+} from '../../utils'
 import { useCurrentHalfHourTime } from '../../hooks/useCurrentHalfHourTime'
 import { useUserInfo } from '../../hooks/useUserInfo'
 
@@ -50,13 +55,7 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
   const [authOrNull] = useUserInfo()
   const auth: AuthState = throwsErrorIfNullOrUndefined(authOrNull)
 
-  // todo do better than querying all orgs lol <-- do with GraphQL
-  const getOrgNameFromId = (orgId: number) => {
-    return (
-      throwsErrorIfNullOrUndefined(bookingsContextValue.allOrgs.find((o) => o.id === orgId)).name ||
-      ''
-    )
-  }
+  // todo do better than querying all orgs just to match bookings here <-- search orgs in DB by orgId with GraphQL
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -151,11 +150,11 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
                   {...(auth.orgIds.length === 1 ? { pointerEvents: 'none' } : {})}
                 >
                   <option key={0} value={auth.orgIds[0]}>
-                    {getOrgNameFromId(auth.orgIds[0])}
+                    {getOrgFromId(bookingsContextValue.allOrgs, auth.orgIds[0]).name}
                   </option>
                   {auth.orgIds
                     .slice(1)
-                    .map(getOrgNameFromId)
+                    .map((orgId) => getOrgFromId(bookingsContextValue.allOrgs, orgId).name)
                     .map((orgName, i) => {
                       return (
                         <option key={i + 1} value={auth.orgIds[i + 1]}>
@@ -182,7 +181,12 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
               <FormLabel htmlFor='venue' marginTop='0.5rem'>
                 Venue
               </FormLabel>
-              <Box>{bookingDataFromSelection.venue.name}</Box>
+              <Box>
+                {isOpen
+                  ? getVenueFromId(bookingsContextValue.allVenues, bookingDataFromSelection.venueId)
+                      .name
+                  : ''}
+              </Box>
             </FormControl>
             <FormControl>
               <FormLabel htmlFor='date' marginTop='0.5rem'>

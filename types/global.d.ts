@@ -62,7 +62,7 @@ declare global {
   interface BookingDataSelection {
     start: Date | null
     end: Date | null
-    venue: Venue
+    venueId: number
   }
 
   interface TelegramUser {

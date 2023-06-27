@@ -70,10 +70,7 @@ const BookingSelector: FC = () => {
   const [bookingDataFromSelection, setBookingDataFromSelection] = useState<BookingDataSelection>({
     start: null,
     end: null,
-    venue: {
-      id: -1,
-      name: '',
-    },
+    venueId: -1,
   })
   const [unsuccessfulFormSubmitString, setUnsuccessfulFormSubmitString] = useState<string>('')
   const bookingsContextValue: BookingsContextValue = useContext(BookingsContext)
@@ -136,7 +133,6 @@ const BookingSelector: FC = () => {
         (booking) => booking.bookedBy.org.id,
       )
       let uniqueOrgIds: number[] = [...new Set(mappedOrgIds)]
-      console.log(orgsIdsToColoursMapString)
       const map =
         orgsIdsToColoursMapString === null ? Object.create(null) : orgsIdsToColoursMapString
       for (const uniqueOrgId of uniqueOrgIds) {
@@ -154,7 +150,6 @@ const BookingSelector: FC = () => {
           }
         }
       }
-      console.log(map)
       await setOrgsIdsToColoursMapString(map)
       // orgIdsToColoursMap.current = map
     })()
@@ -379,7 +374,7 @@ const BookingSelector: FC = () => {
                       venueName={venue.name}
                       openBookingModal={(start, end) => {
                         setBookingDataFromSelection({
-                          venue,
+                          venueId: venue.id,
                           start,
                           end,
                         })
