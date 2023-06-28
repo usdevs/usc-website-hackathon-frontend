@@ -114,7 +114,7 @@ const StudentGroups: NextPage<{
   )
 }
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   const [orgs, igCategories] = await Promise.all([
     fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs'),
     fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs/categories'),
@@ -125,7 +125,7 @@ export async function getServerSideProps() {
     allIGCategories[mappingKey] =
       mappingsCategoriesEnumToDisplayName[mappingKey as keyof StringToStringJSObject]
   }
-  return { props: { allOrgs, allIGCategories } }
+  return { props: { allOrgs, allIGCategories }, revalidate: 86400 } // regenerate every 1 day
 }
 
 export default StudentGroups
