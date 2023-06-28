@@ -1,9 +1,9 @@
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import { Box, Button, Grid, HStack, Text, VStack } from '@chakra-ui/react'
 import { format, startOfMonth, addMonths, subMonths, isSameDay } from 'date-fns'
 import { motion, AnimatePresence, LayoutGroup } from 'framer-motion'
-import { BookingsContext, BookingsContextValue } from '../../context/BookingsContext'
-import { getVenueFromId } from '../../utils'
+import { fetchFromUrlAndParseJson, getVenueFromId } from '../../utils'
+import useSWRImmutable from 'swr/immutable'
 
 interface CellProps {
   text: string
@@ -42,7 +42,10 @@ const CalendarDayCell: React.FC<DayCellProps> = ({ text, isExpanded }) => {
 }
 
 const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onClick, bookings }) => {
-  const bookingsContextValue: BookingsContextValue = useContext(BookingsContext)
+  const { data: allVenues = [] } = useSWRImmutable<Venue[], string>(
+    process.env.NEXT_PUBLIC_BACKEND_URL + 'venues',
+    fetchFromUrlAndParseJson,
+  )
 
   const list = {
     visible: {
@@ -101,7 +104,7 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
                       textAlign='left'
                     >
                       {`${format(booking.from, 'HH:mm')}-${format(booking.to, 'HH:mm')} ${
-                        getVenueFromId(bookingsContextValue.allVenues, booking.venueId).name
+                        getVenueFromId(allVenues, booking.venueId).name
                       }`}
                     </Text>
                   </motion.div>

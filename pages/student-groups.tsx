@@ -5,7 +5,6 @@ import Footer from '../components/Footer'
 import IGCard from '../components/IGCard'
 import { ChangeEvent, useEffect, useState } from 'react'
 import IGSearchFilter from '../components/IGSearchFilter'
-import { StudentGroupsContext } from '../context/StudentGroupsContext'
 
 export const DEFAULT_FILTERS: string[] = ['Sports', 'SocioCultural', 'Others']
 
@@ -62,7 +61,7 @@ const StudentGroups: NextPage<{
   const totalPages = Math.ceil(igCardsToDisplay.length / pageSize)
 
   return (
-    <StudentGroupsContext.Provider value={{ allOrgs, allIGCategories }}>
+    <>
       <Flex justify='center' flexDir='column' as='main'>
         <NavMenu />
         <HStack pt='3rem' pb='3rem'>
@@ -110,7 +109,7 @@ const StudentGroups: NextPage<{
         </HStack>
         <Footer />
       </Flex>
-    </StudentGroupsContext.Provider>
+    </>
   )
 }
 
