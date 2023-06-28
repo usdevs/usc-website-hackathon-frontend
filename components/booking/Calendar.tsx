@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { Box, Button, Grid, HStack, Text, VStack } from '@chakra-ui/react'
 import { format, startOfMonth, addMonths, subMonths, isSameDay } from 'date-fns'
 import { motion, AnimatePresence, LayoutGroup } from 'framer-motion'
-import { fetchFromUrlAndParseJson, getVenueFromId } from '../../utils'
-import useSWRImmutable from 'swr/immutable'
+import { getVenueFromId } from '../../utils'
+import { useAllVenues } from '../../hooks/useAllVenues'
 
 interface CellProps {
   text: string
@@ -42,10 +42,7 @@ const CalendarDayCell: React.FC<DayCellProps> = ({ text, isExpanded }) => {
 }
 
 const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onClick, bookings }) => {
-  const { data: allVenues = [] } = useSWRImmutable<Venue[], string>(
-    process.env.NEXT_PUBLIC_BACKEND_URL + 'venues',
-    fetchFromUrlAndParseJson,
-  )
+  const [allVenues] = useAllVenues()
 
   const list = {
     visible: {
