@@ -14,9 +14,9 @@ import { FaRegCalendarAlt, FaRegBuilding, FaRegClock, FaRegUser, FaTrash } from 
 import { motion } from 'framer-motion'
 import { format } from 'date-fns'
 import { FC, HTMLProps } from 'react'
-import { fetchFromUrlAndParseJson, getVenueFromId } from '../../utils'
+import { getVenueFromId } from '../../utils'
 import { useUserInfo } from '../../hooks/useUserInfo'
-import useSWRImmutable from 'swr/immutable'
+import { useAllVenues } from '../../hooks/useAllVenues'
 
 interface CalendarEventCardProps extends HTMLProps<HTMLDivElement> {
   x: number
@@ -27,10 +27,7 @@ interface CalendarEventCardProps extends HTMLProps<HTMLDivElement> {
 
 const CalendarEventCard: FC<CalendarEventCardProps> = ({ x, y, booking, onDelete }) => {
   const [auth] = useUserInfo()
-  const { data: allVenues = [] } = useSWRImmutable<Venue[], string>(
-    process.env.NEXT_PUBLIC_BACKEND_URL + 'venues',
-    fetchFromUrlAndParseJson,
-  )
+  const [allVenues] = useAllVenues()
 
   if (!booking) {
     return <></>

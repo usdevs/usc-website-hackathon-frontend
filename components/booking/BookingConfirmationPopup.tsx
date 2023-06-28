@@ -25,6 +25,7 @@ import {
 import { useCurrentHalfHourTime } from '../../hooks/useCurrentHalfHourTime'
 import { useUserInfo } from '../../hooks/useUserInfo'
 import useSWRImmutable from 'swr/immutable'
+import { useAllVenues } from '../../hooks/useAllVenues'
 
 type BookingConfirmationPopupProps = {
   onClose: () => void
@@ -53,10 +54,7 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
     process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs',
     fetchFromUrlAndParseJson,
   )
-  const { data: allVenues = [] } = useSWRImmutable<Venue[], string>(
-    process.env.NEXT_PUBLIC_BACKEND_URL + 'venues',
-    fetchFromUrlAndParseJson,
-  )
+  const [allVenues] = useAllVenues()
   const toast = useToast()
   const toast_id = 'response-toast'
   const currentRoundedHalfHourTime = useCurrentHalfHourTime()

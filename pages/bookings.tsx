@@ -36,7 +36,7 @@ import { useCurrentHalfHourTime } from '../hooks/useCurrentHalfHourTime'
 import { addDays, isSameDay } from 'date-fns'
 import { useUserInfo } from '../hooks/useUserInfo'
 import { useIdsToColoursMap } from '../hooks/useIdsToColoursMap'
-import useSWRImmutable from 'swr/immutable'
+import { useAllVenues } from '../hooks/useAllVenues'
 
 const getOnlyMonthAndYearFromDate = (dateToParse: Date) => {
   const month = dateToParse.getMonth()
@@ -68,14 +68,7 @@ const BookingSelector: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const {
-    data: allVenues = [],
-    error: errorVenues,
-    isLoading: isLoadingVenues,
-  } = useSWRImmutable<Venue[], string>(
-    process.env.NEXT_PUBLIC_BACKEND_URL + 'venues',
-    fetchFromUrlAndParseJson,
-  )
+  const [allVenues, isLoading] = useAllVenues()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [bookingDataFromSelection, setBookingDataFromSelection] = useState<BookingDataSelection>({
     start: null,
@@ -290,9 +283,7 @@ const BookingSelector: FC = () => {
     }
   }
 
-  if (errorVenues) {
-    throw new Error('Unable to fetch venues from backend')
-  } else if (isLoadingVenues) {
+  if (isLoading) {
     return <Spinner size='xl'></Spinner>
   }
 
