@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { Box, Button, Grid, HStack, Text, VStack } from '@chakra-ui/react'
 import { format, startOfMonth, addMonths, subMonths, isSameDay } from 'date-fns'
 import { motion, AnimatePresence, LayoutGroup } from 'framer-motion'
+import { BookingsContext, BookingsContextValue } from '../../context/BookingsContext'
 import { getVenueFromId } from '../../utils'
-import { useAllVenues } from '../../hooks/useAllVenues'
 
 interface CellProps {
   text: string
@@ -42,7 +42,7 @@ const CalendarDayCell: React.FC<DayCellProps> = ({ text, isExpanded }) => {
 }
 
 const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onClick, bookings }) => {
-  const [allVenues] = useAllVenues()
+  const bookingsContextValue: BookingsContextValue = useContext(BookingsContext)
 
   const list = {
     visible: {
@@ -101,7 +101,7 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
                       textAlign='left'
                     >
                       {`${format(booking.from, 'HH:mm')}-${format(booking.to, 'HH:mm')} ${
-                        getVenueFromId(allVenues, booking.venueId).name
+                        getVenueFromId(bookingsContextValue.allVenues, booking.venueId).name
                       }`}
                     </Text>
                   </motion.div>

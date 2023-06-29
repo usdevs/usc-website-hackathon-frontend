@@ -1,4 +1,4 @@
-import useSWRImmutable from 'swr/immutable'
+import useSWR from 'swr'
 
 import { GlobalStateHookResult } from '../types'
 
@@ -16,7 +16,12 @@ const useGlobalState = <T>(
   key: string,
   defaultValue: T | null = null,
 ): GlobalStateHookResult<T> => {
-  const { data: state = defaultValue, mutate } = useSWRImmutable(key, null)
+  const { data: state = defaultValue, mutate } = useSWR(key, null, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    refreshWhenHidden: false,
+    refreshWhenOffline: false,
+  })
 
   const setState = async (value: T): Promise<void> => {
     await mutate(value, false)

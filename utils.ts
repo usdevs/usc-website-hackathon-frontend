@@ -1,5 +1,4 @@
 import { useGlobalState } from './components/swr-internal-state-main'
-import { Fetcher } from 'swr'
 
 export const useBookingCellStyles = () => useGlobalState<number>('root-font-size', 16)
 
@@ -42,6 +41,3 @@ export const getOrgFromId = (orgsToSearch: Organisation[], orgId: number) => {
 export const getVenueFromId = (venuesToSearch: Venue[], venueId: number) => {
   return throwsErrorIfNullOrUndefined(venuesToSearch.find((v) => v.id === venueId))
 }
-
-export const fetchFromUrlAndParseJson: Fetcher<any, string> = (url): Promise<any> =>
-  fetch(url).then((res: Response) => res.json())

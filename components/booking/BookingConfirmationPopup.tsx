@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, FC, FormEvent, ChangeEvent } from 'react'
+import { Dispatch, SetStateAction, useContext, FC, FormEvent, ChangeEvent } from 'react'
 import {
   Box,
   Button,
@@ -15,17 +15,15 @@ import {
   useToast,
 } from '@chakra-ui/react'
 import format from 'date-fns/format'
+import { BookingsContext, BookingsContextValue } from '../../context/BookingsContext'
 import {
   throwsErrorIfNullOrUndefined,
   isUserLoggedIn,
   getOrgFromId,
   getVenueFromId,
-  fetchFromUrlAndParseJson,
 } from '../../utils'
 import { useCurrentHalfHourTime } from '../../hooks/useCurrentHalfHourTime'
 import { useUserInfo } from '../../hooks/useUserInfo'
-import useSWRImmutable from 'swr/immutable'
-import { useAllVenues } from '../../hooks/useAllVenues'
 
 type BookingConfirmationPopupProps = {
   onClose: () => void
@@ -50,11 +48,7 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
   setBookingData,
   refreshData,
 }) => {
-  const { data: allOrgs = [] } = useSWRImmutable<Organisation[], string>(
-    process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs',
-    fetchFromUrlAndParseJson,
-  )
-  const [allVenues] = useAllVenues()
+  const bookingsContextValue: BookingsContextValue = useContext(BookingsContext)
   const toast = useToast()
   const toast_id = 'response-toast'
   const currentRoundedHalfHourTime = useCurrentHalfHourTime()
@@ -156,11 +150,11 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
                   {...(auth.orgIds.length === 1 ? { pointerEvents: 'none' } : {})}
                 >
                   <option key={0} value={auth.orgIds[0]}>
-                    {getOrgFromId(allOrgs, auth.orgIds[0]).name}
+                    {getOrgFromId(bookingsContextValue.allOrgs, auth.orgIds[0]).name}
                   </option>
                   {auth.orgIds
                     .slice(1)
-                    .map((orgId) => getOrgFromId(allOrgs, orgId).name)
+                    .map((orgId) => getOrgFromId(bookingsContextValue.allOrgs, orgId).name)
                     .map((orgName, i) => {
                       return (
                         <option key={i + 1} value={auth.orgIds[i + 1]}>
@@ -188,7 +182,10 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
                 Venue
               </FormLabel>
               <Box>
-                {isOpen ? getVenueFromId(allVenues, bookingDataFromSelection.venueId).name : ''}
+                {isOpen
+                  ? getVenueFromId(bookingsContextValue.allVenues, bookingDataFromSelection.venueId)
+                      .name
+                  : ''}
               </Box>
             </FormControl>
             <FormControl>
