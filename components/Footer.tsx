@@ -19,7 +19,7 @@ const navigationLinks: NavigationLink[] = [
 
 const socialLinks: SocialLink[] = [
   {
-    href: 'https://www.instagram.com/nus.usc/',
+    href: 'https://www.instagram.com/nus.nuscc/',
     iconComponent: FaInstagram,
     label: 'Instagram',
   },

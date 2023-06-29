@@ -42,7 +42,7 @@ const CalendarDayCell: React.FC<DayCellProps> = ({ text, isExpanded }) => {
 }
 
 const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onClick, bookings }) => {
-  const [allVenues] = useAllVenues()
+  const [allVenues, isLoadingVenues] = useAllVenues()
 
   const list = {
     visible: {
@@ -63,6 +63,10 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
   const item = {
     visible: { opacity: 1, x: 0 },
     hidden: { opacity: 0, x: -10 },
+  }
+
+  if (isLoadingVenues) {
+    return <></>
   }
 
   return (
