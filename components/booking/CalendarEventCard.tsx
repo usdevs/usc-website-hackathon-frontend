@@ -13,10 +13,10 @@ import {
 import { FaRegCalendarAlt, FaRegBuilding, FaRegClock, FaRegUser, FaTrash } from 'react-icons/fa'
 import { motion } from 'framer-motion'
 import { format } from 'date-fns'
-import { FC, HTMLProps, useContext } from 'react'
+import { FC, HTMLProps } from 'react'
 import { getVenueFromId } from '../../utils'
-import { BookingsContext, BookingsContextValue } from '../../context/BookingsContext'
 import { useUserInfo } from '../../hooks/useUserInfo'
+import { useAllVenues } from '../../hooks/useAllVenues'
 
 interface CalendarEventCardProps extends HTMLProps<HTMLDivElement> {
   x: number
@@ -27,9 +27,9 @@ interface CalendarEventCardProps extends HTMLProps<HTMLDivElement> {
 
 const CalendarEventCard: FC<CalendarEventCardProps> = ({ x, y, booking, onDelete }) => {
   const [auth] = useUserInfo()
-  const bookingsContextValue: BookingsContextValue = useContext(BookingsContext)
+  const [allVenues, isLoadingVenues] = useAllVenues()
 
-  if (!booking) {
+  if (!booking || isLoadingVenues) {
     return <></>
   }
 
@@ -77,7 +77,7 @@ const CalendarEventCard: FC<CalendarEventCardProps> = ({ x, y, booking, onDelete
             <HStack>
               <Icon as={FaRegBuilding} />
               <Text as='span' fontSize='sm'>
-                {getVenueFromId(bookingsContextValue.allVenues, booking.venueId).name}
+                {getVenueFromId(allVenues, booking.venueId).name}
               </Text>
             </HStack>
           </VStack>
