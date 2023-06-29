@@ -27,9 +27,9 @@ interface CalendarEventCardProps extends HTMLProps<HTMLDivElement> {
 
 const CalendarEventCard: FC<CalendarEventCardProps> = ({ x, y, booking, onDelete }) => {
   const [auth] = useUserInfo()
-  const [allVenues] = useAllVenues()
+  const [allVenues, isLoadingVenues] = useAllVenues()
 
-  if (!booking) {
+  if (!booking || isLoadingVenues) {
     return <></>
   }
 

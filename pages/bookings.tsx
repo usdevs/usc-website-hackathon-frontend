@@ -68,7 +68,7 @@ const BookingSelector: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const [allVenues, isLoading] = useAllVenues()
+  const [allVenues, isLoadingVenues] = useAllVenues()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [bookingDataFromSelection, setBookingDataFromSelection] = useState<BookingDataSelection>({
     start: null,
@@ -283,8 +283,8 @@ const BookingSelector: FC = () => {
     }
   }
 
-  if (isLoading) {
-    return <Spinner size='xl'></Spinner>
+  if (isLoadingVenues) {
+    return <></>
   }
 
   return (

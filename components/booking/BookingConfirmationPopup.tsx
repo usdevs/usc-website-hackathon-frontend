@@ -50,11 +50,15 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
   setBookingData,
   refreshData,
 }) => {
-  const { data: allOrgs = [] } = useSWRImmutable<Organisation[], string>(
+  const {
+    data: allOrgs = [],
+    error,
+    isLoading: isLoadingOrgs,
+  } = useSWRImmutable<Organisation[], string>(
     process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs',
     fetchFromUrlAndParseJson,
   )
-  const [allVenues] = useAllVenues()
+  const [allVenues, isLoadingVenues] = useAllVenues()
   const toast = useToast()
   const toast_id = 'response-toast'
   const currentRoundedHalfHourTime = useCurrentHalfHourTime()
@@ -112,7 +116,17 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
     }))
   }
 
-  if (!isUserLoggedIn(auth) || auth.orgIds.length === 0 || !bookingDataFromSelection) {
+  if (error) {
+    throw new Error('Unable to fetch organisations from the backend')
+  }
+
+  if (
+    !isUserLoggedIn(auth) ||
+    auth.orgIds.length === 0 ||
+    !bookingDataFromSelection ||
+    isLoadingOrgs ||
+    isLoadingVenues
+  ) {
     return <></>
   }
 
