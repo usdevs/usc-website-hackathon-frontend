@@ -16,6 +16,7 @@ import {
   ModalFooter,
   Text,
   VStack,
+  useToast,
 } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
 import React from 'react'
@@ -38,7 +39,25 @@ type LeftPaneProps = {
 
 const MotionBox = motion(Box)
 
-const getContactButton = (contact: User | null) => {
+const getContactButton = (contact: User | null, width?: string) => {
+  const toast = useToast()
+
+  const copyToClipboard = () => {
+    const nameToCopy = contact?.name || 'No contact found'
+    navigator.clipboard.writeText(nameToCopy)
+
+    // Show toast alert
+    toast({
+      title: 'Copied to clipboard!',
+      status: 'success',
+      duration: 3000,
+      isClosable: true,
+      position: 'bottom',
+    })
+  }
+
+  const isContactFound = contact !== null && contact.name !== undefined
+
   return (
     <Button
       overflow='hidden'
@@ -46,8 +65,8 @@ const getContactButton = (contact: User | null) => {
       leftIcon={<FaUserCircle />}
       variant='outline'
       colorScheme='blue'
-      minWidth={'7vw'}
-      maxWidth={'7vw'}
+      minWidth={width || 'auto'}
+      maxWidth={width || 'auto'}
       rounded='15px'
       style={{
         borderRadius: '0.5rem',
@@ -56,6 +75,8 @@ const getContactButton = (contact: User | null) => {
         display: 'flex',
         alignItems: 'center',
       }}
+      onClick={copyToClipboard}
+      isDisabled={!isContactFound}
     >
       <Text noOfLines={[1]} display='inline'>
         {contact?.name || 'No contact found'}
@@ -98,7 +119,7 @@ const LeftPane: React.FC<LeftPaneProps> = ({ imageKey, primaryIGHead, imageSrc, 
           sizes='(max-width: 130) 100vw'
         />
       </Center>
-      {getContactButton(primaryIGHead)}
+      {getContactButton(primaryIGHead, '7vw')}
       {getInviteLinkButton(inviteLink)}
     </VStack>
   )
