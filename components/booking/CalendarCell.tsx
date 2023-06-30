@@ -1,4 +1,5 @@
-import { Box, Text, VStack } from '@chakra-ui/react'
+import { useState } from 'react'
+import { Modal, ModalOverlay, ModalHeader, ModalBody, ModalContent, ModalCloseButton, Button, ModalFooter, Box, Text, VStack } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
 import { format } from 'date-fns'
 import { getVenueFromId } from '../../utils'
@@ -20,9 +21,10 @@ interface CellProps {
 
 const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onClick, bookings }) => {
     const [allVenues, isLoadingVenues] = useAllVenues()
+    const [modalOpen, setModalOpen] = useState(false)
 
-    const showBookingModal = () => {
-
+    const toggleBookingModal = (open: any) => {
+        setModalOpen(open)
     }
   
     const list = {
@@ -99,7 +101,7 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
                         cursor='pointer'
                         color='purple'
                         _hover={{textDecoration: 'underline'}}
-                        onClick={showBookingModal}
+                        onClick={() => toggleBookingModal(true)}
                       >show more</Text></motion.div> : <></>} 
               </VStack>
             </motion.div>
@@ -124,7 +126,24 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
             layoutId='underline'
           />
         )}
+        <Modal isOpen={modalOpen} onClose={() => toggleBookingModal(false)}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Modal Title</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            Heyo
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme='blue' mr={3} onClick={() => toggleBookingModal(false)}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
       </motion.div>
+      
     )
   }
 
