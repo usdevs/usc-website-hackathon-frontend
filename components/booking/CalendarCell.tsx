@@ -20,6 +20,10 @@ interface CellProps {
 
 const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onClick, bookings }) => {
     const [allVenues, isLoadingVenues] = useAllVenues()
+
+    const showBookingModal = () => {
+
+    }
   
     const list = {
       visible: {
@@ -71,7 +75,7 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
           {isExpanded && (
             <motion.div initial='hidden' animate='visible' variants={list} style={{height: '75%'}}>
               <VStack alignItems='flex-start' spacing='0' pl='4' height='100%'>
-                {bookings.map((booking, i) => {
+                {bookings.slice(0, 3).map((booking, i) => {
                   return (
                     <motion.div variants={item} key={i}>
                       <Text
@@ -87,6 +91,16 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
                     </motion.div>
                   )
                 })}
+                {bookings.length > 3 ? <motion.div variants={item}><Text
+                        w='100%'
+                        fontWeight='normal'
+                        fontSize='sm'
+                        textAlign='left'
+                        cursor='pointer'
+                        color='purple'
+                        _hover={{textDecoration: 'underline'}}
+                        onClick={showBookingModal}
+                      >show more</Text></motion.div> : <></>} 
               </VStack>
             </motion.div>
           )}
