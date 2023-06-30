@@ -51,7 +51,7 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
         style={{
           textAlign: 'center',
           cursor: text !== '' ? 'pointer' : 'default',
-          position: 'relative',
+          position: 'relative'
         }}
         animate={{
           opacity: 1,
@@ -65,17 +65,16 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
           zIndex='10'
           color={isSelected ? 'white' : 'black'}
           fontWeight={isSelected ? 'bold' : 'normal'}
+          height='100%'
         >
-          {text}
+          <Text>{text}</Text>
           {isExpanded && (
-            <motion.div initial='hidden' animate='visible' variants={list}>
-              <VStack alignItems='flex-start' spacing='0' pl='4'>
+            <motion.div initial='hidden' animate='visible' variants={list} style={{height: '75%'}}>
+              <VStack alignItems='flex-start' spacing='0' pl='4' height='100%'>
                 {bookings.map((booking, i) => {
                   return (
                     <motion.div variants={item} key={i}>
                       <Text
-                        overflow='hidden'
-                        h='2vh'
                         w='100%'
                         fontWeight='normal'
                         fontSize='sm'
@@ -98,7 +97,7 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
               position: 'absolute',
               height: isExpanded ? '14vh' : '50px',
               width: isExpanded ? '13vw' : '50px',
-              bottom: isExpanded ? '10%' : '25%',
+              bottom: isExpanded ? '0' : '25%',
               borderRadius: '15px',
               background: '#1F407B',
               opacity: 0.85,
