@@ -38,6 +38,11 @@ interface BookingVenueTimeCellProps extends React.HTMLProps<HTMLDivElement> {
   orgColour: string
 }
 
+interface BookingVenueTimeCellTextProps extends React.HTMLProps<HTMLDivElement> {
+  heading?: string
+  text?: string
+}
+
 const BOX_WIDTH_REM = 8
 const INITIAL_FIRST_SELECTED_INDEX = 50
 const INITIAL_LAST_SELECTED_INDEX = -1
@@ -53,6 +58,20 @@ function useOutsideAlerter(ref: any, callback: () => void) {
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [ref, callback])
+}
+
+// Event name and organisation for each booking event
+const BookingVenueTimeCellText: React.FC<BookingVenueTimeCellTextProps> = ({ heading, text }) => {
+  return (
+    <>
+      <Text noOfLines={1} fontSize='lg' fontWeight='bold' color={'white'} my='4px' mx='2px'>
+        {heading}
+      </Text>
+      <Text noOfLines={2} fontSize='xs' fontWeight='bold' color={'white'} mx='2px'>
+        {text}
+      </Text>
+    </>
+  )
 }
 
 // Individual Grid Cells for the time intervals
@@ -78,6 +97,7 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
     boxSizing: 'content-box',
     borderY: BOOKING_CELL_BORDER_Y_REM + 'rem solid',
     transition: '200ms ease-in',
+    paddingX: '4px',
   }
 
   if (cellStatus === CellStatus.Booked) {
@@ -89,9 +109,10 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
         cursor='pointer'
         onClick={onClick}
       >
-        <Text color={'white'}>{venueBooking?.eventName}</Text>
-        {/*<Text>{'Booked by ' + venueBooking?.bookedByUser.name}</Text>*/}
-        <Text>{'Booked for ' + venueBooking?.bookedBy?.org?.name}</Text>
+        <BookingVenueTimeCellText
+          heading={venueBooking?.eventName}
+          text={venueBooking?.bookedBy?.org?.name}
+        />
       </Box>
     )
   } else if (cellStatus === CellStatus.BookedBySelf) {
@@ -103,8 +124,10 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
         cursor='pointer'
         onClick={onClick}
       >
-        <Text color={'white'}>{venueBooking?.eventName}</Text>
-        <Text>{'Booked by you for ' + venueBooking?.bookedBy?.org?.name}</Text>
+        <BookingVenueTimeCellText
+          heading={venueBooking?.eventName}
+          text={venueBooking?.bookedBy?.org?.name + ' (You)'}
+        />
       </Box>
     )
   } else if (
