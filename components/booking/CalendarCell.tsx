@@ -96,13 +96,12 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
                 {bookings.length > 3 ? <motion.div variants={item}><Text
                         w='100%'
                         fontWeight='normal'
-                        fontSize='sm'
+                        fontSize='xs'
                         textAlign='left'
                         cursor='pointer'
-                        color='purple'
                         _hover={{textDecoration: 'underline'}}
                         onClick={() => toggleBookingModal(true)}
-                      >show more</Text></motion.div> : <></>} 
+                      >{bookings.length - 3} more</Text></motion.div> : <></>} 
               </VStack>
             </motion.div>
           )}
@@ -129,10 +128,23 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
         <Modal isOpen={modalOpen} onClose={() => toggleBookingModal(false)}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
+          <ModalHeader>Bookings</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            Heyo
+          {bookings.map((booking, i) => {
+                  return (
+                  <Text
+                        w='100%'
+                        fontWeight='normal'
+                        fontSize='sm'
+                        textAlign='left'
+                      >
+                        {`${format(booking.from, 'HH:mm')}-${format(booking.to, 'HH:mm')} ${
+                          getVenueFromId(allVenues, booking.venueId).name
+                        }`}
+                      </Text>
+                  )
+                })}
           </ModalBody>
 
           <ModalFooter>

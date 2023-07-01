@@ -1,12 +1,11 @@
 import { useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FaSun, FaCalendar } from 'react-icons/fa'
 
 const Toggle: React.FC<ToggleProps> = ({ isOn, setIsOn }) => {
   const STYLES = {
     container: {
       height: '40px',
-      width: '100px',
+      width: '125px',
       backgroundColor: isOn ? '#1F407B' : '#386DCD',
       borderRadius: '25px',
       display: 'flex',
@@ -18,8 +17,8 @@ const Toggle: React.FC<ToggleProps> = ({ isOn, setIsOn }) => {
     },
     handle: {
       height: '30px',
-      width: '30px',
-      borderRadius: '50%',
+      width: '50%',
+      borderRadius: '25px',
       display: 'grid',
       alignItems: 'center',
       justifyItems: 'center',
@@ -59,7 +58,7 @@ const Toggle: React.FC<ToggleProps> = ({ isOn, setIsOn }) => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.2 }}
           >
-            {isOn ? <FaCalendar /> : <FaSun />}
+            {isOn ? 'Month' : 'Day'}
           </motion.span>
         </AnimatePresence>
       </motion.div>
