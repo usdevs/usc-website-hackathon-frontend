@@ -148,7 +148,7 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
           <ModalBody>
             {bookings.map((booking, i) => {
               return (
-                <Text w='100%' fontWeight='normal' fontSize='sm' textAlign='left'>
+                <Text key={i} w='100%' fontWeight='normal' fontSize='sm' textAlign='left'>
                   {`${format(booking.from, 'HH:mm')}-${format(booking.to, 'HH:mm')} ${
                     getVenueFromId(allVenues, booking.venueId).name
                   }`}
