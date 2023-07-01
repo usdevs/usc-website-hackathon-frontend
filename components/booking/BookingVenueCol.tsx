@@ -1,5 +1,5 @@
 import { useBoolean, VStack, Box, Text } from '@chakra-ui/react'
-import { addMinutes, isAfter, isEqual } from 'date-fns'
+import { addMinutes, isAfter, isEqual, startOfDay } from 'date-fns'
 import { useState, useRef, useEffect } from 'react'
 import { BoxProps } from '@chakra-ui/react'
 import {
@@ -10,11 +10,11 @@ import {
 } from '../../utils'
 import { useCurrentHalfHourTime } from '../../hooks/useCurrentHalfHourTime'
 import { useUserInfo } from '../../hooks/useUserInfo'
+import { divIcon } from 'leaflet'
 
 enum CellStatus {
   Available = 'Available',
   Booked = 'Booked by others',
-  BookedBySelf = 'Booked by self',
   Selected = 'Selected',
   CellInPast = 'Cell in past',
   CellIsAfterBookingAndSelection = 'Selection made before existing booking and this cell',
@@ -38,11 +38,6 @@ interface BookingVenueTimeCellProps extends React.HTMLProps<HTMLDivElement> {
   orgColour: string
 }
 
-interface BookingVenueTimeCellTextProps extends React.HTMLProps<HTMLDivElement> {
-  heading?: string
-  text?: string
-}
-
 const BOX_WIDTH_REM = 8
 const INITIAL_FIRST_SELECTED_INDEX = 50
 const INITIAL_LAST_SELECTED_INDEX = -1
@@ -60,17 +55,63 @@ function useOutsideAlerter(ref: any, callback: () => void) {
   }, [ref, callback])
 }
 
-// Event name and organisation for each booking event
-const BookingVenueTimeCellText: React.FC<BookingVenueTimeCellTextProps> = ({ heading, text }) => {
+interface BookingCardProps extends React.HTMLProps<HTMLDivElement> {
+  booking: BookingDataDisplay
+  openBookingCard: (event: React.MouseEvent, booking: BookingDataDisplay | undefined) => void
+  orgIdsToColoursMap: NumberToStringJSObject
+  auth: AuthState | null
+}
+
+// Card which shows details for each booking event
+const BookingCard: React.FC<BookingCardProps> = ({
+  booking,
+  openBookingCard,
+  orgIdsToColoursMap,
+  auth,
+}) => {
+  const rootFontSize = 16
+
+  const calculateNumberofTimeBlocks = (start: Date, end: Date) => {
+    return Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 30))
+  }
+
+  // Calculate the difference between start and end of booking divided by 30 minutes
+  const bookingSize = calculateNumberofTimeBlocks(booking.from, booking.to)
+  const topMarginSize = calculateNumberofTimeBlocks(startOfDay(booking.from), booking.from)
+
+  const isBigCard = bookingSize > 1
+
+  const height =
+    (BOOKING_CELL_HEIGHT_REM + 2 * BOOKING_CELL_BORDER_Y_REM) * rootFontSize * bookingSize -
+    2 * BOOKING_CELL_BORDER_Y_REM * rootFontSize
+
+  const top =
+    (BOOKING_CELL_HEIGHT_REM + 2 * BOOKING_CELL_BORDER_Y_REM) * rootFontSize * topMarginSize
+
+  const isBookedBySelf = booking.userId === auth?.userId
+
   return (
-    <>
-      <Text noOfLines={1} fontSize='lg' fontWeight='bold' color={'white'} my='4px' mx='2px'>
-        {heading}
+    <Box
+      position='absolute'
+      bg={isBookedBySelf ? 'brand.primary' : orgIdsToColoursMap[booking.orgId]}
+      w='95%'
+      rounded='md'
+      h={height + 'px'}
+      top={top}
+      px='8px'
+      py='6px'
+      cursor='pointer'
+      onClick={(e) => openBookingCard(e, booking)}
+    >
+      <Text noOfLines={1} fontSize='md' fontWeight='bold' color={'white'} mb='2px'>
+        {booking.eventName}
       </Text>
-      <Text noOfLines={2} fontSize='xs' fontWeight='bold' color={'white'} mx='2px'>
-        {text}
-      </Text>
-    </>
+      {isBigCard && (
+        <Text noOfLines={2} fontSize='xs' fontWeight='bold' color={'white'}>
+          {booking.bookedBy.org.name}
+        </Text>
+      )}
+    </Box>
   )
 }
 
@@ -100,36 +141,10 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
     paddingX: '4px',
   }
 
+  // Handle booked cell status
+
   if (cellStatus === CellStatus.Booked) {
-    return (
-      <Box
-        {...SharedBoxProps}
-        bg={orgColour}
-        borderColor='white'
-        cursor='pointer'
-        onClick={onClick}
-      >
-        <BookingVenueTimeCellText
-          heading={venueBooking?.eventName}
-          text={venueBooking?.bookedBy?.org?.name}
-        />
-      </Box>
-    )
-  } else if (cellStatus === CellStatus.BookedBySelf) {
-    return (
-      <Box
-        {...SharedBoxProps}
-        bg='brand.primary'
-        borderColor='white'
-        cursor='pointer'
-        onClick={onClick}
-      >
-        <BookingVenueTimeCellText
-          heading={venueBooking?.eventName}
-          text={venueBooking?.bookedBy?.org?.name + ' (You)'}
-        />
-      </Box>
-    )
+    return <Box {...SharedBoxProps} bg='white' borderColor='white' />
   } else if (
     cellStatus === CellStatus.CellInPast ||
     cellStatus === CellStatus.CellIsAfterBookingAndSelection
@@ -205,15 +220,13 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
           )
         })
 
+      // Inefficient to run for all 48 cells?
       const venueBooking: BookingDataDisplay | undefined = currentVenueBookings.find((booking) => {
         return (isEqual(el, booking.from) || isAfter(el, booking.from)) && isAfter(booking.to, el)
       })
       const isBooked = venueBooking !== undefined
       if (isBooked) {
         cellStatus = CellStatus.Booked
-        if (venueBooking?.userId === auth?.userId) {
-          cellStatus = CellStatus.BookedBySelf
-        }
       } else if (isCurrentCellBetweenFirstAndLastSelectedCells(i)) {
         cellStatus = CellStatus.Selected
       } else if (isTimePast) {
@@ -285,10 +298,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
     for (let i = 1; i < timeIntervals.length; i++) {
       const { cellStatus: statusOfCurrentCell, venueBooking: venueBookingOfCurrentCell } =
         getCellStatus(timeIntervals[i], i)
-      if (
-        statusOfPreviousCell === CellStatus.Booked ||
-        statusOfPreviousCell === CellStatus.BookedBySelf
-      ) {
+      if (statusOfPreviousCell === CellStatus.Booked) {
         if (statusOfCurrentCell !== statusOfPreviousCell) {
           pushPreviousBlockIntoArray(i - 1, true)
         } else {
@@ -304,8 +314,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
       statusOfPreviousCell = statusOfCurrentCell
       venueBookingOfPreviousCell = venueBookingOfCurrentCell
     }
-    const isBooked =
-      statusOfPreviousCell === CellStatus.Booked || statusOfPreviousCell === CellStatus.BookedBySelf
+    const isBooked = statusOfPreviousCell === CellStatus.Booked
     cellBlocks.push(
       getVenueCell(
         timeIntervals.length - 1,
@@ -330,11 +339,14 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
         color='white'
         alignSelf='stretch'
         textAlign='center'
+        zIndex='100'
       >
         {venueName}
       </Text>
       <VStack
+        position='relative'
         spacing='0'
+        alignItems='start'
         onMouseDown={setMouse.on}
         onMouseUp={() => {
           setMouse.off()
@@ -347,6 +359,15 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
           }
         }}
       >
+        {currentVenueBookings.map((booking) => (
+          <BookingCard
+            key={booking.id}
+            booking={booking}
+            openBookingCard={openBookingCard}
+            orgIdsToColoursMap={orgIdsToColoursMap}
+            auth={auth}
+          />
+        ))}
         {getMappedVenueCells()}
       </VStack>
     </VStack>
