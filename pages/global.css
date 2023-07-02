@@ -8,31 +8,31 @@ body {
 }
 
 @font-face {
-  font-family: "Blender-Bold";
-  src: local("Blender-Bold"), url("../fonts/Blender-Bold.ttf") format("truetype");
+  font-family: 'Blender-Bold';
+  src: local('Blender-Bold'), url('../fonts/Blender-Bold.ttf') format('truetype');
 }
 
 @font-face {
-  font-family: "Blender-BoldItalic";
-  src: local("Blender-BoldItalic"), url("../fonts/Blender-BoldItalic.ttf") format("truetype");
+  font-family: 'Blender-BoldItalic';
+  src: local('Blender-BoldItalic'), url('../fonts/Blender-BoldItalic.ttf') format('truetype');
 }
 
 @font-face {
-  font-family: "Blender-Book";
-  src: local("Blender-Book"), url("../fonts/Blender-Book.ttf") format("truetype");
+  font-family: 'Blender-Book';
+  src: local('Blender-Book'), url('../fonts/Blender-Book.ttf') format('truetype');
 }
 
 @font-face {
-  font-family: "Blender-BookItalic";
-  src: local("Blender-BookItalic"), url("../fonts/Blender-BookItalic.ttf") format("truetype");
+  font-family: 'Blender-BookItalic';
+  src: local('Blender-BookItalic'), url('../fonts/Blender-BookItalic.ttf') format('truetype');
 }
 
 @font-face {
-  font-family: "Blender-Medium";
-  src: local("Blender-Medium"), url("../fonts/Blender-Medium.ttf") format("truetype");
+  font-family: 'Blender-Medium';
+  src: local('Blender-Medium'), url('../fonts/Blender-Medium.ttf') format('truetype');
 }
 
 @font-face {
-  font-family: "Blender-MediumItalic";
-  src: local("Blender-MediumItalic"), url("../fonts/Blender-MediumItalic.ttf") format("truetype");
+  font-family: 'Blender-MediumItalic';
+  src: local('Blender-MediumItalic'), url('../fonts/Blender-MediumItalic.ttf') format('truetype');
 }
