@@ -20,7 +20,7 @@ describe('persistent-storage', () => {
   })
 
   it('should set item in local-storage and call mutate in swr', () => {
-    const [, setPersistentKey] = useLocalStorageWithTTL<any>('key')
+    const [, setPersistentKey] = useLocalStorageWithTTL<any>('key', null, 1)
     setPersistentKey('value')
     expect(mockedLocalStorage.setItem).toBeCalled()
     expect(mockedMutate).toBeCalled()
@@ -29,14 +29,14 @@ describe('persistent-storage', () => {
 
   it('should get item from local-storage', () => {
     mockedLocalStorage.store['key'] = JSON.stringify('value')
-    const [persistentValue] = useLocalStorageWithTTL<any>('key')
+    const [persistentValue] = useLocalStorageWithTTL<any>('key', null, 1)
     expect(mockedLocalStorage.getItem).toBeCalled()
     expect(persistentValue).toEqual('value')
   })
 
   it('should remove item from local-storage', () => {
     mockedLocalStorage.store['key'] = JSON.stringify('value')
-    const [, , removePersistentKeyValue] = useLocalStorageWithTTL<any>('key')
+    const [, , removePersistentKeyValue] = useLocalStorageWithTTL<any>('key', null, 1)
     removePersistentKeyValue()
     expect(mockedLocalStorage.removeItem).toBeCalled()
     expect(mockedMutate).toBeCalled()

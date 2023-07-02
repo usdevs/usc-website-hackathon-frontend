@@ -14,20 +14,23 @@ import { isServerSide } from '../utils'
 const useLocalStorageWithTTL = <T extends ObjectWithSetupTime>(
   key: string,
   defaultValue: T | null = null,
+  refreshInterval: number,
 ): LocalStorageHookResult<T> => {
   //Note that this file is modified to be able to invalidate local storage after 20 minute - see commit
   // b918ac409cedf11db27a11f2df974473d13e4146 for what changed
   let initialValue = defaultValue
 
   // @ts-ignore
-  const fetcher = (url) => {
+  const fetcher = () => {
     if (!isServerSide()) {
       let storedValue = window.localStorage.getItem(key)
       if (storedValue !== null && storedValue !== 'undefined') {
         const parsedValue = JSON.parse(storedValue)
-        if (Date.now() - parsedValue.setupTime <= 20 * 60 * 1000) {
-          // invalidate after 20 minutes
+        if (Date.now() - parsedValue.setupTime <= (refreshInterval + 1) * 60 * 1000) {
           return parsedValue
+        } else {
+          // invalidate if (refreshInterval + 1) minutes are over
+          window.localStorage.removeItem(key)
         }
       }
     }
@@ -39,8 +42,7 @@ const useLocalStorageWithTTL = <T extends ObjectWithSetupTime>(
     revalidateOnReconnect: false,
     refreshWhenHidden: false,
     refreshWhenOffline: false,
-    refreshInterval: 5 * 60 * 1000, // forces web app to fetch data again every 5 minutes, in essence triggering
-    // the setupTime check every 5 minutes
+    refreshInterval: refreshInterval * 60 * 1000, // forces web app to fetch data again once interval is over
   })
 
   // ========== Set value ==========
