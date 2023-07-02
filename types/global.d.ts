@@ -19,6 +19,7 @@ declare global {
     inviteLink: string
     slug: string
     category: IGCategory
+    isInactive: boolean
   }
 
   type UserOnOrg = {

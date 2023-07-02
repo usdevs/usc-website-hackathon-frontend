@@ -320,7 +320,7 @@ const BookingSelector: FC = () => {
         <VStack px={12} alignItems={'start'} position='sticky' top='20px'>
           <HStack gap='4'>
             <Menu closeOnSelect={false}>
-              <MenuButton as={Button} colorScheme='blue' rightIcon={<ChevronDownIcon />}>
+              <MenuButton as={Button} colorScheme='blue' rightIcon={<ChevronDownIcon />} w='200px'>
                 {venueIdToFilterBy === 0
                   ? 'Venue'
                   : throwsErrorIfNullOrUndefined(allVenues.find((v) => venueIdToFilterBy === v.id))

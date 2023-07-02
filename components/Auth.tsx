@@ -4,12 +4,7 @@ import { Button } from '@chakra-ui/react'
 import TelegramLoginButton from './TelegramLoginButton'
 import { isUserLoggedIn } from '../utils'
 import { useUserInfo } from '../hooks/useUserInfo'
-
-// { Parth: 22, Zhi Sheng: 23, Megan: 24, Conrad: 25 } based on 2 April seed file
-const NEXT_PUBLIC_BACKEND_TELEGRAM_USER_ID = 25
-const NEXT_PUBLIC_BACKEND_JWT_DEV =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NzA1MjQ0MTIwLCJmaXJzdF9uYW1lIjoiTGV3IEtpYW4gTG9vbmcsIENvbnJhZCIsInVzZXJuYW1lIjoib3Jxb2kiLCJhdXRoX2RhdGUiOjE2ODY1ODg2NjgsInBob3RvX3VybCI6Imh0dHBzOi8vdC5tZS9pL3VzZXJwaWMvMzIwL1otOHNvYk1MbEVOVkt4bEIxNXpDWG0zRmFRVnI1SF9TVGRZWjRqVFA1anMuanBnIiwiaGFzaCI6IjBkYmJkMThlZThiZmQwOTEwMzIwNDI3YWQ3Y2Y3YzNjNGE3NjIwYWVhZDQ0NDI2ZDdiZDNhOGE4NDNmMDI4NGMiLCJpYXQiOjE2ODY1ODg2NzAsImV4cCI6MTY4NjU5MjI3MH0.L1INga1kwcgr1gxJyg6RuBCYPBB2ahbgYrq_HqLmpOk'
-const NEXT_PUBLIC_NGINX_PROXY_ON = false
+import * as process from 'process'
 
 const Auth: React.FC = () => {
   const [auth, setAuth, cleanUpAuth] = useUserInfo()
@@ -18,9 +13,9 @@ const Auth: React.FC = () => {
     <Button
       onClick={() => {
         setAuth({
-          token: NEXT_PUBLIC_BACKEND_JWT_DEV,
+          token: process.env.NEXT_PUBLIC_BACKEND_JWT_DEV || '',
           orgIds: [66, 67],
-          userId: NEXT_PUBLIC_BACKEND_TELEGRAM_USER_ID,
+          userId: Number(process.env.NEXT_PUBLIC_BACKEND_TELEGRAM_USER_ID) || 22,
           // userInfo is not needed for now, so can just add filler values
           userInfo: {
             firstName: 'Parth',
@@ -83,7 +78,7 @@ const Auth: React.FC = () => {
   return isUserLoggedIn(auth)
     ? logoutButton
     : process.env.NODE_ENV === 'development'
-    ? NEXT_PUBLIC_NGINX_PROXY_ON
+    ? process.env.NEXT_PUBLIC_NGINX_PROXY_ON === 'true'
       ? loginButtonWidget
       : loginButtonDev
     : loginButtonWidget
