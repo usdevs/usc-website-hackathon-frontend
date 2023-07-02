@@ -10,7 +10,6 @@ import {
 } from '../../utils'
 import { useCurrentHalfHourTime } from '../../hooks/useCurrentHalfHourTime'
 import { useUserInfo } from '../../hooks/useUserInfo'
-import { divIcon } from 'leaflet'
 
 enum CellStatus {
   Available = 'Available',
