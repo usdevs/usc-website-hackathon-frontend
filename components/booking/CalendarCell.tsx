@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import {
   Modal,
   ModalOverlay,
@@ -6,11 +5,10 @@ import {
   ModalBody,
   ModalContent,
   ModalCloseButton,
-  Button,
-  ModalFooter,
   Box,
   Text,
   VStack,
+  useDisclosure
 } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
 import { format } from 'date-fns'
@@ -33,11 +31,8 @@ const spring = {
 
 const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onClick, bookings }) => {
   const [allVenues, isLoadingVenues] = useAllVenues()
-  const [modalOpen, setModalOpen] = useState(false)
 
-  const toggleBookingModal = (open: any) => {
-    setModalOpen(open)
-  }
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const list = {
     visible: {
@@ -103,13 +98,15 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
               {bookings.length > 3 ? (
                 <motion.div variants={item}>
                   <Text
+                    role='button'
                     w='100%'
                     fontWeight='normal'
                     fontSize='xs'
                     textAlign='left'
                     cursor='pointer'
+                    color={isSelected ? '#e19c3d' : '#1f407b'}
                     _hover={{ textDecoration: 'underline' }}
-                    onClick={() => toggleBookingModal(true)}
+                    onClick={onOpen}
                   >
                     {bookings.length - 3} more
                   </Text>
@@ -140,7 +137,7 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
           layoutId='underline'
         />
       )}
-      <Modal isOpen={modalOpen} onClose={() => toggleBookingModal(false)}>
+      <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Bookings</ModalHeader>
@@ -156,12 +153,6 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
               )
             })}
           </ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme='blue' mr={3} onClick={() => toggleBookingModal(false)}>
-              Close
-            </Button>
-          </ModalFooter>
         </ModalContent>
       </Modal>
     </motion.div>
