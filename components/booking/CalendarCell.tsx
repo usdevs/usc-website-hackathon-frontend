@@ -68,7 +68,7 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
       }}
       animate={{
         opacity: 1,
-        height: isExpanded ? '14vh' : '50px',
+        height: isExpanded ? '10rem' : '50px',
         width: isExpanded ? '13vw' : '50px',
         transition: spring,
       }}
@@ -122,7 +122,7 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
         <motion.div
           style={{
             position: 'absolute',
-            height: isExpanded ? '14vh' : '50px',
+            height: isExpanded ? '10rem' : '50px',
             width: isExpanded ? '13vw' : '50px',
             bottom: isExpanded ? '0' : '25%',
             borderRadius: '15px',
