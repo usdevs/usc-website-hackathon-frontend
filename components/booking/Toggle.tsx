@@ -1,13 +1,12 @@
 import { useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FaSun, FaCalendar } from 'react-icons/fa'
-import { HStack, Text } from '@chakra-ui/react'
+import { Text } from '@chakra-ui/react'
 
 const Toggle: React.FC<ToggleProps> = ({ isOn, setIsOn }) => {
   const STYLES = {
     container: {
       height: '40px',
-      width: '100px',
+      width: '125px',
       backgroundColor: isOn ? '#1F407B' : '#386DCD',
       borderRadius: '25px',
       display: 'flex',
@@ -19,8 +18,8 @@ const Toggle: React.FC<ToggleProps> = ({ isOn, setIsOn }) => {
     },
     handle: {
       height: '30px',
-      width: '30px',
-      borderRadius: '50%',
+      width: '50%',
+      borderRadius: '25px',
       display: 'grid',
       alignItems: 'center',
       justifyItems: 'center',
