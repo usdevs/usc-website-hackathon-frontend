@@ -19,7 +19,8 @@ export const BUTTON_LINKS: NavigationLink[] = [
   },
 ]
 
-export const BOOKING_CELL_BORDER_Y_REM = 0.2
+// Following 8 point grid system
+export const BOOKING_CELL_BORDER_Y_REM = 0.25
 
 export const BOOKING_CELL_HEIGHT_REM = 2 // Ensures time labels are aligned with grid cells
 
