@@ -76,7 +76,8 @@ const getContactButton = (contact: User | null, width?: string) => {
         alignItems: 'center',
       }}
       onClick={copyToClipboard}
-      isDisabled={!isContactFound}
+      // isDisabled={!isContactFound}
+      isDisabled={true}
     >
       <Text noOfLines={[1]} display='inline'>
         {contact?.name || 'No contact found'}
@@ -85,7 +86,7 @@ const getContactButton = (contact: User | null, width?: string) => {
   )
 }
 
-const getInviteLinkButton = (inviteLink: string) => {
+const getInviteLinkButton = (inviteLink: string, width?: string) => {
   return (
     <Link href={inviteLink} rel='noopener noreferrer' target='_blank'>
       <Button
@@ -93,8 +94,8 @@ const getInviteLinkButton = (inviteLink: string) => {
         textOverflow={'ellipsis'}
         variant='outline'
         colorScheme='blue'
-        minWidth={'7vw'}
-        maxWidth={'7vw'}
+        minWidth={width || 'auto'}
+        maxWidth={width || 'auto'}
         rounded='15px'
         style={{ borderRadius: '0.5rem', color: '#229ed9', border: '1px solid #229ed9' }}
       >
@@ -118,9 +119,23 @@ const LeftPane: React.FC<LeftPaneProps> = ({ imageKey, primaryIGHead, imageSrc, 
           style={{ objectFit: 'contain' }}
           sizes='(max-width: 130) 100vw'
         />
+        <Box
+          position='absolute'
+          top={2}
+          right={2}
+          bg='red.500'
+          color='white'
+          px={2}
+          py={1}
+          borderRadius='md'
+          fontSize='sm'
+          fontWeight='bold'
+        >
+          Inactive
+        </Box>
       </Center>
       {getContactButton(primaryIGHead, '7vw')}
-      {getInviteLinkButton(inviteLink)}
+      {getInviteLinkButton(inviteLink, '7vw')}
     </VStack>
   )
 }
@@ -190,6 +205,20 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
       <Modal isOpen={isOpen} onClose={onClose} size='xl'>
         <ModalOverlay />
         <ModalContent>
+          <Box
+            position='absolute'
+            top={2}
+            left={2}
+            bg='red.500'
+            color='white'
+            px={2}
+            py={1}
+            borderRadius='md'
+            fontSize='md'
+            fontWeight='bold'
+          >
+            Inactive
+          </Box>
           <Center>
             <ImageWithFallback
               key={imageKey}
@@ -204,6 +233,7 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
           </Center>
 
           <ModalHeader>{ig_info.name}</ModalHeader>
+
           <ModalCloseButton />
           <ModalBody>
             <Text color={'gray.500'}>{'Heads: ' + igHeadsDisplay}</Text>
