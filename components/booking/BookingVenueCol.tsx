@@ -32,10 +32,7 @@ interface BookingVenueColumnProps extends React.HTMLProps<HTMLDivElement> {
 interface BookingVenueTimeCellProps extends React.HTMLProps<HTMLDivElement> {
   isUserLoggedIn: boolean
   cellStatus: CellStatus
-  numberOfCells: number
   rootFontSize: number
-  venueBooking: BookingDataDisplay | undefined
-  orgColour: string
 }
 
 const BOX_WIDTH_REM = 8
@@ -119,60 +116,59 @@ const BookingCard: React.FC<BookingCardProps> = ({
 const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
   onMouseDown,
   onMouseOver,
-  onClick,
   isUserLoggedIn,
   cellStatus,
-  numberOfCells,
   rootFontSize,
-  venueBooking,
-  orgColour,
 }) => {
   // Cell is coloured based on whether it's selected or not
   const SharedBoxProps: BoxProps = {
     w: BOX_WIDTH_REM * rootFontSize + 'px',
-    h:
-      Math.floor(
-        BOOKING_CELL_HEIGHT_REM * numberOfCells * rootFontSize +
-          rootFontSize * (numberOfCells - 1) * BOOKING_CELL_BORDER_Y_REM * 2,
-      ) + 'px',
+    h: Math.floor(BOOKING_CELL_HEIGHT_REM * rootFontSize) + 'px',
     boxSizing: 'content-box',
     borderY: BOOKING_CELL_BORDER_Y_REM + 'rem solid',
     transition: '200ms ease-in',
     paddingX: '4px',
   }
 
-  // Handle booked cell status
-
-  if (cellStatus === CellStatus.Booked) {
-    return <Box {...SharedBoxProps} bg='white' borderColor='white' />
-  } else if (
-    cellStatus === CellStatus.CellInPast ||
-    cellStatus === CellStatus.CellIsAfterBookingAndSelection
-  ) {
-    return <Box {...SharedBoxProps} bg='gray.200' borderColor='gray.200' />
-  } else if (cellStatus === CellStatus.Selected) {
-    return (
-      <Box
-        {...SharedBoxProps}
-        bg='brand.success.light'
-        borderColor='brand.success.light'
-        _hover={{ bg: 'brand.success.dark', borderColor: 'brand.success.dark', transition: 'none' }}
-      />
-    )
-  } else if (!isUserLoggedIn) {
-    return <Box {...SharedBoxProps} bg='gray.100' borderColor='white' />
-  } else {
-    // Cell is available for booking
-    return (
-      <Box
-        {...SharedBoxProps}
-        bg='gray.100'
-        borderColor='white'
-        onMouseOver={onMouseOver}
-        onMouseDown={onMouseDown}
-        _hover={{ bg: 'gray.200', transition: 'none' }}
-      />
-    )
+  switch (cellStatus) {
+    case CellStatus.Booked:
+      return <Box {...SharedBoxProps} bg='white' borderColor='white' />
+    case CellStatus.CellInPast:
+    case CellStatus.CellIsAfterBookingAndSelection:
+      return <Box {...SharedBoxProps} bg='gray.200' borderColor='gray.200' />
+    case CellStatus.Selected:
+      return (
+        <Box
+          {...SharedBoxProps}
+          bg='brand.success.light'
+          borderColor='brand.success.light'
+          _hover={{
+            bg: 'brand.success.dark',
+            borderColor: 'brand.success.dark',
+            transition: 'none',
+          }}
+        />
+      )
+    case CellStatus.Available:
+      if (!isUserLoggedIn) {
+        return <Box {...SharedBoxProps} bg='gray.100' borderColor='white' />
+      } else {
+        // Cell is available for booking
+        return (
+          <Box
+            {...SharedBoxProps}
+            bg='gray.100'
+            borderColor='white'
+            onMouseOver={onMouseOver}
+            onMouseDown={onMouseDown}
+            _hover={{ bg: 'gray.200', transition: 'none' }}
+          />
+        )
+      }
+    default: {
+      const exhaustiveCheck: never = cellStatus
+      return <div></div>
+    }
   }
 }
 
@@ -204,14 +200,33 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
 
   function getMappedVenueCells() {
     const getCellStatus = (el: Date, i: number) => {
-      let cellStatus = CellStatus.Available
+      const venueBooking: BookingDataDisplay | undefined = currentVenueBookings.find((booking) => {
+        return (isEqual(el, booking.from) || isAfter(el, booking.from)) && isAfter(booking.to, el)
+      })
+
+      const isBooked = venueBooking !== undefined
+      if (isBooked) {
+        return { cellStatus: CellStatus.Booked, venueBooking }
+      }
+
+      const isSelected = isCurrentCellBetweenFirstAndLastSelectedCells(i)
+      if (isSelected) {
+        return { cellStatus: CellStatus.Selected, venueBooking: undefined }
+      }
 
       const isTimePast = isAfter(currentRoundedHalfHourTime, el)
-      // Disables cell if there is a booking before the cell and the user is selecting
-      // cells before that booking
+      if (isTimePast) {
+        return { cellStatus: CellStatus.CellInPast, venueBooking: undefined }
+      }
+
+      // The cells available for selection are bounded by the adjacent bookings
+      // Disable the following cells:
+      // - Cells that come after a booking that comes after the startInterval
+      // - Cells that come before a booking that comes before the startInterval
+      // E.g. Booking from 10am-2pm and 2-4pm. If startInterval is 1pm, then 12am-10am and 4pm-12am are disabled
       const isCellAfterSelectionAndBooking =
         // Okay to loop through all bookings as there are at most
-        // 24 bookings for this particular venue and day
+        // 24 bookings for this particular venue and day -> 24 (bookings) * 48 (intervals) iterations
         currentVenueBookings.some((booking) => {
           const startInterval = timeIntervals[smallerSelected]
           return (
@@ -220,33 +235,19 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
           )
         })
 
-      // Inefficient to run for all 48 cells?
-      const venueBooking: BookingDataDisplay | undefined = currentVenueBookings.find((booking) => {
-        return (isEqual(el, booking.from) || isAfter(el, booking.from)) && isAfter(booking.to, el)
-      })
-      const isBooked = venueBooking !== undefined
-      if (isBooked) {
-        cellStatus = CellStatus.Booked
-      } else if (isCurrentCellBetweenFirstAndLastSelectedCells(i)) {
-        cellStatus = CellStatus.Selected
-      } else if (isTimePast) {
-        cellStatus = CellStatus.CellInPast
-      } else if (isCellAfterSelectionAndBooking) {
-        cellStatus = CellStatus.CellIsAfterBookingAndSelection
+      if (isCellAfterSelectionAndBooking) {
+        return { cellStatus: CellStatus.CellIsAfterBookingAndSelection, venueBooking }
       }
-      return { cellStatus, venueBooking }
+
+      return { cellStatus: CellStatus.Available, venueBooking }
     }
 
     const getVenueCell = (
       cellIndex: number,
-      blockIndex: number,
-      numberOfCells: number,
-      isBooked: boolean,
       venueBooking: BookingDataDisplay | undefined,
       cellStatus: CellStatus,
     ) => {
       const props = {
-        numberOfCells,
         // firstSelected is updated when user holds the mouse down
         onMouseDown: () => {
           setSmallerSelected(cellIndex)
@@ -262,9 +263,6 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
             }
           }
         },
-        onClick: (e: React.MouseEvent) => {
-          if (isBooked) openBookingCard(e, venueBooking)
-        },
         isUserLoggedIn: isUserLoggedIn(auth),
         rootFontSize: rootFontSize ?? 16,
         venueBooking,
@@ -274,57 +272,12 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
       return <BookingVenueTimeCell key={cellIndex} {...props} cellStatus={cellStatus} />
     }
 
-    const cellBlocks = []
-    let numberOfCells = 1
-    let countOfDisplayedBlocks = 0
-    let { cellStatus: statusOfPreviousCell, venueBooking: venueBookingOfPreviousCell } =
-      getCellStatus(timeIntervals[0], 0)
+    const cellBlocks = timeIntervals.map((el, i) => {
+      const { cellStatus, venueBooking } = getCellStatus(timeIntervals[i], i)
+      const isBooked = cellStatus === CellStatus.Booked
+      return getVenueCell(i, venueBooking, cellStatus)
+    })
 
-    const pushPreviousBlockIntoArray = (cellIndex: number, isBooked: boolean) => {
-      cellBlocks.push(
-        getVenueCell(
-          cellIndex,
-          countOfDisplayedBlocks,
-          numberOfCells,
-          isBooked,
-          venueBookingOfPreviousCell,
-          statusOfPreviousCell,
-        ),
-      )
-      numberOfCells = 1
-      countOfDisplayedBlocks++
-    }
-
-    for (let i = 1; i < timeIntervals.length; i++) {
-      const { cellStatus: statusOfCurrentCell, venueBooking: venueBookingOfCurrentCell } =
-        getCellStatus(timeIntervals[i], i)
-      if (statusOfPreviousCell === CellStatus.Booked) {
-        if (statusOfCurrentCell !== statusOfPreviousCell) {
-          pushPreviousBlockIntoArray(i - 1, true)
-        } else {
-          if (venueBookingOfPreviousCell?.userId !== venueBookingOfCurrentCell?.userId) {
-            pushPreviousBlockIntoArray(i - 1, true)
-          } else {
-            numberOfCells++
-          }
-        }
-      } else {
-        pushPreviousBlockIntoArray(i - 1, false)
-      }
-      statusOfPreviousCell = statusOfCurrentCell
-      venueBookingOfPreviousCell = venueBookingOfCurrentCell
-    }
-    const isBooked = statusOfPreviousCell === CellStatus.Booked
-    cellBlocks.push(
-      getVenueCell(
-        timeIntervals.length - 1,
-        countOfDisplayedBlocks,
-        numberOfCells,
-        isBooked,
-        venueBookingOfPreviousCell,
-        statusOfPreviousCell,
-      ),
-    )
     return cellBlocks
   }
 
