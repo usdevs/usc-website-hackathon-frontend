@@ -8,7 +8,7 @@ import {
   Box,
   Text,
   VStack,
-  useDisclosure
+  useDisclosure,
 } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
 import { format } from 'date-fns'
