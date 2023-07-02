@@ -56,7 +56,7 @@ const Toggle: React.FC<ToggleProps> = ({ isOn, setIsOn }) => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.2 }}
           >
-            {isOn ? <Text fontSize="xs">Mth</Text> : <Text fontSize="xs">Day</Text>}
+            {isOn ? <Text fontSize='xs'>Mth</Text> : <Text fontSize='xs'>Day</Text>}
           </motion.span>
         </AnimatePresence>
       </motion.div>
