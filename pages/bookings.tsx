@@ -84,7 +84,7 @@ const BookingSelector: FC = () => {
   //todo this is a silly way to update
   const [isBackendUpdated, setIsBackendUpdated] = useState<boolean>(false)
   const [auth] = useUserInfo()
-  //TODO this state shouldn't be here
+  //TODO this state shouldn't be here, is only here because of onModalClose
   const [bookingData, setBookingData] = useState<BookingDataForm>({
     eventName: '',
     orgId: auth ? auth.orgIds[0] : -1,
