@@ -89,7 +89,6 @@ const BookingSelector: FC = () => {
     end: null,
     venueId: -1,
   })
-  const [unsuccessfulFormSubmitString, setUnsuccessfulFormSubmitString] = useState<string>('')
   const currentRoundedHalfHourTime = useCurrentHalfHourTime()
   const [userSelectedDate, setUserSelectedDate] = useState<Date>(currentRoundedHalfHourTime)
   const [userSelectedMonth, setUserSelectedMonth] = useState<Date>(
@@ -204,7 +203,6 @@ const BookingSelector: FC = () => {
   }, bookingsSortedByVenue)
 
   const onModalClose = () => {
-    setUnsuccessfulFormSubmitString('')
     setBookingData({
       eventName: '',
       orgId: auth ? auth.orgIds[0] : -1,
@@ -327,8 +325,6 @@ const BookingSelector: FC = () => {
           isOpen={isOpen}
           onClose={onModalClose}
           startDate={userSelectedDate}
-          setUnsuccessfulFormSubmitString={setUnsuccessfulFormSubmitString}
-          unsuccessfulFormSubmitString={unsuccessfulFormSubmitString}
           bookingDataFromSelection={bookingDataFromSelection}
           bookingData={bookingData}
           setBookingData={setBookingData}

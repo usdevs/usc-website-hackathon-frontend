@@ -12,6 +12,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
+  UseToastOptions,
   useToast,
 } from '@chakra-ui/react'
 import format from 'date-fns/format'
@@ -32,11 +33,46 @@ type BookingConfirmationPopupProps = {
   isOpen: boolean
   bookingDataFromSelection: BookingDataSelection
   startDate: Date
-  unsuccessfulFormSubmitString: string
-  setUnsuccessfulFormSubmitString: Dispatch<SetStateAction<string>>
   bookingData: BookingDataForm
   setBookingData: Dispatch<SetStateAction<BookingDataForm>>
   refreshData: () => void
+}
+
+const toast_id = 'response-toast'
+
+const makeSuccessBookingToast = (): UseToastOptions => {
+  return {
+    id: toast_id,
+    title: `Booking made successfully!`,
+    position: 'top',
+    duration: 3000,
+    status: 'success',
+    isClosable: true,
+  }
+}
+
+const makeInvalidBookingToast = (errMsg: string): UseToastOptions => {
+  return {
+    id: toast_id,
+    title: `Oops! The booking couldn't be made.`,
+    description: errMsg,
+    position: 'top',
+    duration: 5000,
+    status: 'warning',
+    isClosable: true,
+  }
+}
+
+const makeErrorBookingToast = (errMsg: string): UseToastOptions => {
+  return {
+    id: toast_id,
+    title: 'Oh snap! There was an error when making the booking',
+    description: errMsg,
+    position: 'top',
+    duration: 5000,
+    status: 'error',
+    isClosable: true,
+  }
 }
 
 export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
@@ -44,8 +80,6 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
   isOpen,
   bookingDataFromSelection,
   startDate,
-  unsuccessfulFormSubmitString,
-  setUnsuccessfulFormSubmitString,
   bookingData,
   setBookingData,
   refreshData,
@@ -60,7 +94,6 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
   )
   const [allVenues, isLoadingVenues] = useAllVenues()
   const toast = useToast()
-  const toast_id = 'response-toast'
   const currentRoundedHalfHourTime = useCurrentHalfHourTime()
   const [authOrNull] = useUserInfo()
   const auth: AuthState = throwsErrorIfNullOrUndefined(authOrNull)
@@ -71,14 +104,13 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    // Failback to prevent double submission
+    // Fallback to prevent double submission
     if (isSubmitting) {
       onClose()
       return
     }
 
     setIsSubmitting(true)
-    setUnsuccessfulFormSubmitString('')
     const token = auth.token
     const requestOptions = {
       method: 'POST',
@@ -90,31 +122,18 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
     }
     const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings', requestOptions)
     const data = await response.json()
-    if (response.status === 400) {
-      setUnsuccessfulFormSubmitString(JSON.stringify(data.message))
-    } else if (response.status === 200) {
-      toast({
-        id: toast_id,
-        title: `Booking made successfully!`,
-        position: 'top',
-        duration: 3000,
-        status: 'success',
-        isClosable: true,
-      })
+
+    if (response.status === 200) {
+      toast(makeSuccessBookingToast())
       refreshData()
+      onClose()
+    } else if (response.status === 400) {
+      toast(makeInvalidBookingToast(data.message))
     } else {
-      toast({
-        id: toast_id,
-        title: JSON.stringify(data.message),
-        position: 'top',
-        duration: 3000,
-        status: 'error',
-        isClosable: true,
-      })
+      toast(makeErrorBookingToast(data.message))
     }
 
     setIsSubmitting(false)
-    onClose()
   }
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -145,7 +164,7 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader color='white' bg='#1f407b' fontSize='1.1rem' alignItems='center'>
-          NEW BOOKING
+          Make a new booking
         </ModalHeader>
         <ModalCloseButton
           bg='white'
@@ -159,11 +178,6 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
           }}
         />
         <ModalBody>
-          {unsuccessfulFormSubmitString === '' ? (
-            <></>
-          ) : (
-            <Box>{'Errors in form submission: ' + unsuccessfulFormSubmitString}</Box>
-          )}
           <form onSubmit={handleSubmit} style={{ backgroundColor: 'white', padding: '1rem' }}>
             <FormControl>
               <FormLabel htmlFor='organisation' marginTop='0.5rem'>
