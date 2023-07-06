@@ -12,6 +12,7 @@ import {
   Button,
   MenuOptionGroup,
   Spinner,
+  theme,
 } from '@chakra-ui/react'
 import { useDisclosure } from '@chakra-ui/react'
 import eachMinuteOfInterval from 'date-fns/eachMinuteOfInterval'
@@ -49,6 +50,18 @@ const getOnlyDayMonthAndYearFromDate = (dateToParse: Date) => {
   const date = dateToParse.getDate()
   dateWithMonthAndYear.setDate(date)
   return dateWithMonthAndYear
+}
+
+type ChakraColor = `${string}.${number}`
+
+const generateChakraColour = (n: number): ChakraColor => {
+  const shades = [300, 400, 500, 600, 700]
+  const colours = ['red', 'orange', 'yellow', 'green', 'teal', 'blue', 'cyan', 'purple', 'pink']
+
+  const shade = shades[n % shades.length]
+  const colour = colours[n % colours.length]
+
+  return `${colour}.${shade}`
 }
 
 const BookingSelector: FC = () => {
@@ -134,23 +147,23 @@ const BookingSelector: FC = () => {
         (booking) => booking.bookedBy.org.id,
       )
       let uniqueOrgIds: number[] = [...new Set(mappedOrgIds)]
-      const map =
-        orgsIdsToColoursMapString === null ? Object.create(null) : orgsIdsToColoursMapString
+      const map = orgsIdsToColoursMapString ?? ({} as NumberToStringJSObject)
+      const existingColors = new Set(Object.values(map))
+
       for (const uniqueOrgId of uniqueOrgIds) {
-        if (!Object.hasOwn(map, uniqueOrgId)) {
-          while (true) {
-            let randomColour =
-              '#' +
-              Math.floor(Math.random() * 16777215)
-                .toString(16)
-                .padStart(6, '0')
-            if (Object.values(map).indexOf(randomColour) === -1) {
-              map[uniqueOrgId] = randomColour
-              break
-            }
-          }
+        const hasColor = Object.hasOwn(map, uniqueOrgId)
+
+        if (!hasColor) {
+          let id = uniqueOrgId
+          let color: ChakraColor
+          do {
+            color = generateChakraColour(id++)
+          } while (existingColors.has(color))
+
+          map[uniqueOrgId] = color
         }
       }
+
       await setOrgsIdsToColoursMapString(map)
       // orgIdsToColoursMap.current = map
     })()
