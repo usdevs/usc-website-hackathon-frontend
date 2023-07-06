@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, FC, FormEvent, ChangeEvent } from 'react'
+import { Dispatch, SetStateAction, FC, FormEvent, ChangeEvent, useState } from 'react'
 import {
   Box,
   Button,
@@ -66,9 +66,18 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
   const auth: AuthState = throwsErrorIfNullOrUndefined(authOrNull)
 
   // todo do better than querying all orgs just to match bookings here <-- search orgs in DB by orgId with GraphQL
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+
+    // Failback to prevent double submission
+    if (isSubmitting) {
+      onClose()
+      return
+    }
+
+    setIsSubmitting(true)
     setUnsuccessfulFormSubmitString('')
     const token = auth.token
     const requestOptions = {
@@ -92,7 +101,6 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
         status: 'success',
         isClosable: true,
       })
-      onClose()
       refreshData()
     } else {
       toast({
@@ -103,8 +111,10 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
         status: 'error',
         isClosable: true,
       })
-      onClose()
     }
+
+    setIsSubmitting(false)
+    onClose()
   }
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -226,6 +236,8 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
             <FormControl>
               <Button
                 type='submit'
+                isLoading={isSubmitting}
+                loadingText='Submitting'
                 marginTop='1rem'
                 width='fit-content'
                 borderRadius='0.2rem'

@@ -13,6 +13,7 @@ import {
   MenuOptionGroup,
   Spinner,
   theme,
+  useBoolean,
 } from '@chakra-ui/react'
 import { useDisclosure } from '@chakra-ui/react'
 import eachMinuteOfInterval from 'date-fns/eachMinuteOfInterval'
@@ -263,7 +264,11 @@ const BookingSelector: FC = () => {
   // We want the booking to be removed from the grid immediately
   // Regardless of whether the delete request is successful
   // If it is unsuccessful, we can just add it back to bookingsSortedByVenue
+  const [isDeleting, setIsDeleting] = useBoolean()
+
   const handleDeleteBooking = async (bookingId: number) => {
+    setIsDeleting.on()
+
     const token = isUserLoggedIn(auth) ? auth?.token : ''
     const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings/' + bookingId, {
       method: 'DELETE',
@@ -294,6 +299,8 @@ const BookingSelector: FC = () => {
         isClosable: true,
       })
     }
+
+    setIsDeleting.off()
   }
 
   if (isLoadingVenues) {
@@ -311,6 +318,7 @@ const BookingSelector: FC = () => {
             y={eventCardPos.y}
             booking={bookingCard}
             onDelete={handleDeleteBooking}
+            isDeleting={isDeleting}
           />
         )}
       </AnimatePresence>
