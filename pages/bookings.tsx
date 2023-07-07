@@ -97,11 +97,7 @@ const BookingSelector: FC = () => {
   //todo this is a silly way to update
   const [isBackendUpdated, setIsBackendUpdated] = useState<boolean>(false)
   const [auth] = useUserInfo()
-  //TODO this state shouldn't be here, is only here because of onModalClose
-  const [bookingData, setBookingData] = useState<BookingDataForm>({
-    eventName: '',
-    orgId: auth ? auth.orgIds[0] : -1,
-  })
+
   const toast = useToast()
   const toast_id = 'auth-toast'
   const [allBookingsInMonth, setAllBookingsInMonth] = useState<BookingDataDisplay[]>([])
@@ -203,10 +199,6 @@ const BookingSelector: FC = () => {
   }, bookingsSortedByVenue)
 
   const onModalClose = () => {
-    setBookingData({
-      eventName: '',
-      orgId: auth ? auth.orgIds[0] : -1,
-    })
     onClose()
   }
 
@@ -223,10 +215,6 @@ const BookingSelector: FC = () => {
         })
       }
     } else {
-      setBookingData({
-        eventName: '',
-        orgId: auth ? auth.orgIds[0] : -1,
-      })
       onOpen()
     }
   }
@@ -326,8 +314,6 @@ const BookingSelector: FC = () => {
           onClose={onModalClose}
           startDate={userSelectedDate}
           bookingDataFromSelection={bookingDataFromSelection}
-          bookingData={bookingData}
-          setBookingData={setBookingData}
           refreshData={() => setIsBackendUpdated(!isBackendUpdated)}
         />
       ) : (

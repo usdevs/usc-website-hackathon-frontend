@@ -33,8 +33,6 @@ type BookingConfirmationPopupProps = {
   isOpen: boolean
   bookingDataFromSelection: BookingDataSelection
   startDate: Date
-  bookingData: BookingDataForm
-  setBookingData: Dispatch<SetStateAction<BookingDataForm>>
   refreshData: () => void
 }
 
@@ -80,8 +78,6 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
   isOpen,
   bookingDataFromSelection,
   startDate,
-  bookingData,
-  setBookingData,
   refreshData,
 }) => {
   const {
@@ -97,10 +93,14 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
   const currentRoundedHalfHourTime = useCurrentHalfHourTime()
   const [authOrNull] = useUserInfo()
   const auth: AuthState = throwsErrorIfNullOrUndefined(authOrNull)
+  const [bookingData, setBookingData] = useState<BookingDataForm>({
+    eventName: '',
+    orgId: auth ? auth.orgIds[0] : -1,
+  })
 
   // todo do better than querying all orgs just to match bookings here <-- search orgs in DB by orgId with GraphQL
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
@@ -217,7 +217,7 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
                 id='eventName'
                 name='eventName'
                 aria-label='eventName'
-                onBlur={handleInputChange}
+                onChange={handleInputChange}
                 required
               />
             </FormControl>
