@@ -228,6 +228,10 @@ const BookingSelector: FC = () => {
   const [bookingCard, setBookingCard] = useState<BookingDataDisplay | undefined>(undefined)
   const { scrollY } = useScroll()
 
+  const startPos = {
+    x: -1,
+    y: -1,
+  }
   const openBookingCard = (event: MouseEvent, booking: BookingDataDisplay | undefined) => {
     event.stopPropagation()
     const el = event.target as HTMLElement
@@ -237,11 +241,14 @@ const BookingSelector: FC = () => {
     setBookingCard(booking)
   }
   const hideEventCard = () => {
-    setEventCardPos({ x: -1, y: -1 })
+    setEventCardPos({ ...startPos })
   }
 
   useMotionValueEvent(scrollY, 'change', () => {
-    hideEventCard()
+    // Prevent re-render
+    if (eventCardPos.x !== startPos.x) {
+      hideEventCard()
+    }
   })
 
   //todo check
@@ -292,6 +299,8 @@ const BookingSelector: FC = () => {
   if (isLoadingVenues) {
     return <></>
   }
+
+  console.log('Is re-rendering')
 
   return (
     <>
