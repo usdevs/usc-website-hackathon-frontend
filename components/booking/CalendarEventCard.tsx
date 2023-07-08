@@ -23,9 +23,10 @@ interface CalendarEventCardProps extends HTMLProps<HTMLDivElement> {
   y: number
   booking: BookingDataDisplay | undefined
   onDelete: (userId: number) => void
+  isDeleting?: boolean
 }
 
-const CalendarEventCard: FC<CalendarEventCardProps> = ({ x, y, booking, onDelete }) => {
+const CalendarEventCard: FC<CalendarEventCardProps> = ({ x, y, booking, onDelete, isDeleting }) => {
   const [auth] = useUserInfo()
   const [allVenues, isLoadingVenues] = useAllVenues()
 
@@ -86,6 +87,7 @@ const CalendarEventCard: FC<CalendarEventCardProps> = ({ x, y, booking, onDelete
           {booking.userId === auth?.userId && (
             <Button
               size='sm'
+              isLoading={isDeleting}
               variant='outline'
               _hover={{ transform: 'scale(1.2)' }}
               _active={{ transform: 'scale(0.9)' }}
