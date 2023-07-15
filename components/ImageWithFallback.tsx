@@ -21,14 +21,7 @@ const ImageWithFallback: React.FC<ImageWithFallbackProps> = (props) => {
     })()
   }, [fallbackSrc, src])
 
-  return (
-    <Image
-      {...rest}
-      src={imgSrc}
-      priority={priority}
-      alt={alt}
-    />
-  )
+  return <Image {...rest} src={imgSrc} priority={priority} alt={alt} />
 }
 
 export default ImageWithFallback
