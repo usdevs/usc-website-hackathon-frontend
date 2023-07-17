@@ -81,6 +81,7 @@ npm run linter-next
 3. Click on "Get it"
 4. The JWT will be printed in the console (unsafe yea, once we have a proper admin page we can do something better).
 5. Copy the token and paste it into `const NEXT_PUBLIC_BACKEND_JWT_DEV =` on line 9 in `components/Auth.tsx`. Copy your userId from the "Users" table in the DB to NEXT_PUBLIC_BACKEND_TELEGRAM_USER_ID on line 8.
+6. Do and add your Telegram ID to the database manually, otherwise you will not be able to make a booking. Google on how to get your ID.
 
 #### Second method (Linux and MacOS only)
 

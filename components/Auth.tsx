@@ -1,32 +1,35 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { Button } from '@chakra-ui/react'
 import TelegramLoginButton from './TelegramLoginButton'
 import { isUserLoggedIn } from '../utils'
 import { useUserInfo } from '../hooks/useUserInfo'
-
-// { Parth: 22, Zhi Sheng: 23, Megan: 24, Conrad: 25 } based on 2 April seed file
-const NEXT_PUBLIC_BACKEND_TELEGRAM_USER_ID = 25
-const NEXT_PUBLIC_BACKEND_JWT_DEV =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NzA1MjQ0MTIwLCJmaXJzdF9uYW1lIjoiTGV3IEtpYW4gTG9vbmcsIENvbnJhZCIsInVzZXJuYW1lIjoib3Jxb2kiLCJhdXRoX2RhdGUiOjE2ODY1ODg2NjgsInBob3RvX3VybCI6Imh0dHBzOi8vdC5tZS9pL3VzZXJwaWMvMzIwL1otOHNvYk1MbEVOVkt4bEIxNXpDWG0zRmFRVnI1SF9TVGRZWjRqVFA1anMuanBnIiwiaGFzaCI6IjBkYmJkMThlZThiZmQwOTEwMzIwNDI3YWQ3Y2Y3YzNjNGE3NjIwYWVhZDQ0NDI2ZDdiZDNhOGE4NDNmMDI4NGMiLCJpYXQiOjE2ODY1ODg2NzAsImV4cCI6MTY4NjU5MjI3MH0.L1INga1kwcgr1gxJyg6RuBCYPBB2ahbgYrq_HqLmpOk'
-const NEXT_PUBLIC_NGINX_PROXY_ON = false
+import * as process from 'process'
 
 const Auth: React.FC = () => {
   const [auth, setAuth, cleanUpAuth] = useUserInfo()
 
+  useEffect(() => {
+    ;(async () => {
+      if (window.localStorage.getItem('user-profile') !== null) {
+        await cleanUpAuth()
+      }
+    })()
+  }, [cleanUpAuth])
+
   const loginButtonDev = (
     <Button
-      onClick={() => {
-        setAuth({
-          token: NEXT_PUBLIC_BACKEND_JWT_DEV,
+      onClick={async () => {
+        await setAuth({
+          token: process.env.NEXT_PUBLIC_BACKEND_JWT_DEV || '',
           orgIds: [66, 67],
-          userId: NEXT_PUBLIC_BACKEND_TELEGRAM_USER_ID,
+          userId: Number(process.env.NEXT_PUBLIC_BACKEND_TELEGRAM_USER_ID) || 22,
           // userInfo is not needed for now, so can just add filler values
           userInfo: {
-            firstName: 'Parth',
+            firstName: 'Test',
             telegramId: -1,
             photoUrl: '',
-            username: 'gparth26',
+            username: 'telegramUsername',
           },
           setupTime: new Date(),
         })
@@ -40,7 +43,7 @@ const Auth: React.FC = () => {
     <TelegramLoginButton
       // BOT_TOKEN on the backend needs to match
       botName={process.env.NODE_ENV === 'development' ? 'TestForUSDevsBot' : 'TestForUSDevsProdBot'}
-      dataOnauth={(user: TelegramUser) => {
+      dataOnauth={async (user: TelegramUser) => {
         const headers = {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -50,11 +53,14 @@ const Auth: React.FC = () => {
           body: JSON.stringify(user),
           headers: headers,
         }
-        fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'login', body)
+        await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'login', body)
           .then((response) => response.text())
           .then((data) => {
             //todo add type here for backend response from the backend repo, see issue #22 on github
             const { token, orgIds, userCredentials, userId } = JSON.parse(data)
+            if (data === undefined || userCredentials === undefined) {
+              throw new Error('Unable to fetch login data from backend')
+            }
             const userInfo = {
               firstName: userCredentials.first_name,
               telegramId: userCredentials.id,
@@ -72,8 +78,8 @@ const Auth: React.FC = () => {
 
   const logoutButton = (
     <Button
-      onClick={() => {
-        cleanUpAuth()
+      onClick={async () => {
+        await cleanUpAuth()
       }}
     >
       Logout
@@ -83,7 +89,7 @@ const Auth: React.FC = () => {
   return isUserLoggedIn(auth)
     ? logoutButton
     : process.env.NODE_ENV === 'development'
-    ? NEXT_PUBLIC_NGINX_PROXY_ON
+    ? process.env.NEXT_PUBLIC_NGINX_PROXY_ON === 'true'
       ? loginButtonWidget
       : loginButtonDev
     : loginButtonWidget
