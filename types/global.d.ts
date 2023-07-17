@@ -20,6 +20,7 @@ declare global {
     slug: string
     category: IGCategory
     isInactive: boolean
+    isInvisible: boolean
   }
 
   type UserOnOrg = {

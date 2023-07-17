@@ -5,6 +5,7 @@ import {
   CardBody,
   Checkbox,
   CheckboxGroup,
+  Divider,
   Input,
   InputGroup,
   InputLeftElement,
@@ -16,12 +17,14 @@ import { DEFAULT_FILTERS } from '../pages/student-groups'
 type IGSearchFilterProps = {
   onInput: React.FormEventHandler<HTMLInputElement>
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+  onInactiveChange: (event: React.ChangeEvent<HTMLInputElement>) => void
   interestGroupCategories: StringToStringJSObject
 }
 
 const IGSearchFilter: React.FC<IGSearchFilterProps> = ({
   onInput,
   onChange,
+  onInactiveChange,
   interestGroupCategories,
 }) => {
   return (
@@ -51,6 +54,7 @@ const IGSearchFilter: React.FC<IGSearchFilterProps> = ({
           />
         </InputGroup>
         <Box p={'2vh'}>
+          Categories
           <CheckboxGroup colorScheme='green' defaultValue={DEFAULT_FILTERS}>
             <Stack mt='0.5rem' spacing={[1, 5]} direction={['column', 'column']}>
               {Object.entries(interestGroupCategories).map((category) => (
@@ -60,6 +64,10 @@ const IGSearchFilter: React.FC<IGSearchFilterProps> = ({
               ))}
             </Stack>
           </CheckboxGroup>
+          <Divider margin='1rem' borderColor={'black'} border='4px' orientation='horizontal' />
+          <Checkbox onChange={onInactiveChange} value={'Inactive'}>
+            Inactive
+          </Checkbox>
         </Box>
       </CardBody>
     </Card>

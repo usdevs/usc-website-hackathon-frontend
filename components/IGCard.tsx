@@ -35,6 +35,7 @@ type LeftPaneProps = {
   primaryIGHead: User | null
   imageSrc: string
   inviteLink: string
+  isInactive: boolean
 }
 
 const MotionBox = motion(Box)
@@ -105,7 +106,13 @@ const getInviteLinkButton = (inviteLink: string, width?: string) => {
   )
 }
 
-const LeftPane: React.FC<LeftPaneProps> = ({ imageKey, primaryIGHead, imageSrc, inviteLink }) => {
+const LeftPane: React.FC<LeftPaneProps> = ({
+  imageKey,
+  primaryIGHead,
+  imageSrc,
+  inviteLink,
+  isInactive,
+}) => {
   return (
     <VStack padding='1rem' borderRight='2px solid darkgrey' justifyContent='space-apart'>
       <Center flex={1}>
@@ -119,20 +126,24 @@ const LeftPane: React.FC<LeftPaneProps> = ({ imageKey, primaryIGHead, imageSrc, 
           style={{ objectFit: 'contain' }}
           sizes='(max-width: 130) 100vw'
         />
-        <Box
-          position='absolute'
-          top={2}
-          right={2}
-          bg='red.500'
-          color='white'
-          px={2}
-          py={1}
-          borderRadius='md'
-          fontSize='sm'
-          fontWeight='bold'
-        >
-          Inactive
-        </Box>
+        {isInactive ? (
+          <Box
+            position='absolute'
+            top={2}
+            right={2}
+            bg='red.500'
+            color='white'
+            px={2}
+            py={1}
+            borderRadius='md'
+            fontSize='sm'
+            fontWeight='bold'
+          >
+            Inactive
+          </Box>
+        ) : (
+          <></>
+        )}
       </Center>
       {getContactButton(primaryIGHead, '7vw')}
       {getInviteLinkButton(inviteLink, '7vw')}
@@ -178,6 +189,7 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
             primaryIGHead={primaryIGHead}
             imageSrc={imageSrc}
             inviteLink={inviteLink}
+            isInactive={ig_info.isInactive}
           />
           <Divider orientation='vertical' h='85%' my='auto' />
           <Center>
@@ -205,20 +217,24 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
       <Modal isOpen={isOpen} onClose={onClose} size='xl'>
         <ModalOverlay />
         <ModalContent>
-          <Box
-            position='absolute'
-            top={2}
-            left={2}
-            bg='red.500'
-            color='white'
-            px={2}
-            py={1}
-            borderRadius='md'
-            fontSize='md'
-            fontWeight='bold'
-          >
-            Inactive
-          </Box>
+          {ig_info.isInactive ? (
+            <Box
+              position='absolute'
+              top={2}
+              left={2}
+              bg='red.500'
+              color='white'
+              px={2}
+              py={1}
+              borderRadius='md'
+              fontSize='md'
+              fontWeight='bold'
+            >
+              Inactive
+            </Box>
+          ) : (
+            <></>
+          )}
           <Center>
             <ImageWithFallback
               key={imageKey}
