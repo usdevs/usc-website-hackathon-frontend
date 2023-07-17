@@ -37,7 +37,8 @@ const StudentGroups: NextPage<{
   }
 
   useEffect(() => {
-    let inactiveFilteredCards = allOrgs.filter((card) => !(card.isInactive && !isInactive))
+    let visibleCards = allOrgs.filter((card) => !card.isInvisible)
+    let inactiveFilteredCards = visibleCards.filter((card) => !(card.isInactive && !isInactive))
     let filteredCards = inactiveFilteredCards.filter((card) =>
       interestGroupFilters.includes(card.category),
     )
