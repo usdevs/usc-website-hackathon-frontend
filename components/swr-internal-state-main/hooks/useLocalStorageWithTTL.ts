@@ -27,7 +27,7 @@ const useLocalStorageWithTTL = <T extends ObjectWithSetupTime>(
       let storedValue = window.localStorage.getItem(key)
       if (storedValue !== null && storedValue !== 'undefined') {
         const parsedValue = JSON.parse(storedValue)
-        if ((Date.now() - parsedValue.setupTime) <= (refreshInterval + 1) * 60 * 1000) {
+        if (Date.now() - parsedValue.setupTime <= (refreshInterval + 1) * 60 * 1000) {
           return parsedValue
         } else {
           // invalidate if (refreshInterval + 1) minutes are over

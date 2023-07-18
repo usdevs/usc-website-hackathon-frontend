@@ -41,23 +41,23 @@ type LeftPaneProps = {
 const MotionBox = motion(Box)
 
 const getContactButton = (contact: User | null, width?: string) => {
-  const toast = useToast()
-
-  const copyToClipboard = () => {
-    const nameToCopy = contact?.name || 'No contact found'
-    navigator.clipboard.writeText(nameToCopy)
-
-    // Show toast alert
-    toast({
-      title: 'Copied to clipboard!',
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-      position: 'bottom',
-    })
-  }
-
-  const isContactFound = contact !== null && contact.name !== undefined
+  // const toast = useToast()
+  //
+  // const copyToClipboard = () => {
+  //   const nameToCopy = contact?.name || 'No contact found'
+  //   navigator.clipboard.writeText(nameToCopy)
+  //
+  //   // Show toast alert
+  //   toast({
+  //     title: 'Copied to clipboard!',
+  //     status: 'success',
+  //     duration: 3000,
+  //     isClosable: true,
+  //     position: 'bottom',
+  //   })
+  // }
+  //
+  // const isContactFound = contact !== null && contact.name !== undefined
 
   return (
     <Button
@@ -76,7 +76,7 @@ const getContactButton = (contact: User | null, width?: string) => {
         display: 'flex',
         alignItems: 'center',
       }}
-      onClick={copyToClipboard}
+      // onClick={copyToClipboard}
       // isDisabled={!isContactFound}
       isDisabled={true}
     >

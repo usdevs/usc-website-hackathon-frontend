@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, FC, FormEvent, ChangeEvent, useState } from 'react'
+import { FC, FormEvent, ChangeEvent, useState } from 'react'
 import {
   Box,
   Button,
@@ -128,9 +128,9 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
       refreshData()
       onClose()
     } else if (response.status === 400) {
-      toast(makeInvalidBookingToast(data.message))
+      toast(makeInvalidBookingToast(JSON.stringify(data.message)))
     } else {
-      toast(makeErrorBookingToast(data.message))
+      toast(makeErrorBookingToast(JSON.stringify(data.message)))
     }
 
     setIsSubmitting(false)

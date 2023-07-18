@@ -15,7 +15,7 @@ const Auth: React.FC = () => {
         // @ts-ignore because we do the null check already
         const { setupTime } = auth
         const timeSinceSetup: number = Date.now() - setupTime
-        if (timeSinceSetup >= ((30 + 1) * 60 * 1000)) {
+        if (timeSinceSetup >= (30 + 1) * 60 * 1000) {
           await cleanUpAuth()
         }
       }

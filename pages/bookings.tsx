@@ -30,7 +30,7 @@ import {
   ALL_VENUES_KEYWORD,
   throwsErrorIfNullOrUndefined,
   isUserLoggedIn,
-  useBookingCellStyles
+  useBookingCellStyles,
 } from '../utils'
 import { useCurrentHalfHourTime } from '../hooks/useCurrentHalfHourTime'
 import { addDays, isSameDay } from 'date-fns'

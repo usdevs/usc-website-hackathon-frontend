@@ -1,11 +1,47 @@
 import type { NextPage } from 'next'
-import { Box, Button, Flex, FormControl, FormLabel, Heading, Input, VStack } from '@chakra-ui/react'
+import {
+  Box,
+  Button,
+  Flex,
+  FormControl,
+  FormLabel,
+  Heading,
+  Input,
+  useToast,
+  UseToastOptions,
+  VStack,
+} from '@chakra-ui/react'
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import Footer from '../components/Footer'
 import { isUserLoggedIn } from '../utils'
 import { useUserInfo } from '../hooks/useUserInfo'
 import FormTextField from '../components/form/FormTextField'
+
+const ORGANISATION_TOAST_ID = 'organisation-toast'
+
+const makeSuccessOrgToast = (): UseToastOptions => {
+  return {
+    id: ORGANISATION_TOAST_ID,
+    title: `Org created successfully!`,
+    position: 'top',
+    duration: 3000,
+    status: 'success',
+    isClosable: true,
+  }
+}
+
+const makeErrorOrgToast = (errMsg: string): UseToastOptions => {
+  return {
+    id: ORGANISATION_TOAST_ID,
+    title: 'Oh snap! There was an error when making the org',
+    description: errMsg,
+    position: 'top',
+    duration: 5000,
+    status: 'error',
+    isClosable: true,
+  }
+}
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Name is required'),
@@ -24,27 +60,36 @@ const initialValues = {
 
 const AdminPage: NextPage = () => {
   const [auth] = useUserInfo()
+  const toast = useToast()
 
-  const onSubmit = (
+  if (!isUserLoggedIn(auth) || auth === null) {
+    return <Box>Please log in first!</Box>
+  }
+
+  const onSubmit = async (
     values: typeof initialValues,
     { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void },
   ) => {
-    console.log(values)
+    const token = auth.token
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify(values),
+    }
+    const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'org', requestOptions)
+    const data = await response.json()
+
+    if (response.status === 200) {
+      toast(makeSuccessOrgToast())
+      //todo refreshData()
+    } else {
+      toast(makeErrorOrgToast(JSON.stringify(data.message)))
+    }
+
     setSubmitting(false)
-    // Perform your API call using the form values
-    // Example:
-    // api.post('/your-endpoint', values)
-    //   .then((response) => {
-    //     // Handle success response
-    //     console.log('Form submitted successfully!');
-    //   })
-    //   .catch((error) => {
-    //     // Handle error response
-    //     console.error('Error submitting form:', error);
-    //   })
-    //   .finally(() => {
-    //     setSubmitting(false);
-    //   });
   }
 
   return (
@@ -55,11 +100,7 @@ const AdminPage: NextPage = () => {
         _hover={{ transform: 'scale(1.2)' }}
         _active={{ transform: 'scale(0.9)' }}
         onClick={() => {
-          if (isUserLoggedIn(auth)) {
-            console.log(auth?.token)
-          } else {
-            console.log('Log in first!')
-          }
+          console.log(auth.token)
         }}
       >
         Get it
