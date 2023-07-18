@@ -1,5 +1,4 @@
 import type { NextPage } from 'next'
-import NavMenu from '../components/NavMenu'
 import { Box, Button, Flex, Heading, HStack, SimpleGrid, VStack } from '@chakra-ui/react'
 import Footer from '../components/Footer'
 import IGCard from '../components/IGCard'
@@ -70,7 +69,6 @@ const StudentGroups: NextPage<{
   return (
     <>
       <Flex justify='center' flexDir='column' as='main'>
-        <NavMenu />
         <HStack pt='3rem' pb='3rem'>
           <Box alignSelf='flex-start' p={'2vh'} pl={'7vh'}>
             <IGSearchFilter {...igSearchFilterProps} />

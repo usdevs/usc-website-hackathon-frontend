@@ -20,7 +20,6 @@ import eachMinuteOfInterval from 'date-fns/eachMinuteOfInterval'
 import { BookingConfirmationPopup } from '../components/booking/BookingConfirmationPopup'
 import Footer from '../components/Footer'
 import { NextPage } from 'next'
-import NavMenu from '../components/NavMenu'
 import Calendar from '../components/booking/Calendar'
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import BookingsTimesCol from '../components/booking/BookingTimesCol'
@@ -420,7 +419,6 @@ const BookingSelector: FC = () => {
 const Grid: NextPage = () => {
   return (
     <Flex justify='center' flexDir='column' as='main'>
-      <NavMenu />
       <BookingSelector />
       <Footer />
     </Flex>

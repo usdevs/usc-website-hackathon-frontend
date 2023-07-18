@@ -8,7 +8,7 @@ import { isServerSide } from '../utils'
  *
  * @param key key to get and set value to/from local storage.
  * @param defaultValue default value that is returned incase the key was not found.
- *
+ * @param refreshInterval
  * @returns an array of (the saved value, set value function, and remove value function) in the same order.
  */
 const useLocalStorageWithTTL = <T extends ObjectWithSetupTime>(

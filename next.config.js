@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   images: {
     remotePatterns: [],
   },
@@ -9,6 +8,7 @@ const nextConfig = {
     // ssr and displayName are configured by default
     styledComponents: true,
   },
+  poweredByHeader: false,
 }
 
 module.exports = nextConfig

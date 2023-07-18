@@ -1,5 +1,4 @@
 import type { NextPage } from 'next'
-import NavMenu from '../components/NavMenu'
 import { Box, Button, Flex, FormControl, FormLabel, Heading, Input, VStack } from '@chakra-ui/react'
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
@@ -50,7 +49,6 @@ const AdminPage: NextPage = () => {
 
   return (
     <Flex justify='center' flexDir='column' as='main'>
-      <NavMenu />
       <Button
         size='sm'
         variant='outline'
