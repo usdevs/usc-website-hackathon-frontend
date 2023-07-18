@@ -83,10 +83,7 @@ const NavMenu = () => {
             </HStack>
           </Container>
           <Flex alignItems={'center'}>
-            <Menu>
-              <Auth />
-              <MenuList></MenuList>
-            </Menu>
+            <Auth />
           </Flex>
         </Flex>
 

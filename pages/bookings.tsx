@@ -12,13 +12,14 @@ import {
   Button,
   MenuOptionGroup,
   Spinner,
+  theme,
+  useBoolean,
 } from '@chakra-ui/react'
 import { useDisclosure } from '@chakra-ui/react'
 import eachMinuteOfInterval from 'date-fns/eachMinuteOfInterval'
 import { BookingConfirmationPopup } from '../components/booking/BookingConfirmationPopup'
 import Footer from '../components/Footer'
 import { NextPage } from 'next'
-import NavMenu from '../components/NavMenu'
 import Calendar from '../components/booking/Calendar'
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import BookingsTimesCol from '../components/booking/BookingTimesCol'
@@ -51,6 +52,18 @@ const getOnlyDayMonthAndYearFromDate = (dateToParse: Date) => {
   return dateWithMonthAndYear
 }
 
+type ChakraColor = `${string}.${number}`
+
+const generateChakraColour = (n: number): ChakraColor => {
+  const shades = [300, 400, 500, 600, 700]
+  const colours = ['red', 'orange', 'yellow', 'green', 'teal', 'blue', 'cyan', 'purple', 'pink']
+
+  const shade = shades[n % shades.length]
+  const colour = colours[n % colours.length]
+
+  return `${colour}.${shade}`
+}
+
 const BookingSelector: FC = () => {
   const [_, setRootFontSize] = useBookingCellStyles()
   useEffect(() => {
@@ -75,7 +88,6 @@ const BookingSelector: FC = () => {
     end: null,
     venueId: -1,
   })
-  const [unsuccessfulFormSubmitString, setUnsuccessfulFormSubmitString] = useState<string>('')
   const currentRoundedHalfHourTime = useCurrentHalfHourTime()
   const [userSelectedDate, setUserSelectedDate] = useState<Date>(currentRoundedHalfHourTime)
   const [userSelectedMonth, setUserSelectedMonth] = useState<Date>(
@@ -84,11 +96,7 @@ const BookingSelector: FC = () => {
   //todo this is a silly way to update
   const [isBackendUpdated, setIsBackendUpdated] = useState<boolean>(false)
   const [auth] = useUserInfo()
-  //TODO this state shouldn't be here
-  const [bookingData, setBookingData] = useState<BookingDataForm>({
-    eventName: '',
-    orgId: auth ? auth.orgIds[0] : -1,
-  })
+
   const toast = useToast()
   const toast_id = 'auth-toast'
   const [allBookingsInMonth, setAllBookingsInMonth] = useState<BookingDataDisplay[]>([])
@@ -134,23 +142,23 @@ const BookingSelector: FC = () => {
         (booking) => booking.bookedBy.org.id,
       )
       let uniqueOrgIds: number[] = [...new Set(mappedOrgIds)]
-      const map =
-        orgsIdsToColoursMapString === null ? Object.create(null) : orgsIdsToColoursMapString
+      const map = orgsIdsToColoursMapString ?? ({} as NumberToStringJSObject)
+      const existingColors = new Set(Object.values(map))
+
       for (const uniqueOrgId of uniqueOrgIds) {
-        if (!Object.hasOwn(map, uniqueOrgId)) {
-          while (true) {
-            let randomColour =
-              '#' +
-              Math.floor(Math.random() * 16777215)
-                .toString(16)
-                .padStart(6, '0')
-            if (Object.values(map).indexOf(randomColour) === -1) {
-              map[uniqueOrgId] = randomColour
-              break
-            }
-          }
+        const hasColor = Object.hasOwn(map, uniqueOrgId)
+
+        if (!hasColor) {
+          let id = uniqueOrgId
+          let color: ChakraColor
+          do {
+            color = generateChakraColour(id++)
+          } while (existingColors.has(color))
+
+          map[uniqueOrgId] = color
         }
       }
+
       await setOrgsIdsToColoursMapString(map)
       // orgIdsToColoursMap.current = map
     })()
@@ -190,11 +198,6 @@ const BookingSelector: FC = () => {
   }, bookingsSortedByVenue)
 
   const onModalClose = () => {
-    setUnsuccessfulFormSubmitString('')
-    setBookingData({
-      eventName: '',
-      orgId: auth ? auth.orgIds[0] : -1,
-    })
     onClose()
   }
 
@@ -211,10 +214,6 @@ const BookingSelector: FC = () => {
         })
       }
     } else {
-      setBookingData({
-        eventName: '',
-        orgId: auth ? auth.orgIds[0] : -1,
-      })
       onOpen()
     }
   }
@@ -228,6 +227,10 @@ const BookingSelector: FC = () => {
   const [bookingCard, setBookingCard] = useState<BookingDataDisplay | undefined>(undefined)
   const { scrollY } = useScroll()
 
+  const startPos = {
+    x: -1,
+    y: -1,
+  }
   const openBookingCard = (event: MouseEvent, booking: BookingDataDisplay | undefined) => {
     event.stopPropagation()
     const el = event.target as HTMLElement
@@ -237,11 +240,14 @@ const BookingSelector: FC = () => {
     setBookingCard(booking)
   }
   const hideEventCard = () => {
-    setEventCardPos({ x: -1, y: -1 })
+    setEventCardPos({ ...startPos })
   }
 
   useMotionValueEvent(scrollY, 'change', () => {
-    hideEventCard()
+    // Prevent re-render
+    if (eventCardPos.x !== startPos.x) {
+      hideEventCard()
+    }
   })
 
   //todo check
@@ -250,7 +256,11 @@ const BookingSelector: FC = () => {
   // We want the booking to be removed from the grid immediately
   // Regardless of whether the delete request is successful
   // If it is unsuccessful, we can just add it back to bookingsSortedByVenue
+  const [isDeleting, setIsDeleting] = useBoolean()
+
   const handleDeleteBooking = async (bookingId: number) => {
+    setIsDeleting.on()
+
     const token = isUserLoggedIn(auth) ? auth?.token : ''
     const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings/' + bookingId, {
       method: 'DELETE',
@@ -281,11 +291,15 @@ const BookingSelector: FC = () => {
         isClosable: true,
       })
     }
+
+    setIsDeleting.off()
   }
 
   if (isLoadingVenues) {
     return <></>
   }
+
+  console.log('Is re-rendering')
 
   return (
     <>
@@ -298,6 +312,7 @@ const BookingSelector: FC = () => {
             y={eventCardPos.y}
             booking={bookingCard}
             onDelete={handleDeleteBooking}
+            isDeleting={isDeleting}
           />
         )}
       </AnimatePresence>
@@ -306,11 +321,7 @@ const BookingSelector: FC = () => {
           isOpen={isOpen}
           onClose={onModalClose}
           startDate={userSelectedDate}
-          setUnsuccessfulFormSubmitString={setUnsuccessfulFormSubmitString}
-          unsuccessfulFormSubmitString={unsuccessfulFormSubmitString}
           bookingDataFromSelection={bookingDataFromSelection}
-          bookingData={bookingData}
-          setBookingData={setBookingData}
           refreshData={() => setIsBackendUpdated(!isBackendUpdated)}
         />
       ) : (
@@ -408,7 +419,6 @@ const BookingSelector: FC = () => {
 const Grid: NextPage = () => {
   return (
     <Flex justify='center' flexDir='column' as='main'>
-      <NavMenu />
       <BookingSelector />
       <Footer />
     </Flex>

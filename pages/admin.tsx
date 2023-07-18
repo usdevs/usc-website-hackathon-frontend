@@ -1,6 +1,5 @@
 import type { NextPage } from 'next'
-import NavMenu from '../components/NavMenu'
-import { Box, Button, Flex, Heading, HStack, SimpleGrid, VStack } from '@chakra-ui/react'
+import { Button, Flex } from '@chakra-ui/react'
 import Footer from '../components/Footer'
 import { isUserLoggedIn } from '../utils'
 import { useUserInfo } from '../hooks/useUserInfo'
@@ -10,7 +9,6 @@ const AdminPage: NextPage = () => {
 
   return (
     <Flex justify='center' flexDir='column' as='main'>
-      <NavMenu />
       <Button
         size='sm'
         variant='outline'
