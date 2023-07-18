@@ -36,11 +36,11 @@ type BookingConfirmationPopupProps = {
   refreshData: () => void
 }
 
-const toast_id = 'response-toast'
+const BOOKING_TOAST_ID = 'booking-toast'
 
 const makeSuccessBookingToast = (): UseToastOptions => {
   return {
-    id: toast_id,
+    id: BOOKING_TOAST_ID,
     title: `Booking made successfully!`,
     position: 'top',
     duration: 3000,
@@ -51,7 +51,7 @@ const makeSuccessBookingToast = (): UseToastOptions => {
 
 const makeInvalidBookingToast = (errMsg: string): UseToastOptions => {
   return {
-    id: toast_id,
+    id: BOOKING_TOAST_ID,
     title: `Oops! The booking couldn't be made.`,
     description: errMsg,
     position: 'top',
@@ -63,7 +63,7 @@ const makeInvalidBookingToast = (errMsg: string): UseToastOptions => {
 
 const makeErrorBookingToast = (errMsg: string): UseToastOptions => {
   return {
-    id: toast_id,
+    id: BOOKING_TOAST_ID,
     title: 'Oh snap! There was an error when making the booking',
     description: errMsg,
     position: 'top',

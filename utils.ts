@@ -17,6 +17,10 @@ export const BUTTON_LINKS: NavigationLink[] = [
     label: 'Bookings',
     href: '/bookings',
   },
+  {
+    label: 'Admin',
+    href: '/admin',
+  },
 ]
 
 // Following 8 point grid system

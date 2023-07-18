@@ -16,6 +16,7 @@ const useLocalStorageWithTTL = <T extends ObjectWithSetupTime>(
   defaultValue: T | null = null,
   refreshInterval: number,
 ): LocalStorageHookResult<T> => {
+  //todo fix before handover
   //Note that this file is modified to be able to invalidate local storage after 20 minute - see commit
   // b918ac409cedf11db27a11f2df974473d13e4146 for what changed
   let initialValue = defaultValue
@@ -26,7 +27,7 @@ const useLocalStorageWithTTL = <T extends ObjectWithSetupTime>(
       let storedValue = window.localStorage.getItem(key)
       if (storedValue !== null && storedValue !== 'undefined') {
         const parsedValue = JSON.parse(storedValue)
-        if (Date.now() - parsedValue.setupTime <= (refreshInterval + 1) * 60 * 1000) {
+        if ((Date.now() - parsedValue.setupTime) <= (refreshInterval + 1) * 60 * 1000) {
           return parsedValue
         } else {
           // invalidate if (refreshInterval + 1) minutes are over

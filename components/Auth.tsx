@@ -11,11 +11,16 @@ const Auth: React.FC = () => {
 
   useEffect(() => {
     ;(async () => {
-      if (window.localStorage.getItem('user-profile') !== null) {
-        await cleanUpAuth()
+      if (isUserLoggedIn(auth)) {
+        // @ts-ignore because we do the null check already
+        const { setupTime } = auth
+        const timeSinceSetup: number = Date.now() - setupTime
+        if (timeSinceSetup >= ((30 + 1) * 60 * 1000)) {
+          await cleanUpAuth()
+        }
       }
     })()
-  }, [cleanUpAuth])
+  }, [auth, cleanUpAuth])
 
   const loginButtonDev = (
     <Button
