@@ -21,7 +21,7 @@ import {
   isUserLoggedIn,
   getOrgFromId,
   getVenueFromId,
-  fetchFromUrlAndParseJson,
+  fetchFromUrlStringAndParseJson,
 } from '../../utils'
 import { useCurrentHalfHourTime } from '../../hooks/useCurrentHalfHourTime'
 import { useUserInfo } from '../../hooks/useUserInfo'
@@ -86,7 +86,7 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
     isLoading: isLoadingOrgs,
   } = useSWRImmutable<Organisation[], string>(
     process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs',
-    fetchFromUrlAndParseJson,
+    fetchFromUrlStringAndParseJson,
   )
   const [allVenues, isLoadingVenues] = useAllVenues()
   const toast = useToast()
