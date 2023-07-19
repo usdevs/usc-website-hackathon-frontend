@@ -11,8 +11,6 @@ import {
   MenuList,
   Button,
   MenuOptionGroup,
-  Spinner,
-  theme,
   useBoolean,
 } from '@chakra-ui/react'
 import { useDisclosure } from '@chakra-ui/react'
@@ -31,13 +29,14 @@ import {
   throwsErrorIfNullOrUndefined,
   isUserLoggedIn,
   useBookingCellStyles,
-  fetchFromUrlAndParseJson,
-} from '../utils'
+  fetchFromUrlArrayAndParseJson
+} from "../utils";
 import { useCurrentHalfHourTime } from '../hooks/useCurrentHalfHourTime'
 import { addDays, isSameDay } from 'date-fns'
 import { useUserInfo } from '../hooks/useUserInfo'
 import { useIdsToColoursMap } from '../hooks/useIdsToColoursMap'
 import { useAllVenues } from '../hooks/useAllVenues'
+import useSWR from 'swr'
 
 const getOnlyMonthAndYearFromDate = (dateToParse: Date) => {
   const month = dateToParse.getMonth()
@@ -93,10 +92,11 @@ const BookingSelector: FC = () => {
   const [userSelectedMonth, setUserSelectedMonth] = useState<Date>(
     getOnlyMonthAndYearFromDate(userSelectedDate),
   )
-  //todo this is a silly way to update
-  const [isBackendUpdated, setIsBackendUpdated] = useState<boolean>(false)
   const [auth] = useUserInfo()
-
+  const { data: allBookingsInMonthBackend, error, isLoading: isLoadingBookings, mutate } = useSWR<BookingDataBackend[], string[]>(
+    [process.env.NEXT_PUBLIC_BACKEND_URL, 'bookings/all?start=', userSelectedMonth.toISOString(), '&end=', (addDays(userSelectedMonth, 31)).toISOString()],
+    fetchFromUrlArrayAndParseJson,
+  )
   const toast = useToast()
   const toast_id = 'auth-toast'
   const [allBookingsInMonth, setAllBookingsInMonth] = useState<BookingDataDisplay[]>([])
@@ -121,15 +121,7 @@ const BookingSelector: FC = () => {
 
   useEffect(() => {
     ;(async () => {
-      const endOfMonth = addDays(userSelectedMonth, 31)
-      const currentBookings = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_URL +
-          'bookings/all?start=' +
-          userSelectedMonth.toISOString() +
-          '&end=' +
-          endOfMonth.toISOString(),
-      )
-      const allBookingsInMonthBackend: BookingDataBackend[] = await currentBookings.json()
+      if (isLoadingBookings || !allBookingsInMonthBackend) return
       const bookingsMappedForDisplay: Array<BookingDataDisplay> = allBookingsInMonthBackend.map(
         (booking) => ({
           ...booking,
@@ -160,12 +152,11 @@ const BookingSelector: FC = () => {
       }
 
       await setOrgsIdsToColoursMapString(map)
-      // orgIdsToColoursMap.current = map
     })()
     return () => {}
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userSelectedMonth, isBackendUpdated]) // since we call setOrgIdsToColoursMapString, need to remove it from
-  // the dependencies array
+  }, [userSelectedMonth, isLoadingBookings]) // since we call setOrgIdsToColoursMapString, need to remove it from the dependencies
+  // array
 
   // Create time intervals for the current date
   const timeIntervals = (() => {
@@ -279,7 +270,7 @@ const BookingSelector: FC = () => {
         status: 'success',
         isClosable: true,
       })
-      setIsBackendUpdated(!isBackendUpdated)
+      mutate()
       hideEventCard()
     } else {
       toast({
@@ -295,7 +286,11 @@ const BookingSelector: FC = () => {
     setIsDeleting.off()
   }
 
-  if (isLoadingVenues) {
+  if (error) {
+    throw new Error('Unable to fetch bookings from backend')
+  }
+
+  if (isLoadingVenues || isLoadingBookings) {
     return <></>
   }
 
@@ -322,7 +317,7 @@ const BookingSelector: FC = () => {
           onClose={onModalClose}
           startDate={userSelectedDate}
           bookingDataFromSelection={bookingDataFromSelection}
-          refreshData={() => setIsBackendUpdated(!isBackendUpdated)}
+          refreshData={() => mutate()}
         />
       ) : (
         <></>

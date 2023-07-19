@@ -56,7 +56,6 @@ const Auth: React.FC = () => {
         await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'login', body)
           .then((response) => response.text())
           .then((data) => {
-            //todo add type here for backend response from the backend repo, see issue #22 on github
             const { token, orgIds, userCredentials, userId } = JSON.parse(data)
             if (data === undefined || userCredentials === undefined) {
               throw new Error('Unable to fetch login data from backend')
