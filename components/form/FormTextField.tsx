@@ -12,7 +12,7 @@ interface FormTextFieldProps {
     onBlur: (event: React.FocusEvent<HTMLInputElement>) => void
   }
   form: {
-    errors: { [key: string]: string }
+    errors: { [key: string]: string | string[] }
     touched: { [key: string]: boolean }
   }
 }

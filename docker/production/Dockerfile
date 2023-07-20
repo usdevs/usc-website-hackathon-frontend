@@ -28,7 +28,13 @@ COPY . .
 ARG NEXT_PUBLIC_BACKEND_URL
 ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
 
-RUN yarn build
+# Build Next.js based on the preferred package manager
+RUN \
+  if [ -f yarn.lock ]; then yarn build; \
+  elif [ -f package-lock.json ]; then npm run build; \
+  elif [ -f pnpm-lock.yaml ]; then pnpm build; \
+  else yarn build; \
+  fi
 
 # 3. Production image, copy all the files and run next
 FROM base AS runner

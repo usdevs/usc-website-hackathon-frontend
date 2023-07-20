@@ -14,9 +14,15 @@ import {
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import Footer from '../components/Footer'
-import { isUserLoggedIn } from '../utils'
+import {
+  fetchFromUrlArrayAndParseJson,
+  fetchFromUrlStringAndParseJson,
+  isUserLoggedIn,
+} from '../utils'
 import { useUserInfo } from '../hooks/useUserInfo'
 import FormTextField from '../components/form/FormTextField'
+import useSWR from 'swr'
+import useSWRImmutable from 'swr/immutable'
 
 const ORGANISATION_TOAST_ID = 'organisation-toast'
 
@@ -45,25 +51,61 @@ const makeErrorOrgToast = (errMsg: string): UseToastOptions => {
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Name is required'),
-  head: Yup.string().required('Head is required'),
+  igHead: Yup.number().required('Head is required'),
   description: Yup.string().required('Description is required'),
   inviteLink: Yup.string().required('Invite Link is required'),
 })
 
-const initialValues = {
+type OrganisationForm = Omit<Organisation, 'slug'> & {
+  igHead: number
+  otherMembers: number[]
+}
+
+const initialValues: OrganisationForm = {
+  id: -1,
   name: '',
-  head: '',
   description: '',
   inviteLink: '',
-  photoUpload: null,
+  // photoUpload: null,
+  isAdminOrg: false,
+  isInvisible: false,
+  isInactive: false,
+  category: 'Others',
+  igHead: 22,
+  otherMembers: [],
 }
 
 const AdminPage: NextPage = () => {
   const [auth] = useUserInfo()
   const toast = useToast()
+  const {
+    data: orgs,
+    error: errorOrgs,
+    isLoading: isLoadingOrgs,
+    mutate,
+  } = useSWR<BookingDataBackend[], string[]>(
+    [process.env.NEXT_PUBLIC_BACKEND_URL, 'orgs'],
+    fetchFromUrlArrayAndParseJson,
+  )
+  const {
+    data: allOrgCategories,
+    error: errorOrgCategories,
+    isLoading: isLoadingOrgCategories,
+  } = useSWRImmutable<Organisation[], string>(
+    process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs/categories',
+    fetchFromUrlStringAndParseJson,
+  )
 
   if (!isUserLoggedIn(auth) || auth === null) {
     return <Box>Please log in first!</Box>
+  }
+
+  if (isLoadingOrgCategories || isLoadingOrgs) {
+    return <Box>Fetching data! Spinner</Box>
+  }
+
+  if (errorOrgCategories || errorOrgs) {
+    throw new Error("Could not fetch organisations' data from the backend")
   }
 
   const onSubmit = async (
@@ -84,7 +126,7 @@ const AdminPage: NextPage = () => {
 
     if (response.status === 200) {
       toast(makeSuccessOrgToast())
-      //todo refreshData()
+      mutate()
     } else {
       toast(makeErrorOrgToast(JSON.stringify(data.message)))
     }
@@ -127,10 +169,10 @@ const AdminPage: NextPage = () => {
                 />
                 <FormTextField
                   type='text'
-                  id='head'
-                  name='head'
+                  id='igHead'
+                  name='igHead'
                   label='Head'
-                  field={form.getFieldProps('head')}
+                  field={form.getFieldProps('igHead')}
                   form={form}
                 />
                 <FormTextField
@@ -149,10 +191,10 @@ const AdminPage: NextPage = () => {
                   field={form.getFieldProps('inviteLink')}
                   form={form}
                 />
-                <FormControl>
-                  <FormLabel htmlFor='photoUpload'>Photo Upload</FormLabel>
-                  <Input type='file' id='photoUpload' name='photoUpload' />
-                </FormControl>
+                {/*<FormControl>*/}
+                {/*  <FormLabel htmlFor='photoUpload'>Photo Upload</FormLabel>*/}
+                {/*  <Input type='file' id='photoUpload' name='photoUpload' />*/}
+                {/*</FormControl>*/}
                 <Button type='submit' colorScheme='teal' mt={4} isLoading={form.isSubmitting}>
                   Submit
                 </Button>

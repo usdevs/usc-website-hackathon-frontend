@@ -15,7 +15,7 @@ declare global {
     id: number
     name: string
     description: string
-    verified: boolean
+    isAdminOrg: boolean
     inviteLink: string
     slug: string
     category: IGCategory
