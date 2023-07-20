@@ -29,8 +29,8 @@ import {
   throwsErrorIfNullOrUndefined,
   isUserLoggedIn,
   useBookingCellStyles,
-  fetchFromUrlArrayAndParseJson
-} from "../utils";
+  fetchFromUrlArrayAndParseJson,
+} from '../utils'
 import { useCurrentHalfHourTime } from '../hooks/useCurrentHalfHourTime'
 import { addDays, isSameDay } from 'date-fns'
 import { useUserInfo } from '../hooks/useUserInfo'
@@ -93,8 +93,19 @@ const BookingSelector: FC = () => {
     getOnlyMonthAndYearFromDate(userSelectedDate),
   )
   const [auth] = useUserInfo()
-  const { data: allBookingsInMonthBackend, error, isLoading: isLoadingBookings, mutate } = useSWR<BookingDataBackend[], string[]>(
-    [process.env.NEXT_PUBLIC_BACKEND_URL, 'bookings/all?start=', userSelectedMonth.toISOString(), '&end=', (addDays(userSelectedMonth, 31)).toISOString()],
+  const {
+    data: allBookingsInMonthBackend,
+    error,
+    isLoading: isLoadingBookings,
+    mutate,
+  } = useSWR<BookingDataBackend[], string[]>(
+    [
+      process.env.NEXT_PUBLIC_BACKEND_URL,
+      'bookings/all?start=',
+      userSelectedMonth.toISOString(),
+      '&end=',
+      addDays(userSelectedMonth, 31).toISOString(),
+    ],
     fetchFromUrlArrayAndParseJson,
   )
   const toast = useToast()

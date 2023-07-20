@@ -9,7 +9,7 @@ const nextConfig = {
     styledComponents: true,
   },
   poweredByHeader: false,
-  output: 'standalone'
+  output: 'standalone',
 }
 
 module.exports = nextConfig
