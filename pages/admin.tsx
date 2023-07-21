@@ -29,7 +29,7 @@ const ORGANISATION_TOAST_ID = 'organisation-toast'
 const makeSuccessOrgToast = (): UseToastOptions => {
   return {
     id: ORGANISATION_TOAST_ID,
-    title: `Org created successfully!`,
+    title: `Success! It will take at most a day to regenerate the student groups page and reflect your changes.`,
     position: 'top',
     duration: 3000,
     status: 'success',
@@ -40,7 +40,7 @@ const makeSuccessOrgToast = (): UseToastOptions => {
 const makeErrorOrgToast = (errMsg: string): UseToastOptions => {
   return {
     id: ORGANISATION_TOAST_ID,
-    title: 'Oh snap! There was an error when making the org',
+    title: 'Oh snap! There was an error when making the org.',
     description: errMsg,
     position: 'top',
     duration: 5000,
