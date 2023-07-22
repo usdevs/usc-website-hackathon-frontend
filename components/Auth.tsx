@@ -11,11 +11,16 @@ const Auth: React.FC = () => {
 
   useEffect(() => {
     ;(async () => {
-      if (window.localStorage.getItem('user-profile') !== null) {
-        await cleanUpAuth()
+      if (isUserLoggedIn(auth)) {
+        // @ts-ignore because we do the null check already
+        const { setupTime } = auth
+        const timeSinceSetup: number = Date.now() - setupTime
+        if (timeSinceSetup >= (30 + 1) * 60 * 1000) {
+          await cleanUpAuth()
+        }
       }
     })()
-  }, [cleanUpAuth])
+  }, [auth, cleanUpAuth])
 
   const loginButtonDev = (
     <Button
@@ -56,7 +61,6 @@ const Auth: React.FC = () => {
         await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'login', body)
           .then((response) => response.text())
           .then((data) => {
-            //todo add type here for backend response from the backend repo, see issue #22 on github
             const { token, orgIds, userCredentials, userId } = JSON.parse(data)
             if (data === undefined || userCredentials === undefined) {
               throw new Error('Unable to fetch login data from backend')

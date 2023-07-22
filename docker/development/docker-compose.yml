@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  frontend-dev:
+    build:
+      context: '../../../usc-website-hackathon-frontend'
+      dockerfile: 'docker/development/Dockerfile'
+    image: frontend-dev
+    ports:
+      - '3001:3000'

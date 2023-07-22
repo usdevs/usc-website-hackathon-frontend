@@ -19,6 +19,7 @@ const StudentGroups: NextPage<{
   const [igCardsToDisplay, setIgCardsToDisplay] = useState<OrganisationWithIGHead[]>(allOrgs)
   const [interestGroupFilters, setInterestGroupFilters] = useState(DEFAULT_FILTERS)
   const [interestGroupSearchString, setInterestGroupSearchString] = useState('')
+  const [isInactive, setIsInactive] = useState<boolean>(false)
 
   const onInput = (ev: ChangeEvent<HTMLInputElement>) => {
     const { value } = ev.target
@@ -35,17 +36,23 @@ const StudentGroups: NextPage<{
   }
 
   useEffect(() => {
-    let filteredCards = allOrgs.filter((card) => interestGroupFilters.includes(card.category))
+    let visibleCards = allOrgs.filter((card) => !card.isInvisible)
+    let inactiveFilteredCards = visibleCards.filter((card) => !(card.isInactive && !isInactive))
+    let filteredCards = inactiveFilteredCards.filter((card) =>
+      interestGroupFilters.includes(card.category),
+    )
     filteredCards = filteredCards.filter((ig) =>
       ig.name.toLowerCase().includes(interestGroupSearchString),
     )
     setIgCardsToDisplay(filteredCards)
     setPage(1)
-  }, [interestGroupFilters, interestGroupSearchString, allOrgs])
+  }, [interestGroupFilters, interestGroupSearchString, allOrgs, isInactive])
 
   const igSearchFilterProps = {
     onInput: onInput,
     onChange: onChange,
+    onInactiveChange: (ev: ChangeEvent<HTMLInputElement>) =>
+      ev.target.checked ? setIsInactive(true) : setIsInactive(false),
     interestGroupCategories: allIGCategories,
   }
 

@@ -17,6 +17,10 @@ export const BUTTON_LINKS: NavigationLink[] = [
     label: 'Bookings',
     href: '/bookings',
   },
+  {
+    label: 'Admin',
+    href: '/admin',
+  },
 ]
 
 // Following 8 point grid system
@@ -44,5 +48,13 @@ export const getVenueFromId = (venuesToSearch: Venue[], venueId: number) => {
   return throwsErrorIfNullOrUndefined(venuesToSearch.find((v) => v.id === venueId))
 }
 
-export const fetchFromUrlAndParseJson: Fetcher<any, string> = (url): Promise<any> =>
-  fetch(url).then((res: Response) => res.json())
+export const fetchFromUrlStringAndParseJson: Fetcher<any, string> = (url: string): Promise<any> => {
+  return fetch(url).then((res: Response) => res.json())
+}
+
+export const fetchFromUrlArrayAndParseJson: Fetcher<any, string[]> = (
+  url: string[],
+): Promise<any> => {
+  const combinedUrl = url.join('')
+  return fetch(combinedUrl).then((res: Response) => res.json())
+}

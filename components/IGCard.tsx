@@ -16,6 +16,7 @@ import {
   ModalFooter,
   Text,
   VStack,
+  useToast,
 } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
 import React from 'react'
@@ -34,11 +35,30 @@ type LeftPaneProps = {
   primaryIGHead: User | null
   imageSrc: string
   inviteLink: string
+  isInactive: boolean
 }
 
 const MotionBox = motion(Box)
 
-const getContactButton = (contact: User | null) => {
+const getContactButton = (contact: User | null, width?: string) => {
+  // const toast = useToast()
+  //
+  // const copyToClipboard = () => {
+  //   const nameToCopy = contact?.name || 'No contact found'
+  //   navigator.clipboard.writeText(nameToCopy)
+  //
+  //   // Show toast alert
+  //   toast({
+  //     title: 'Copied to clipboard!',
+  //     status: 'success',
+  //     duration: 3000,
+  //     isClosable: true,
+  //     position: 'bottom',
+  //   })
+  // }
+  //
+  // const isContactFound = contact !== null && contact.name !== undefined
+
   return (
     <Button
       overflow='hidden'
@@ -46,8 +66,8 @@ const getContactButton = (contact: User | null) => {
       leftIcon={<FaUserCircle />}
       variant='outline'
       colorScheme='blue'
-      minWidth={'7vw'}
-      maxWidth={'7vw'}
+      minWidth={width || 'auto'}
+      maxWidth={width || 'auto'}
       rounded='15px'
       style={{
         borderRadius: '0.5rem',
@@ -56,6 +76,9 @@ const getContactButton = (contact: User | null) => {
         display: 'flex',
         alignItems: 'center',
       }}
+      // onClick={copyToClipboard}
+      // isDisabled={!isContactFound}
+      isDisabled={true}
     >
       <Text noOfLines={[1]} display='inline'>
         {contact?.name || 'No contact found'}
@@ -64,7 +87,7 @@ const getContactButton = (contact: User | null) => {
   )
 }
 
-const getInviteLinkButton = (inviteLink: string) => {
+const getInviteLinkButton = (inviteLink: string, width?: string) => {
   return (
     <Link href={inviteLink} rel='noopener noreferrer' target='_blank'>
       <Button
@@ -72,8 +95,8 @@ const getInviteLinkButton = (inviteLink: string) => {
         textOverflow={'ellipsis'}
         variant='outline'
         colorScheme='blue'
-        minWidth={'7vw'}
-        maxWidth={'7vw'}
+        minWidth={width || 'auto'}
+        maxWidth={width || 'auto'}
         rounded='15px'
         style={{ borderRadius: '0.5rem', color: '#229ed9', border: '1px solid #229ed9' }}
       >
@@ -83,7 +106,13 @@ const getInviteLinkButton = (inviteLink: string) => {
   )
 }
 
-const LeftPane: React.FC<LeftPaneProps> = ({ imageKey, primaryIGHead, imageSrc, inviteLink }) => {
+const LeftPane: React.FC<LeftPaneProps> = ({
+  imageKey,
+  primaryIGHead,
+  imageSrc,
+  inviteLink,
+  isInactive,
+}) => {
   return (
     <VStack padding='1rem' borderRight='2px solid darkgrey' justifyContent='space-apart'>
       <Center flex={1}>
@@ -97,9 +126,27 @@ const LeftPane: React.FC<LeftPaneProps> = ({ imageKey, primaryIGHead, imageSrc, 
           style={{ objectFit: 'contain' }}
           sizes='(max-width: 130) 100vw'
         />
+        {isInactive ? (
+          <Box
+            position='absolute'
+            top={2}
+            right={2}
+            bg='red.500'
+            color='white'
+            px={2}
+            py={1}
+            borderRadius='md'
+            fontSize='sm'
+            fontWeight='bold'
+          >
+            Inactive
+          </Box>
+        ) : (
+          <></>
+        )}
       </Center>
-      {getContactButton(primaryIGHead)}
-      {getInviteLinkButton(inviteLink)}
+      {getContactButton(primaryIGHead, '7vw')}
+      {getInviteLinkButton(inviteLink, '7vw')}
     </VStack>
   )
 }
@@ -142,6 +189,7 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
             primaryIGHead={primaryIGHead}
             imageSrc={imageSrc}
             inviteLink={inviteLink}
+            isInactive={ig_info.isInactive}
           />
           <Divider orientation='vertical' h='85%' my='auto' />
           <Center>
@@ -169,6 +217,24 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
       <Modal isOpen={isOpen} onClose={onClose} size='xl'>
         <ModalOverlay />
         <ModalContent>
+          {ig_info.isInactive ? (
+            <Box
+              position='absolute'
+              top={2}
+              left={2}
+              bg='red.500'
+              color='white'
+              px={2}
+              py={1}
+              borderRadius='md'
+              fontSize='md'
+              fontWeight='bold'
+            >
+              Inactive
+            </Box>
+          ) : (
+            <></>
+          )}
           <Center>
             <ImageWithFallback
               key={imageKey}
@@ -183,6 +249,7 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
           </Center>
 
           <ModalHeader>{ig_info.name}</ModalHeader>
+
           <ModalCloseButton />
           <ModalBody>
             <Text color={'gray.500'}>{'Heads: ' + igHeadsDisplay}</Text>

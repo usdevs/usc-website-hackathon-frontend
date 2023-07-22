@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, FC, FormEvent, ChangeEvent, useState } from 'react'
+import { FC, FormEvent, ChangeEvent, useState } from 'react'
 import {
   Box,
   Button,
@@ -21,26 +21,27 @@ import {
   isUserLoggedIn,
   getOrgFromId,
   getVenueFromId,
-  fetchFromUrlAndParseJson,
+  fetchFromUrlStringAndParseJson,
 } from '../../utils'
 import { useCurrentHalfHourTime } from '../../hooks/useCurrentHalfHourTime'
 import { useUserInfo } from '../../hooks/useUserInfo'
 import useSWRImmutable from 'swr/immutable'
 import { useAllVenues } from '../../hooks/useAllVenues'
+import { KeyedMutator } from 'swr'
 
 type BookingConfirmationPopupProps = {
   onClose: () => void
   isOpen: boolean
   bookingDataFromSelection: BookingDataSelection
   startDate: Date
-  refreshData: () => void
+  mutate: KeyedMutator<BookingDataBackend[]>
 }
 
-const toast_id = 'response-toast'
+const BOOKING_TOAST_ID = 'booking-toast'
 
 const makeSuccessBookingToast = (): UseToastOptions => {
   return {
-    id: toast_id,
+    id: BOOKING_TOAST_ID,
     title: `Booking made successfully!`,
     position: 'top',
     duration: 3000,
@@ -51,7 +52,7 @@ const makeSuccessBookingToast = (): UseToastOptions => {
 
 const makeInvalidBookingToast = (errMsg: string): UseToastOptions => {
   return {
-    id: toast_id,
+    id: BOOKING_TOAST_ID,
     title: `Oops! The booking couldn't be made.`,
     description: errMsg,
     position: 'top',
@@ -63,7 +64,7 @@ const makeInvalidBookingToast = (errMsg: string): UseToastOptions => {
 
 const makeErrorBookingToast = (errMsg: string): UseToastOptions => {
   return {
-    id: toast_id,
+    id: BOOKING_TOAST_ID,
     title: 'Oh snap! There was an error when making the booking',
     description: errMsg,
     position: 'top',
@@ -78,7 +79,7 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
   isOpen,
   bookingDataFromSelection,
   startDate,
-  refreshData,
+  mutate,
 }) => {
   const {
     data: allOrgs = [],
@@ -86,7 +87,7 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
     isLoading: isLoadingOrgs,
   } = useSWRImmutable<Organisation[], string>(
     process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs',
-    fetchFromUrlAndParseJson,
+    fetchFromUrlStringAndParseJson,
   )
   const [allVenues, isLoadingVenues] = useAllVenues()
   const toast = useToast()
@@ -121,16 +122,16 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
       body: JSON.stringify({ ...bookingData, ...bookingDataFromSelection }),
     }
     const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings', requestOptions)
-    const data = await response.json()
+    const newBooking = await response.json()
 
     if (response.status === 200) {
       toast(makeSuccessBookingToast())
-      refreshData()
+      await mutate(undefined)
       onClose()
     } else if (response.status === 400) {
-      toast(makeInvalidBookingToast(data.message))
+      toast(makeInvalidBookingToast(JSON.stringify(newBooking.message)))
     } else {
-      toast(makeErrorBookingToast(data.message))
+      toast(makeErrorBookingToast(JSON.stringify(newBooking.message)))
     }
 
     setIsSubmitting(false)
