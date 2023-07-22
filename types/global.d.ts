@@ -15,7 +15,7 @@ declare global {
     id: number
     name: string
     description: string
-    verified: boolean
+    isAdminOrg: boolean
     inviteLink: string
     slug: string
     category: IGCategory
@@ -46,19 +46,9 @@ declare global {
     bookedBy: UserOnOrg
   }
 
-  type BookingDataDisplay = {
-    id: number
-    venueId: number
-    userId: number
-    orgId: number
-    start: string
-    end: string
-    bookedAt: string
+  type BookingDataDisplay = BookingDataBackend & {
     from: Date
     to: Date
-    eventName: string
-    bookedByUser: User
-    bookedBy: UserOnOrg
   }
 
   interface BookingDataSelection {

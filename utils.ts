@@ -52,7 +52,9 @@ export const fetchFromUrlStringAndParseJson: Fetcher<any, string> = (url: string
   return fetch(url).then((res: Response) => res.json())
 }
 
-export const fetchFromUrlArrayAndParseJson: Fetcher<any, string[]> = (url: string[]): Promise<any> => {
+export const fetchFromUrlArrayAndParseJson: Fetcher<any, string[]> = (
+  url: string[],
+): Promise<any> => {
   const combinedUrl = url.join('')
   return fetch(combinedUrl).then((res: Response) => res.json())
 }

@@ -27,13 +27,14 @@ import { useCurrentHalfHourTime } from '../../hooks/useCurrentHalfHourTime'
 import { useUserInfo } from '../../hooks/useUserInfo'
 import useSWRImmutable from 'swr/immutable'
 import { useAllVenues } from '../../hooks/useAllVenues'
+import { KeyedMutator } from 'swr'
 
 type BookingConfirmationPopupProps = {
   onClose: () => void
   isOpen: boolean
   bookingDataFromSelection: BookingDataSelection
   startDate: Date
-  refreshData: () => void
+  mutate: KeyedMutator<BookingDataBackend[]>
 }
 
 const BOOKING_TOAST_ID = 'booking-toast'
@@ -78,7 +79,7 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
   isOpen,
   bookingDataFromSelection,
   startDate,
-  refreshData,
+  mutate,
 }) => {
   const {
     data: allOrgs = [],
@@ -121,16 +122,16 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
       body: JSON.stringify({ ...bookingData, ...bookingDataFromSelection }),
     }
     const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings', requestOptions)
-    const data = await response.json()
+    const newBooking = await response.json()
 
     if (response.status === 200) {
       toast(makeSuccessBookingToast())
-      refreshData()
+      await mutate(undefined)
       onClose()
     } else if (response.status === 400) {
-      toast(makeInvalidBookingToast(JSON.stringify(data.message)))
+      toast(makeInvalidBookingToast(JSON.stringify(newBooking.message)))
     } else {
-      toast(makeErrorBookingToast(JSON.stringify(data.message)))
+      toast(makeErrorBookingToast(JSON.stringify(newBooking.message)))
     }
 
     setIsSubmitting(false)

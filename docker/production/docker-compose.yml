@@ -3,8 +3,8 @@ version: '3'
 services:
   frontend-prod:
     build:
-      context: "../../../usc-website-hackathon-frontend"
-      dockerfile: "docker/production/Dockerfile"
+      context: '../../../usc-website-hackathon-frontend'
+      dockerfile: 'docker/production/Dockerfile'
     image: frontend-prod
     ports:
       - '3001:3000'
