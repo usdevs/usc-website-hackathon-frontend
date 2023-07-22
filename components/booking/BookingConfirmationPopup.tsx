@@ -79,7 +79,7 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
   isOpen,
   bookingDataFromSelection,
   startDate,
-  mutate
+  mutate,
 }) => {
   const {
     data: allOrgs = [],

@@ -1,23 +1,42 @@
-import { FC, MouseEvent, useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
-import { Button, Flex, HStack, Menu, MenuButton, MenuItemOption, MenuList, MenuOptionGroup, useBoolean, useDisclosure, useToast, VStack } from "@chakra-ui/react";
-import eachMinuteOfInterval from "date-fns/eachMinuteOfInterval";
-import { BookingConfirmationPopup } from "../components/booking/BookingConfirmationPopup";
-import Footer from "../components/Footer";
-import { NextPage } from "next";
-import Calendar from "../components/booking/Calendar";
-import { ChevronDownIcon } from "@chakra-ui/icons";
-import BookingsTimesCol from "../components/booking/BookingTimesCol";
-import BookingVenueCol from "../components/booking/BookingVenueCol";
-import Toggle from "../components/booking/Toggle";
-import CalendarEventCard from "../components/booking/CalendarEventCard";
-import { ALL_VENUES_KEYWORD, fetchFromUrlArrayAndParseJson, isUserLoggedIn, throwsErrorIfNullOrUndefined, useBookingCellStyles } from "../utils";
-import { useCurrentHalfHourTime } from "../hooks/useCurrentHalfHourTime";
-import { addDays, isSameDay } from "date-fns";
-import { useUserInfo } from "../hooks/useUserInfo";
-import { useIdsToColoursMap } from "../hooks/useIdsToColoursMap";
-import { useAllVenues } from "../hooks/useAllVenues";
-import useSWR from "swr";
+import { FC, MouseEvent, useEffect, useRef, useState } from 'react'
+import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion'
+import {
+  Button,
+  Flex,
+  HStack,
+  Menu,
+  MenuButton,
+  MenuItemOption,
+  MenuList,
+  MenuOptionGroup,
+  useBoolean,
+  useDisclosure,
+  useToast,
+  VStack,
+} from '@chakra-ui/react'
+import eachMinuteOfInterval from 'date-fns/eachMinuteOfInterval'
+import { BookingConfirmationPopup } from '../components/booking/BookingConfirmationPopup'
+import Footer from '../components/Footer'
+import { NextPage } from 'next'
+import Calendar from '../components/booking/Calendar'
+import { ChevronDownIcon } from '@chakra-ui/icons'
+import BookingsTimesCol from '../components/booking/BookingTimesCol'
+import BookingVenueCol from '../components/booking/BookingVenueCol'
+import Toggle from '../components/booking/Toggle'
+import CalendarEventCard from '../components/booking/CalendarEventCard'
+import {
+  ALL_VENUES_KEYWORD,
+  fetchFromUrlArrayAndParseJson,
+  isUserLoggedIn,
+  throwsErrorIfNullOrUndefined,
+  useBookingCellStyles,
+} from '../utils'
+import { useCurrentHalfHourTime } from '../hooks/useCurrentHalfHourTime'
+import { addDays, isSameDay } from 'date-fns'
+import { useUserInfo } from '../hooks/useUserInfo'
+import { useIdsToColoursMap } from '../hooks/useIdsToColoursMap'
+import { useAllVenues } from '../hooks/useAllVenues'
+import useSWR from 'swr'
 
 const getOnlyMonthAndYearFromDate = (dateToParse: Date) => {
   const month = dateToParse.getMonth()
@@ -78,7 +97,7 @@ const BookingSelector: FC = () => {
       '&end=',
       addDays(userSelectedMonth, 31).toISOString(),
     ],
-    fetchFromUrlArrayAndParseJson
+    fetchFromUrlArrayAndParseJson,
   )
   const toast = useToast()
   const toast_id = 'auth-toast'
@@ -268,10 +287,10 @@ const BookingSelector: FC = () => {
     setIsDeleting.off()
   }
 
-  const intervalRef = useRef<number>(-1);
+  const intervalRef = useRef<number>(-1)
 
   const isDataFetching = () => {
-    return isLoadingVenues || isLoadingBookings;
+    return isLoadingVenues || isLoadingBookings
   }
 
   useEffect(() => {
@@ -279,21 +298,24 @@ const BookingSelector: FC = () => {
       if (isDataFetching()) {
         return
       }
-      intervalRef.current = window.scrollY;
+      intervalRef.current = window.scrollY
       // setScrollPosition(position);
-    };
+    }
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('scroll', handleScroll, { passive: true })
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [isDataFetching]);
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [isDataFetching])
 
   useEffect(() => {
     const scrollToPopularTimes = () => {
       window.scrollTo({
-        top: intervalRef.current === -1 ? document.documentElement.clientHeight * 1.3 : intervalRef.current,
+        top:
+          intervalRef.current === -1
+            ? document.documentElement.clientHeight * 1.3
+            : intervalRef.current,
         behavior: 'smooth',
       })
     }
