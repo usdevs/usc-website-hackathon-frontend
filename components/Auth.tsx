@@ -37,6 +37,7 @@ const Auth: React.FC = () => {
             username: 'telegramUsername',
           },
           setupTime: new Date(),
+          isAdminUser: true,
         })
       }}
     >
@@ -61,7 +62,7 @@ const Auth: React.FC = () => {
         await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'login', body)
           .then((response) => response.text())
           .then((data) => {
-            const { token, orgIds, userCredentials, userId } = JSON.parse(data)
+            const { token, orgIds, userCredentials, userId, isAdminUser } = JSON.parse(data)
             if (data === undefined || userCredentials === undefined) {
               throw new Error('Unable to fetch login data from backend')
             }
@@ -71,7 +72,7 @@ const Auth: React.FC = () => {
               photoUrl: userCredentials.photo_url,
               username: userCredentials.username,
             }
-            setAuth({ token, orgIds, userInfo, userId, setupTime: new Date() })
+            setAuth({ token, orgIds, userInfo, userId, isAdminUser, setupTime: new Date() })
           })
           .catch((error) => {
             alert(error)
