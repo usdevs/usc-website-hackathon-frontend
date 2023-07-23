@@ -30,6 +30,8 @@ import useSWRImmutable from 'swr/immutable'
 import { useAllVenues } from '../../hooks/useAllVenues'
 import { KeyedMutator } from 'swr'
 
+const MAX_SLOTS_PER_BOOKING = 4
+
 type BookingConfirmationPopupProps = {
   onClose: () => void
   isOpen: boolean
@@ -39,6 +41,7 @@ type BookingConfirmationPopupProps = {
 }
 
 const BOOKING_TOAST_ID = 'booking-toast'
+const DURATION_PER_SLOT = 30
 
 const makeSuccessBookingToast = (): UseToastOptions => {
   return {
@@ -154,6 +157,19 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
     isLoadingOrgs ||
     isLoadingVenues
   ) {
+    return <></>
+  }
+
+  if (
+    !auth.isAdminUser &&
+    bookingDataFromSelection.end.getTime() - bookingDataFromSelection.start.getTime() >
+      DURATION_PER_SLOT * MAX_SLOTS_PER_BOOKING * 1000 * 60
+  ) {
+    toast(
+      makeInvalidBookingToast(
+        JSON.stringify('Booking duration is too long, please change your booking request'),
+      ),
+    )
     return <></>
   }
 

@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useEffect, useRef, useState } from 'react'
+import { FC, MouseEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion'
 import {
   Button,
@@ -75,8 +75,8 @@ const BookingSelector: FC = () => {
   const [allVenues, isLoadingVenues] = useAllVenues()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [bookingDataFromSelection, setBookingDataFromSelection] = useState<BookingDataSelection>({
-    start: null,
-    end: null,
+    start: new Date(),
+    end: new Date(),
     venueId: -1,
   })
   const currentRoundedHalfHourTime = useCurrentHalfHourTime()
@@ -288,9 +288,9 @@ const BookingSelector: FC = () => {
 
   const intervalRef = useRef<number>(-1)
 
-  const isDataFetching = () => {
+  const isDataFetching = useCallback(() => {
     return isLoadingVenues || isLoadingBookings
-  }
+  }, [isLoadingBookings, isLoadingVenues])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -298,7 +298,6 @@ const BookingSelector: FC = () => {
         return
       }
       intervalRef.current = window.scrollY
-      // setScrollPosition(position);
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
