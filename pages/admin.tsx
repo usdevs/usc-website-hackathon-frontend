@@ -1,23 +1,14 @@
 import type { NextPage } from 'next'
-import {
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  FormLabel,
-  Heading,
-  Input,
-  useToast,
-  UseToastOptions,
-  VStack,
-} from '@chakra-ui/react'
+import { Box, Button, Flex, Heading, useToast, UseToastOptions, VStack } from '@chakra-ui/react'
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import Footer from '../components/Footer'
 import {
-  fetchFromUrlArrayAndParseJson,
-  fetchFromUrlStringAndParseJson,
+  getFromUrlArrayAndParseJson,
+  getFromUrlStringAndParseJson,
+  getFromUrlStringAndParseJsonWithAuth,
   isUserLoggedIn,
+  makeFetchToUrlWithAuth,
 } from '../utils'
 import { useUserInfo } from '../hooks/useUserInfo'
 import FormTextField from '../components/form/FormTextField'
@@ -79,13 +70,22 @@ const AdminPage: NextPage = () => {
   const [auth] = useUserInfo()
   const toast = useToast()
   const {
+    data: users,
+    error: errorUsers,
+    isLoading: isLoadingUsers,
+    mutate: mutateUsers,
+  } = useSWR<User[], string[]>(
+    auth?.token ? [process.env.NEXT_PUBLIC_BACKEND_URL + 'users', auth.token] : null,
+    getFromUrlStringAndParseJsonWithAuth,
+  )
+  const {
     data: orgs,
     error: errorOrgs,
     isLoading: isLoadingOrgs,
-    mutate,
+    mutate: mutateOrgs,
   } = useSWR<BookingDataBackend[], string[]>(
     [process.env.NEXT_PUBLIC_BACKEND_URL, 'orgs'],
-    fetchFromUrlArrayAndParseJson,
+    getFromUrlArrayAndParseJson,
   )
   const {
     data: allOrgCategories,
@@ -93,18 +93,18 @@ const AdminPage: NextPage = () => {
     isLoading: isLoadingOrgCategories,
   } = useSWRImmutable<Organisation[], string>(
     process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs/categories',
-    fetchFromUrlStringAndParseJson,
+    getFromUrlStringAndParseJson,
   )
 
   if (!isUserLoggedIn(auth) || auth === null) {
     return <Box>Please log in first!</Box>
   }
 
-  if (isLoadingOrgCategories || isLoadingOrgs) {
+  if (isLoadingOrgCategories || isLoadingOrgs || isLoadingUsers) {
     return <Box>Fetching data! Spinner</Box>
   }
 
-  if (errorOrgCategories || errorOrgs) {
+  if (errorOrgCategories || errorOrgs || errorUsers) {
     throw new Error("Could not fetch organisations' data from the backend")
   }
 
@@ -116,23 +116,18 @@ const AdminPage: NextPage = () => {
     values: typeof initialValues,
     { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void },
   ) => {
-    const token = auth.token
-    const requestOptions = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
-      },
-      body: JSON.stringify(values),
-    }
-    const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'org', requestOptions)
-    const data = await response.json()
+    const { responseJson, responseStatus } = await makeFetchToUrlWithAuth(
+      process.env.NEXT_PUBLIC_BACKEND_URL + 'org',
+      auth.token,
+      'POST',
+      JSON.stringify(values),
+    )
 
-    if (response.status === 200) {
+    if (responseStatus === 200) {
       toast(makeSuccessOrgToast())
-      mutate()
+      mutateOrgs()
     } else {
-      toast(makeErrorOrgToast(JSON.stringify(data.message)))
+      toast(makeErrorOrgToast(JSON.stringify(responseJson.message)))
     }
 
     setSubmitting(false)

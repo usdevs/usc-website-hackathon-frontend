@@ -26,8 +26,9 @@ import Toggle from '../components/booking/Toggle'
 import CalendarEventCard from '../components/booking/CalendarEventCard'
 import {
   ALL_VENUES_KEYWORD,
-  fetchFromUrlArrayAndParseJson,
+  getFromUrlArrayAndParseJson,
   isUserLoggedIn,
+  makeFetchToUrlWithAuth,
   throwsErrorIfNullOrUndefined,
   useBookingCellStyles,
 } from '../utils'
@@ -97,7 +98,7 @@ const BookingSelector: FC = () => {
       '&end=',
       addDays(userSelectedMonth, 31).toISOString(),
     ],
-    fetchFromUrlArrayAndParseJson,
+    getFromUrlArrayAndParseJson,
   )
   const toast = useToast()
   const toast_id = 'auth-toast'
@@ -255,15 +256,13 @@ const BookingSelector: FC = () => {
     setIsDeleting.on()
 
     const { token } = throwsErrorIfNullOrUndefined(auth)
-    const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings/' + bookingId, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
-      },
-    })
-    const deletedBooking = await response.json()
-    if (response.status === 200) {
+    const { responseJson, responseStatus } = await makeFetchToUrlWithAuth(
+      process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings/' + bookingId,
+      token,
+      'DELETE',
+    )
+
+    if (responseStatus === 200) {
       toast({
         id: toast_id,
         title: 'Booking deleted successfully',
@@ -277,7 +276,7 @@ const BookingSelector: FC = () => {
     } else {
       toast({
         id: toast_id,
-        title: deletedBooking.message,
+        title: responseJson.message,
         position: 'top',
         duration: 3000,
         status: 'error',
