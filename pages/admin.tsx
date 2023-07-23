@@ -108,6 +108,10 @@ const AdminPage: NextPage = () => {
     throw new Error("Could not fetch organisations' data from the backend")
   }
 
+  if (!auth.isAdminUser) {
+    return <Box>You need to be an admin!</Box>
+  }
+
   const onSubmit = async (
     values: typeof initialValues,
     { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void },

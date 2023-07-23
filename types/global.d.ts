@@ -78,6 +78,7 @@ declare global {
     orgIds: Array<number>
     userInfo: UserInformation | null
     userId: number
+    isAdminUser: boolean
   }
 
   interface BookingDataForm {
