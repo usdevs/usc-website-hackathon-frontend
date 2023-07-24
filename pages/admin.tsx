@@ -2,7 +2,7 @@ import type { NextPage } from 'next'
 import { Box, Button, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react'
 import { isUserLoggedIn } from '../utils'
 import { useUserInfo } from '../hooks/useUserInfo'
-import OrganisationControlForm from '../components/admin/OrganisationControlForm'
+import OrganisationControlForm from '../components/admin/orgs/OrganisationControlForm'
 
 const AdminPage: NextPage = () => {
   const [auth] = useUserInfo()

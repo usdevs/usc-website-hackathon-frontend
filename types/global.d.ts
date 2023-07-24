@@ -23,6 +23,11 @@ declare global {
     isInvisible: boolean
   }
 
+  type OrganisationForm = Omit<Organisation, 'slug'> & {
+    igHead: number
+    otherMembers: number[]
+  }
+
   type UserOnOrg = {
     user: User
     isIGHead: boolean

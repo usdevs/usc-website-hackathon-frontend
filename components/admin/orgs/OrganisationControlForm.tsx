@@ -2,16 +2,8 @@ import type { NextPage } from 'next'
 import {
   Box,
   Button,
-  Checkbox,
   Flex,
   Heading,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
   Input,
   Table,
   TableContainer,
@@ -21,84 +13,26 @@ import {
   Thead,
   Tr,
   useToast,
-  UseToastOptions,
   InputLeftElement,
   InputGroup,
-  VStack,
-  Textarea,
   useDisclosure,
 } from '@chakra-ui/react'
-import { Formik, Form } from 'formik'
 import { EditIcon, DeleteIcon, AddIcon, SearchIcon } from '@chakra-ui/icons'
-import * as Yup from 'yup'
-import Footer from '../Footer'
+
+import Footer from '../../Footer'
 import {
   fetchFromUrlArrayAndParseJson,
   fetchFromUrlStringAndParseJson,
   isUserLoggedIn,
-} from '../../utils'
-import { useUserInfo } from '../../hooks/useUserInfo'
-import FormTextField from '../form/FormTextField'
+} from '../../../utils'
+import { useUserInfo } from '../../../hooks/useUserInfo'
 import useSWR from 'swr'
 import useSWRImmutable from 'swr/immutable'
-import FormTextArea from '../form/FormTextArea'
-import FormSelect from '../form/FormSelect'
-import FormCheckbox from '../form/FormCheckbox'
 import { useState } from 'react'
-
-const ORGANISATION_TOAST_ID = 'organisation-toast'
-
-const makeSuccessOrgToast = (): UseToastOptions => {
-  return {
-    id: ORGANISATION_TOAST_ID,
-    title: `Org created successfully!`,
-    position: 'top',
-    duration: 3000,
-    status: 'success',
-    isClosable: true,
-  }
-}
-
-const makeErrorOrgToast = (errMsg: string): UseToastOptions => {
-  return {
-    id: ORGANISATION_TOAST_ID,
-    title: 'Oh snap! There was an error when making the org',
-    description: errMsg,
-    position: 'top',
-    duration: 5000,
-    status: 'error',
-    isClosable: true,
-  }
-}
-
-const validationSchema = Yup.object().shape({
-  name: Yup.string().required('Name is required'),
-  igHead: Yup.number().required('Head is required'),
-  description: Yup.string().required('Description is required'),
-  inviteLink: Yup.string().required('Invite Link is required'),
-  isAdminOrg: Yup.bool().required(),
-  isInvisible: Yup.bool().required(),
-  isInactive: Yup.bool().required(),
-  category: Yup.string().required(),
-})
-
-type OrganisationForm = Omit<Organisation, 'slug'> & {
-  igHead: number
-  otherMembers: number[]
-}
-const defaultValues: OrganisationForm = {
-  id: -1,
-  name: '',
-  description: '',
-  inviteLink: '',
-  // photoUpload: null,
-  isAdminOrg: false,
-  isInvisible: false,
-  isInactive: false,
-  category: '',
-  igHead: -1,
-  otherMembers: [],
-}
+import OrganisationControlFormPopup from './OrganisationControlFormPopup'
+import defaultValues from './initialValues'
+import validationSchema from './validationSchema'
+import { makeSuccessOrgToast, makeErrorOrgToast } from '../../../utils/orgUtils'
 
 function OrganisationControlForm() {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -211,8 +145,6 @@ function OrganisationControlForm() {
     },
   ]
 
-  console.log(orgs)
-
   const renderOrganisationRow = (org: any) => {
     return (
       <>
@@ -310,94 +242,15 @@ function OrganisationControlForm() {
             </Tbody>
           </Table>
         </TableContainer>
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Add New Organisation</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <Formik
-                initialValues={initialValues}
-                validationSchema={validationSchema}
-                onSubmit={onSubmit}
-              >
-                {(form) => (
-                  <Form>
-                    <VStack align='start' spacing={4}>
-                      <FormTextField
-                        type='text'
-                        id='name'
-                        name='name'
-                        label='IG Name'
-                        field={form.getFieldProps('name')}
-                        form={form}
-                      />
-                      <FormSelect
-                        id='igHead'
-                        name='igHead'
-                        label='Head'
-                        field={form.getFieldProps('igHead')}
-                        form={form}
-                        data={categories}
-                      />
-                      <FormSelect
-                        id='category'
-                        name='category'
-                        label='Category'
-                        field={form.getFieldProps('category')}
-                        form={form}
-                        data={categories}
-                      />
-                      <FormTextArea
-                        id='description'
-                        name='description'
-                        label='Description'
-                        field={form.getFieldProps('description')}
-                        form={form}
-                      />
-                      {/*<FormControl>*/}
-                      {/*  <FormLabel htmlFor='photoUpload'>Photo Upload</FormLabel>*/}
-                      {/*  <Input type='file' id='photoUpload' name='photoUpload' />*/}
-                      {/*</FormControl>*/}
-                      <FormTextField
-                        type='text'
-                        id='inviteLink'
-                        name='inviteLink'
-                        label='Invite Link'
-                        field={form.getFieldProps('inviteLink')}
-                        form={form}
-                      />
-                      <FormCheckbox
-                        id='isAdminOrg'
-                        name='isAdminOrg'
-                        label='Admin Organisation?'
-                        field={form.getFieldProps('isAdminOrg')}
-                        form={form}
-                      />
-                      <FormCheckbox
-                        id='isInactive'
-                        name='isInactive'
-                        label='Inactive?'
-                        field={form.getFieldProps('isInactive')}
-                        form={form}
-                      />
-                      <FormCheckbox
-                        id='isInvisible'
-                        name='isInvisible'
-                        label='Invisible?'
-                        field={form.getFieldProps('isInvisible')}
-                        form={form}
-                      />
-                      <Button type='submit' colorScheme='teal' mt={4} isLoading={form.isSubmitting}>
-                        Submit
-                      </Button>
-                    </VStack>
-                  </Form>
-                )}
-              </Formik>
-            </ModalBody>
-          </ModalContent>
-        </Modal>
+        <OrganisationControlFormPopup
+          isOpen={isOpen}
+          onClose={onClose}
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={onSubmit}
+          categories={categories}
+          users={categories /* temp */}
+        />
       </Box>
       <Footer />
     </Flex>
