@@ -44,8 +44,8 @@ function OrganisationControlForm() {
     data: orgs,
     error: errorOrgs,
     isLoading: isLoadingOrgs,
-    mutate,
-  } = useSWR<Organisation[], string[]>(
+    mutate: mutateOrgs,
+  } = useSWR<OrganisationWithIGHead[], string[]>(
     [process.env.NEXT_PUBLIC_BACKEND_URL, 'orgs'],
     fetchFromUrlArrayAndParseJson,
   )
@@ -54,16 +54,18 @@ function OrganisationControlForm() {
     data: users,
     error: errorUsers,
     isLoading: isLoadingUsers,
-  } = useSWR<BookingDataBackend[], string[]>(
+    mutate: mutateUsers,
+  } = useSWR<UserOnOrg[], string[]>(
     [process.env.NEXT_PUBLIC_BACKEND_URL, 'users'],
     fetchFromUrlArrayAndParseJson,
   )
+  console.log(users)
 
   const {
     data: allOrgCategories,
     error: errorOrgCategories,
     isLoading: isLoadingOrgCategories,
-  } = useSWRImmutable<Organisation[], string>(
+  } = useSWRImmutable<{ [key: string]: string }, string>(
     process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs/categories',
     fetchFromUrlStringAndParseJson,
   )
@@ -74,11 +76,11 @@ function OrganisationControlForm() {
     return <Box>Please log in first!</Box>
   }
 
-  if (isLoadingOrgCategories || isLoadingOrgs || isLoadingUsers) {
+  if (isLoadingOrgCategories || isLoadingOrgs) {
     return <Box>Fetching data! Spinner</Box>
   }
 
-  if (errorOrgCategories || errorOrgs || errorUsers) {
+  if (errorOrgCategories || errorOrgs) {
     throw new Error("Could not fetch organisations' data from the backend")
   }
 
@@ -100,7 +102,7 @@ function OrganisationControlForm() {
 
     if (response.status === 200) {
       toast(makeSuccessOrgToast())
-      mutate()
+      mutateOrgs()
       onClose()
     } else {
       toast(makeErrorOrgToast(JSON.stringify(data.message)))
@@ -108,6 +110,8 @@ function OrganisationControlForm() {
 
     setSubmitting(false)
   }
+
+  console.log(allOrgCategories)
   const categoryTemp: any = allOrgCategories // parse due to typing issue in backend
 
   const categories = Object.keys(categoryTemp).map((category: any) => {
