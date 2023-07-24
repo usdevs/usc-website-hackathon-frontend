@@ -76,6 +76,10 @@ const validationSchema = Yup.object().shape({
   igHead: Yup.number().required('Head is required'),
   description: Yup.string().required('Description is required'),
   inviteLink: Yup.string().required('Invite Link is required'),
+  isAdminOrg: Yup.bool().required(),
+  isInvisible: Yup.bool().required(),
+  isInactive: Yup.bool().required(),
+  category: Yup.string().required(),
 })
 
 type OrganisationForm = Omit<Organisation, 'slug'> & {
@@ -189,6 +193,11 @@ function OrganisationControlForm() {
     {
       title: 'Invite Link',
       field: 'inviteLink',
+    },
+    {
+      title: 'Admin Organisation',
+      field: 'isAdminOrg',
+      fieldToText: (value: boolean) => (value ? 'Yes' : 'No'),
     },
     {
       title: 'Inactive',
