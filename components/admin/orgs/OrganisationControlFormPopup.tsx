@@ -15,11 +15,6 @@ import FormSelect from '../../form/FormSelect'
 import FormTextArea from '../../form/FormTextArea'
 import FormTextField from '../../form/FormTextField'
 
-type OrganisationForm = Omit<Organisation, 'slug'> & {
-  igHead: number
-  otherMembers: number[]
-}
-
 type SelectProps = {
   value: string
   description: string

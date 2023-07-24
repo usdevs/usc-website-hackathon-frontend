@@ -45,7 +45,7 @@ function OrganisationControlForm() {
     error: errorOrgs,
     isLoading: isLoadingOrgs,
     mutate,
-  } = useSWR<BookingDataBackend[], string[]>(
+  } = useSWR<Organisation[], string[]>(
     [process.env.NEXT_PUBLIC_BACKEND_URL, 'orgs'],
     fetchFromUrlArrayAndParseJson,
   )
@@ -67,6 +67,8 @@ function OrganisationControlForm() {
     process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs/categories',
     fetchFromUrlStringAndParseJson,
   )
+
+  const [displayedOrgs, setDisplayedOrgs] = useState(orgs)
 
   if (!isUserLoggedIn(auth) || auth === null) {
     return <Box>Please log in first!</Box>
@@ -203,7 +205,18 @@ function OrganisationControlForm() {
           </Button>
         </Flex>
         <InputGroup mb={25}>
-          <Input pl='4.5rem' type='text' placeholder='Search organisations...' />
+          <Input
+            pl='4.5rem'
+            type='text'
+            placeholder='Search organisations...'
+            onChange={(e) =>
+              setDisplayedOrgs(
+                orgs?.filter((org) =>
+                  org.name.toLowerCase().includes(e.target.value.toLowerCase()),
+                ),
+              )
+            }
+          />
           <InputLeftElement width='4.5rem'>
             <SearchIcon />
           </InputLeftElement>
@@ -220,7 +233,7 @@ function OrganisationControlForm() {
               </Tr>
             </Thead>
             <Tbody>
-              {orgs?.map((org, idx) => (
+              {displayedOrgs?.map((org, idx) => (
                 <Tr key={idx}>
                   {renderOrganisationRow(org)}
                   <Td>
