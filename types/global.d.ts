@@ -51,24 +51,14 @@ declare global {
     bookedBy: UserOnOrg
   }
 
-  type BookingDataDisplay = {
-    id: number
-    venueId: number
-    userId: number
-    orgId: number
-    start: string
-    end: string
-    bookedAt: string
+  type BookingDataDisplay = BookingDataBackend & {
     from: Date
     to: Date
-    eventName: string
-    bookedByUser: User
-    bookedBy: UserOnOrg
   }
 
   interface BookingDataSelection {
-    start: Date | null
-    end: Date | null
+    start: Date
+    end: Date
     venueId: number
   }
 
@@ -93,6 +83,7 @@ declare global {
     orgIds: Array<number>
     userInfo: UserInformation | null
     userId: number
+    isAdminUser: boolean
   }
 
   interface BookingDataForm {
@@ -114,12 +105,6 @@ declare global {
   export interface ObjectWithSetupTime {
     setupTime: Date
   }
-
-  export type FetcherFn = <T extends ObjectWithSetupTime>(
-    url: URL,
-    key: string,
-    defaultValue: T | null,
-  ) => (url: URL) => Promise<T | null>
 
   export interface StringToStringJSObject {
     [index: string]: string

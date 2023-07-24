@@ -1,19 +1,19 @@
-import { useState, useEffect, FC, MouseEvent } from 'react'
-import { motion, AnimatePresence, useMotionValueEvent, useScroll } from 'framer-motion'
+import { FC, MouseEvent, useCallback, useEffect, useRef, useState } from 'react'
+import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion'
 import {
-  HStack,
-  VStack,
+  Button,
   Flex,
-  useToast,
+  HStack,
   Menu,
   MenuButton,
   MenuItemOption,
   MenuList,
-  Button,
   MenuOptionGroup,
   useBoolean,
+  useDisclosure,
+  useToast,
+  VStack,
 } from '@chakra-ui/react'
-import { useDisclosure } from '@chakra-ui/react'
 import eachMinuteOfInterval from 'date-fns/eachMinuteOfInterval'
 import { BookingConfirmationPopup } from '../components/booking/BookingConfirmationPopup'
 import Footer from '../components/Footer'
@@ -26,10 +26,11 @@ import Toggle from '../components/booking/Toggle'
 import CalendarEventCard from '../components/booking/CalendarEventCard'
 import {
   ALL_VENUES_KEYWORD,
-  throwsErrorIfNullOrUndefined,
+  getFromUrlArrayAndParseJson,
   isUserLoggedIn,
+  makeFetchToUrlWithAuth,
+  throwsErrorIfNullOrUndefined,
   useBookingCellStyles,
-  fetchFromUrlArrayAndParseJson,
 } from '../utils'
 import { useCurrentHalfHourTime } from '../hooks/useCurrentHalfHourTime'
 import { addDays, isSameDay } from 'date-fns'
@@ -70,21 +71,12 @@ const BookingSelector: FC = () => {
       const browserRootFontSize = window.getComputedStyle(document.documentElement).fontSize
       await setRootFontSize(Number(browserRootFontSize.replace('px', '')))
     })()
-    const scrollToPopularTimes = () => {
-      window.scrollTo({
-        top: document.documentElement.clientHeight * 1.3,
-        behavior: 'smooth',
-      })
-    }
-    scrollToPopularTimes()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
+  }, [setRootFontSize])
   const [allVenues, isLoadingVenues] = useAllVenues()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [bookingDataFromSelection, setBookingDataFromSelection] = useState<BookingDataSelection>({
-    start: null,
-    end: null,
+    start: new Date(),
+    end: new Date(),
     venueId: -1,
   })
   const currentRoundedHalfHourTime = useCurrentHalfHourTime()
@@ -100,13 +92,13 @@ const BookingSelector: FC = () => {
     mutate,
   } = useSWR<BookingDataBackend[], string[]>(
     [
-      process.env.NEXT_PUBLIC_BACKEND_URL,
+      process.env.NEXT_PUBLIC_BACKEND_URL || '',
       'bookings/all?start=',
       userSelectedMonth.toISOString(),
       '&end=',
       addDays(userSelectedMonth, 31).toISOString(),
     ],
-    fetchFromUrlArrayAndParseJson,
+    getFromUrlArrayAndParseJson,
   )
   const toast = useToast()
   const toast_id = 'auth-toast'
@@ -263,16 +255,14 @@ const BookingSelector: FC = () => {
   const handleDeleteBooking = async (bookingId: number) => {
     setIsDeleting.on()
 
-    const token = isUserLoggedIn(auth) ? auth?.token : ''
-    const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings/' + bookingId, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
-      },
-    })
-    const res = await response.json()
-    if (response.status === 200) {
+    const { token } = throwsErrorIfNullOrUndefined(auth)
+    const { responseJson, responseStatus } = await makeFetchToUrlWithAuth(
+      process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings/' + bookingId,
+      token,
+      'DELETE',
+    )
+
+    if (responseStatus === 200) {
       toast({
         id: toast_id,
         title: 'Booking deleted successfully',
@@ -281,27 +271,60 @@ const BookingSelector: FC = () => {
         status: 'success',
         isClosable: true,
       })
-      mutate()
+      await mutate(undefined)
       hideEventCard()
     } else {
       toast({
         id: toast_id,
-        title: res.message,
+        title: responseJson.message,
         position: 'top',
         duration: 3000,
         status: 'error',
         isClosable: true,
       })
     }
-
     setIsDeleting.off()
   }
+
+  const intervalRef = useRef<number>(-1)
+
+  const isDataFetching = useCallback(() => {
+    return isLoadingVenues || isLoadingBookings
+  }, [isLoadingBookings, isLoadingVenues])
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isDataFetching()) {
+        return
+      }
+      intervalRef.current = window.scrollY
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [isDataFetching])
+
+  useEffect(() => {
+    const scrollToPopularTimes = () => {
+      window.scrollTo({
+        top:
+          intervalRef.current === -1
+            ? document.documentElement.clientHeight * 1.3
+            : intervalRef.current,
+        behavior: 'smooth',
+      })
+    }
+    scrollToPopularTimes()
+  })
 
   if (error) {
     throw new Error('Unable to fetch bookings from backend')
   }
 
-  if (isLoadingVenues || isLoadingBookings) {
+  if (isDataFetching()) {
     return <></>
   }
 
@@ -328,7 +351,7 @@ const BookingSelector: FC = () => {
           onClose={onModalClose}
           startDate={userSelectedDate}
           bookingDataFromSelection={bookingDataFromSelection}
-          refreshData={() => mutate()}
+          mutate={mutate}
         />
       ) : (
         <></>

@@ -21,9 +21,11 @@ import { EditIcon, DeleteIcon, AddIcon, SearchIcon } from '@chakra-ui/icons'
 
 import Footer from '../../Footer'
 import {
-  fetchFromUrlArrayAndParseJson,
-  fetchFromUrlStringAndParseJson,
+  getFromUrlArrayAndParseJson,
+  getFromUrlStringAndParseJson,
+  getFromUrlStringAndParseJsonWithAuth,
   isUserLoggedIn,
+  makeFetchToUrlWithAuth,
 } from '../../../utils'
 import { useUserInfo } from '../../../hooks/useUserInfo'
 import useSWR from 'swr'
@@ -41,34 +43,35 @@ function OrganisationControlForm() {
 
   const [initialValues, setInitialValues] = useState(defaultValues)
   const {
+    data: users,
+    error: errorUsers,
+    isLoading: isLoadingUsers,
+    mutate: mutateUsers,
+  } = useSWR<User[], string[]>(
+    auth?.token ? [process.env.NEXT_PUBLIC_BACKEND_URL + 'users', auth.token] : null,
+    getFromUrlStringAndParseJsonWithAuth,
+  )
+  const {
     data: orgs,
     error: errorOrgs,
     isLoading: isLoadingOrgs,
     mutate: mutateOrgs,
   } = useSWR<OrganisationWithIGHead[], string[]>(
     [process.env.NEXT_PUBLIC_BACKEND_URL, 'orgs'],
-    fetchFromUrlArrayAndParseJson,
+    getFromUrlArrayAndParseJson,
   )
-
-  const {
-    data: users,
-    error: errorUsers,
-    isLoading: isLoadingUsers,
-    mutate: mutateUsers,
-  } = useSWR<UserOnOrg[], string[]>(
-    [process.env.NEXT_PUBLIC_BACKEND_URL, 'users'],
-    fetchFromUrlArrayAndParseJson,
-  )
-  console.log(users)
-
   const {
     data: allOrgCategories,
     error: errorOrgCategories,
     isLoading: isLoadingOrgCategories,
   } = useSWRImmutable<{ [key: string]: string }, string>(
     process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs/categories',
-    fetchFromUrlStringAndParseJson,
+    getFromUrlStringAndParseJson,
   )
+
+  console.log(users, 'users')
+  console.log(orgs, 'orgs')
+  console.log(allOrgCategories, 'categories')
 
   const [displayedOrgs, setDisplayedOrgs] = useState(orgs)
 

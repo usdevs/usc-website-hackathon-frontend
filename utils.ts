@@ -48,13 +48,44 @@ export const getVenueFromId = (venuesToSearch: Venue[], venueId: number) => {
   return throwsErrorIfNullOrUndefined(venuesToSearch.find((v) => v.id === venueId))
 }
 
-export const fetchFromUrlStringAndParseJson: Fetcher<any, string> = (url: string): Promise<any> => {
+export const getFromUrlStringAndParseJson: Fetcher<any, string> = (url: string): Promise<any> => {
   return fetch(url).then((res: Response) => res.json())
 }
 
-export const fetchFromUrlArrayAndParseJson: Fetcher<any, string[]> = (
+export const getFromUrlStringAndParseJsonWithAuth: Fetcher<any, string[]> = ([
+  url,
+  token,
+]: string[]): Promise<any> => {
+  return makeFetchToUrlWithAuth(url, token, 'GET').then((res) => res.responseJson)
+}
+
+export const getFromUrlArrayAndParseJson: Fetcher<any, string[]> = (
   url: string[],
 ): Promise<any> => {
   const combinedUrl = url.join('')
   return fetch(combinedUrl).then((res: Response) => res.json())
+}
+
+export const makeFetchToUrlWithAuth = async (
+  url: string,
+  token: string,
+  method: string,
+  body: string = '',
+): Promise<any> => {
+  if (token === '') {
+    throw new Error('Token not provided to backend')
+  }
+  const requestOptions: RequestInit = {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + token,
+    },
+  }
+  if (method !== 'GET' && method !== 'DELETE') {
+    requestOptions.body = body
+  }
+  const response = await fetch(url, requestOptions)
+  const responseJson = await response.json()
+  return { responseJson, responseStatus: response.status }
 }
