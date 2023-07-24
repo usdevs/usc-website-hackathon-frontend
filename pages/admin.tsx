@@ -83,7 +83,7 @@ const AdminPage: NextPage = () => {
     error: errorOrgs,
     isLoading: isLoadingOrgs,
     mutate: mutateOrgs,
-  } = useSWR<BookingDataBackend[], string[]>(
+  } = useSWR<OrganisationWithIGHead[], string[]>(
     [process.env.NEXT_PUBLIC_BACKEND_URL, 'orgs'],
     getFromUrlArrayAndParseJson,
   )
@@ -91,7 +91,7 @@ const AdminPage: NextPage = () => {
     data: allOrgCategories,
     error: errorOrgCategories,
     isLoading: isLoadingOrgCategories,
-  } = useSWRImmutable<Organisation[], string>(
+  } = useSWRImmutable<{ [key: string]: string }, string>(
     process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs/categories',
     getFromUrlStringAndParseJson,
   )
