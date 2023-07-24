@@ -30,7 +30,7 @@ import {
 import { useUserInfo } from '../../../hooks/useUserInfo'
 import useSWR from 'swr'
 import useSWRImmutable from 'swr/immutable'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import OrganisationControlFormPopup from './OrganisationControlFormPopup'
 import defaultValues from './initialValues'
 import validationSchema from './validationSchema'
@@ -42,15 +42,15 @@ function OrganisationControlForm() {
   const toast = useToast()
 
   const [initialValues, setInitialValues] = useState(defaultValues)
-  const {
-    data: users,
-    error: errorUsers,
-    isLoading: isLoadingUsers,
-    mutate: mutateUsers,
-  } = useSWR<User[], string[]>(
-    auth?.token ? [process.env.NEXT_PUBLIC_BACKEND_URL + 'users', auth.token] : null,
-    getFromUrlStringAndParseJsonWithAuth,
-  )
+  // const {
+  //   data: users,
+  //   error: errorUsers,
+  //   isLoading: isLoadingUsers,
+  //   mutate: mutateUsers,
+  // } = useSWR<User[], string[]>(
+  //   auth?.token ? [process.env.NEXT_PUBLIC_BACKEND_URL + 'users', auth.token] : null,
+  //   getFromUrlStringAndParseJsonWithAuth,
+  // )
   const {
     data: orgs,
     error: errorOrgs,
@@ -69,11 +69,14 @@ function OrganisationControlForm() {
     getFromUrlStringAndParseJson,
   )
 
-  console.log(users, 'users')
-  console.log(orgs, 'orgs')
-  console.log(allOrgCategories, 'categories')
-
   const [displayedOrgs, setDisplayedOrgs] = useState(orgs)
+
+  useEffect(() => {
+    // Check if orgs is not null
+    if (orgs) {
+      setDisplayedOrgs(orgs)
+    }
+  }, [orgs])
 
   if (!isUserLoggedIn(auth) || auth === null) {
     return <Box>Please log in first!</Box>
@@ -91,30 +94,23 @@ function OrganisationControlForm() {
     values: typeof initialValues,
     { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void },
   ) => {
-    const token = auth.token
-    const requestOptions = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
-      },
-      body: JSON.stringify(values),
-    }
-    const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'org', requestOptions)
-    const data = await response.json()
+    const { responseJson, responseStatus } = await makeFetchToUrlWithAuth(
+      process.env.NEXT_PUBLIC_BACKEND_URL + 'org',
+      auth.token,
+      'POST',
+      JSON.stringify(values),
+    )
 
-    if (response.status === 200) {
+    if (responseStatus === 200) {
       toast(makeSuccessOrgToast())
       mutateOrgs()
-      onClose()
     } else {
-      toast(makeErrorOrgToast(JSON.stringify(data.message)))
+      toast(makeErrorOrgToast(JSON.stringify(responseJson.message)))
     }
 
     setSubmitting(false)
   }
 
-  console.log(allOrgCategories)
   const categoryTemp: any = allOrgCategories // parse due to typing issue in backend
 
   const categories = Object.keys(categoryTemp).map((category: any) => {
@@ -208,7 +204,7 @@ function OrganisationControlForm() {
             variant='solid'
             onClick={() => openModalWithInitialValues(defaultValues)}
           >
-            Add New Organisation
+            Organisation
           </Button>
         </Flex>
         <InputGroup mb={25}>
@@ -240,6 +236,7 @@ function OrganisationControlForm() {
               </Tr>
             </Thead>
             <Tbody>
+              {JSON.stringify(console.log(displayedOrgs))}
               {displayedOrgs?.map((org, idx) => (
                 <Tr key={idx}>
                   {renderOrganisationRow(org)}
