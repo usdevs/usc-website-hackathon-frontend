@@ -82,18 +82,17 @@ type OrganisationForm = Omit<Organisation, 'slug'> & {
   igHead: number
   otherMembers: number[]
 }
-
-const initialValues: OrganisationForm = {
+const defaultValues: OrganisationForm = {
   id: -1,
   name: '',
-  description: 'TEST',
-  inviteLink: 'https://t.me/+9h9O2QEdXddkMmFl',
+  description: '',
+  inviteLink: '',
   // photoUpload: null,
   isAdminOrg: false,
   isInvisible: false,
-  isInactive: true,
-  category: 'Others',
-  igHead: 22,
+  isInactive: false,
+  category: '',
+  igHead: -1,
   otherMembers: [],
 }
 
@@ -101,6 +100,8 @@ function OrganisationControlForm() {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [auth] = useUserInfo()
   const toast = useToast()
+
+  const [initialValues, setInitialValues] = useState(defaultValues)
   const {
     data: orgs,
     error: errorOrgs,
@@ -110,6 +111,16 @@ function OrganisationControlForm() {
     [process.env.NEXT_PUBLIC_BACKEND_URL, 'orgs'],
     fetchFromUrlArrayAndParseJson,
   )
+
+  const {
+    data: users,
+    error: errorUsers,
+    isLoading: isLoadingUsers,
+  } = useSWR<BookingDataBackend[], string[]>(
+    [process.env.NEXT_PUBLIC_BACKEND_URL, 'users'],
+    fetchFromUrlArrayAndParseJson,
+  )
+
   const {
     data: allOrgCategories,
     error: errorOrgCategories,
@@ -123,11 +134,11 @@ function OrganisationControlForm() {
     return <Box>Please log in first!</Box>
   }
 
-  if (isLoadingOrgCategories || isLoadingOrgs) {
+  if (isLoadingOrgCategories || isLoadingOrgs || isLoadingUsers) {
     return <Box>Fetching data! Spinner</Box>
   }
 
-  if (errorOrgCategories || errorOrgs) {
+  if (errorOrgCategories || errorOrgs || errorUsers) {
     throw new Error("Could not fetch organisations' data from the backend")
   }
 
@@ -157,6 +168,14 @@ function OrganisationControlForm() {
 
     setSubmitting(false)
   }
+  const categoryTemp: any = allOrgCategories // parse due to typing issue in backend
+
+  const categories = Object.keys(categoryTemp).map((category: any) => {
+    return {
+      value: category,
+      description: category,
+    }
+  })
 
   const columns = [
     {
@@ -194,6 +213,38 @@ function OrganisationControlForm() {
       </>
     )
   }
+
+  const openModalWithInitialValues = (initialValues: OrganisationForm) => {
+    setInitialValues(initialValues)
+    onOpen()
+  }
+
+  const toOrganisationFormFormat = (org: any) => {
+    const {
+      id,
+      name,
+      description,
+      inviteLink,
+      isAdminOrg,
+      isInvisible,
+      isInactive,
+      category /*igHead, otherMembers */,
+    } = org
+    const rowFormValues = {
+      id,
+      name,
+      description,
+      inviteLink,
+      isAdminOrg,
+      isInvisible,
+      isInactive,
+      category,
+      igHead: 22,
+      otherMembers: [],
+    }
+    return rowFormValues
+  }
+
   return (
     <Flex justify='center' flexDir='column' as='main'>
       <Box p='3rem'>
@@ -201,7 +252,12 @@ function OrganisationControlForm() {
           <Heading as='h1' size='lg'>
             Organisations and Interest Groups
           </Heading>
-          <Button leftIcon={<AddIcon />} colorScheme='teal' variant='solid' onClick={onOpen}>
+          <Button
+            leftIcon={<AddIcon />}
+            colorScheme='teal'
+            variant='solid'
+            onClick={() => openModalWithInitialValues(defaultValues)}
+          >
             Add New Organisation
           </Button>
         </Flex>
@@ -223,12 +279,12 @@ function OrganisationControlForm() {
               </Tr>
             </Thead>
             <Tbody>
-              {orgs?.map((org) => (
-                <Tr>
+              {orgs?.map((org, idx) => (
+                <Tr key={idx}>
                   {renderOrganisationRow(org)}
                   <Td>
                     <Button
-                      onClick={onOpen}
+                      onClick={() => openModalWithInitialValues(toOrganisationFormFormat(org))}
                       leftIcon={<EditIcon />}
                       colorScheme='blue'
                       variant='outline'
@@ -273,6 +329,7 @@ function OrganisationControlForm() {
                         label='Head'
                         field={form.getFieldProps('igHead')}
                         form={form}
+                        data={categories}
                       />
                       <FormSelect
                         id='category'
@@ -280,6 +337,7 @@ function OrganisationControlForm() {
                         label='Category'
                         field={form.getFieldProps('category')}
                         form={form}
+                        data={categories}
                       />
                       <FormTextArea
                         id='description'

@@ -14,6 +14,7 @@ interface FormSelectProps {
     errors: { [key: string]: string | string[] }
     touched: { [key: string]: boolean }
   }
+  data: Array<any>
 }
 
 const FormSelect: React.FC<FormSelectProps> = ({
@@ -21,6 +22,7 @@ const FormSelect: React.FC<FormSelectProps> = ({
   name,
   label,
   field,
+  data,
   form: { errors, touched },
 }) => {
   const error = errors[name]
@@ -32,9 +34,9 @@ const FormSelect: React.FC<FormSelectProps> = ({
     <FormControl isInvalid={showError}>
       <FormLabel htmlFor={id}>{label}</FormLabel>
       <Select id={id} {...field}>
-        <option value='option2'>Option 2</option>
-        <option value='Others'>Others</option>
-        <option value='option3'>Option 3</option>
+        {data.map((item) => (
+          <option value={item.value}>{item.description}</option>
+        ))}
       </Select>
       {showError && <FormErrorMessage>{error}</FormErrorMessage>}
     </FormControl>
