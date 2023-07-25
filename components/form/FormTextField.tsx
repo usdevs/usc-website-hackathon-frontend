@@ -27,8 +27,6 @@ const FormTextField: React.FC<FormTextFieldProps> = ({
 }) => {
   const error = errors[name]
   const showError = touched[name] && !!error
-  console.log(touched[name])
-  console.log(error)
 
   return (
     <FormControl isInvalid={showError}>

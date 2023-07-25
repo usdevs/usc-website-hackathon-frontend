@@ -16,8 +16,8 @@ import FormTextArea from '../../form/FormTextArea'
 import FormTextField from '../../form/FormTextField'
 import defaultValues from './initialValues'
 
-type SelectProps = {
-  value: string
+export type SelectProps<T> = {
+  value: T
   description: string
 }
 
@@ -27,8 +27,8 @@ type ModalProps = {
   initialValues: OrganisationForm
   validationSchema: any
   onSubmit: any
-  categories: Array<SelectProps>
-  users: Array<SelectProps>
+  categories: Array<SelectProps<string>>
+  users: Array<SelectProps<number>>
 }
 
 function OrganisationControlFormPopup({
@@ -69,7 +69,7 @@ function OrganisationControlFormPopup({
                     id='igHead'
                     name='igHead'
                     label='Head'
-                    field={form.getFieldProps('igHead')}
+                    field={form.getFieldProps<number>('igHead')}
                     form={form}
                     data={users}
                   />

@@ -53,8 +53,8 @@ function AdminTable({
   const renderOrganisationRow = (data: any) => {
     return (
       <>
-        {columns.map((column: any) => (
-          <Td>
+        {columns.map((column: any, index) => (
+          <Td key={index}>
             {column.fieldToText
               ? column.fieldToText(get(data, column.field))
               : get(data, column.field)}
