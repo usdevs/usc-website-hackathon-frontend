@@ -14,6 +14,7 @@ import FormCheckbox from '../../form/FormCheckbox'
 import FormSelect from '../../form/FormSelect'
 import FormTextArea from '../../form/FormTextArea'
 import FormTextField from '../../form/FormTextField'
+import defaultValues from './initialValues'
 
 type SelectProps = {
   value: string
@@ -43,7 +44,9 @@ function OrganisationControlFormPopup({
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Add New Organisation</ModalHeader>
+        <ModalHeader>
+          {Object.is(initialValues, defaultValues) ? 'Add New Organisation' : 'Edit Organisation'}
+        </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Formik

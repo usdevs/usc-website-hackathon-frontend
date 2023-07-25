@@ -1,4 +1,3 @@
-import type { NextPage } from 'next'
 import {
   Box,
   Button,
@@ -30,18 +29,19 @@ import {
 import { useUserInfo } from '../../../hooks/useUserInfo'
 import useSWR from 'swr'
 import useSWRImmutable from 'swr/immutable'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import OrganisationControlFormPopup from './OrganisationControlFormPopup'
 import defaultValues from './initialValues'
 import validationSchema from './validationSchema'
 import { makeSuccessOrgToast, makeErrorOrgToast } from '../../../utils/orgUtils'
+import AdminTable from '../AdminTable'
 
 function OrganisationControlForm() {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [auth] = useUserInfo()
   const toast = useToast()
-
   const [initialValues, setInitialValues] = useState(defaultValues)
+
   // const {
   //   data: users,
   //   error: errorUsers,
@@ -51,6 +51,7 @@ function OrganisationControlForm() {
   //   auth?.token ? [process.env.NEXT_PUBLIC_BACKEND_URL + 'users', auth.token] : null,
   //   getFromUrlStringAndParseJsonWithAuth,
   // )
+
   const {
     data: orgs,
     error: errorOrgs,
@@ -68,15 +69,6 @@ function OrganisationControlForm() {
     process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs/categories',
     getFromUrlStringAndParseJson,
   )
-
-  const [displayedOrgs, setDisplayedOrgs] = useState(orgs)
-
-  useEffect(() => {
-    // Check if orgs is not null
-    if (orgs) {
-      setDisplayedOrgs(orgs)
-    }
-  }, [orgs])
 
   if (!isUserLoggedIn(auth) || auth === null) {
     return <Box>Please log in first!</Box>
@@ -120,46 +112,6 @@ function OrganisationControlForm() {
     }
   })
 
-  const columns = [
-    {
-      title: 'Name',
-      field: 'name',
-    },
-    {
-      title: 'Category',
-      field: 'category',
-    },
-    {
-      title: 'Invite Link',
-      field: 'inviteLink',
-    },
-    {
-      title: 'Admin Organisation',
-      field: 'isAdminOrg',
-      fieldToText: (value: boolean) => (value ? 'Yes' : 'No'),
-    },
-    {
-      title: 'Inactive',
-      field: 'isInactive',
-      fieldToText: (value: boolean) => (value ? 'Yes' : 'No'),
-    },
-    {
-      title: 'Invisible',
-      field: 'isInvisible',
-      fieldToText: (value: boolean) => (value ? 'Yes' : 'No'),
-    },
-  ]
-
-  const renderOrganisationRow = (org: any) => {
-    return (
-      <>
-        {columns.map((column) => (
-          <Td>{column.fieldToText ? column.fieldToText(org[column.field]) : org[column.field]}</Td>
-        ))}
-      </>
-    )
-  }
-
   const openModalWithInitialValues = (initialValues: OrganisationForm) => {
     setInitialValues(initialValues)
     onOpen()
@@ -191,86 +143,66 @@ function OrganisationControlForm() {
     return rowFormValues
   }
 
-  return (
-    <Flex justify='center' flexDir='column' as='main'>
-      <Box p='3rem'>
-        <Flex justify='space-between' alignItems='center' mb={50}>
-          <Heading as='h1' size='lg'>
-            Organisations and Interest Groups
-          </Heading>
-          <Button
-            leftIcon={<AddIcon />}
-            colorScheme='teal'
-            variant='solid'
-            onClick={() => openModalWithInitialValues(defaultValues)}
-          >
-            Organisation
-          </Button>
-        </Flex>
-        <InputGroup mb={25}>
-          <Input
-            pl='4.5rem'
-            type='text'
-            placeholder='Search organisations...'
-            onChange={(e) =>
-              setDisplayedOrgs(
-                orgs?.filter((org) =>
-                  org.name.toLowerCase().includes(e.target.value.toLowerCase()),
-                ),
-              )
-            }
-          />
-          <InputLeftElement width='4.5rem'>
-            <SearchIcon />
-          </InputLeftElement>
-        </InputGroup>
+  const columns = [
+    {
+      title: 'Name',
+      field: 'name',
+    },
+    {
+      title: 'Category',
+      field: 'category',
+    },
+    {
+      title: 'Invite Link',
+      field: 'inviteLink',
+    },
+    {
+      title: 'Admin Organisation',
+      field: 'isAdminOrg',
+      fieldToText: (value: boolean) => (value ? 'Yes' : 'No'),
+    },
+    {
+      title: 'Inactive',
+      field: 'isInactive',
+      fieldToText: (value: boolean) => (value ? 'Yes' : 'No'),
+    },
+    {
+      title: 'Invisible',
+      field: 'isInvisible',
+      fieldToText: (value: boolean) => (value ? 'Yes' : 'No'),
+    },
+  ]
 
-        <TableContainer>
-          <Table variant='striped'>
-            <Thead>
-              <Tr>
-                {columns.map((column) => (
-                  <Th key={column.field}>{column.title}</Th>
-                ))}
-                <Th>Actions</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {JSON.stringify(console.log(displayedOrgs))}
-              {displayedOrgs?.map((org, idx) => (
-                <Tr key={idx}>
-                  {renderOrganisationRow(org)}
-                  <Td>
-                    <Button
-                      onClick={() => openModalWithInitialValues(toOrganisationFormFormat(org))}
-                      leftIcon={<EditIcon />}
-                      colorScheme='blue'
-                      variant='outline'
-                      mr={5}
-                    >
-                      Edit
-                    </Button>
-                    <Button leftIcon={<DeleteIcon />} colorScheme='red' variant='solid'>
-                      Delete
-                    </Button>
-                  </Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </TableContainer>
-        <OrganisationControlFormPopup
-          isOpen={isOpen}
-          onClose={onClose}
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={onSubmit}
-          categories={categories}
-          users={categories /* temp */}
-        />
-      </Box>
-      <Footer />
-    </Flex>
+  const onEdit = (rowData: any) => openModalWithInitialValues(toOrganisationFormFormat(rowData))
+  const onDelete = (rowData: any) => {}
+  const onAdd = () => openModalWithInitialValues(defaultValues)
+  const headerText = 'Organisations and Interest Groups'
+  const addButtonText = 'New Organisation'
+  const searchFieldText = 'Search Organisations...'
+
+  return (
+    <>
+      <AdminTable
+        columns={columns}
+        searchFilterField={'name'}
+        headerText={headerText}
+        onAdd={onAdd}
+        onEdit={onEdit}
+        onDelete={onDelete}
+        addButtonText={addButtonText}
+        searchFieldText={searchFieldText}
+        data={orgs}
+      />
+      <OrganisationControlFormPopup
+        isOpen={isOpen}
+        onClose={onClose}
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={onSubmit}
+        categories={categories}
+        users={categories /* temp */}
+      />
+    </>
   )
 }
 
