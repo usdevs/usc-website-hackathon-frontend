@@ -49,11 +49,21 @@ function OrganisationControlForm() {
     getFromUrlStringAndParseJson,
   )
 
+  console.log(users, 'users')
+  console.log(orgs, 'orgs')
+
   if (!isUserLoggedIn(auth) || auth === null) {
     return <Box>Please log in first!</Box>
   }
 
-  if (isLoadingOrgCategories || isLoadingOrgs || isLoadingUsers || !orgs || !allOrgCategories || !users) {
+  if (
+    isLoadingOrgCategories ||
+    isLoadingOrgs ||
+    isLoadingUsers ||
+    !orgs ||
+    !allOrgCategories ||
+    !users
+  ) {
     return <Box>Fetching data! Spinner</Box>
   }
 

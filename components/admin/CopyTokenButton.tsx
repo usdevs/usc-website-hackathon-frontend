@@ -1,4 +1,5 @@
-import { Button } from '@chakra-ui/react'
+import { Button, Box, Icon } from '@chakra-ui/react'
+import { CheckCircleIcon } from '@chakra-ui/icons'
 import React, { useState } from 'react'
 
 interface CopyToClipboardButtonProps {
@@ -27,7 +28,14 @@ const CopyTokenButton: React.FC<CopyToClipboardButtonProps> = ({ textToCopy }) =
       _active={{ transform: 'scale(0.9)' }}
       onClick={handleCopyToClipboard}
     >
-      {copied ? 'Copied to clipboard' : 'Copy to clipboard'}
+      {copied ? (
+        <Box display='flex' alignItems='center'>
+          <Icon as={CheckCircleIcon} color='green.500' boxSize={4} mr={2} />
+          Copied to clipboard
+        </Box>
+      ) : (
+        'Copy to clipboard'
+      )}
     </Button>
   )
 }
