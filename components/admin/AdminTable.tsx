@@ -19,6 +19,24 @@ import Footer from '../Footer'
 import { useState } from 'react'
 import get from 'lodash/get'
 
+export interface AdminTableColumnProps {
+  title: string
+  field: string
+  fieldToText?: (value: any) => string
+}
+
+type AdminTableProps = {
+  columns: AdminTableColumnProps[]
+  searchFilterField: string
+  headerText: string
+  addButtonText: string
+  searchFieldText: string
+  data: any[] | undefined
+  onAdd: () => void
+  onEdit: (rowData: any) => void
+  onDelete: (rowData: any) => void
+}
+
 function AdminTable({
   columns,
   searchFilterField,
@@ -29,7 +47,7 @@ function AdminTable({
   addButtonText,
   searchFieldText,
   data,
-}: any) {
+}: AdminTableProps) {
   const [displayedData, setDisplayedData] = useState(data)
 
   const renderOrganisationRow = (data: any) => {
@@ -64,7 +82,7 @@ function AdminTable({
             placeholder={searchFieldText}
             onChange={(e) =>
               setDisplayedData(
-                data.filter((item: any) =>
+                data?.filter((item: any) =>
                   get(item, searchFilterField).toLowerCase().includes(e.target.value.toLowerCase()),
                 ),
               )

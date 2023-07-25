@@ -1,28 +1,7 @@
-import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  Input,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-  useToast,
-  InputLeftElement,
-  InputGroup,
-  useDisclosure,
-} from '@chakra-ui/react'
-import { EditIcon, DeleteIcon, AddIcon, SearchIcon } from '@chakra-ui/icons'
-
-import Footer from '../../Footer'
+import { Box, useToast, useDisclosure } from '@chakra-ui/react'
 import {
   getFromUrlArrayAndParseJson,
   getFromUrlStringAndParseJson,
-  getFromUrlStringAndParseJsonWithAuth,
   isUserLoggedIn,
   makeFetchToUrlWithAuth,
 } from '../../../utils'
@@ -34,7 +13,7 @@ import OrganisationControlFormPopup from './OrganisationControlFormPopup'
 import defaultValues from './initialValues'
 import validationSchema from './validationSchema'
 import { makeSuccessOrgToast, makeErrorOrgToast } from '../../../utils/orgUtils'
-import AdminTable from '../AdminTable'
+import AdminTable, { AdminTableColumnProps } from '../AdminTable'
 
 function OrganisationControlForm() {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -143,7 +122,7 @@ function OrganisationControlForm() {
     return rowFormValues
   }
 
-  const columns = [
+  const columns: AdminTableColumnProps[] = [
     {
       title: 'Name',
       field: 'name',
