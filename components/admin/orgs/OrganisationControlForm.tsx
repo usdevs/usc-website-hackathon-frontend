@@ -53,11 +53,11 @@ function OrganisationControlForm() {
     return <Box>Please log in first!</Box>
   }
 
-  if (isLoadingOrgCategories || isLoadingOrgs || !orgs || !allOrgCategories || !users) {
+  if (isLoadingOrgCategories || isLoadingOrgs || isLoadingUsers || !orgs || !allOrgCategories || !users) {
     return <Box>Fetching data! Spinner</Box>
   }
 
-  if (errorOrgCategories || errorOrgs) {
+  if (errorOrgCategories || errorOrgs || errorUsers) {
     throw new Error("Could not fetch organisations' data from the backend")
   }
 
