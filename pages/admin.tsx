@@ -3,6 +3,7 @@ import { Box, Button, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui
 import { isUserLoggedIn } from '../utils'
 import { useUserInfo } from '../hooks/useUserInfo'
 import OrganisationControlForm from '../components/admin/orgs/OrganisationControlForm'
+import UserControlForm from '../components/admin/users/UserControlForm'
 
 const AdminPage: NextPage = () => {
   const [auth] = useUserInfo()
@@ -21,7 +22,9 @@ const AdminPage: NextPage = () => {
         <TabPanel>
           <OrganisationControlForm />
         </TabPanel>
-        <TabPanel>Test</TabPanel>
+        <TabPanel>
+          <UserControlForm />
+        </TabPanel>
         <TabPanel>
           <Button
             size='sm'
