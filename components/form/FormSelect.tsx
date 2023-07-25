@@ -1,12 +1,13 @@
 import React from 'react'
 import { FormControl, FormLabel, Select, FormErrorMessage } from '@chakra-ui/react'
+import { SelectProps } from '../admin/orgs/OrganisationControlFormPopup'
 
-interface FormSelectProps {
+interface FormSelectProps<FieldValue> {
   id: string
   name: string
   label: string
   field: {
-    value: any
+    value: FieldValue
     onChange: React.ChangeEventHandler<HTMLSelectElement>
     onBlur: React.FocusEventHandler<HTMLSelectElement>
   }
@@ -17,25 +18,25 @@ interface FormSelectProps {
   data: Array<any>
 }
 
-const FormSelect: React.FC<FormSelectProps> = ({
+const FormSelect = <T extends number | string>({
   id,
   name,
   label,
   field,
   data,
   form: { errors, touched },
-}) => {
+}: FormSelectProps<T>) => {
   const error = errors[name]
   const showError = touched[name] && !!error
-  console.log(touched[name])
-  console.log(error)
 
   return (
     <FormControl isInvalid={showError}>
       <FormLabel htmlFor={id}>{label}</FormLabel>
       <Select id={id} {...field}>
-        {data.map((item) => (
-          <option value={item.value}>{item.description}</option>
+        {data.map((item: SelectProps<T>, i: number) => (
+          <option key={i} value={item.value}>
+            {item.description}
+          </option>
         ))}
       </Select>
       {showError && <FormErrorMessage>{error}</FormErrorMessage>}

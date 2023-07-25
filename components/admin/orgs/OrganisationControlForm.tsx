@@ -2,6 +2,7 @@ import { Box, useToast, useDisclosure } from '@chakra-ui/react'
 import {
   getFromUrlArrayAndParseJson,
   getFromUrlStringAndParseJson,
+  getFromUrlStringAndParseJsonWithAuth,
   isUserLoggedIn,
   makeFetchToUrlWithAuth,
 } from '../../../utils'
@@ -19,18 +20,17 @@ function OrganisationControlForm() {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [auth] = useUserInfo()
   const toast = useToast()
-  const [initialValues, setInitialValues] = useState(defaultValues)
+  const [initialValues, setInitialValues] = useState<OrganisationForm>(defaultValues)
 
-  // const {
-  //   data: users,
-  //   error: errorUsers,
-  //   isLoading: isLoadingUsers,
-  //   mutate: mutateUsers,
-  // } = useSWR<User[], string[]>(
-  //   auth?.token ? [process.env.NEXT_PUBLIC_BACKEND_URL + 'users', auth.token] : null,
-  //   getFromUrlStringAndParseJsonWithAuth,
-  // )
-
+  const {
+    data: users,
+    error: errorUsers,
+    isLoading: isLoadingUsers,
+    mutate: mutateUsers,
+  } = useSWR<User[], string[]>(
+    auth?.token ? [process.env.NEXT_PUBLIC_BACKEND_URL + 'users', auth.token] : null,
+    getFromUrlStringAndParseJsonWithAuth,
+  )
   const {
     data: orgs,
     error: errorOrgs,
@@ -53,22 +53,22 @@ function OrganisationControlForm() {
     return <Box>Please log in first!</Box>
   }
 
-  if (isLoadingOrgCategories || isLoadingOrgs) {
+  if (isLoadingOrgCategories || isLoadingOrgs || isLoadingUsers || !orgs || !allOrgCategories || !users) {
     return <Box>Fetching data! Spinner</Box>
   }
 
-  if (errorOrgCategories || errorOrgs) {
+  if (errorOrgCategories || errorOrgs || errorUsers) {
     throw new Error("Could not fetch organisations' data from the backend")
   }
 
   const onSubmit = async (
-    values: typeof initialValues,
+    values: OrganisationForm,
     { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void },
   ) => {
     const { responseJson, responseStatus } = await makeFetchToUrlWithAuth(
-      process.env.NEXT_PUBLIC_BACKEND_URL + 'org',
+      process.env.NEXT_PUBLIC_BACKEND_URL + 'org/' + values.id,
       auth.token,
-      'POST',
+      'PUT',
       JSON.stringify(values),
     )
 
@@ -91,35 +91,22 @@ function OrganisationControlForm() {
     }
   })
 
+  const mappedUsers = users.map((user: User) => {
+    return {
+      value: user.id,
+      description: user.telegramUserName,
+    }
+  })
+
   const openModalWithInitialValues = (initialValues: OrganisationForm) => {
     setInitialValues(initialValues)
     onOpen()
   }
 
-  const toOrganisationFormFormat = (org: any) => {
-    const {
-      id,
-      name,
-      description,
-      inviteLink,
-      isAdminOrg,
-      isInvisible,
-      isInactive,
-      category /*igHead, otherMembers */,
-    } = org
-    const rowFormValues = {
-      id,
-      name,
-      description,
-      inviteLink,
-      isAdminOrg,
-      isInvisible,
-      isInactive,
-      category,
-      igHead: 22,
-      otherMembers: [],
-    }
-    return rowFormValues
+  const convertToOrganisationForm = (org: OrganisationWithIGHead): OrganisationForm => {
+    const igHead = org.userOrg.filter((org) => org.isIGHead)[0].user.id
+    const otherMembers = org.userOrg.filter((org) => !org.isIGHead).map((org) => org.user.id)
+    return { ...org, igHead, otherMembers }
   }
 
   const columns: AdminTableColumnProps[] = [
@@ -152,7 +139,7 @@ function OrganisationControlForm() {
     },
   ]
 
-  const onEdit = (rowData: any) => openModalWithInitialValues(toOrganisationFormFormat(rowData))
+  const onEdit = (rowData: any) => openModalWithInitialValues(convertToOrganisationForm(rowData))
   const onDelete = (rowData: any) => {}
   const onAdd = () => openModalWithInitialValues(defaultValues)
   const headerText = 'Organisations and Interest Groups'
@@ -182,7 +169,7 @@ function OrganisationControlForm() {
         validationSchema={validationSchema}
         onSubmit={onSubmit}
         categories={categories}
-        users={categories /* temp */}
+        users={mappedUsers}
       />
     </>
   )

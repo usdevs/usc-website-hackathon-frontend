@@ -1,4 +1,4 @@
-import { UseToastOptions } from "@chakra-ui/react"
+import { UseToastOptions } from '@chakra-ui/react'
 
 const ORGANISATION_TOAST_ID = 'organisation-toast'
 
