@@ -14,7 +14,14 @@ import {
   InputLeftElement,
   InputGroup,
 } from '@chakra-ui/react'
-import { EditIcon, DeleteIcon, AddIcon, SearchIcon } from '@chakra-ui/icons'
+import {
+  EditIcon,
+  DeleteIcon,
+  AddIcon,
+  SearchIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from '@chakra-ui/icons'
 import Footer from '../Footer'
 import { useState } from 'react'
 import get from 'lodash/get'
@@ -35,6 +42,7 @@ type AdminTableProps = {
   onAdd: () => void
   onEdit: (rowData: any) => void
   onDelete: (rowData: any) => void
+  itemsPerPage: number
 }
 
 function AdminTable({
@@ -46,15 +54,41 @@ function AdminTable({
   onDelete,
   addButtonText,
   searchFieldText,
-  data,
+  data = [],
+  itemsPerPage,
 }: AdminTableProps) {
   const [searchWord, setSearchWord] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const totalPages = Math.ceil(data.length / itemsPerPage)
+
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = Math.min(startIndex + itemsPerPage, data.length)
+
+  const filteredData = data
+    .filter((item: any) =>
+      get(item, searchFilterField).toLowerCase().includes(searchWord.toLowerCase()),
+    )
+    .slice(startIndex, endIndex)
+
+  const handleNextPage = () => {
+    setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages))
+  }
+
+  const handlePrevPage = () => {
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))
+  }
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchWord(e.target.value)
+    setCurrentPage(1)
+  }
 
   const renderOrganisationRow = (data: any) => {
     return (
       <>
-        {columns.map((column: any) => (
-          <Td>
+        {columns.map((column: AdminTableColumnProps) => (
+          <Td key={column.field}>
             {column.fieldToText
               ? column.fieldToText(get(data, column.field))
               : get(data, column.field)}
@@ -81,7 +115,7 @@ function AdminTable({
             type='text'
             placeholder={searchFieldText}
             value={searchWord}
-            onChange={(e) => setSearchWord(e.target.value)}
+            onChange={handleSearchChange}
           />
           <InputLeftElement width='4.5rem'>
             <SearchIcon />
@@ -92,44 +126,68 @@ function AdminTable({
           <Table variant='striped'>
             <Thead>
               <Tr>
-                {columns.map((column: any) => (
+                {columns.map((column: AdminTableColumnProps) => (
                   <Th key={column.field}>{column.title}</Th>
                 ))}
                 <Th>Actions</Th>
               </Tr>
             </Thead>
             <Tbody>
-              {data
-                ?.filter((item: any) =>
-                  get(item, searchFilterField).toLowerCase().includes(searchWord.toLowerCase()),
-                )
-                .map((item: any, idx: number) => (
-                  <Tr key={idx}>
-                    {renderOrganisationRow(item)}
-                    <Td>
-                      <Button
-                        onClick={() => onEdit(item)}
-                        leftIcon={<EditIcon />}
-                        colorScheme='blue'
-                        variant='outline'
-                        mr={5}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        onClick={() => onDelete(item)}
-                        leftIcon={<DeleteIcon />}
-                        colorScheme='red'
-                        variant='solid'
-                      >
-                        Delete
-                      </Button>
-                    </Td>
-                  </Tr>
-                ))}
+              {filteredData.map((item: any, idx: number) => (
+                <Tr key={idx}>
+                  {renderOrganisationRow(item)}
+                  <Td>
+                    <Button
+                      onClick={() => onEdit(item)}
+                      leftIcon={<EditIcon />}
+                      colorScheme='blue'
+                      variant='outline'
+                      mr={5}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      onClick={() => onDelete(item)}
+                      leftIcon={<DeleteIcon />}
+                      colorScheme='red'
+                      variant='solid'
+                    >
+                      Delete
+                    </Button>
+                  </Td>
+                </Tr>
+              ))}
             </Tbody>
           </Table>
         </TableContainer>
+
+        <Flex justify='space-between' mt={5}>
+          <Button
+            _hover={{
+              backgroundColor: currentPage === 1 ? '#a5b3ca' : 'brand.primary',
+              opacity: 1,
+            }}
+            onClick={handlePrevPage}
+            leftIcon={<ChevronLeftIcon />}
+            disabled={currentPage === 1}
+          >
+            Previous Page
+          </Button>
+          <Heading as='h5' size='sm'>
+            Page {currentPage} of {totalPages}
+          </Heading>
+          <Button
+            _hover={{
+              backgroundColor: currentPage === totalPages ? '#a5b3ca' : 'brand.primary',
+              opacity: 1,
+            }}
+            onClick={handleNextPage}
+            rightIcon={<ChevronRightIcon />}
+            disabled={currentPage === totalPages}
+          >
+            Next Page
+          </Button>
+        </Flex>
       </Box>
       <Footer />
     </Flex>

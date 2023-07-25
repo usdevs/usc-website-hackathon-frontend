@@ -158,12 +158,14 @@ function OrganisationControlForm() {
   const headerText = 'Organisations and Interest Groups'
   const addButtonText = 'New Organisation'
   const searchFieldText = 'Search Organisations...'
+  const searchFilterField = 'name'
+  const itemsPerPage = 10
 
   return (
     <>
       <AdminTable
         columns={columns}
-        searchFilterField={'name'}
+        searchFilterField={searchFilterField}
         headerText={headerText}
         onAdd={onAdd}
         onEdit={onEdit}
@@ -171,6 +173,7 @@ function OrganisationControlForm() {
         addButtonText={addButtonText}
         searchFieldText={searchFieldText}
         data={orgs}
+        itemsPerPage={itemsPerPage}
       />
       <OrganisationControlFormPopup
         isOpen={isOpen}
