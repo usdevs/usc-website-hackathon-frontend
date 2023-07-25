@@ -48,7 +48,7 @@ function AdminTable({
   searchFieldText,
   data,
 }: AdminTableProps) {
-  const [displayedData, setDisplayedData] = useState(data)
+  const [searchWord, setSearchWord] = useState('')
 
   const renderOrganisationRow = (data: any) => {
     return (
@@ -80,13 +80,8 @@ function AdminTable({
             pl='4.5rem'
             type='text'
             placeholder={searchFieldText}
-            onChange={(e) =>
-              setDisplayedData(
-                data?.filter((item: any) =>
-                  get(item, searchFilterField).toLowerCase().includes(e.target.value.toLowerCase()),
-                ),
-              )
-            }
+            value={searchWord}
+            onChange={(e) => setSearchWord(e.target.value)}
           />
           <InputLeftElement width='4.5rem'>
             <SearchIcon />
@@ -104,30 +99,34 @@ function AdminTable({
               </Tr>
             </Thead>
             <Tbody>
-              {displayedData?.map((item: any, idx: number) => (
-                <Tr key={idx}>
-                  {renderOrganisationRow(item)}
-                  <Td>
-                    <Button
-                      onClick={() => onEdit(item)}
-                      leftIcon={<EditIcon />}
-                      colorScheme='blue'
-                      variant='outline'
-                      mr={5}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      onClick={() => onDelete(item)}
-                      leftIcon={<DeleteIcon />}
-                      colorScheme='red'
-                      variant='solid'
-                    >
-                      Delete
-                    </Button>
-                  </Td>
-                </Tr>
-              ))}
+              {data
+                ?.filter((item: any) =>
+                  get(item, searchFilterField).toLowerCase().includes(searchWord.toLowerCase()),
+                )
+                .map((item: any, idx: number) => (
+                  <Tr key={idx}>
+                    {renderOrganisationRow(item)}
+                    <Td>
+                      <Button
+                        onClick={() => onEdit(item)}
+                        leftIcon={<EditIcon />}
+                        colorScheme='blue'
+                        variant='outline'
+                        mr={5}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        onClick={() => onDelete(item)}
+                        leftIcon={<DeleteIcon />}
+                        colorScheme='red'
+                        variant='solid'
+                      >
+                        Delete
+                      </Button>
+                    </Td>
+                  </Tr>
+                ))}
             </Tbody>
           </Table>
         </TableContainer>
