@@ -4,6 +4,7 @@ import { isUserLoggedIn } from '../utils'
 import { useUserInfo } from '../hooks/useUserInfo'
 import OrganisationControlForm from '../components/admin/orgs/OrganisationControlForm'
 import UserControlForm from '../components/admin/users/UserControlForm'
+import CopyTokenButton from '../components/admin/CopyTokenButton'
 
 const AdminPage: NextPage = () => {
   const [auth] = useUserInfo()
@@ -26,17 +27,7 @@ const AdminPage: NextPage = () => {
           <UserControlForm />
         </TabPanel>
         <TabPanel>
-          <Button
-            size='sm'
-            variant='outline'
-            _hover={{ transform: 'scale(1.2)' }}
-            _active={{ transform: 'scale(0.9)' }}
-            onClick={() => {
-              console.log(auth.token)
-            }}
-          >
-            Generate Token
-          </Button>
+          <CopyTokenButton textToCopy={auth.token} />
         </TabPanel>
       </TabPanels>
     </Tabs>
