@@ -1,11 +1,5 @@
 import { useToast, useDisclosure, Box } from '@chakra-ui/react'
-import {
-  getFromUrlArrayAndParseJson,
-  getFromUrlStringAndParseJson,
-  getFromUrlStringAndParseJsonWithAuth,
-  isUserLoggedIn,
-  makeFetchToUrlWithAuth,
-} from '../../../utils'
+import { makeFetchToUrlWithAuth } from '../../../utils'
 import { useUserInfo } from '../../../hooks/useUserInfo'
 import { useState } from 'react'
 import UserControlFormPopup from './UserControlFormPopup'
@@ -13,59 +7,23 @@ import defaultValues from './initialValues'
 import validationSchema from './validationSchema'
 import { makeSuccessOrgToast, makeErrorOrgToast } from '../../../utils/orgUtils'
 import AdminTable, { AdminTableColumnProps } from '../AdminTable'
-import useSWR from 'swr'
-import useSWRImmutable from 'swr/immutable'
+import { KeyedMutator } from 'swr'
 
-function UserControlForm() {
+type UserControlFormProps = {
+  users: any[]
+  mutateUsers: KeyedMutator<User[]>
+  mutateOrgs: KeyedMutator<OrganisationWithIGHead[]>
+}
+
+function UserControlForm({ users, mutateUsers, mutateOrgs }: UserControlFormProps) {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [auth] = useUserInfo()
   const toast = useToast()
   const [initialValues, setInitialValues] = useState<User>(defaultValues)
 
-  const {
-    data: users,
-    error: errorUsers,
-    isLoading: isLoadingUsers,
-    mutate: mutateUsers,
-  } = useSWR<User[], string[]>(
-    auth?.token ? [process.env.NEXT_PUBLIC_BACKEND_URL + 'users', auth.token] : null,
-    getFromUrlStringAndParseJsonWithAuth,
-  )
-  const {
-    data: orgs,
-    error: errorOrgs,
-    isLoading: isLoadingOrgs,
-    mutate: mutateOrgs,
-  } = useSWR<OrganisationWithIGHead[], string[]>(
-    [process.env.NEXT_PUBLIC_BACKEND_URL, 'orgs'],
-    getFromUrlArrayAndParseJson,
-  )
-  const {
-    data: allOrgCategories,
-    error: errorOrgCategories,
-    isLoading: isLoadingOrgCategories,
-  } = useSWRImmutable<{ [key: string]: string }, string>(
-    process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs/categories',
-    getFromUrlStringAndParseJson,
-  )
-
-  if (!isUserLoggedIn(auth) || auth === null) {
-    return <Box>Please log in first!</Box>
-  }
-
-  if (
-    isLoadingOrgCategories ||
-    isLoadingOrgs ||
-    isLoadingUsers ||
-    !orgs ||
-    !allOrgCategories ||
-    !users
-  ) {
-    return <Box>Fetching data! Spinner</Box>
-  }
-
-  if (errorOrgCategories || errorOrgs || errorUsers) {
-    throw new Error("Could not fetch organisations' data from the backend")
+  if (auth === null) {
+    // should not occur as already checked in parent component
+    return <Box>Authentication Error</Box>
   }
 
   const onSubmit = async (

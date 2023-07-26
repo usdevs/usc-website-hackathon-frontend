@@ -7,7 +7,7 @@ import {
   makeFetchToUrlWithAuth,
 } from '../../../utils'
 import { useUserInfo } from '../../../hooks/useUserInfo'
-import useSWR from 'swr'
+import useSWR, { KeyedMutator } from 'swr'
 import useSWRImmutable from 'swr/immutable'
 import { useState } from 'react'
 import OrganisationControlFormPopup from './OrganisationControlFormPopup'
@@ -16,59 +16,30 @@ import validationSchema from './validationSchema'
 import { makeSuccessOrgToast, makeErrorOrgToast } from '../../../utils/orgUtils'
 import AdminTable, { AdminTableColumnProps } from '../AdminTable'
 
-function OrganisationControlForm() {
+type OrganisationControlFormProps = {
+  users: any[]
+  orgs: OrganisationWithIGHead[]
+  categories: any
+  mutateUsers: KeyedMutator<User[]>
+  mutateOrgs: KeyedMutator<OrganisationWithIGHead[]>
+}
+
+function OrganisationControlForm({
+  users,
+  orgs,
+  categories,
+  mutateOrgs,
+  mutateUsers,
+}: OrganisationControlFormProps) {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [auth] = useUserInfo()
   const toast = useToast()
   const [initialValues, setInitialValues] = useState<OrganisationForm>(defaultValues)
 
-  const {
-    data: users,
-    error: errorUsers,
-    isLoading: isLoadingUsers,
-    mutate: mutateUsers,
-  } = useSWR<User[], string[]>(
-    auth?.token ? [process.env.NEXT_PUBLIC_BACKEND_URL + 'users', auth.token] : null,
-    getFromUrlStringAndParseJsonWithAuth,
-  )
-  const {
-    data: orgs,
-    error: errorOrgs,
-    isLoading: isLoadingOrgs,
-    mutate: mutateOrgs,
-  } = useSWR<OrganisationWithIGHead[], string[]>(
-    [process.env.NEXT_PUBLIC_BACKEND_URL, 'orgs'],
-    getFromUrlArrayAndParseJson,
-  )
-  const {
-    data: allOrgCategories,
-    error: errorOrgCategories,
-    isLoading: isLoadingOrgCategories,
-  } = useSWRImmutable<{ [key: string]: string }, string>(
-    process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs/categories',
-    getFromUrlStringAndParseJson,
-  )
-
-  if (!isUserLoggedIn(auth) || auth === null) {
-    return <Box>Please log in first!</Box>
+  if (auth === null) {
+    // should not occur as already checked in parent component
+    return <Box>Authentication Error</Box>
   }
-
-  if (
-    isLoadingOrgCategories ||
-    isLoadingOrgs ||
-    isLoadingUsers ||
-    !orgs ||
-    !allOrgCategories ||
-    !users
-  ) {
-    return <Box>Fetching data! Spinner</Box>
-  }
-
-  if (errorOrgCategories || errorOrgs || errorUsers) {
-    throw new Error("Could not fetch organisations' data from the backend")
-  }
-
-  console.log(orgs)
 
   const onSubmit = async (
     values: OrganisationForm,
@@ -90,6 +61,7 @@ function OrganisationControlForm() {
         ),
       )
       mutateOrgs()
+      mutateUsers()
       onClose()
     } else {
       toast(
@@ -102,15 +74,6 @@ function OrganisationControlForm() {
 
     setSubmitting(false)
   }
-
-  const categoryTemp: any = allOrgCategories // parse due to typing issue in backend
-
-  const categories = Object.keys(categoryTemp).map((category: any) => {
-    return {
-      value: category,
-      description: category,
-    }
-  })
 
   const mappedUsers = users.map((user: User) => {
     return {
@@ -174,6 +137,7 @@ function OrganisationControlForm() {
     if (responseStatus === 200) {
       toast(makeSuccessOrgToast('Org deleted successfully'))
       mutateOrgs()
+      mutateUsers()
     } else {
       toast(
         makeErrorOrgToast(
