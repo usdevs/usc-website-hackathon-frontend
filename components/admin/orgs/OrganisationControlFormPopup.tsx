@@ -54,79 +54,81 @@ function OrganisationControlFormPopup({
             validationSchema={validationSchema}
             onSubmit={onSubmit}
           >
-            {(form) => (
-              <Form>
-                <VStack align='start' spacing={4}>
-                  <FormTextField
-                    type='text'
-                    id='name'
-                    name='name'
-                    label='IG Name'
-                    field={form.getFieldProps('name')}
-                    form={form}
-                  />
-                  <FormSelect
-                    id='igHead'
-                    name='igHead'
-                    label='Head'
-                    field={form.getFieldProps<number>('igHead')}
-                    form={form}
-                    data={users}
-                  />
-                  <FormSelect
-                    id='category'
-                    name='category'
-                    label='Category'
-                    field={form.getFieldProps('category')}
-                    form={form}
-                    data={categories}
-                  />
-                  <FormTextArea
-                    id='description'
-                    name='description'
-                    label='Description'
-                    field={form.getFieldProps('description')}
-                    form={form}
-                  />
-                  {/*<FormControl>*/}
-                  {/*  <FormLabel htmlFor='photoUpload'>Photo Upload</FormLabel>*/}
-                  {/*  <Input type='file' id='photoUpload' name='photoUpload' />*/}
-                  {/*</FormControl>*/}
-                  <FormTextField
-                    type='text'
-                    id='inviteLink'
-                    name='inviteLink'
-                    label='Invite Link'
-                    field={form.getFieldProps('inviteLink')}
-                    form={form}
-                  />
-                  <FormCheckbox
-                    id='isAdminOrg'
-                    name='isAdminOrg'
-                    label='Admin Organisation?'
-                    field={form.getFieldProps('isAdminOrg')}
-                    form={form}
-                  />
-                  <FormCheckbox
-                    id='isInactive'
-                    name='isInactive'
-                    label='Inactive?'
-                    field={form.getFieldProps('isInactive')}
-                    form={form}
-                  />
-                  <FormCheckbox
-                    id='isInvisible'
-                    name='isInvisible'
-                    label='Invisible?'
-                    field={form.getFieldProps('isInvisible')}
-                    form={form}
-                  />
-                  <Button type='submit' colorScheme='teal' mt={4} isLoading={form.isSubmitting}>
-                    Submit
-                  </Button>
-                </VStack>
-              </Form>
-            )}
+            {(form) => {
+              return (
+                <Form>
+                  <VStack align='start' spacing={4}>
+                    <FormTextField
+                      type='text'
+                      id='name'
+                      name='name'
+                      label='IG Name'
+                      field={form.getFieldProps('name')}
+                      form={form}
+                    />
+                    <FormSelect
+                      id='igHead'
+                      name='igHead'
+                      label='Head'
+                      field={form.getFieldProps<number>('igHead')}
+                      form={form}
+                      data={users}
+                    />
+                    <FormSelect
+                      id='category'
+                      name='category'
+                      label='Category'
+                      field={form.getFieldProps('category')}
+                      form={form}
+                      data={categories}
+                    />
+                    <FormTextArea
+                      id='description'
+                      name='description'
+                      label='Description'
+                      field={form.getFieldProps('description')}
+                      form={form}
+                    />
+                    {/*<FormControl>*/}
+                    {/*  <FormLabel htmlFor='photoUpload'>Photo Upload</FormLabel>*/}
+                    {/*  <Input type='file' id='photoUpload' name='photoUpload' />*/}
+                    {/*</FormControl>*/}
+                    <FormTextField
+                      type='text'
+                      id='inviteLink'
+                      name='inviteLink'
+                      label='Invite Link'
+                      field={form.getFieldProps('inviteLink')}
+                      form={form}
+                    />
+                    <FormCheckbox
+                      id='isAdminOrg'
+                      name='isAdminOrg'
+                      label='Admin Organisation?'
+                      field={form.getFieldProps('isAdminOrg')}
+                      form={form}
+                    />
+                    <FormCheckbox
+                      id='isInactive'
+                      name='isInactive'
+                      label='Inactive?'
+                      field={form.getFieldProps('isInactive')}
+                      form={form}
+                    />
+                    <FormCheckbox
+                      id='isInvisible'
+                      name='isInvisible'
+                      label='Invisible?'
+                      field={form.getFieldProps('isInvisible')}
+                      form={form}
+                    />
+                    <Button type='submit' colorScheme='teal' mt={4} isLoading={form.isSubmitting}>
+                      Submit
+                    </Button>
+                  </VStack>
+                </Form>
+              )
+            }}
           </Formik>
         </ModalBody>
       </ModalContent>

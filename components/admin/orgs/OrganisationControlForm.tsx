@@ -49,9 +49,6 @@ function OrganisationControlForm() {
     getFromUrlStringAndParseJson,
   )
 
-  console.log(users, 'users')
-  console.log(orgs, 'orgs')
-
   if (!isUserLoggedIn(auth) || auth === null) {
     return <Box>Please log in first!</Box>
   }
@@ -71,22 +68,36 @@ function OrganisationControlForm() {
     throw new Error("Could not fetch organisations' data from the backend")
   }
 
+  console.log(orgs)
+
   const onSubmit = async (
     values: OrganisationForm,
     { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void },
   ) => {
+    // need to parse igHead to number type as HTML option by default will parse the field as string
+    const parsedValues = { ...values, igHead: Number(values.igHead) }
     const { responseJson, responseStatus } = await makeFetchToUrlWithAuth(
-      process.env.NEXT_PUBLIC_BACKEND_URL + 'org/' + values.id,
+      process.env.NEXT_PUBLIC_BACKEND_URL + `org/${parsedValues.id}`,
       auth.token,
       'PUT',
-      JSON.stringify(values),
+      JSON.stringify(parsedValues),
     )
 
     if (responseStatus === 200) {
-      toast(makeSuccessOrgToast())
+      toast(
+        makeSuccessOrgToast(
+          parsedValues.igHead === -1 ? `Org created successfully!` : `Org edited successfully`,
+        ),
+      )
       mutateOrgs()
+      onClose()
     } else {
-      toast(makeErrorOrgToast(JSON.stringify(responseJson.message)))
+      toast(
+        makeErrorOrgToast(
+          'Oh snap! There was an error when making the org',
+          JSON.stringify(responseJson.message),
+        ),
+      )
     }
 
     setSubmitting(false)
@@ -115,6 +126,7 @@ function OrganisationControlForm() {
 
   const convertToOrganisationForm = (org: OrganisationWithIGHead): OrganisationForm => {
     const igHead = org.userOrg.filter((org) => org.isIGHead)[0].user.id
+    console.log(igHead, 'igHead')
     const otherMembers = org.userOrg.filter((org) => !org.isIGHead).map((org) => org.user.id)
     return { ...org, igHead, otherMembers }
   }
@@ -150,7 +162,27 @@ function OrganisationControlForm() {
   ]
 
   const onEdit = (rowData: any) => openModalWithInitialValues(convertToOrganisationForm(rowData))
-  const onDelete = (rowData: any) => {}
+  // const onDelete = (rowData: any) => {}
+  const onDelete = async (rowData: any) => {
+    const { responseJson, responseStatus } = await makeFetchToUrlWithAuth(
+      process.env.NEXT_PUBLIC_BACKEND_URL + 'org/' + rowData.id,
+      auth.token,
+      'DELETE',
+      JSON.stringify(rowData),
+    )
+
+    if (responseStatus === 200) {
+      toast(makeSuccessOrgToast('Org deleted successfully'))
+      mutateOrgs()
+    } else {
+      toast(
+        makeErrorOrgToast(
+          'Oh snap! There was an error when deleting the org',
+          JSON.stringify(responseJson.message),
+        ),
+      )
+    }
+  }
   const onAdd = () => openModalWithInitialValues(defaultValues)
   const headerText = 'Organisations and Interest Groups'
   const addButtonText = 'New Organisation'

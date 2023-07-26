@@ -2,10 +2,10 @@ import { UseToastOptions } from '@chakra-ui/react'
 
 const ORGANISATION_TOAST_ID = 'organisation-toast'
 
-export const makeSuccessOrgToast = (): UseToastOptions => {
+export const makeSuccessOrgToast = (title: string): UseToastOptions => {
   return {
     id: ORGANISATION_TOAST_ID,
-    title: `Org created successfully!`,
+    title: title,
     position: 'top',
     duration: 3000,
     status: 'success',
@@ -13,10 +13,10 @@ export const makeSuccessOrgToast = (): UseToastOptions => {
   }
 }
 
-export const makeErrorOrgToast = (errMsg: string): UseToastOptions => {
+export const makeErrorOrgToast = (title: string, errMsg: string): UseToastOptions => {
   return {
     id: ORGANISATION_TOAST_ID,
-    title: 'Oh snap! There was an error when making the org',
+    title: title,
     description: errMsg,
     position: 'top',
     duration: 5000,

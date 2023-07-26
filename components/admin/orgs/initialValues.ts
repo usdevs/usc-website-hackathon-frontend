@@ -7,7 +7,7 @@ const defaultValues: OrganisationForm = {
   isAdminOrg: false,
   isInvisible: false,
   isInactive: false,
-  category: '',
+  category: 'Sports',
   igHead: -1,
   otherMembers: [],
 }

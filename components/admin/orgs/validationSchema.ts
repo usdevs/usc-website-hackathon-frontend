@@ -2,6 +2,7 @@ import * as Yup from 'yup'
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Name is required'),
+  id: Yup.number(),
   igHead: Yup.number().required('Head is required'),
   description: Yup.string().required('Description is required'),
   inviteLink: Yup.string().required('Invite Link is required'),

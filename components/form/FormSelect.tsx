@@ -28,6 +28,7 @@ const FormSelect = <T extends number | string>({
 }: FormSelectProps<T>) => {
   const error = errors[name]
   const showError = touched[name] && !!error
+  console.log(data, 'SELECT DATA')
 
   return (
     <FormControl isInvalid={showError}>

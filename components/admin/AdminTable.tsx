@@ -13,6 +13,14 @@ import {
   Tr,
   InputLeftElement,
   InputGroup,
+  useDisclosure,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
 } from '@chakra-ui/react'
 import {
   EditIcon,
@@ -24,7 +32,6 @@ import {
 } from '@chakra-ui/icons'
 import Footer from '../Footer'
 import { useState } from 'react'
-import get from 'lodash/get'
 
 export interface AdminTableColumnProps {
   title: string
@@ -59,15 +66,17 @@ function AdminTable({
 }: AdminTableProps) {
   const [searchWord, setSearchWord] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
+  const [rowToDelete, setRowToDelete] = useState<any>({})
 
   const totalPages = Math.ceil(data.length / itemsPerPage)
 
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = Math.min(startIndex + itemsPerPage, data.length)
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const filteredData = data
     .filter((item: any) =>
-      get(item, searchFilterField).toLowerCase().includes(searchWord.toLowerCase()),
+      item?.[searchFilterField].toLowerCase().includes(searchWord.toLowerCase()),
     )
     .slice(startIndex, endIndex)
 
@@ -89,9 +98,7 @@ function AdminTable({
       <>
         {columns.map((column: AdminTableColumnProps) => (
           <Td key={column.field}>
-            {column.fieldToText
-              ? column.fieldToText(get(data, column.field))
-              : get(data, column.field)}
+            {column.fieldToText ? column.fieldToText(data?.[column.field]) : data?.[column.field]}
           </Td>
         ))}
       </>
@@ -147,7 +154,10 @@ function AdminTable({
                       Edit
                     </Button>
                     <Button
-                      onClick={() => onDelete(item)}
+                      onClick={() => {
+                        setRowToDelete(item)
+                        onOpen()
+                      }}
                       leftIcon={<DeleteIcon />}
                       colorScheme='red'
                       variant='solid'
@@ -190,6 +200,28 @@ function AdminTable({
         </Flex>
       </Box>
       <Footer />
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Confirmation</ModalHeader>
+          <ModalBody>{`Are you sure you want to delete '${rowToDelete?.[searchFilterField]}'?`}</ModalBody>
+          <ModalFooter>
+            <Button variant='ghost' onClick={onClose}>
+              Cancel
+            </Button>
+            <Button
+              colorScheme='red'
+              ml={3}
+              onClick={() => {
+                onDelete(rowToDelete)
+                onClose()
+              }}
+            >
+              Confirm
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Flex>
   )
 }
