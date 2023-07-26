@@ -68,17 +68,18 @@ function AdminTable({
   const [currentPage, setCurrentPage] = useState(1)
   const [rowToDelete, setRowToDelete] = useState<any>({})
 
-  const totalPages = Math.ceil(data.length / itemsPerPage)
-
-  const startIndex = (currentPage - 1) * itemsPerPage
-  const endIndex = Math.min(startIndex + itemsPerPage, data.length)
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const filteredData = data
-    .filter((item: any) =>
-      item?.[searchFilterField].toLowerCase().includes(searchWord.toLowerCase()),
-    )
-    .slice(startIndex, endIndex)
+  const filteredData = data.filter((item: any) =>
+    item?.[searchFilterField].toLowerCase().includes(searchWord.toLowerCase()),
+  )
+
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage)
+
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length)
+
+  const currentPageData = filteredData.slice(startIndex, endIndex)
 
   const handleNextPage = () => {
     setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages))
@@ -140,7 +141,7 @@ function AdminTable({
               </Tr>
             </Thead>
             <Tbody>
-              {filteredData.map((item: any, idx: number) => (
+              {currentPageData.map((item: any, idx: number) => (
                 <Tr key={idx}>
                   {renderOrganisationRow(item)}
                   <Td>
