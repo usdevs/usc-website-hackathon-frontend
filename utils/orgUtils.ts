@@ -1,8 +1,8 @@
 import { UseToastOptions } from '@chakra-ui/react'
 
-const ORGANISATION_TOAST_ID = 'organisation-toast'
+const ORGANISATION_TOAST_ID = 'admin-toast'
 
-export const makeSuccessOrgToast = (title: string): UseToastOptions => {
+export const makeSuccessToast = (title: string): UseToastOptions => {
   return {
     id: ORGANISATION_TOAST_ID,
     title: title,
@@ -13,7 +13,7 @@ export const makeSuccessOrgToast = (title: string): UseToastOptions => {
   }
 }
 
-export const makeErrorOrgToast = (title: string, errMsg: string): UseToastOptions => {
+export const makeErrorToast = (title: string, errMsg: string): UseToastOptions => {
   return {
     id: ORGANISATION_TOAST_ID,
     title: title,

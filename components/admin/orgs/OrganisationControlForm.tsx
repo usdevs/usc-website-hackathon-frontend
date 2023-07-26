@@ -1,19 +1,12 @@
 import { Box, useToast, useDisclosure } from '@chakra-ui/react'
-import {
-  getFromUrlArrayAndParseJson,
-  getFromUrlStringAndParseJson,
-  getFromUrlStringAndParseJsonWithAuth,
-  isUserLoggedIn,
-  makeFetchToUrlWithAuth,
-} from '../../../utils'
+import { makeFetchToUrlWithAuth } from '../../../utils'
 import { useUserInfo } from '../../../hooks/useUserInfo'
-import useSWR, { KeyedMutator } from 'swr'
-import useSWRImmutable from 'swr/immutable'
+import { KeyedMutator } from 'swr'
 import { useState } from 'react'
 import OrganisationControlFormPopup from './OrganisationControlFormPopup'
 import defaultValues from './initialValues'
 import validationSchema from './validationSchema'
-import { makeSuccessOrgToast, makeErrorOrgToast } from '../../../utils/orgUtils'
+import { makeSuccessToast, makeErrorToast } from '../../../utils/orgUtils'
 import AdminTable, { AdminTableColumnProps } from '../AdminTable'
 
 type OrganisationControlFormProps = {
@@ -56,7 +49,7 @@ function OrganisationControlForm({
 
     if (responseStatus === 200) {
       toast(
-        makeSuccessOrgToast(
+        makeSuccessToast(
           parsedValues.igHead === -1 ? `Org created successfully!` : `Org edited successfully`,
         ),
       )
@@ -65,7 +58,7 @@ function OrganisationControlForm({
       onClose()
     } else {
       toast(
-        makeErrorOrgToast(
+        makeErrorToast(
           'Oh snap! There was an error when making the org',
           JSON.stringify(responseJson.message),
         ),
@@ -135,12 +128,12 @@ function OrganisationControlForm({
     )
 
     if (responseStatus === 200) {
-      toast(makeSuccessOrgToast('Org deleted successfully'))
+      toast(makeSuccessToast('Org deleted successfully'))
       mutateOrgs()
       mutateUsers()
     } else {
       toast(
-        makeErrorOrgToast(
+        makeErrorToast(
           'Oh snap! There was an error when deleting the org',
           JSON.stringify(responseJson.message),
         ),

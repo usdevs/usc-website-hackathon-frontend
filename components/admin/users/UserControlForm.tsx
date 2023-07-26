@@ -5,7 +5,7 @@ import { useState } from 'react'
 import UserControlFormPopup from './UserControlFormPopup'
 import defaultValues from './initialValues'
 import validationSchema from './validationSchema'
-import { makeSuccessOrgToast, makeErrorOrgToast } from '../../../utils/orgUtils'
+import { makeSuccessToast, makeErrorToast } from '../../../utils/orgUtils'
 import AdminTable, { AdminTableColumnProps } from '../AdminTable'
 import { KeyedMutator } from 'swr'
 
@@ -48,7 +48,7 @@ function UserControlForm({ users, mutateUsers, mutateOrgs }: UserControlFormProp
 
     if (responseStatus === 200) {
       toast(
-        makeSuccessOrgToast(
+        makeSuccessToast(
           values.id === -1 ? `User created successfully!` : `User edited successfully`,
         ),
       )
@@ -57,7 +57,7 @@ function UserControlForm({ users, mutateUsers, mutateOrgs }: UserControlFormProp
       onClose()
     } else {
       toast(
-        makeErrorOrgToast(
+        makeErrorToast(
           'Oh snap! There was an error when making the user',
           JSON.stringify(responseJson.message),
         ),
@@ -94,12 +94,12 @@ function UserControlForm({ users, mutateUsers, mutateOrgs }: UserControlFormProp
     )
 
     if (responseStatus === 200) {
-      toast(makeSuccessOrgToast('User deleted successfully'))
+      toast(makeSuccessToast('User deleted successfully'))
       mutateOrgs()
       mutateUsers()
     } else {
       toast(
-        makeErrorOrgToast(
+        makeErrorToast(
           'Oh snap! There was an error when deleting the user',
           JSON.stringify(responseJson.message),
         ),
