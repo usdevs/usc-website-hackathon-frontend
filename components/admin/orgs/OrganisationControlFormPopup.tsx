@@ -15,7 +15,7 @@ import FormSelect from '../../form/FormSelect'
 import FormTextArea from '../../form/FormTextArea'
 import FormTextField from '../../form/FormTextField'
 import defaultValues from './initialValues'
-import CustomSelect from '../../form/FormMultiSelect'
+import FormMultiSelect from '../../form/FormMultiSelect'
 
 export type SelectProps<T> = {
   value: T
@@ -75,7 +75,7 @@ function OrganisationControlFormPopup({
                       form={form}
                       data={users}
                     />
-                    <CustomSelect
+                    <FormMultiSelect
                       id='otherMembers'
                       name='otherMembers'
                       label='EXCO Members'
