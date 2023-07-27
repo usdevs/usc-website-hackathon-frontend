@@ -1,8 +1,7 @@
 const defaultValues: User = {
   id: -1,
   name: '',
-  telegramUserName: ''
+  telegramUserName: '',
 }
-  
-  export default defaultValues
-  
+
+export default defaultValues

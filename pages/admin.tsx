@@ -14,14 +14,14 @@ import useSWR from 'swr'
 import useSWRImmutable from 'swr/immutable'
 
 const AdminPage: NextPage = () => {
-  const [auth] = useUserInfo()
+  const [authOrNull] = useUserInfo()
   const {
     data: users,
     error: errorUsers,
     isLoading: isLoadingUsers,
     mutate: mutateUsers,
   } = useSWR<User[], string[]>(
-    auth?.token ? [process.env.NEXT_PUBLIC_BACKEND_URL + 'users', auth.token] : null,
+    authOrNull?.token ? [process.env.NEXT_PUBLIC_BACKEND_URL + 'users', authOrNull.token] : null,
     getFromUrlStringAndParseJsonWithAuth,
   )
   const {
@@ -42,7 +42,7 @@ const AdminPage: NextPage = () => {
     getFromUrlStringAndParseJson,
   )
 
-  if (!isUserLoggedIn(auth) || auth === null) {
+  if (!isUserLoggedIn(authOrNull) || authOrNull === null) {
     return <Box>Please log in first!</Box>
   }
 
@@ -91,7 +91,7 @@ const AdminPage: NextPage = () => {
           <UserControlForm users={users} mutateOrgs={mutateOrgs} mutateUsers={mutateUsers} />
         </TabPanel>
         <TabPanel>
-          <CopyTokenButton textToCopy={auth.token} />
+          <CopyTokenButton textToCopy={authOrNull.token} />
         </TabPanel>
       </TabPanels>
     </Tabs>

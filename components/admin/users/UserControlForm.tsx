@@ -1,5 +1,5 @@
 import { useToast, useDisclosure, Box } from '@chakra-ui/react'
-import { makeFetchToUrlWithAuth } from '../../../utils'
+import { makeFetchToUrlWithAuth, throwsErrorIfNullOrUndefined } from '../../../utils'
 import { useUserInfo } from '../../../hooks/useUserInfo'
 import { useState } from 'react'
 import UserControlFormPopup from './UserControlFormPopup'
@@ -17,14 +17,10 @@ type UserControlFormProps = {
 
 function UserControlForm({ users, mutateUsers, mutateOrgs }: UserControlFormProps) {
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const [auth] = useUserInfo()
+  const [authOrNull] = useUserInfo()
+  const auth = throwsErrorIfNullOrUndefined(authOrNull)
   const toast = useToast()
   const [initialValues, setInitialValues] = useState<User>(defaultValues)
-
-  if (auth === null) {
-    // should not occur as already checked in parent component
-    return <Box>Authentication Error</Box>
-  }
 
   const onSubmit = async (
     values: User,
