@@ -8,17 +8,18 @@ import {
   VStack,
   Button,
 } from '@chakra-ui/react'
-import { Formik, Form } from 'formik'
+import { Formik, Form, Field } from 'formik'
 import React from 'react'
 import FormCheckbox from '../../form/FormCheckbox'
 import FormSelect from '../../form/FormSelect'
 import FormTextArea from '../../form/FormTextArea'
 import FormTextField from '../../form/FormTextField'
 import defaultValues from './initialValues'
+import CustomSelect from '../../form/FormMultiSelect'
 
 export type SelectProps<T> = {
   value: T
-  description: string
+  label: string
 }
 
 type ModalProps = {
@@ -73,6 +74,15 @@ function OrganisationControlFormPopup({
                       field={form.getFieldProps<number>('igHead')}
                       form={form}
                       data={users}
+                    />
+                    <CustomSelect
+                      id='otherMembers'
+                      name='otherMembers'
+                      label='EXCO Members'
+                      field={form.getFieldProps<number[]>('otherMembers')}
+                      form={form}
+                      options={users}
+                      placeholder='Select a member...'
                     />
                     <FormSelect
                       id='category'
