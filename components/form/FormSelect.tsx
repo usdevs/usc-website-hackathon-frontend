@@ -28,7 +28,6 @@ const FormSelect = <T extends number | string>({
 }: FormSelectProps<T>) => {
   const error = errors[name]
   const showError = touched[name] && !!error
-  console.log(data, 'SELECT DATA')
 
   return (
     <FormControl isInvalid={showError}>
@@ -36,7 +35,7 @@ const FormSelect = <T extends number | string>({
       <Select id={id} {...field}>
         {data.map((item: SelectProps<T>, i: number) => (
           <option key={i} value={item.value}>
-            {item.description}
+            {item.label}
           </option>
         ))}
       </Select>

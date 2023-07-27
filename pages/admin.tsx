@@ -66,7 +66,7 @@ const AdminPage: NextPage = () => {
   const categories = Object.keys(categoryTemp).map((category: any) => {
     return {
       value: category,
-      description: category,
+      label: category,
     }
   })
 

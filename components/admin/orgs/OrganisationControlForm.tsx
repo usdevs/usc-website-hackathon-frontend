@@ -67,7 +67,7 @@ function OrganisationControlForm({
   const mappedUsers = users.map((user: User) => {
     return {
       value: user.id,
-      description: user.telegramUserName,
+      label: user.telegramUserName,
     }
   })
 
@@ -78,7 +78,6 @@ function OrganisationControlForm({
 
   const convertToOrganisationForm = (org: OrganisationWithIGHead): OrganisationForm => {
     const igHead = org.userOrg.filter((org) => org.isIGHead)[0].user.id
-    console.log(igHead, 'igHead')
     const otherMembers = org.userOrg.filter((org) => !org.isIGHead).map((org) => org.user.id)
     return { ...org, igHead, otherMembers }
   }
