@@ -46,6 +46,7 @@ export const FormMultiSelect = <T extends number[]>({
         onChange={onChange}
         placeholder={placeholder}
         options={options}
+        closeMenuOnSelect={false}
         isMulti={true}
       />
     </FormControl>
