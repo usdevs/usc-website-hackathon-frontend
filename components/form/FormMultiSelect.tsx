@@ -25,9 +25,6 @@ export const FormMultiSelect = <T extends number[]>({
   placeholder,
   form,
 }: CustomMultiSelectProps<T>) => {
-  const error = String(form.errors[name as keyof OrganisationForm])
-  const showError = form.touched[name as keyof OrganisationForm] && !!error
-
   const onChange = (options: MultiValue<SelectProps<number>>) => {
     form.setFieldValue(
       name,
@@ -40,7 +37,7 @@ export const FormMultiSelect = <T extends number[]>({
   }
 
   return (
-    <FormControl isInvalid={showError}>
+    <FormControl>
       <FormLabel htmlFor={id}>{label}</FormLabel>
       <Select
         id={id}
@@ -51,9 +48,8 @@ export const FormMultiSelect = <T extends number[]>({
         options={options}
         isMulti={true}
       />
-      {showError && <FormErrorMessage>{error}</FormErrorMessage>}
     </FormControl>
   )
 }
 
-export default React.memo(FormMultiSelect, (prev, next) => prev.field.value === next.field.value)
+export default React.memo(FormMultiSelect)

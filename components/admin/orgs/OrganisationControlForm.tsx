@@ -10,9 +10,9 @@ import { makeSuccessToast, makeErrorToast } from '../../../utils/orgUtils'
 import AdminTable, { AdminTableColumnProps } from '../AdminTable'
 
 type OrganisationControlFormProps = {
-  users: any[]
+  users: any[] // to fix typing
   orgs: OrganisationWithIGHead[]
-  categories: any
+  categories: any[] // to fix type on backend
   mutateUsers: KeyedMutator<User[]>
   mutateOrgs: KeyedMutator<OrganisationWithIGHead[]>
 }
@@ -45,6 +45,7 @@ function OrganisationControlForm({
     values: OrganisationForm,
     { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void },
   ) => {
+    console.log('submitting', values)
     // need to parse igHead to number type as HTML option by default will parse the field as string
     const parsedValues = { ...values, igHead: Number(values.igHead) }
     const { responseJson, responseStatus } = await makeFetchToUrlWithAuth(

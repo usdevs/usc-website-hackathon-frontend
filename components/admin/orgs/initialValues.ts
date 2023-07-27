@@ -1,13 +1,13 @@
 const defaultValues: OrganisationForm = {
   id: -1,
-  name: '',
-  description: '',
-  inviteLink: '',
+  name: "",
+  description: "",
+  inviteLink: "",
   // photoUpload: null,
   isAdminOrg: false,
   isInvisible: false,
   isInactive: false,
-  category: 'Sports',
+  category: "",
   igHead: -1,
   otherMembers: [],
 }

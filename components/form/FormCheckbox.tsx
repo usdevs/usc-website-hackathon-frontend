@@ -36,4 +36,4 @@ const FormCheckbox: React.FC<FormCheckboxProps> = ({
   )
 }
 
-export default React.memo(FormCheckbox, (prev, next) => prev.field.value === next.field.value)
+export default React.memo(FormCheckbox)
