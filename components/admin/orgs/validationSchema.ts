@@ -1,19 +1,19 @@
-import * as Yup from 'yup';
-import defaultValues from './initialValues';
+import * as Yup from 'yup'
+import defaultValues from './initialValues'
 
 // Custom validation method for checking empty IG Head
 
 function isNotDefaultNumber(value: number | undefined) {
-  return value !== defaultValues.igHead;
+  return value !== defaultValues.igHead
 }
 
-Yup.addMethod(Yup.number, 'requireValidNumber', function(message: string) {
+Yup.addMethod(Yup.number, 'requireValidNumber', function (message: string) {
   return this.test('requireValidNumber', message, isNotDefaultNumber)
-});
+})
 
 declare module 'yup' {
   interface NumberSchema {
-    requireValidNumber(message: string): NumberSchema<number>;
+    requireValidNumber(message: string): NumberSchema<number>
   }
 }
 
@@ -27,7 +27,7 @@ const validationSchema = Yup.object().shape({
   isInvisible: Yup.bool().required(),
   isInactive: Yup.bool().required(),
   category: Yup.string().required('Category cannot be empty'),
-  otherMembers: Yup.array()
-});
+  otherMembers: Yup.array(),
+})
 
-export default validationSchema;
+export default validationSchema
