@@ -34,6 +34,13 @@ function OrganisationControlForm({
     return <Box>Authentication Error</Box>
   }
 
+  const mappedCategories = categories.map((category: any) => {
+    return {
+      value: category,
+      label: category,
+    }
+  })
+
   const onSubmit = async (
     values: OrganisationForm,
     { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void },
@@ -166,7 +173,7 @@ function OrganisationControlForm({
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={onSubmit}
-        categories={categories}
+        categories={mappedCategories}
         users={mappedUsers}
       />
     </>
