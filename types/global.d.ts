@@ -47,7 +47,6 @@ declare global {
     end: string
     bookedAt: string
     eventName: string
-    bookedByUser: User
     bookedBy: UserOnOrg
   }
 

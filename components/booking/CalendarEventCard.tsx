@@ -72,7 +72,7 @@ const CalendarEventCard: FC<CalendarEventCardProps> = ({ x, y, booking, onDelete
             <HStack>
               <Icon as={FaRegUser} />
               <Text as='span' fontSize='sm'>
-                {booking.bookedByUser.name}
+                {booking.bookedBy.user.name}
               </Text>
             </HStack>
             <HStack>
