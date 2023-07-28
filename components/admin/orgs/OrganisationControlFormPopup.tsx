@@ -15,7 +15,7 @@ import FormSelect from '../../form/FormSelect'
 import FormTextArea from '../../form/FormTextArea'
 import FormTextField from '../../form/FormTextField'
 import defaultValues from './initialValues'
-import CustomSelect from '../../form/FormMultiSelect'
+import FormMultiSelect from '../../form/FormMultiSelect'
 
 export type SelectProps<T> = {
   value: T
@@ -68,14 +68,26 @@ function OrganisationControlFormPopup({
                       form={form}
                     />
                     <FormSelect
+                      id='category'
+                      name='category'
+                      label='Category'
+                      defaultValue={defaultValues['category']}
+                      placeholder='Select a category...'
+                      field={form.getFieldProps('category')}
+                      form={form}
+                      data={categories}
+                    />
+                    <FormSelect
                       id='igHead'
                       name='igHead'
                       label='Head'
+                      defaultValue={defaultValues['igHead']}
+                      placeholder='Select an IG head...'
                       field={form.getFieldProps<number>('igHead')}
                       form={form}
                       data={users}
                     />
-                    <CustomSelect
+                    <FormMultiSelect
                       id='otherMembers'
                       name='otherMembers'
                       label='EXCO Members'
@@ -83,14 +95,6 @@ function OrganisationControlFormPopup({
                       form={form}
                       options={users}
                       placeholder='Select a member...'
-                    />
-                    <FormSelect
-                      id='category'
-                      name='category'
-                      label='Category'
-                      field={form.getFieldProps('category')}
-                      form={form}
-                      data={categories}
                     />
                     <FormTextArea
                       id='description'

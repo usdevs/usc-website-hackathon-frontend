@@ -10,9 +10,9 @@ import { makeSuccessToast, makeErrorToast } from '../../../utils/orgUtils'
 import AdminTable, { AdminTableColumnProps } from '../AdminTable'
 
 type OrganisationControlFormProps = {
-  users: any[]
+  users: any[] // to fix typing
   orgs: OrganisationWithIGHead[]
-  categories: any
+  categories: any[] // to fix type on backend
   mutateUsers: KeyedMutator<User[]>
   mutateOrgs: KeyedMutator<OrganisationWithIGHead[]>
 }
@@ -29,6 +29,13 @@ function OrganisationControlForm({
   const auth = throwsErrorIfNullOrUndefined(authOrNull)
   const toast = useToast()
   const [initialValues, setInitialValues] = useState<OrganisationForm>(defaultValues)
+
+  const mappedCategories = categories.map((category: any) => {
+    return {
+      value: category,
+      label: category,
+    }
+  })
 
   const onSubmit = async (
     values: OrganisationForm,
@@ -162,7 +169,7 @@ function OrganisationControlForm({
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={onSubmit}
-        categories={categories}
+        categories={mappedCategories}
         users={mappedUsers}
       />
     </>

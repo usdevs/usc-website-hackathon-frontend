@@ -2,6 +2,7 @@ import React from 'react'
 import Select, { MultiValue } from 'react-select'
 import { SelectProps } from '../admin/orgs/OrganisationControlFormPopup'
 import { FormControl, FormLabel, FormErrorMessage } from '@chakra-ui/react'
+import { FieldInputProps, FormikProps } from 'formik'
 
 // Adapted from https://codesandbox.io/s/formik-react-select-multi-typescript-qsrj2?file=/src/CustomSelect.tsx
 
@@ -9,8 +10,8 @@ interface CustomMultiSelectProps<FieldValue> {
   id: string
   name: string
   label: string
-  field: any
-  form: any
+  field: FieldInputProps<number[]>
+  form: FormikProps<OrganisationForm>
   options: SelectProps<number>[]
   placeholder?: string
 }
@@ -24,9 +25,6 @@ export const FormMultiSelect = <T extends number[]>({
   placeholder,
   form,
 }: CustomMultiSelectProps<T>) => {
-  const error = String(form.errors[name])
-  const showError = form.touched[name] && !!error
-
   const onChange = (options: MultiValue<SelectProps<number>>) => {
     form.setFieldValue(
       name,
@@ -39,7 +37,7 @@ export const FormMultiSelect = <T extends number[]>({
   }
 
   return (
-    <FormControl isInvalid={showError}>
+    <FormControl>
       <FormLabel htmlFor={id}>{label}</FormLabel>
       <Select
         id={id}
@@ -48,11 +46,11 @@ export const FormMultiSelect = <T extends number[]>({
         onChange={onChange}
         placeholder={placeholder}
         options={options}
+        closeMenuOnSelect={false}
         isMulti={true}
       />
-      {showError && <FormErrorMessage>{error}</FormErrorMessage>}
     </FormControl>
   )
 }
 
-export default React.memo(FormMultiSelect, (prev, next) => prev.field.value === next.field.value)
+export default React.memo(FormMultiSelect)

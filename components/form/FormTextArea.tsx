@@ -35,4 +35,4 @@ const FormTextArea: React.FC<FormTextAreaProps> = ({
   )
 }
 
-export default React.memo(FormTextArea, (prev, next) => prev.field.value === next.field.value)
+export default React.memo(FormTextArea)

@@ -37,4 +37,4 @@ const FormTextField: React.FC<FormTextFieldProps> = ({
   )
 }
 
-export default React.memo(FormTextField, (prev, next) => prev.field.value === next.field.value)
+export default React.memo(FormTextField)

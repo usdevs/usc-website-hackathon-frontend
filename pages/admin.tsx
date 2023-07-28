@@ -63,12 +63,7 @@ const AdminPage: NextPage = () => {
 
   const categoryTemp: any = allOrgCategories // parse due to typing issue in backend
 
-  const categories = Object.keys(categoryTemp).map((category: any) => {
-    return {
-      value: category,
-      label: category,
-    }
-  })
+  const categories = Object.keys(categoryTemp)
 
   return (
     <Tabs align='center' size='lg'>
