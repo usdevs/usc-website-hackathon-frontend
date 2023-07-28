@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import { Box, Button, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react'
+import { Box, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react'
 import {
   getFromUrlArrayAndParseJson,
   getFromUrlStringAndParseJson,

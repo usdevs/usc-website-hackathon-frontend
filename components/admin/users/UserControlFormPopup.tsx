@@ -12,11 +12,6 @@ import { Formik, Form } from 'formik'
 import FormTextField from '../../form/FormTextField'
 import defaultValues from './initialValues'
 
-export type SelectProps<T> = {
-  value: T
-  description: string
-}
-
 type ModalProps = {
   isOpen: boolean
   onClose: any
