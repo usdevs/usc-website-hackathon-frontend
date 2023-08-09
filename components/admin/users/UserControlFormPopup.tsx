@@ -60,6 +60,7 @@ function UserControlFormPopup({
                       label='Telegram Username'
                       field={form.getFieldProps('telegramUserName')}
                       form={form}
+                      inputLeftElementText={'@'}
                     />
                     <Button type='submit' colorScheme='teal' mt={4} isLoading={form.isSubmitting}>
                       Submit

@@ -63,7 +63,7 @@ const Auth: React.FC = () => {
         await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'login', body)
           .then(async (response) => {
             if (response.status !== 200) {
-              throw new Error(await response.text() ?? 'Unable to fetch login data from backend')
+              throw new Error((await response.text()) ?? 'Unable to fetch login data from backend')
             }
             return response.json()
           })

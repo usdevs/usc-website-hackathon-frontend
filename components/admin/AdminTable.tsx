@@ -185,7 +185,7 @@ function AdminTable({
             Previous Page
           </Button>
           <Heading as='h5' size='sm'>
-            Page {currentPage} of {totalPages}
+            Page {totalPages > 0 ? currentPage : 0} of {totalPages}
           </Heading>
           <Button
             _hover={{
@@ -205,7 +205,7 @@ function AdminTable({
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Confirmation</ModalHeader>
-          <ModalBody>{`Are you sure you want to delete '${rowToDelete?.[searchFilterField]}'?`}</ModalBody>
+          <ModalBody>{`Are you sure you want to delete '${rowToDelete?.[searchFilterField]}'? This will delete all associated bookings as well.`}</ModalBody>
           <ModalFooter>
             <Button variant='ghost' onClick={onClose}>
               Cancel

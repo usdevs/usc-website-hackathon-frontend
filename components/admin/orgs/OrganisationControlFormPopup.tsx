@@ -90,7 +90,7 @@ function OrganisationControlFormPopup({
                     <FormMultiSelect
                       id='otherMembers'
                       name='otherMembers'
-                      label='EXCO Members'
+                      label='Other ExCo Members'
                       field={form.getFieldProps<number[]>('otherMembers')}
                       form={form}
                       options={users}

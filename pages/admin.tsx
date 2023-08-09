@@ -43,7 +43,11 @@ const AdminPage: NextPage = () => {
   )
 
   if (!isUserLoggedIn(authOrNull) || authOrNull === null) {
-    return <Box>Please log in first!</Box>
+    return (
+      <Box>
+        Please log in first! An admin user is one who is a part of a NUSC admin organisation.
+      </Box>
+    )
   }
 
   if (
