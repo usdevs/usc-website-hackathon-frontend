@@ -1,0 +1,63 @@
+alerts:
+  - rule: DEPLOYMENT_FAILED
+  - rule: DOMAIN_FAILED
+domains:
+  - domain: api.nusc.club
+    type: PRIMARY
+    zone: nusc.club
+ingress:
+  rules:
+    - component:
+        name: uscwebsite-hackathon-backend
+      match:
+        path:
+          prefix: /
+name: sea-lion-app
+region: sgp
+services:
+  - alerts:
+      - operator: GREATER_THAN
+        rule: MEM_UTILIZATION
+        value: 70
+        window: FIVE_MINUTES
+      - operator: GREATER_THAN
+        rule: RESTART_COUNT
+        value: 1
+        window: FIVE_MINUTES
+    build_command: npm run build
+    environment_slug: node-js
+    envs:
+      - key: DURATION_PER_SLOT
+        scope: RUN_AND_BUILD_TIME
+        value: '30'
+      - key: MAX_SLOTS_PER_BOOKING
+        scope: RUN_AND_BUILD_TIME
+        value: '4'
+      - key: MIN_SLOTS_PER_BOOKING
+        scope: RUN_AND_BUILD_TIME
+        value: '1'
+      - key: MIN_SLOTS_BETWEEN_BOOKINGS
+        scope: RUN_AND_BUILD_TIME
+        value: '1'
+      - key: DATABASE_URL
+        scope: RUN_AND_BUILD_TIME
+        value: __GET_THIS_VALUE_FROM_THE_ENV_FILE__
+      - key: PORT
+        scope: RUN_AND_BUILD_TIME
+        value: '3000'
+      - key: EXCEL_SEED_FILEPATH
+        scope: RUN_AND_BUILD_TIME
+        value: IG_Database.xlsx
+      - key: BOT_TOKEN
+        scope: RUN_AND_BUILD_TIME
+        value: __GET_THIS_VALUE_FROM_THE_ENV_FILE__
+    github:
+      branch: updates-from-frontend
+      deploy_on_push: true
+      repo: usdevs/uscwebsite-hackathon-backend
+    http_port: 3000
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    name: uscwebsite-hackathon-backend
+    run_command: npm start
+    source_dir: /

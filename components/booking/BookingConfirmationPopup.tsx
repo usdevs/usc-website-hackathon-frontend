@@ -17,17 +17,19 @@ import {
 } from '@chakra-ui/react'
 import format from 'date-fns/format'
 import {
-  throwsErrorIfNullOrUndefined,
   isUserLoggedIn,
   getOrgFromId,
   getVenueFromId,
-  fetchFromUrlStringAndParseJson,
+  getFromUrlStringAndParseJson,
+  makeFetchToUrlWithAuth,
 } from '../../utils'
 import { useCurrentHalfHourTime } from '../../hooks/useCurrentHalfHourTime'
-import { useUserInfo } from '../../hooks/useUserInfo'
+import { useUserInfoNonNull } from '../../hooks/useUserInfo'
 import useSWRImmutable from 'swr/immutable'
 import { useAllVenues } from '../../hooks/useAllVenues'
 import { KeyedMutator } from 'swr'
+
+const MAX_SLOTS_PER_BOOKING = 4
 
 type BookingConfirmationPopupProps = {
   onClose: () => void
@@ -38,6 +40,7 @@ type BookingConfirmationPopupProps = {
 }
 
 const BOOKING_TOAST_ID = 'booking-toast'
+const DURATION_PER_SLOT = 30
 
 const makeSuccessBookingToast = (): UseToastOptions => {
   return {
@@ -87,16 +90,15 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
     isLoading: isLoadingOrgs,
   } = useSWRImmutable<Organisation[], string>(
     process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs',
-    fetchFromUrlStringAndParseJson,
+    getFromUrlStringAndParseJson,
   )
   const [allVenues, isLoadingVenues] = useAllVenues()
   const toast = useToast()
   const currentRoundedHalfHourTime = useCurrentHalfHourTime()
-  const [authOrNull] = useUserInfo()
-  const auth: AuthState = throwsErrorIfNullOrUndefined(authOrNull)
+  const [auth] = useUserInfoNonNull()
   const [bookingData, setBookingData] = useState<BookingDataForm>({
     eventName: '',
-    orgId: auth ? auth.orgIds[0] : -1,
+    orgId: auth.orgIds[0],
   })
 
   // todo do better than querying all orgs just to match bookings here <-- search orgs in DB by orgId with GraphQL
@@ -112,26 +114,22 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
     }
 
     setIsSubmitting(true)
-    const token = auth.token
-    const requestOptions = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
-      },
-      body: JSON.stringify({ ...bookingData, ...bookingDataFromSelection }),
-    }
-    const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings', requestOptions)
-    const newBooking = await response.json()
 
-    if (response.status === 200) {
+    const { responseJson, responseStatus } = await makeFetchToUrlWithAuth(
+      process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings',
+      auth.token,
+      'POST',
+      JSON.stringify({ ...bookingData, ...bookingDataFromSelection }),
+    )
+
+    if (responseStatus === 200) {
       toast(makeSuccessBookingToast())
       await mutate(undefined)
       onClose()
-    } else if (response.status === 400) {
-      toast(makeInvalidBookingToast(JSON.stringify(newBooking.message)))
+    } else if (responseStatus === 400) {
+      toast(makeInvalidBookingToast(JSON.stringify(responseJson.message)))
     } else {
-      toast(makeErrorBookingToast(JSON.stringify(newBooking.message)))
+      toast(makeErrorBookingToast(JSON.stringify(responseJson.message)))
     }
 
     setIsSubmitting(false)
@@ -157,6 +155,19 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
     isLoadingOrgs ||
     isLoadingVenues
   ) {
+    return <></>
+  }
+
+  if (
+    !auth.isAdminUser &&
+    bookingDataFromSelection.end.getTime() - bookingDataFromSelection.start.getTime() >
+      DURATION_PER_SLOT * MAX_SLOTS_PER_BOOKING * 1000 * 60
+  ) {
+    toast(
+      makeInvalidBookingToast(
+        JSON.stringify('Booking duration is too long, please change your booking request'),
+      ),
+    )
     return <></>
   }
 

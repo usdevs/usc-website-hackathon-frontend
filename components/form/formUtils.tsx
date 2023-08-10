@@ -1,5 +1,4 @@
 import { FieldProps, getIn } from 'formik'
-import _ from 'lodash'
 
 /**
  * Determines whether the form component should re-render.

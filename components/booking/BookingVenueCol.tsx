@@ -186,7 +186,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
   const [mouseIsDown, setMouse] = useBoolean()
   const [smallerSelected, setSmallerSelected] = useState(INITIAL_FIRST_SELECTED_INDEX)
   const [largerSelected, setLargerSelected] = useState(INITIAL_LAST_SELECTED_INDEX)
-  const [auth] = useUserInfo()
+  const [authOrNull] = useUserInfo()
   const [rootFontSize] = useBookingCellStyles()
   const currentRoundedHalfHourTime = useCurrentHalfHourTime()
 
@@ -262,7 +262,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
             }
           }
         },
-        isUserLoggedIn: isUserLoggedIn(auth),
+        isUserLoggedIn: isUserLoggedIn(authOrNull),
         rootFontSize: rootFontSize ?? 16,
         venueBooking,
         orgColour: venueBooking ? orgIdsToColoursMap[venueBooking.orgId] : 'brand.secondary',
@@ -317,7 +317,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
             booking={booking}
             openBookingCard={openBookingCard}
             orgIdsToColoursMap={orgIdsToColoursMap}
-            auth={auth}
+            auth={authOrNull}
           />
         ))}
         {getMappedVenueCells()}

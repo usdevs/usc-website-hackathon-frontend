@@ -23,6 +23,11 @@ declare global {
     isInvisible: boolean
   }
 
+  type OrganisationForm = Omit<Organisation, 'slug'> & {
+    igHead: number
+    otherMembers: number[]
+  }
+
   type UserOnOrg = {
     user: User
     isIGHead: boolean
@@ -42,7 +47,6 @@ declare global {
     end: string
     bookedAt: string
     eventName: string
-    bookedByUser: User
     bookedBy: UserOnOrg
   }
 
@@ -52,13 +56,13 @@ declare global {
   }
 
   interface BookingDataSelection {
-    start: Date | null
-    end: Date | null
+    start: Date
+    end: Date
     venueId: number
   }
 
   interface TelegramUser {
-    id: number
+    id: string
     first_name: string
     username: string
     photo_url: string
@@ -68,7 +72,7 @@ declare global {
 
   interface UserInformation {
     firstName: string
-    telegramId: number
+    telegramId: string
     photoUrl: string
     username: string
   }
@@ -78,6 +82,7 @@ declare global {
     orgIds: Array<number>
     userInfo: UserInformation | null
     userId: number
+    isAdminUser: boolean
   }
 
   interface BookingDataForm {
@@ -89,6 +94,7 @@ declare global {
     id: number
     name: string
     telegramUserName: string
+    telegramId?: string
   }
 
   interface ToggleProps {
@@ -99,12 +105,6 @@ declare global {
   export interface ObjectWithSetupTime {
     setupTime: Date
   }
-
-  export type FetcherFn = <T extends ObjectWithSetupTime>(
-    url: URL,
-    key: string,
-    defaultValue: T | null,
-  ) => (url: URL) => Promise<T | null>
 
   export interface StringToStringJSObject {
     [index: string]: string

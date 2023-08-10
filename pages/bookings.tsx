@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useEffect, useRef, useState } from 'react'
+import { FC, MouseEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion'
 import {
   Button,
@@ -26,8 +26,10 @@ import Toggle from '../components/booking/Toggle'
 import CalendarEventCard from '../components/booking/CalendarEventCard'
 import {
   ALL_VENUES_KEYWORD,
-  fetchFromUrlArrayAndParseJson,
+  getFromUrlArrayAndParseJson,
+  getVenueFromId,
   isUserLoggedIn,
+  makeFetchToUrlWithAuth,
   throwsErrorIfNullOrUndefined,
   useBookingCellStyles,
 } from '../utils'
@@ -74,8 +76,8 @@ const BookingSelector: FC = () => {
   const [allVenues, isLoadingVenues] = useAllVenues()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [bookingDataFromSelection, setBookingDataFromSelection] = useState<BookingDataSelection>({
-    start: null,
-    end: null,
+    start: new Date(),
+    end: new Date(),
     venueId: -1,
   })
   const currentRoundedHalfHourTime = useCurrentHalfHourTime()
@@ -83,7 +85,7 @@ const BookingSelector: FC = () => {
   const [userSelectedMonth, setUserSelectedMonth] = useState<Date>(
     getOnlyMonthAndYearFromDate(userSelectedDate),
   )
-  const [auth] = useUserInfo()
+  const [authOrNull] = useUserInfo()
   const {
     data: allBookingsInMonthBackend,
     error,
@@ -97,7 +99,7 @@ const BookingSelector: FC = () => {
       '&end=',
       addDays(userSelectedMonth, 31).toISOString(),
     ],
-    fetchFromUrlArrayAndParseJson,
+    getFromUrlArrayAndParseJson,
   )
   const toast = useToast()
   const toast_id = 'auth-toast'
@@ -186,7 +188,10 @@ const BookingSelector: FC = () => {
   })
   // Filter bookings to only show bookings for the current day and the current venue
   allBookingsInMonth.reduce(function (memo, x) {
-    throwsErrorIfNullOrUndefined(memo.find((y) => y.venueId === x.venueId)).bookings.push(x)
+    throwsErrorIfNullOrUndefined(
+      memo.find((y) => y.venueId === x.venueId),
+      'Unable to match existing venues in' + ' database with venue of booking',
+    ).bookings.push(x)
     return memo
   }, bookingsSortedByVenue)
 
@@ -195,7 +200,7 @@ const BookingSelector: FC = () => {
   }
 
   const onModalOpen = () => {
-    if (!isUserLoggedIn(auth)) {
+    if (!isUserLoggedIn(authOrNull)) {
       if (!toast.isActive(toast_id)) {
         toast({
           id: toast_id,
@@ -254,16 +259,14 @@ const BookingSelector: FC = () => {
   const handleDeleteBooking = async (bookingId: number) => {
     setIsDeleting.on()
 
-    const { token } = throwsErrorIfNullOrUndefined(auth)
-    const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings/' + bookingId, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
-      },
-    })
-    const deletedBooking = await response.json()
-    if (response.status === 200) {
+    const { token } = throwsErrorIfNullOrUndefined(authOrNull)
+    const { responseJson, responseStatus } = await makeFetchToUrlWithAuth(
+      process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings/' + bookingId,
+      token,
+      'DELETE',
+    )
+
+    if (responseStatus === 200) {
       toast({
         id: toast_id,
         title: 'Booking deleted successfully',
@@ -277,7 +280,7 @@ const BookingSelector: FC = () => {
     } else {
       toast({
         id: toast_id,
-        title: deletedBooking.message,
+        title: responseJson.message,
         position: 'top',
         duration: 3000,
         status: 'error',
@@ -289,9 +292,9 @@ const BookingSelector: FC = () => {
 
   const intervalRef = useRef<number>(-1)
 
-  const isDataFetching = () => {
+  const isDataFetching = useCallback(() => {
     return isLoadingVenues || isLoadingBookings
-  }
+  }, [isLoadingBookings, isLoadingVenues])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -299,7 +302,6 @@ const BookingSelector: FC = () => {
         return
       }
       intervalRef.current = window.scrollY
-      // setScrollPosition(position);
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
@@ -347,7 +349,7 @@ const BookingSelector: FC = () => {
           />
         )}
       </AnimatePresence>
-      {auth ? (
+      {authOrNull ? (
         <BookingConfirmationPopup
           isOpen={isOpen}
           onClose={onModalClose}
@@ -365,8 +367,7 @@ const BookingSelector: FC = () => {
               <MenuButton as={Button} colorScheme='blue' rightIcon={<ChevronDownIcon />} w='200px'>
                 {venueIdToFilterBy === 0
                   ? 'Venue'
-                  : throwsErrorIfNullOrUndefined(allVenues.find((v) => venueIdToFilterBy === v.id))
-                      .name}
+                  : getVenueFromId(allVenues, venueIdToFilterBy).name}
               </MenuButton>
               <MenuList>
                 <MenuOptionGroup defaultValue={ALL_VENUES_KEYWORD.name} type='radio'>
