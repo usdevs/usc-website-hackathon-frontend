@@ -5,6 +5,10 @@ FROM base AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat
 
+ARG NEXT_PUBLIC_BACKEND_URL
+ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
+RUN echo $NEXT_PUBLIC_BACKEND_URL
+
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
@@ -25,8 +29,6 @@ COPY . .
 # This will do the trick, use the corresponding env file for each environment.
 # if you need to copy only .env and .env.production and skip other .env files, you can use the glob pattern .env*(.production)
 #COPY .env .env
-ARG NEXT_PUBLIC_BACKEND_URL
-ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
 
 # Build Next.js based on the preferred package manager
 RUN \
