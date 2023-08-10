@@ -24,7 +24,7 @@ export type SelectProps<T> = {
 
 type ModalProps = {
   isOpen: boolean
-  onClose: any
+  onClose: () => void
   initialValues: OrganisationForm
   validationSchema: any
   onSubmit: any

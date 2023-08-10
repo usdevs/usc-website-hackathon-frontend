@@ -12,6 +12,7 @@ import UserControlForm from '../components/admin/users/UserControlForm'
 import CopyTokenButton from '../components/admin/CopyTokenButton'
 import useSWR from 'swr'
 import useSWRImmutable from 'swr/immutable'
+import { makeCategoriesPrettier } from '../utils/orgUtils'
 
 const AdminPage: NextPage = () => {
   const [authOrNull] = useUserInfo()
@@ -65,8 +66,6 @@ const AdminPage: NextPage = () => {
     throw new Error("Could not fetch organisations' data from the backend")
   }
 
-  const categories = Object.keys(allOrgCategories)
-
   return (
     <Tabs align='center' size='lg'>
       <TabList>
@@ -78,7 +77,7 @@ const AdminPage: NextPage = () => {
         <TabPanel>
           <OrganisationControlForm
             orgs={orgs}
-            categories={categories}
+            categories={makeCategoriesPrettier(allOrgCategories)}
             users={users}
             mutateOrgs={mutateOrgs}
             mutateUsers={mutateUsers}

@@ -44,7 +44,7 @@ type AdminTableProps = {
   headerText: string
   addButtonText: string
   searchFieldText: string
-  data: any[] | undefined
+  data: any[]
   onAdd: () => void
   onEdit: (rowData: any) => void
   onDelete: (rowData: any) => void

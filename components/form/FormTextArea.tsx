@@ -1,18 +1,12 @@
 import React from 'react'
-import { FormControl, FormLabel, Input, FormErrorMessage, Textarea } from '@chakra-ui/react'
+import { FormControl, FormLabel, FormErrorMessage, Textarea } from '@chakra-ui/react'
+import { BaseFromProps } from '../../types/form'
 
-interface FormTextAreaProps {
-  id: string
-  name: string
-  label: string
+interface FormTextAreaProps extends BaseFromProps {
   field: {
     value: any
     onChange: React.ChangeEventHandler<HTMLTextAreaElement>
     onBlur: React.FocusEventHandler<HTMLTextAreaElement>
-  }
-  form: {
-    errors: { [key: string]: string | string[] }
-    touched: { [key: string]: boolean }
   }
 }
 

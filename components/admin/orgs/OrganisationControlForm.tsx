@@ -1,18 +1,18 @@
 import { useToast, useDisclosure } from '@chakra-ui/react'
-import { makeFetchToUrlWithAuth, throwsErrorIfNullOrUndefined } from '../../../utils'
-import { useUserInfo } from '../../../hooks/useUserInfo'
+import { makeFetchToUrlWithAuth } from '../../../utils'
+import { useUserInfoNonNull } from '../../../hooks/useUserInfo'
 import { KeyedMutator } from 'swr'
 import { useState } from 'react'
 import OrganisationControlFormPopup from './OrganisationControlFormPopup'
 import defaultValues from './initialValues'
 import validationSchema from './validationSchema'
-import { makeSuccessToast, makeErrorToast } from '../../../utils/orgUtils'
+import { makeSuccessToast, makeErrorToast, prettifyCategoriesInOrg } from '../../../utils/orgUtils'
 import AdminTable, { AdminTableColumnProps } from '../AdminTable'
 
 type OrganisationControlFormProps = {
-  users: any[] // to fix typing
+  users: User[]
   orgs: OrganisationWithIGHead[]
-  categories: any[] // to fix type on backend
+  categories: { [key: string]: string }
   mutateUsers: KeyedMutator<User[]>
   mutateOrgs: KeyedMutator<OrganisationWithIGHead[]>
 }
@@ -25,17 +25,17 @@ function OrganisationControlForm({
   mutateUsers,
 }: OrganisationControlFormProps) {
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const [authOrNull] = useUserInfo()
-  const auth = throwsErrorIfNullOrUndefined(authOrNull)
+  const [auth] = useUserInfoNonNull()
   const toast = useToast()
   const [initialValues, setInitialValues] = useState<OrganisationForm>(defaultValues)
 
-  const mappedCategories = categories.map((category: any) => {
-    return {
-      value: category,
-      label: category,
-    }
-  })
+  const mappedCategories = []
+  for (const [key, value] of Object.entries(categories)) {
+    mappedCategories.push({
+      value: key,
+      label: value,
+    })
+  }
 
   const onSubmit = async (
     values: OrganisationForm,
@@ -84,7 +84,11 @@ function OrganisationControlForm({
   }
 
   const convertToOrganisationForm = (org: OrganisationWithIGHead): OrganisationForm => {
-    const igHead = org.userOrg.filter((org) => org.isIGHead)[0].user.id
+    const possibleIgHead = org.userOrg.filter((org) => org.isIGHead)
+    if (possibleIgHead.length !== 1) {
+      throw new Error('Either too many IG Heads detected or no IG Head found for ' + org.name)
+    }
+    const igHead = possibleIgHead[0].user.id
     const otherMembers = org.userOrg.filter((org) => !org.isIGHead).map((org) => org.user.id)
     return { ...org, igHead, otherMembers }
   }
@@ -119,9 +123,9 @@ function OrganisationControlForm({
     },
   ]
 
-  const onEdit = (rowData: any) => openModalWithInitialValues(convertToOrganisationForm(rowData))
-  // const onDelete = (rowData: any) => {}
-  const onDelete = async (rowData: any) => {
+  const onEdit = (rowData: OrganisationWithIGHead) =>
+    openModalWithInitialValues(convertToOrganisationForm(rowData))
+  const onDelete = async (rowData: OrganisationWithIGHead) => {
     const { responseJson, responseStatus } = await makeFetchToUrlWithAuth(
       process.env.NEXT_PUBLIC_BACKEND_URL + 'org/' + rowData.id,
       auth.token,
@@ -160,7 +164,7 @@ function OrganisationControlForm({
         onDelete={onDelete}
         addButtonText={addButtonText}
         searchFieldText={searchFieldText}
-        data={orgs}
+        data={prettifyCategoriesInOrg(orgs)}
         itemsPerPage={itemsPerPage}
       />
       <OrganisationControlFormPopup

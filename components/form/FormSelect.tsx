@@ -1,21 +1,15 @@
 import React from 'react'
 import { FormControl, FormLabel, Select, FormErrorMessage } from '@chakra-ui/react'
 import { SelectProps } from '../admin/orgs/OrganisationControlFormPopup'
+import { BaseFromProps } from '../../types/form'
 
-interface FormSelectProps<FieldValue> {
-  id: string
-  name: string
-  label: string
+interface FormSelectProps<FieldValue> extends BaseFromProps {
   placeholder: string
   defaultValue: any
   field: {
     value: FieldValue
     onChange: React.ChangeEventHandler<HTMLSelectElement>
     onBlur: React.FocusEventHandler<HTMLSelectElement>
-  }
-  form: {
-    errors: { [key: string]: string | string[] }
-    touched: { [key: string]: boolean }
   }
   data: Array<any>
 }

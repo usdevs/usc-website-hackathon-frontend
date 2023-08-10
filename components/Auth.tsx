@@ -7,20 +7,20 @@ import { useUserInfo } from '../hooks/useUserInfo'
 import * as process from 'process'
 
 const Auth: React.FC = () => {
-  const [auth, setAuth, cleanUpAuth] = useUserInfo()
+  const [authOrNull, setAuth, cleanUpAuth] = useUserInfo()
 
   useEffect(() => {
     ;(async () => {
-      if (isUserLoggedIn(auth)) {
+      if (isUserLoggedIn(authOrNull)) {
         // @ts-ignore because we do the null check already
-        const { setupTime } = auth
+        const { setupTime } = authOrNull
         const timeSinceSetup: number = Date.now() - setupTime
         if (timeSinceSetup >= (30 + 1) * 60 * 1000) {
           await cleanUpAuth()
         }
       }
     })()
-  }, [auth, cleanUpAuth])
+  }, [authOrNull, cleanUpAuth])
 
   const loginButtonDev = (
     <Button
@@ -97,7 +97,7 @@ const Auth: React.FC = () => {
     </Button>
   )
 
-  return isUserLoggedIn(auth)
+  return isUserLoggedIn(authOrNull)
     ? logoutButton
     : process.env.NODE_ENV === 'development'
     ? process.env.NEXT_PUBLIC_NGINX_PROXY_ON === 'true'

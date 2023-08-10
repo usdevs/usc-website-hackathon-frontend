@@ -1,15 +1,13 @@
 import React from 'react'
 import Select, { MultiValue } from 'react-select'
 import { SelectProps } from '../admin/orgs/OrganisationControlFormPopup'
-import { FormControl, FormLabel, FormErrorMessage } from '@chakra-ui/react'
+import { FormControl, FormLabel } from '@chakra-ui/react'
 import { FieldInputProps, FormikProps } from 'formik'
+import { BaseFromProps } from '../../types/form'
 
 // Adapted from https://codesandbox.io/s/formik-react-select-multi-typescript-qsrj2?file=/src/CustomSelect.tsx
 
-interface CustomMultiSelectProps<FieldValue> {
-  id: string
-  name: string
-  label: string
+interface CustomMultiSelectProps<FieldValue> extends BaseFromProps {
   field: FieldInputProps<number[]>
   form: FormikProps<OrganisationForm>
   options: SelectProps<number>[]

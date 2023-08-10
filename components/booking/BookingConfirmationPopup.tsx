@@ -17,7 +17,6 @@ import {
 } from '@chakra-ui/react'
 import format from 'date-fns/format'
 import {
-  throwsErrorIfNullOrUndefined,
   isUserLoggedIn,
   getOrgFromId,
   getVenueFromId,
@@ -25,7 +24,7 @@ import {
   makeFetchToUrlWithAuth,
 } from '../../utils'
 import { useCurrentHalfHourTime } from '../../hooks/useCurrentHalfHourTime'
-import { useUserInfo } from '../../hooks/useUserInfo'
+import { useUserInfoNonNull } from '../../hooks/useUserInfo'
 import useSWRImmutable from 'swr/immutable'
 import { useAllVenues } from '../../hooks/useAllVenues'
 import { KeyedMutator } from 'swr'
@@ -96,11 +95,10 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
   const [allVenues, isLoadingVenues] = useAllVenues()
   const toast = useToast()
   const currentRoundedHalfHourTime = useCurrentHalfHourTime()
-  const [authOrNull] = useUserInfo()
-  const auth: AuthState = throwsErrorIfNullOrUndefined(authOrNull)
+  const [auth] = useUserInfoNonNull()
   const [bookingData, setBookingData] = useState<BookingDataForm>({
     eventName: '',
-    orgId: auth ? auth.orgIds[0] : -1,
+    orgId: auth.orgIds[0],
   })
 
   // todo do better than querying all orgs just to match bookings here <-- search orgs in DB by orgId with GraphQL

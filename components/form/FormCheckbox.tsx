@@ -1,18 +1,12 @@
 import React from 'react'
-import { FormControl, FormLabel, Checkbox, FormErrorMessage } from '@chakra-ui/react'
+import { FormControl, Checkbox, FormErrorMessage } from '@chakra-ui/react'
+import { BaseFromProps } from '../../types/form'
 
-interface FormCheckboxProps {
-  id: string
-  name: string
-  label: string
+interface FormCheckboxProps extends BaseFromProps {
   field: {
     value: any
     onChange: React.ChangeEventHandler<HTMLInputElement>
     onBlur: React.FocusEventHandler<HTMLInputElement>
-  }
-  form: {
-    errors: { [key: string]: string | string[] }
-    touched: { [key: string]: boolean }
   }
 }
 

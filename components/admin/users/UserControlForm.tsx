@@ -1,6 +1,6 @@
-import { useToast, useDisclosure, Box } from '@chakra-ui/react'
-import { makeFetchToUrlWithAuth, throwsErrorIfNullOrUndefined } from '../../../utils'
-import { useUserInfo } from '../../../hooks/useUserInfo'
+import { useToast, useDisclosure } from '@chakra-ui/react'
+import { makeFetchToUrlWithAuth } from '../../../utils'
+import { useUserInfoNonNull } from '../../../hooks/useUserInfo'
 import { useState } from 'react'
 import UserControlFormPopup from './UserControlFormPopup'
 import defaultValues from './initialValues'
@@ -10,15 +10,14 @@ import AdminTable, { AdminTableColumnProps } from '../AdminTable'
 import { KeyedMutator } from 'swr'
 
 type UserControlFormProps = {
-  users: any[]
+  users: User[]
   mutateUsers: KeyedMutator<User[]>
   mutateOrgs: KeyedMutator<OrganisationWithIGHead[]>
 }
 
 function UserControlForm({ users, mutateUsers, mutateOrgs }: UserControlFormProps) {
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const [authOrNull] = useUserInfo()
-  const auth = throwsErrorIfNullOrUndefined(authOrNull)
+  const [auth] = useUserInfoNonNull()
   const toast = useToast()
   const [initialValues, setInitialValues] = useState<User>(defaultValues)
 

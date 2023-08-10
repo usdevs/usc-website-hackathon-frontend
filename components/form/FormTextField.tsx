@@ -8,20 +8,14 @@ import {
   InputLeftElement,
   Text,
 } from '@chakra-ui/react'
+import { BaseFromProps } from '../../types/form'
 
-interface FormTextFieldProps {
-  id: string
-  name: string
-  label: string
+interface FormTextFieldProps extends BaseFromProps {
   type: string
   field: {
     value: any
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
     onBlur: (event: React.FocusEvent<HTMLInputElement>) => void
-  }
-  form: {
-    errors: { [key: string]: string | string[] }
-    touched: { [key: string]: boolean }
   }
   inputLeftElementText?: string
 }
