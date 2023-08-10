@@ -1,4 +1,4 @@
-import { Box, useToast, useDisclosure } from '@chakra-ui/react'
+import { useToast, useDisclosure } from '@chakra-ui/react'
 import { makeFetchToUrlWithAuth, throwsErrorIfNullOrUndefined } from '../../../utils'
 import { useUserInfo } from '../../../hooks/useUserInfo'
 import { KeyedMutator } from 'swr'

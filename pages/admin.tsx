@@ -65,9 +65,7 @@ const AdminPage: NextPage = () => {
     throw new Error("Could not fetch organisations' data from the backend")
   }
 
-  const categoryTemp: any = allOrgCategories // parse due to typing issue in backend
-
-  const categories = Object.keys(categoryTemp)
+  const categories = Object.keys(allOrgCategories)
 
   return (
     <Tabs align='center' size='lg'>

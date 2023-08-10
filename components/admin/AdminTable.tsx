@@ -16,7 +16,6 @@ import {
   useDisclosure,
   Modal,
   ModalBody,
-  ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,

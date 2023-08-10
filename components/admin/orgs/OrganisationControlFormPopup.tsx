@@ -8,7 +8,7 @@ import {
   VStack,
   Button,
 } from '@chakra-ui/react'
-import { Formik, Form, Field } from 'formik'
+import { Formik, Form } from 'formik'
 import React from 'react'
 import FormCheckbox from '../../form/FormCheckbox'
 import FormSelect from '../../form/FormSelect'
