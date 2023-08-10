@@ -41,11 +41,17 @@ export const throwsErrorIfNullOrUndefined = <T>(
 }
 
 export const getOrgFromId = (orgsToSearch: Organisation[], orgId: number) => {
-  return throwsErrorIfNullOrUndefined(orgsToSearch.find((o) => o.id === orgId))
+  return throwsErrorIfNullOrUndefined(
+    orgsToSearch.find((o) => o.id === orgId),
+    "The user's orgIds could not be found" + ' in the database',
+  )
 }
 
 export const getVenueFromId = (venuesToSearch: Venue[], venueId: number) => {
-  return throwsErrorIfNullOrUndefined(venuesToSearch.find((v) => v.id === venueId))
+  return throwsErrorIfNullOrUndefined(
+    venuesToSearch.find((v) => v.id === venueId),
+    'Unable to map the venue' + ' selected in the frontend to a venue in the database',
+  )
 }
 
 export const getFromUrlStringAndParseJson: Fetcher<any, string> = (url: string): Promise<any> => {

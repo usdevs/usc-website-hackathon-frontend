@@ -1,5 +1,5 @@
-import { Box, useToast, useDisclosure } from '@chakra-ui/react'
-import { makeFetchToUrlWithAuth } from '../../../utils'
+import { useToast, useDisclosure } from '@chakra-ui/react'
+import { makeFetchToUrlWithAuth, throwsErrorIfNullOrUndefined } from '../../../utils'
 import { useUserInfo } from '../../../hooks/useUserInfo'
 import { KeyedMutator } from 'swr'
 import { useState } from 'react'
@@ -25,14 +25,10 @@ function OrganisationControlForm({
   mutateUsers,
 }: OrganisationControlFormProps) {
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const [auth] = useUserInfo()
+  const [authOrNull] = useUserInfo()
+  const auth = throwsErrorIfNullOrUndefined(authOrNull)
   const toast = useToast()
   const [initialValues, setInitialValues] = useState<OrganisationForm>(defaultValues)
-
-  if (auth === null) {
-    // should not occur as already checked in parent component
-    return <Box>Authentication Error</Box>
-  }
 
   const mappedCategories = categories.map((category: any) => {
     return {

@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import { Box, Button, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react'
+import { Box, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react'
 import {
   getFromUrlArrayAndParseJson,
   getFromUrlStringAndParseJson,
@@ -14,14 +14,14 @@ import useSWR from 'swr'
 import useSWRImmutable from 'swr/immutable'
 
 const AdminPage: NextPage = () => {
-  const [auth] = useUserInfo()
+  const [authOrNull] = useUserInfo()
   const {
     data: users,
     error: errorUsers,
     isLoading: isLoadingUsers,
     mutate: mutateUsers,
   } = useSWR<User[], string[]>(
-    auth?.token ? [process.env.NEXT_PUBLIC_BACKEND_URL + 'users', auth.token] : null,
+    authOrNull?.token ? [process.env.NEXT_PUBLIC_BACKEND_URL + 'users', authOrNull.token] : null,
     getFromUrlStringAndParseJsonWithAuth,
   )
   const {
@@ -42,8 +42,12 @@ const AdminPage: NextPage = () => {
     getFromUrlStringAndParseJson,
   )
 
-  if (!isUserLoggedIn(auth) || auth === null) {
-    return <Box>Please log in first!</Box>
+  if (!isUserLoggedIn(authOrNull) || authOrNull === null) {
+    return (
+      <Box>
+        Please log in first! An admin user is one who is a part of a NUSC admin organisation.
+      </Box>
+    )
   }
 
   if (
@@ -61,9 +65,7 @@ const AdminPage: NextPage = () => {
     throw new Error("Could not fetch organisations' data from the backend")
   }
 
-  const categoryTemp: any = allOrgCategories // parse due to typing issue in backend
-
-  const categories = Object.keys(categoryTemp)
+  const categories = Object.keys(allOrgCategories)
 
   return (
     <Tabs align='center' size='lg'>
@@ -86,7 +88,7 @@ const AdminPage: NextPage = () => {
           <UserControlForm users={users} mutateOrgs={mutateOrgs} mutateUsers={mutateUsers} />
         </TabPanel>
         <TabPanel>
-          <CopyTokenButton textToCopy={auth.token} />
+          <CopyTokenButton textToCopy={authOrNull.token} />
         </TabPanel>
       </TabPanels>
     </Tabs>

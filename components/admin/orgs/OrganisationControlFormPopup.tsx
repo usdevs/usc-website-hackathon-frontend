@@ -8,7 +8,7 @@ import {
   VStack,
   Button,
 } from '@chakra-ui/react'
-import { Formik, Form, Field } from 'formik'
+import { Formik, Form } from 'formik'
 import React from 'react'
 import FormCheckbox from '../../form/FormCheckbox'
 import FormSelect from '../../form/FormSelect'
@@ -90,7 +90,7 @@ function OrganisationControlFormPopup({
                     <FormMultiSelect
                       id='otherMembers'
                       name='otherMembers'
-                      label='EXCO Members'
+                      label='Other ExCo Members'
                       field={form.getFieldProps<number[]>('otherMembers')}
                       form={form}
                       options={users}

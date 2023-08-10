@@ -32,7 +32,7 @@ const Auth: React.FC = () => {
           // userInfo is not needed for now, so can just add filler values
           userInfo: {
             firstName: 'Test',
-            telegramId: -1,
+            telegramId: '',
             photoUrl: '',
             username: 'telegramUsername',
           },
@@ -54,17 +54,23 @@ const Auth: React.FC = () => {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         }
+        user.id = String(user.id)
         const body = {
           method: 'POST',
           body: JSON.stringify(user),
           headers: headers,
         }
         await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'login', body)
-          .then((response) => response.text())
-          .then((data) => {
-            const { token, orgIds, userCredentials, userId, isAdminUser } = JSON.parse(data)
-            if (data === undefined || userCredentials === undefined) {
-              throw new Error('Unable to fetch login data from backend')
+          .then(async (response) => {
+            if (response.status !== 200) {
+              throw new Error((await response.text()) ?? 'Unable to fetch login data from backend')
+            }
+            return response.json()
+          })
+          .then((res) => {
+            const { token, orgIds, userCredentials, userId, isAdminUser } = res
+            if (userCredentials === undefined) {
+              throw new Error('Undefined userCredentials received')
             }
             const userInfo = {
               firstName: userCredentials.first_name,

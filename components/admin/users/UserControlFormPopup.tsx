@@ -12,11 +12,6 @@ import { Formik, Form } from 'formik'
 import FormTextField from '../../form/FormTextField'
 import defaultValues from './initialValues'
 
-export type SelectProps<T> = {
-  value: T
-  description: string
-}
-
 type ModalProps = {
   isOpen: boolean
   onClose: any
@@ -65,6 +60,7 @@ function UserControlFormPopup({
                       label='Telegram Username'
                       field={form.getFieldProps('telegramUserName')}
                       form={form}
+                      inputLeftElementText={'@'}
                     />
                     <Button type='submit' colorScheme='teal' mt={4} isLoading={form.isSubmitting}>
                       Submit
