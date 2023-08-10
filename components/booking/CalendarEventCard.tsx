@@ -27,7 +27,7 @@ interface CalendarEventCardProps extends HTMLProps<HTMLDivElement> {
 }
 
 const CalendarEventCard: FC<CalendarEventCardProps> = ({ x, y, booking, onDelete, isDeleting }) => {
-  const [auth] = useUserInfo()
+  const [authOrNull] = useUserInfo()
   const [allVenues, isLoadingVenues] = useAllVenues()
 
   if (!booking || isLoadingVenues) {
@@ -72,7 +72,7 @@ const CalendarEventCard: FC<CalendarEventCardProps> = ({ x, y, booking, onDelete
             <HStack>
               <Icon as={FaRegUser} />
               <Text as='span' fontSize='sm'>
-                {booking.bookedByUser.name}
+                {booking.bookedBy.user.name}
               </Text>
             </HStack>
             <HStack>
@@ -84,7 +84,7 @@ const CalendarEventCard: FC<CalendarEventCardProps> = ({ x, y, booking, onDelete
           </VStack>
         </CardBody>
         <CardFooter justify='flex-end' pt='0'>
-          {booking.userId === auth?.userId && (
+          {booking.userId === authOrNull?.userId && (
             <Button
               size='sm'
               isLoading={isDeleting}

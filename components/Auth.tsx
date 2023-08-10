@@ -7,20 +7,20 @@ import { useUserInfo } from '../hooks/useUserInfo'
 import * as process from 'process'
 
 const Auth: React.FC = () => {
-  const [auth, setAuth, cleanUpAuth] = useUserInfo()
+  const [authOrNull, setAuth, cleanUpAuth] = useUserInfo()
 
   useEffect(() => {
     ;(async () => {
-      if (isUserLoggedIn(auth)) {
+      if (isUserLoggedIn(authOrNull)) {
         // @ts-ignore because we do the null check already
-        const { setupTime } = auth
+        const { setupTime } = authOrNull
         const timeSinceSetup: number = Date.now() - setupTime
         if (timeSinceSetup >= (30 + 1) * 60 * 1000) {
           await cleanUpAuth()
         }
       }
     })()
-  }, [auth, cleanUpAuth])
+  }, [authOrNull, cleanUpAuth])
 
   const loginButtonDev = (
     <Button
@@ -32,7 +32,7 @@ const Auth: React.FC = () => {
           // userInfo is not needed for now, so can just add filler values
           userInfo: {
             firstName: 'Test',
-            telegramId: -1,
+            telegramId: '',
             photoUrl: '',
             username: 'telegramUsername',
           },
@@ -54,17 +54,23 @@ const Auth: React.FC = () => {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         }
+        user.id = String(user.id)
         const body = {
           method: 'POST',
           body: JSON.stringify(user),
           headers: headers,
         }
         await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'login', body)
-          .then((response) => response.text())
-          .then((data) => {
-            const { token, orgIds, userCredentials, userId, isAdminUser } = JSON.parse(data)
-            if (data === undefined || userCredentials === undefined) {
-              throw new Error('Unable to fetch login data from backend')
+          .then(async (response) => {
+            if (response.status !== 200) {
+              throw new Error((await response.text()) ?? 'Unable to fetch login data from backend')
+            }
+            return response.json()
+          })
+          .then((res) => {
+            const { token, orgIds, userCredentials, userId, isAdminUser } = res
+            if (userCredentials === undefined) {
+              throw new Error('Undefined userCredentials received')
             }
             const userInfo = {
               firstName: userCredentials.first_name,
@@ -91,7 +97,7 @@ const Auth: React.FC = () => {
     </Button>
   )
 
-  return isUserLoggedIn(auth)
+  return isUserLoggedIn(authOrNull)
     ? logoutButton
     : process.env.NODE_ENV === 'development'
     ? process.env.NEXT_PUBLIC_NGINX_PROXY_ON === 'true'

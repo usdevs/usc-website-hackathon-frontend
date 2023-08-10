@@ -27,6 +27,7 @@ import CalendarEventCard from '../components/booking/CalendarEventCard'
 import {
   ALL_VENUES_KEYWORD,
   getFromUrlArrayAndParseJson,
+  getVenueFromId,
   isUserLoggedIn,
   makeFetchToUrlWithAuth,
   throwsErrorIfNullOrUndefined,
@@ -84,7 +85,7 @@ const BookingSelector: FC = () => {
   const [userSelectedMonth, setUserSelectedMonth] = useState<Date>(
     getOnlyMonthAndYearFromDate(userSelectedDate),
   )
-  const [auth] = useUserInfo()
+  const [authOrNull] = useUserInfo()
   const {
     data: allBookingsInMonthBackend,
     error,
@@ -187,7 +188,10 @@ const BookingSelector: FC = () => {
   })
   // Filter bookings to only show bookings for the current day and the current venue
   allBookingsInMonth.reduce(function (memo, x) {
-    throwsErrorIfNullOrUndefined(memo.find((y) => y.venueId === x.venueId)).bookings.push(x)
+    throwsErrorIfNullOrUndefined(
+      memo.find((y) => y.venueId === x.venueId),
+      'Unable to match existing venues in' + ' database with venue of booking',
+    ).bookings.push(x)
     return memo
   }, bookingsSortedByVenue)
 
@@ -196,7 +200,7 @@ const BookingSelector: FC = () => {
   }
 
   const onModalOpen = () => {
-    if (!isUserLoggedIn(auth)) {
+    if (!isUserLoggedIn(authOrNull)) {
       if (!toast.isActive(toast_id)) {
         toast({
           id: toast_id,
@@ -255,7 +259,7 @@ const BookingSelector: FC = () => {
   const handleDeleteBooking = async (bookingId: number) => {
     setIsDeleting.on()
 
-    const { token } = throwsErrorIfNullOrUndefined(auth)
+    const { token } = throwsErrorIfNullOrUndefined(authOrNull)
     const { responseJson, responseStatus } = await makeFetchToUrlWithAuth(
       process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings/' + bookingId,
       token,
@@ -345,7 +349,7 @@ const BookingSelector: FC = () => {
           />
         )}
       </AnimatePresence>
-      {auth ? (
+      {authOrNull ? (
         <BookingConfirmationPopup
           isOpen={isOpen}
           onClose={onModalClose}
@@ -363,8 +367,7 @@ const BookingSelector: FC = () => {
               <MenuButton as={Button} colorScheme='blue' rightIcon={<ChevronDownIcon />} w='200px'>
                 {venueIdToFilterBy === 0
                   ? 'Venue'
-                  : throwsErrorIfNullOrUndefined(allVenues.find((v) => venueIdToFilterBy === v.id))
-                      .name}
+                  : getVenueFromId(allVenues, venueIdToFilterBy).name}
               </MenuButton>
               <MenuList>
                 <MenuOptionGroup defaultValue={ALL_VENUES_KEYWORD.name} type='radio'>

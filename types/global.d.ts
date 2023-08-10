@@ -23,6 +23,11 @@ declare global {
     isInvisible: boolean
   }
 
+  type OrganisationForm = Omit<Organisation, 'slug'> & {
+    igHead: number
+    otherMembers: number[]
+  }
+
   type UserOnOrg = {
     user: User
     isIGHead: boolean
@@ -42,7 +47,6 @@ declare global {
     end: string
     bookedAt: string
     eventName: string
-    bookedByUser: User
     bookedBy: UserOnOrg
   }
 
@@ -58,7 +62,7 @@ declare global {
   }
 
   interface TelegramUser {
-    id: number
+    id: string
     first_name: string
     username: string
     photo_url: string
@@ -68,7 +72,7 @@ declare global {
 
   interface UserInformation {
     firstName: string
-    telegramId: number
+    telegramId: string
     photoUrl: string
     username: string
   }
@@ -90,6 +94,7 @@ declare global {
     id: number
     name: string
     telegramUserName: string
+    telegramId?: string
   }
 
   interface ToggleProps {

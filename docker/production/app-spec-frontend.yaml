@@ -1,0 +1,43 @@
+alerts:
+  - rule: DEPLOYMENT_FAILED
+  - rule: DOMAIN_FAILED
+domains:
+  - domain: nusc.club
+    type: PRIMARY
+    zone: nusc.club
+  - domain: www.nusc.club
+    type: ALIAS
+    zone: nusc.club
+envs:
+  - key: NEXT_PUBLIC_BACKEND_URL
+    scope: RUN_AND_BUILD_TIME
+    value: https://api.nusc.club/
+ingress:
+  rules:
+    - component:
+        name: usc-website-hackathon-frontend
+      match:
+        path:
+          prefix: /
+name: urchin-app
+region: sgp
+services:
+  - alerts:
+      - operator: GREATER_THAN
+        rule: MEM_UTILIZATION
+        value: 70
+        window: FIVE_MINUTES
+      - operator: GREATER_THAN
+        rule: RESTART_COUNT
+        value: 1
+        window: FIVE_MINUTES
+    dockerfile_path: /docker/production/Dockerfile
+    github:
+      branch: master
+      deploy_on_push: true
+      repo: usdevs/usc-website-hackathon-frontend
+    http_port: 8080
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    name: usc-website-hackathon-frontend
+    source_dir: /

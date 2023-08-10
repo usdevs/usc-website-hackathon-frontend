@@ -4,13 +4,9 @@ import Footer from '../components/Footer'
 import IGCard from '../components/IGCard'
 import { ChangeEvent, useEffect, useState } from 'react'
 import IGSearchFilter from '../components/IGSearchFilter'
+import { makeCategoriesPrettier } from '../utils/orgUtils'
 
 export const DEFAULT_FILTERS: string[] = ['Sports', 'SocioCultural', 'Others']
-
-const mappingsCategoriesEnumToDisplayName: StringToStringJSObject = {
-  SocioCultural: 'Socio-cultural',
-  Guips: 'GUIPs',
-}
 
 const StudentGroups: NextPage<{
   allOrgs: OrganisationWithIGHead[]
@@ -124,11 +120,9 @@ export async function getStaticProps() {
     fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs/categories'),
   ])
   const allOrgs = await (await orgs).json()
-  const allIGCategories: { [key: string]: string } = await (await igCategories).json()
-  for (const mappingKey in mappingsCategoriesEnumToDisplayName) {
-    allIGCategories[mappingKey] =
-      mappingsCategoriesEnumToDisplayName[mappingKey as keyof StringToStringJSObject]
-  }
+  const allIGCategories: { [key: string]: string } = makeCategoriesPrettier(
+    await (await igCategories).json(),
+  )
   return { props: { allOrgs, allIGCategories }, revalidate: 86400 } // regenerate every 1 day
 }
 
