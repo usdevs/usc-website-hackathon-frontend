@@ -9,14 +9,12 @@ import {
   LinkOverlay,
   Stack,
   Text,
-  Heading,
   useDisclosure,
 } from '@chakra-ui/react'
 import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons'
 import dynamic from 'next/dynamic'
 import { BUTTON_LINKS } from '../utils'
-import Image from 'next/image'
-import NUSCollegePic from '../public/nusc-logo.png'
+import { CldImage } from 'next-cloudinary';
 
 const NavLink: React.FC<NavigationLink> = (props) => (
   <LinkBox
@@ -64,7 +62,7 @@ const NavMenu = () => {
           {/*  </Text>{' '}*/}
           {/*  Club*/}
           {/*</Heading>*/}
-           <Image src={NUSCollegePic} alt={'NUS College'} height={420} width={190} />
+           <CldImage src={"nusc-logo"} alt={'NUS College'} height={420} width={190} />
           <LinkOverlay href={'/'} />
         </Box>
       </LinkBox>
