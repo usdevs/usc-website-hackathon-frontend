@@ -190,7 +190,7 @@ const BookingSelector: FC = () => {
   allBookingsInMonth.reduce(function (memo, x) {
     throwsErrorIfNullOrUndefined(
       memo.find((y) => y.venueId === x.venueId),
-      'Unable to match existing venues in' + ' database with venue of booking',
+      'Unable to match existing venues in database with venue of booking',
     ).bookings.push(x)
     return memo
   }, bookingsSortedByVenue)
