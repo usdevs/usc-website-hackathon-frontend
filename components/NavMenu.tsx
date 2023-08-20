@@ -7,16 +7,14 @@ import {
   IconButton,
   LinkBox,
   LinkOverlay,
-  Menu,
-  MenuList,
   Stack,
   Text,
-  Heading,
   useDisclosure,
 } from '@chakra-ui/react'
 import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons'
 import dynamic from 'next/dynamic'
 import { BUTTON_LINKS } from '../utils'
+import { CldImage } from 'next-cloudinary'
 
 const NavLink: React.FC<NavigationLink> = (props) => (
   <LinkBox
@@ -57,13 +55,14 @@ const NavMenu = () => {
     <>
       <LinkBox>
         <Box display={'flex'} justifyContent={'center'} padding='0.5rem'>
-          <Heading as='h1' size='2xl' color='#1f407b' fontFamily={'Blender-Medium'}>
-            NUS{' '}
-            <Text as='span' color='#ef7c00'>
-              College
-            </Text>{' '}
-            Club
-          </Heading>
+          {/*<Heading as='h1' size='2xl' color='#1f407b' fontFamily={'Blender-Medium'}>*/}
+          {/*  NUS{' '}*/}
+          {/*  <Text as='span' color='#ef7c00'>*/}
+          {/*    College*/}
+          {/*  </Text>{' '}*/}
+          {/*  Club*/}
+          {/*</Heading>*/}
+          <CldImage src={'nusc-logo'} alt={'NUS College'} height={420} width={190} />
           <LinkOverlay href={'/'} />
         </Box>
       </LinkBox>

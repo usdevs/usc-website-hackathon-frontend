@@ -16,7 +16,6 @@ import {
   ModalFooter,
   Text,
   VStack,
-  useToast,
 } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
 import React from 'react'
@@ -118,7 +117,7 @@ const LeftPane: React.FC<LeftPaneProps> = ({
       <Center flex={1}>
         <ImageWithFallback
           key={imageKey}
-          fallbackSrc={'/orgs/' + DEFAULT_PNG_NAME}
+          fallbackSrc={'orgs/' + DEFAULT_PNG_NAME}
           width={100}
           height={100}
           src={imageSrc}
@@ -164,7 +163,7 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
       : 'No IG Heads'
   const primaryIGHead: User | null = igHeads.length > 0 ? igHeads[0].user : null
   const slug = ig_info.slug || DEFAULT_PNG_NAME
-  const imageSrc = '/orgs/' + slug + '.png'
+  const imageSrc = 'orgs/' + slug + '.png'
   const inviteLink =
     ig_info.inviteLink ||
     (igHeads.length > 0 ? 'https://t.me/' + primaryIGHead?.telegramUserName : '')
@@ -238,7 +237,7 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
           <Center>
             <ImageWithFallback
               key={imageKey}
-              fallbackSrc={'/orgs/' + DEFAULT_PNG_NAME}
+              fallbackSrc={'orgs/' + DEFAULT_PNG_NAME}
               src={imageSrc}
               alt='Modal Image'
               width={300}

@@ -12,6 +12,9 @@ envs:
   - key: NEXT_PUBLIC_BACKEND_URL
     scope: RUN_AND_BUILD_TIME
     value: https://api.nusc.club/
+  - key: NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+    scope: RUN_AND_BUILD_TIME
+    value: nusc-club
 ingress:
   rules:
     - component:
