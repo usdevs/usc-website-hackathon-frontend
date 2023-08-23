@@ -281,7 +281,7 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
   }
 
   return (
-    <VStack ref={wrapperRef} spacing='0'>
+    <VStack ref={wrapperRef} spacing='0' w='150px' flexShrink='0'>
       <Text
         fontSize='md'
         position='sticky'
