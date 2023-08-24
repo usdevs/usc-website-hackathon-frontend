@@ -84,7 +84,7 @@ const CalendarEventCard: FC<CalendarEventCardProps> = ({ x, y, booking, onDelete
           </VStack>
         </CardBody>
         <CardFooter justify='flex-end' pt='0'>
-          {booking.userId === authOrNull?.userId && (
+          {booking.userId === authOrNull?.userId || authOrNull?.isAdminUser && (
             <Button
               size='sm'
               isLoading={isDeleting}
