@@ -39,6 +39,11 @@ type BookingConfirmationPopupProps = {
   mutate: KeyedMutator<BookingDataBackend[]>
 }
 
+type OrgDropdownProps = {
+  auth: AuthState
+  allOrgs: Organisation[]
+}
+
 const BOOKING_TOAST_ID = 'booking-toast'
 const DURATION_PER_SLOT = 30
 
@@ -75,6 +80,39 @@ const makeErrorBookingToast = (errMsg: string): UseToastOptions => {
     status: 'error',
     isClosable: true,
   }
+}
+
+const OrgDropdown: FC<OrgDropdownProps> = ({ auth, allOrgs }) => {
+  if (auth.isAdminUser) {
+    return (
+      <>
+        {allOrgs.map((orgName, i) => {
+          return (
+            <option key={i} value={allOrgs[i].id}>
+              {allOrgs[i].name}
+            </option>
+          )
+        })}
+      </>
+    )
+  }
+  return (
+    <>
+      <option key={0} value={auth.orgIds[0]}>
+        {getOrgFromId(allOrgs, auth.orgIds[0]).name}
+      </option>
+      {auth.orgIds
+        .slice(1)
+        .map((orgId) => getOrgFromId(allOrgs, orgId).name)
+        .map((orgName, i) => {
+          return (
+            <option key={i + 1} value={auth.orgIds[i + 1]}>
+              {orgName}
+            </option>
+          )
+        })}
+    </>
+  )
 }
 
 export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
@@ -205,19 +243,7 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
                   required
                   {...(auth.orgIds.length === 1 ? { pointerEvents: 'none' } : {})}
                 >
-                  <option key={0} value={auth.orgIds[0]}>
-                    {getOrgFromId(allOrgs, auth.orgIds[0]).name}
-                  </option>
-                  {auth.orgIds
-                    .slice(1)
-                    .map((orgId) => getOrgFromId(allOrgs, orgId).name)
-                    .map((orgName, i) => {
-                      return (
-                        <option key={i + 1} value={auth.orgIds[i + 1]}>
-                          {orgName}
-                        </option>
-                      )
-                    })}
+                  <OrgDropdown auth={auth} allOrgs={allOrgs} />
                 </Select>
               }
             </FormControl>

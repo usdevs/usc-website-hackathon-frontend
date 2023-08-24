@@ -136,7 +136,7 @@ const BookingSelector: FC = () => {
       )
       setAllBookingsInMonth(bookingsMappedForDisplay)
       const mappedOrgIds: number[] = bookingsMappedForDisplay.map(
-        (booking) => booking.bookedBy.org.id,
+        (booking) => booking.bookedForOrgId || booking.bookedBy.org.id,
       )
       let uniqueOrgIds: number[] = [...new Set(mappedOrgIds)]
       const map = orgsIdsToColoursMapString ?? ({} as NumberToStringJSObject)

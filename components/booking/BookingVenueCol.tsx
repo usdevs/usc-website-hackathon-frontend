@@ -89,7 +89,11 @@ const BookingCard: React.FC<BookingCardProps> = ({
   return (
     <Box
       position='absolute'
-      bg={isBookedBySelf ? 'brand.primary' : orgIdsToColoursMap[booking.orgId]}
+      bg={
+        isBookedBySelf
+          ? 'brand.primary'
+          : orgIdsToColoursMap[booking.bookedForOrgId || booking.userOrgId]
+      }
       w='95%'
       rounded='md'
       h={height + 'px'}
@@ -104,7 +108,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
       </Text>
       {isBigCard && (
         <Text noOfLines={2} fontSize='xs' fontWeight='bold' color={'white'}>
-          {booking.bookedBy.org.name}
+          {booking.bookedForOrg?.name || booking.bookedBy.org.name}
         </Text>
       )}
     </Box>
@@ -265,7 +269,9 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
         isUserLoggedIn: isUserLoggedIn(authOrNull),
         rootFontSize: rootFontSize ?? 16,
         venueBooking,
-        orgColour: venueBooking ? orgIdsToColoursMap[venueBooking.orgId] : 'brand.secondary',
+        orgColour: venueBooking
+          ? orgIdsToColoursMap[venueBooking.bookedForOrgId || venueBooking.userOrgId]
+          : 'brand.secondary',
       }
 
       return <BookingVenueTimeCell key={cellIndex} {...props} cellStatus={cellStatus} />
