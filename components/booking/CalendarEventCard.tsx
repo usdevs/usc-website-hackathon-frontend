@@ -84,21 +84,20 @@ const CalendarEventCard: FC<CalendarEventCardProps> = ({ x, y, booking, onDelete
           </VStack>
         </CardBody>
         <CardFooter justify='flex-end' pt='0'>
-          {booking.userId === authOrNull?.userId ||
-            (authOrNull?.isAdminUser && (
-              <Button
-                size='sm'
-                isLoading={isDeleting}
-                variant='outline'
-                _hover={{ transform: 'scale(1.2)' }}
-                _active={{ transform: 'scale(0.9)' }}
-                onClick={() => {
-                  onDelete(booking.id)
-                }}
-              >
-                <Icon as={FaTrash} color='gray.500' />
-              </Button>
-            ))}
+          {(booking.userId === authOrNull?.userId || authOrNull?.isAdminUser) && (
+            <Button
+              size='sm'
+              isLoading={isDeleting}
+              variant='outline'
+              _hover={{ transform: 'scale(1.2)' }}
+              _active={{ transform: 'scale(0.9)' }}
+              onClick={() => {
+                onDelete(booking.id)
+              }}
+            >
+              <Icon as={FaTrash} color='gray.500' />
+            </Button>
+          )}
         </CardFooter>
       </Card>
     </motion.div>
