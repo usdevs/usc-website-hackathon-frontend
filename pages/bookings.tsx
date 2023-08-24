@@ -1,6 +1,7 @@
 import { FC, MouseEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion'
 import {
+  Box,
   Button,
   Flex,
   HStack,
@@ -135,7 +136,7 @@ const BookingSelector: FC = () => {
       )
       setAllBookingsInMonth(bookingsMappedForDisplay)
       const mappedOrgIds: number[] = bookingsMappedForDisplay.map(
-        (booking) => booking.bookedBy.org.id,
+        (booking) => booking.bookedForOrgId || booking.bookedBy.org.id,
       )
       let uniqueOrgIds: number[] = [...new Set(mappedOrgIds)]
       const map = orgsIdsToColoursMapString ?? ({} as NumberToStringJSObject)
@@ -406,39 +407,41 @@ const BookingSelector: FC = () => {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <HStack>
+              <HStack overflowX='auto' maxW='calc(100vw - 540px)' maxH='90vh'>
                 <BookingsTimesCol />
-                {allVenues
-                  .filter((venue) => {
-                    if (venueIdToFilterBy === ALL_VENUES_KEYWORD.id) {
-                      return true
-                    }
-                    return venue.id === venueIdToFilterBy
-                  })
-                  .map((venue: Venue) => {
-                    return (
-                      <BookingVenueCol
-                        orgIdsToColoursMap={orgsIdsToColoursMapString || {}}
-                        timeIntervals={timeIntervals}
-                        key={venue.id}
-                        venueName={venue.name}
-                        openBookingModal={(start, end) => {
-                          setBookingDataFromSelection({
-                            venueId: venue.id,
-                            start,
-                            end,
-                          })
-                          onModalOpen()
-                        }}
-                        currentVenueBookings={allBookingsInSelectedDay(
-                          throwsErrorIfNullOrUndefined(
-                            bookingsSortedByVenue.find((x) => x.venueId === venue.id),
-                          ).bookings,
-                        )}
-                        openBookingCard={openBookingCard}
-                      />
-                    )
-                  })}
+                <HStack>
+                  {allVenues
+                    .filter((venue) => {
+                      if (venueIdToFilterBy === ALL_VENUES_KEYWORD.id) {
+                        return true
+                      }
+                      return venue.id === venueIdToFilterBy
+                    })
+                    .map((venue: Venue) => {
+                      return (
+                        <BookingVenueCol
+                          orgIdsToColoursMap={orgsIdsToColoursMapString || {}}
+                          timeIntervals={timeIntervals}
+                          key={venue.id}
+                          venueName={venue.name}
+                          openBookingModal={(start, end) => {
+                            setBookingDataFromSelection({
+                              venueId: venue.id,
+                              start,
+                              end,
+                            })
+                            onModalOpen()
+                          }}
+                          currentVenueBookings={allBookingsInSelectedDay(
+                            throwsErrorIfNullOrUndefined(
+                              bookingsSortedByVenue.find((x) => x.venueId === venue.id),
+                            ).bookings,
+                          )}
+                          openBookingCard={openBookingCard}
+                        />
+                      )
+                    })}
+                </HStack>
               </HStack>
             </motion.div>
           )}

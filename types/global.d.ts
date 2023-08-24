@@ -42,7 +42,10 @@ declare global {
     id: number
     venueId: number
     userId: number
-    orgId: number
+    userOrgId: number
+    bookedForOrgId?: number
+    bookedForOrg?: Organisation // this field will only be populated if a user (typically an admin user) has made a
+    // booking on behalf of another org
     start: string
     end: string
     bookedAt: string

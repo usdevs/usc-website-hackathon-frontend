@@ -19,7 +19,7 @@ const BookingsTimesCol: React.FC = () => {
   ).map((el) => format(el, 'HH:mm'))
 
   return (
-    <VStack spacing='0'>
+    <VStack spacing='0' position='sticky' left='0' zIndex={10} bgColor={'white'}>
       <Text
         fontSize='md'
         position='sticky'
