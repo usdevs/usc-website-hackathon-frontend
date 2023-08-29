@@ -37,13 +37,12 @@ You should run the backend locally if you do not want your changes to the databa
 #### Steps to setup the backend locally
 
 1. Clone the backend repo
-2. Set it up (instructions below). 
+2. Set it up (instructions below).
 3. Point the frontend .env file's `NEXT_PUBLIC_BACKEND_URL` to the appropriate localhost URL.
 4. `cd <backend repo> && npm run dev`
 5. `cd <backend repo> && docker-compose up`
 
 ## Development Process
-
 
 ### Linters
 
@@ -65,9 +64,9 @@ If you are working on the certain components such as the bookings or the admin p
 2. Go to the 'Token' tab.
 3. Copy the token and paste it into `NEXT_PUBLIC_BACKEND_JWT_DEV` in the `.env` file. Copy your userId from the "Users" table in the DB to `NEXT_PUBLIC_BACKEND_TELEGRAM_USER_ID` as well.
 4. Do add your Telegram ID to the database manually, otherwise you will not be able to make a booking
-    - Google on how to get your Telegram ID.
-    - Go to the Users table and find the entry containing your name.
-    - Add your ID to the `telegramId` field.
+   - Google on how to get your Telegram ID.
+   - Go to the Users table and find the entry containing your name.
+   - Add your ID to the `telegramId` field.
 
 #### Second method (Linux and MacOS only)
 
