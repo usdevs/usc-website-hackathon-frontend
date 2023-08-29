@@ -6,6 +6,7 @@ import {
   ModalCloseButton,
   ModalBody,
   VStack,
+  Text,
   Button,
 } from '@chakra-ui/react'
 import { Formik, Form } from 'formik'
@@ -136,6 +137,10 @@ function OrganisationControlFormPopup({
                       field={form.getFieldProps('isInvisible')}
                       form={form}
                     />
+                    <Text>
+                      Note that if a user is no longer the head or a member of the ExCo, any
+                      bookings made by the user will also be deleted.
+                    </Text>
                     <Button type='submit' colorScheme='teal' mt={4} isLoading={form.isSubmitting}>
                       Submit
                     </Button>

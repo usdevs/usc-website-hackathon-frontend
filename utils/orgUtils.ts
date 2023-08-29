@@ -47,3 +47,12 @@ export const prettifyCategoriesInOrg = (orgs: OrganisationWithIGHead[]) => {
     return org
   })
 }
+
+export const unprettifyCategory = (category: string): string => {
+  for (const [key, value] of Object.entries(mappingsCategoriesEnumToDisplayName)) {
+    if (value === category) {
+      return key
+    }
+  }
+  return category
+}
