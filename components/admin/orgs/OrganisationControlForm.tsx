@@ -6,7 +6,12 @@ import { useState } from 'react'
 import OrganisationControlFormPopup from './OrganisationControlFormPopup'
 import defaultValues from './initialValues'
 import validationSchema from './validationSchema'
-import { makeSuccessToast, makeErrorToast, prettifyCategoriesInOrg, unprettifyCategory } from '../../../utils/orgUtils'
+import {
+  makeSuccessToast,
+  makeErrorToast,
+  prettifyCategoriesInOrg,
+  unprettifyCategory,
+} from '../../../utils/orgUtils'
 import AdminTable, { AdminTableColumnProps } from '../AdminTable'
 
 type OrganisationControlFormProps = {
