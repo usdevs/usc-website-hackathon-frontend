@@ -173,7 +173,6 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
           border='1px solid darkgrey'
         >
           <LeftPane imageKey={imageKey - 1} imageSrc={imageSrc} isInactive={ig_info.isInactive} />
-          <Divider orientation='vertical' h='85%' my='auto' />
           <Stack>
             <CardBody>
               <Heading fontSize={'2xl'} fontFamily={'body'}>
