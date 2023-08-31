@@ -1,6 +1,7 @@
 import React from 'react'
 import {
   Box,
+  Center,
   Checkbox,
   CheckboxGroup,
   Divider,
@@ -30,20 +31,20 @@ const IGSearchFilter: React.FC<IGSearchFilterProps> = ({
   return (
     <VStack p={4}>
       <InputGroup>
-        <InputLeftElement pointerEvents='none'>
-          <SearchIcon color='gray.500' />
+        <InputLeftElement pointerEvents='none' fontSize='1.3em' paddingTop={2}>
+          <SearchIcon color='gray.600' />
         </InputLeftElement>
         <Input
           type='text'
-          border='1px solid black'
           borderRadius={20}
-          style={{ outline: 'none', color: 'gray.500' }}
+          _placeholder={{ opacity: 1, color: 'gray.600' }}
           placeholder='Search'
           onInput={onInput}
+          size={'lg'}
         />
       </InputGroup>
       <CheckboxGroup colorScheme='green' defaultValue={DEFAULT_FILTERS}>
-        <HStack mt='0.5rem' spacing={[1, 5]} direction={['column', 'column']}>
+        <HStack mt='0.5rem' spacing={[1, 5]}>
           {Object.entries(interestGroupCategories).map((category) => (
             <Checkbox onChange={onChange} key={category[0]} value={category[0]}>
               {category[1]}

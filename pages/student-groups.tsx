@@ -67,7 +67,7 @@ const StudentGroups: NextPage<{
       <Flex justify='center' flexDir='column' as='main'>
         <VStack flexGrow={1} minH='40vh' p={4}>
           <IGSearchFilter {...igSearchFilterProps} />
-          <SimpleGrid columns={[1, 1, 2]} width={'95%'} spacing='2rem'>
+          <SimpleGrid columns={{ sm: 1, md: 2 }} width={'95%'} spacing='2rem'>
             {paginateArray(page).map((interestGroupDetail, idx) => (
               <IGCard
                 key={interestGroupDetail.name}

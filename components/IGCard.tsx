@@ -202,7 +202,7 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
 
       <Modal isOpen={isOpen} onClose={onClose} size='xl'>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent borderRadius={15}>
           {ig_info.isInactive ? (
             <Box
               position='absolute'
@@ -221,7 +221,7 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
           ) : (
             <></>
           )}
-          <Center borderBottom={'1px solid grey'}>
+          <Center borderBottom={'1px solid grey'} boxShadow={'md'}>
             <ImageWithFallback
               key={imageKey}
               fallbackSrc={'orgs/' + DEFAULT_PNG_NAME}
