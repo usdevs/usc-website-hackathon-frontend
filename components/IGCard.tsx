@@ -62,7 +62,7 @@ const getContactButton = (contact: User | null, width?: string) => {
       textOverflow={'ellipsis'}
       leftIcon={<FaUserCircle />}
       variant='outline'
-      colorScheme='black'
+      colorScheme='facebook'
       minWidth={width || 'auto'}
       maxWidth={width || 'auto'}
       rounded='15px'
@@ -88,7 +88,6 @@ const getInviteLinkButton = (inviteLink: string, width?: string) => {
       <Button
         overflow='hidden'
         textOverflow={'ellipsis'}
-        variant='outline'
         colorScheme='telegram'
         minWidth={width || 'auto'}
         maxWidth={width || 'auto'}
@@ -222,7 +221,7 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
           ) : (
             <></>
           )}
-          <Center>
+          <Center borderBottom={'1px solid grey'}>
             <ImageWithFallback
               key={imageKey}
               fallbackSrc={'orgs/' + DEFAULT_PNG_NAME}

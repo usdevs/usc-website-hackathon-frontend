@@ -37,8 +37,7 @@ const IGSearchFilter: React.FC<IGSearchFilterProps> = ({
           type='text'
           border='1px solid black'
           borderRadius={20}
-          _focusVisible={{ outline: 'none' }}
-          style={{ outline: 'none' }}
+          style={{ outline: 'none', color: 'gray.500' }}
           placeholder='Search'
           onInput={onInput}
         />
