@@ -62,10 +62,27 @@ const StudentGroups: NextPage<{
   }
   const totalPages = Math.ceil(igCardsToDisplay.length / pageSize)
 
+  const pageNumberButtons = (
+    <HStack style={{ width: '80%', justifyContent: 'center', margin: '2rem' }}>
+      {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
+        <Button
+          size='lg'
+          key={pageNumber}
+          onClick={() => setPage(pageNumber)}
+          variant={page === pageNumber ? 'solid' : 'ghost'}
+          colorScheme='blue'
+          style={{ borderRadius: '15px' }}
+        >
+          {pageNumber}
+        </Button>
+      ))}
+    </HStack>
+  )
+
   return (
     <>
       <Flex justify='center' flexDir='column' as='main'>
-        <VStack flexGrow={1} minH='40vh' p={4}>
+        <VStack flexGrow={1} minH='40vh'>
           <IGSearchFilter {...igSearchFilterProps} />
           <SimpleGrid columns={{ sm: 1, md: 2 }} width={'95%'} spacing='2rem'>
             {paginateArray(page).map((interestGroupDetail, idx) => (
@@ -76,17 +93,7 @@ const StudentGroups: NextPage<{
               />
             ))}
           </SimpleGrid>
-          <HStack style={{ width: '80%', justifyContent: 'center', marginTop: '3rem' }}>
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
-              <Button
-                style={{ height: 60, width: 60 }}
-                key={pageNumber}
-                onClick={() => setPage(pageNumber)}
-              >
-                {pageNumber}
-              </Button>
-            ))}
-          </HStack>
+          {pageNumberButtons}
         </VStack>
         <Footer />
       </Flex>

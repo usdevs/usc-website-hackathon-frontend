@@ -29,7 +29,7 @@ const IGSearchFilter: React.FC<IGSearchFilterProps> = ({
   interestGroupCategories,
 }) => {
   return (
-    <VStack p={4}>
+    <VStack margin={'2rem'}>
       <InputGroup>
         <InputLeftElement pointerEvents='none' fontSize='1.3em' paddingTop={2}>
           <SearchIcon color='gray.600' />
