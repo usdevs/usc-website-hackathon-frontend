@@ -15,11 +15,13 @@ import {
   ModalBody,
   ModalFooter,
   Text,
+  ButtonGroup,
+  CardFooter,
+  Stack,
   VStack,
 } from '@chakra-ui/react'
-import { motion } from 'framer-motion'
 import React from 'react'
-import { FaUserCircle } from 'react-icons/fa'
+import { FaTelegram, FaUserCircle } from 'react-icons/fa'
 import Link from 'next/link'
 import ImageWithFallback from './ImageWithFallback'
 import { DEFAULT_PNG_NAME } from '../utils'
@@ -31,13 +33,9 @@ interface IGInfoProps {
 
 type LeftPaneProps = {
   imageKey: number
-  primaryIGHead: User | null
   imageSrc: string
-  inviteLink: string
   isInactive: boolean
 }
-
-const MotionBox = motion(Box)
 
 const getContactButton = (contact: User | null, width?: string) => {
   // const toast = useToast()
@@ -64,14 +62,12 @@ const getContactButton = (contact: User | null, width?: string) => {
       textOverflow={'ellipsis'}
       leftIcon={<FaUserCircle />}
       variant='outline'
-      colorScheme='blue'
+      colorScheme='facebook'
       minWidth={width || 'auto'}
       maxWidth={width || 'auto'}
       rounded='15px'
       style={{
         borderRadius: '0.5rem',
-        color: '#1f407b',
-        border: '1px solid #1f407b',
         display: 'flex',
         alignItems: 'center',
       }}
@@ -79,7 +75,7 @@ const getContactButton = (contact: User | null, width?: string) => {
       // isDisabled={!isContactFound}
       isDisabled={true}
     >
-      <Text noOfLines={[1]} display='inline'>
+      <Text noOfLines={[1]} display='inline' as='b'>
         {contact?.name || 'No contact found'}
       </Text>
     </Button>
@@ -92,37 +88,30 @@ const getInviteLinkButton = (inviteLink: string, width?: string) => {
       <Button
         overflow='hidden'
         textOverflow={'ellipsis'}
-        variant='outline'
-        colorScheme='blue'
+        colorScheme='telegram'
         minWidth={width || 'auto'}
         maxWidth={width || 'auto'}
         rounded='15px'
-        style={{ borderRadius: '0.5rem', color: '#229ed9', border: '1px solid #229ed9' }}
+        style={{ borderRadius: '0.5rem', border: '1px solid #229ed9' }}
       >
-        Invite Link
+        <FaTelegram />
       </Button>
     </Link>
   )
 }
 
-const LeftPane: React.FC<LeftPaneProps> = ({
-  imageKey,
-  primaryIGHead,
-  imageSrc,
-  inviteLink,
-  isInactive,
-}) => {
+const LeftPane: React.FC<LeftPaneProps> = ({ imageKey, imageSrc, isInactive }) => {
   return (
-    <VStack padding='1rem' borderRight='2px solid darkgrey' justifyContent='space-apart'>
-      <Center flex={1}>
+    <VStack borderRight='1px solid darkgrey' justifyContent='space-apart'>
+      <Center width='130px' flex={1}>
         <ImageWithFallback
           key={imageKey}
           fallbackSrc={'orgs/' + DEFAULT_PNG_NAME}
-          width={100}
-          height={100}
+          width={300}
+          height={300}
           src={imageSrc}
           alt={imageSrc}
-          style={{ objectFit: 'contain' }}
+          style={{ objectFit: 'contain', padding: '12px' }}
           sizes='(max-width: 130) 100vw'
         />
         {isInactive ? (
@@ -144,8 +133,6 @@ const LeftPane: React.FC<LeftPaneProps> = ({
           <></>
         )}
       </Center>
-      {getContactButton(primaryIGHead, '7vw')}
-      {getInviteLinkButton(inviteLink, '7vw')}
     </VStack>
   )
 }
@@ -170,28 +157,22 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
 
   return (
     <>
-      <MotionBox
-        whileHover={{ scale: 1.03, cursor: 'pointer' }}
-        transition={{ duration: 0.3 }}
+      <Box
+        _hover={{ boxShadow: 'xl', transform: 'translateY(-3px)', cursor: 'pointer' }}
+        transition='transform 0.3s, box-shadow 0.3s'
         style={{ minWidth: '100%', minHeight: '15rem' }}
       >
         <Card
           direction={{ base: 'column', sm: 'row' }}
           overflow='hidden'
-          variant='outline'
+          variant='elevated'
           shadow='md'
           onClick={onOpen}
           style={{ height: '100%' }}
+          border='1px solid darkgrey'
         >
-          <LeftPane
-            imageKey={imageKey - 1}
-            primaryIGHead={primaryIGHead}
-            imageSrc={imageSrc}
-            inviteLink={inviteLink}
-            isInactive={ig_info.isInactive}
-          />
-          <Divider orientation='vertical' h='85%' my='auto' />
-          <Center>
+          <LeftPane imageKey={imageKey - 1} imageSrc={imageSrc} isInactive={ig_info.isInactive} />
+          <Stack>
             <CardBody>
               <Heading fontSize={'2xl'} fontFamily={'body'}>
                 {ig_info.name}
@@ -209,13 +190,19 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
                 {ig_info.description}
               </Text>
             </CardBody>
-          </Center>
+            <CardFooter>
+              <ButtonGroup spacing='1'>
+                {getInviteLinkButton(inviteLink)}
+                {getContactButton(primaryIGHead)}
+              </ButtonGroup>
+            </CardFooter>
+          </Stack>
         </Card>
-      </MotionBox>
+      </Box>
 
       <Modal isOpen={isOpen} onClose={onClose} size='xl'>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent borderRadius={15}>
           {ig_info.isInactive ? (
             <Box
               position='absolute'
@@ -234,7 +221,7 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
           ) : (
             <></>
           )}
-          <Center>
+          <Center borderBottom={'1px solid grey'} boxShadow={'md'}>
             <ImageWithFallback
               key={imageKey}
               fallbackSrc={'orgs/' + DEFAULT_PNG_NAME}
@@ -251,12 +238,16 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
 
           <ModalCloseButton />
           <ModalBody>
-            <Text color={'gray.500'}>{'Heads: ' + igHeadsDisplay}</Text>
+            <Text as='b' color={'gray.1000'}>
+              {'Heads: ' + igHeadsDisplay}
+            </Text>
             <Text color={'gray.500'}>{ig_info.description}</Text>
           </ModalBody>
           <ModalFooter justifyContent='flex-start'>
-            <Box mr={2}>{getContactButton(primaryIGHead)}</Box>
-            {getInviteLinkButton(inviteLink)}
+            <ButtonGroup spacing='1'>
+              {getInviteLinkButton(inviteLink)}
+              {getContactButton(primaryIGHead)}
+            </ButtonGroup>
           </ModalFooter>
         </ModalContent>
       </Modal>
