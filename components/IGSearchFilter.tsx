@@ -1,15 +1,16 @@
 import React from 'react'
 import {
   Box,
-  Card,
-  CardBody,
+  Center,
   Checkbox,
   CheckboxGroup,
   Divider,
+  HStack,
   Input,
   InputGroup,
   InputLeftElement,
   Stack,
+  VStack,
 } from '@chakra-ui/react'
 import { SearchIcon } from '@chakra-ui/icons'
 import { DEFAULT_FILTERS } from '../pages/student-groups'
@@ -28,49 +29,34 @@ const IGSearchFilter: React.FC<IGSearchFilterProps> = ({
   interestGroupCategories,
 }) => {
   return (
-    <Card
-      direction={{ base: 'column', sm: 'row' }}
-      overflow='hidden'
-      variant='outline'
-      width='25rem'
-      minWidth='25rem'
-      margin='0 1rem'
-      alignSelf='flex-start'
-      boxShadow='1px 1px #e9e9e9'
-      color='#a1a1a1'
-    >
-      <CardBody>
-        <InputGroup>
-          <InputLeftElement pointerEvents='none'>
-            <SearchIcon color='gray.300' />
-          </InputLeftElement>
-          <Input
-            type='text'
-            border='none'
-            _focusVisible={{ outline: 'none' }}
-            style={{ borderBottom: '1px solid #a1a1a1', borderRadius: 0, outline: 'none' }}
-            placeholder='Search for groups'
-            onInput={onInput}
-          />
-        </InputGroup>
-        <Box p={'2vh'}>
-          Categories
-          <CheckboxGroup colorScheme='green' defaultValue={DEFAULT_FILTERS}>
-            <Stack mt='0.5rem' spacing={[1, 5]} direction={['column', 'column']}>
-              {Object.entries(interestGroupCategories).map((category) => (
-                <Checkbox onChange={onChange} key={category[0]} value={category[0]}>
-                  {category[1]}
-                </Checkbox>
-              ))}
-            </Stack>
-          </CheckboxGroup>
-          <Divider margin='1rem' borderColor={'black'} border='4px' orientation='horizontal' />
+    <VStack margin={'2rem'}>
+      <InputGroup>
+        <InputLeftElement pointerEvents='none' fontSize='1.3em' paddingTop={2}>
+          <SearchIcon color='gray.600' />
+        </InputLeftElement>
+        <Input
+          type='text'
+          borderRadius={20}
+          _placeholder={{ opacity: 1, color: 'gray.600' }}
+          placeholder='Search'
+          onInput={onInput}
+          size={'lg'}
+        />
+      </InputGroup>
+      <CheckboxGroup colorScheme='green' defaultValue={DEFAULT_FILTERS}>
+        <HStack mt='0.5rem' spacing={[1, 5]}>
+          {Object.entries(interestGroupCategories).map((category) => (
+            <Checkbox onChange={onChange} key={category[0]} value={category[0]}>
+              {category[1]}
+            </Checkbox>
+          ))}
+          <Divider borderColor={'black'} border='1px' orientation='vertical' />
           <Checkbox onChange={onInactiveChange} value={'Inactive'}>
             Inactive
           </Checkbox>
-        </Box>
-      </CardBody>
-    </Card>
+        </HStack>
+      </CheckboxGroup>
+    </VStack>
   )
 }
 

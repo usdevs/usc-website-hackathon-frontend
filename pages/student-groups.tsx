@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import { Box, Button, Flex, Heading, HStack, SimpleGrid, VStack } from '@chakra-ui/react'
+import { Button, Flex, HStack, SimpleGrid, VStack } from '@chakra-ui/react'
 import Footer from '../components/Footer'
 import IGCard from '../components/IGCard'
 import { ChangeEvent, useEffect, useState } from 'react'
@@ -62,52 +62,39 @@ const StudentGroups: NextPage<{
   }
   const totalPages = Math.ceil(igCardsToDisplay.length / pageSize)
 
+  const pageNumberButtons = (
+    <HStack style={{ width: '80%', justifyContent: 'center', margin: '2rem' }}>
+      {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
+        <Button
+          size='lg'
+          key={pageNumber}
+          onClick={() => setPage(pageNumber)}
+          variant={page === pageNumber ? 'solid' : 'ghost'}
+          colorScheme='blue'
+          style={{ borderRadius: '15px' }}
+        >
+          {pageNumber}
+        </Button>
+      ))}
+    </HStack>
+  )
+
   return (
     <>
       <Flex justify='center' flexDir='column' as='main'>
-        <HStack pt='3rem' pb='3rem'>
-          <Box alignSelf='flex-start' p={'2vh'} pl={'7vh'}>
-            <IGSearchFilter {...igSearchFilterProps} />
-          </Box>
-          <VStack flexGrow={1} pr='4rem' minH='45vh'>
-            <Heading
-              fontFamily={'header'}
-              size='lg'
-              fontWeight='normal'
-              alignSelf='flex-start'
-              mb='1.5rem'
-            >
-              {igCardsToDisplay.length > 0 ? (
-                <>
-                  <strong>{igCardsToDisplay.length}</strong> Student Group
-                  {igCardsToDisplay.length > 1 && 's'}
-                </>
-              ) : (
-                <>No Student Groups Found</>
-              )}
-            </Heading>
-            <SimpleGrid columns={[1, null, 2]} width={'95%'} spacing='2rem'>
-              {paginateArray(page).map((interestGroupDetail, idx) => (
-                <IGCard
-                  key={interestGroupDetail.name}
-                  imageKey={idx * 2}
-                  ig_info={interestGroupDetail}
-                />
-              ))}
-            </SimpleGrid>
-            <HStack style={{ width: '80%', justifyContent: 'center', marginTop: '3rem' }}>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
-                <Button
-                  style={{ height: 60, width: 60 }}
-                  key={pageNumber}
-                  onClick={() => setPage(pageNumber)}
-                >
-                  {pageNumber}
-                </Button>
-              ))}
-            </HStack>
-          </VStack>
-        </HStack>
+        <VStack flexGrow={1} minH='40vh'>
+          <IGSearchFilter {...igSearchFilterProps} />
+          <SimpleGrid columns={{ sm: 1, md: 2 }} width={'95%'} spacing='2rem'>
+            {paginateArray(page).map((interestGroupDetail, idx) => (
+              <IGCard
+                key={interestGroupDetail.name}
+                imageKey={idx * 2}
+                ig_info={interestGroupDetail}
+              />
+            ))}
+          </SimpleGrid>
+          {pageNumberButtons}
+        </VStack>
         <Footer />
       </Flex>
     </>
