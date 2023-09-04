@@ -48,7 +48,7 @@ const Auth: React.FC = () => {
   const loginButtonWidget = (
     <TelegramLoginButton
       // BOT_TOKEN on the backend needs to match
-      botName={process.env.NEXT_PUBLIC_TELEGRAM_LOGIN_BOT ?? 'TestForUSDevsBot'}
+      botName={process.env.NEXT_PUBLIC_TELEGRAM_LOGIN_BOT ?? 'TestForUSDevsProdBot'}
       dataOnauth={async (user: TelegramUser) => {
         const headers = {
           Accept: 'application/json',
