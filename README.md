@@ -117,6 +117,6 @@ $ npm run prisma:reset
 1. Add the backend .env file - get it from an existing person using the repo.
 
 # Jun Yu was here.
+hh was also here.
 
-# hh was also here.
-
+# Luoqi was here
