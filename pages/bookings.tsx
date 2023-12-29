@@ -17,7 +17,6 @@ import {
 } from '@chakra-ui/react'
 import eachMinuteOfInterval from 'date-fns/eachMinuteOfInterval'
 import { BookingConfirmationPopup } from '../components/booking/BookingConfirmationPopup'
-import Footer from '../components/Footer'
 import { NextPage } from 'next'
 import Calendar from '../components/booking/Calendar'
 import { ChevronDownIcon } from '@chakra-ui/icons'
@@ -455,7 +454,6 @@ const Grid: NextPage = () => {
   return (
     <Flex justify='center' flexDir='column' as='main'>
       <BookingSelector />
-      <Footer />
     </Flex>
   )
 }
