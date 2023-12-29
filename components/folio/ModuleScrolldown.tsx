@@ -1,10 +1,10 @@
-import { Card, CardHeader, CardBody, CardFooter, Text, Select } from '@chakra-ui/react'
+import { Card, CardHeader, CardBody, Heading, Text, Select } from '@chakra-ui/react'
 
 const ModuleScrolldown = ({ title }: { title: string }) => {
     return (
         <Card>
             <CardHeader>
-                <Text>{title}</Text>
+                <Heading size='md'>{title}</Heading>
             </CardHeader>
             <CardBody>
                 <Select placeholder={`Select ${title}`}>
