@@ -1,4 +1,3 @@
-// import { Heading, VStack, Link, Flex, Icon } from '@chakra-ui/react'
 import { Heading, Grid, GridItem, VStack, Link, Flex, Icon } from '@chakra-ui/react'
 import VenueMap from './VenueMap'
 import { FaInstagram, FaTelegram } from 'react-icons/fa'
@@ -46,45 +45,6 @@ const iconStyles = {
   mr: 1,
   fontSize: '1.1rem',
 }
-
-// const Footer: React.FC = () => {
-//   return (
-//     // <VStack pt='1.5rem' pb='1rem' bg='#1f407b' color='white' justifyContent='space-between'>
-//       <Flex w='100%' justify='space-around'>
-//         <VStack alignItems='flex-start'>
-//           <Heading as='h4' size='md'>
-//             Navigate
-//           </Heading>
-//           {navigationLinks.map(({ href, label }) => (
-//             <Link key={label} sx={linkStyles} href={href}>
-//               {label}
-//             </Link>
-//           ))}
-//         </VStack>
-//         <VStack alignItems='flex-start'>
-//           <Heading as='h4' size='md'>
-//             For more updates, follow us on:
-//           </Heading>
-//           {socialLinks.map(({ href, iconComponent, label }) => (
-//             <Link key={label} sx={linkStyles} href={href}>
-//               <Icon sx={iconStyles} as={iconComponent} />
-//               {label}
-//             </Link>
-//           ))}
-//         </VStack>
-//         <VStack alignItems='flex-start' position='relative' w='23rem' h='12rem'>
-//           <Heading as='h4' size='md'>
-//             Locate us:
-//           </Heading>
-//           <VenueMap />
-//         </VStack>
-//       </Flex>
-//       <Heading as='h5' size='sm' pt='3rem' fontWeight='normal'>
-//         Copyright © 2023 NUS College Cinnamon Student Life
-//       </Heading>
-//     {/* </VStack> */}
-//   )
-// }
 
 const Footer: React.FC = () => {
   return (
