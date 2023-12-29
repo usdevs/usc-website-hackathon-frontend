@@ -3,7 +3,7 @@ import { useState } from "react";
 
 const Links = ({ items, onSelect, selectedItem }: { items: string[], onSelect: (item: string) => void, selectedItem: string | null }) => {
   return (
-    <Card 
+    <Card
       maxH="200px" 
       overflowY="auto" 
       variant='unstyled'
@@ -25,7 +25,7 @@ const Links = ({ items, onSelect, selectedItem }: { items: string[], onSelect: (
     >
       <List styleType='none'>
         {items.map((item, index) => (
-          <ListItem key={index} padding={2}>
+          <ListItem key={index} padding={2} width='container'>
             <Link
               fontWeight={selectedItem === item ? 'bold' : 'normal'}
               color="blue.500"
@@ -44,23 +44,21 @@ const Links = ({ items, onSelect, selectedItem }: { items: string[], onSelect: (
   );
 }
 
-const ScrollableList = ({ title }: { title: string }) => {
+const ScrollableList = ({ title, items }: { title: string, items: string[] }) => {
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
   const handleSelection = (item: string) => {
     setSelectedItem(item);
   };
 
-  const modules = ['NTW', 'NGN', 'NSW', 'GEA', 'NGT', 'NSS', 'CPS', 'NST', 'NHS']
-
   return (
-    <Card>
+    <Card width={250} align='center'>
       <CardHeader>
         <Heading size='md'>{title}</Heading>
       </CardHeader>
       <CardBody>
         <Links
-          items={modules}
+          items={items}
           onSelect={handleSelection}
           selectedItem={selectedItem}
         />
