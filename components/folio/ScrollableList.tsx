@@ -1,4 +1,4 @@
-import { Card, CardBody, CardHeader, Heading, List, Link, ListItem } from "@chakra-ui/react";
+import { Card, CardBody, CardHeader, Heading, List, Link, ListItem, Divider } from "@chakra-ui/react";
 import { useState } from "react";
 
 const Links = ({ items, onSelect, selectedItem }: { items: string[], onSelect: (item: string) => void, selectedItem: string | null }) => {
@@ -52,11 +52,10 @@ const ScrollableList = ({ title, items }: { title: string, items: string[] }) =>
   };
 
   return (
-    <Card width={250} align='center'>
-      <CardHeader>
-        <Heading size='md'>{title}</Heading>
-      </CardHeader>
+    <Card width='max-content' align='center'>
       <CardBody>
+        <Heading size='sm'>{title}</Heading>
+        <Divider margin="9px"/>
         <Links
           items={items}
           onSelect={handleSelection}

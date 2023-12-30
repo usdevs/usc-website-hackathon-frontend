@@ -1,9 +1,12 @@
 import { Button } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
+import Link from "next/link";
 
 const CreateButton = () => {
     return (
-        <Button leftIcon={<AddIcon />} colorScheme="blue">Create</Button>
+        <Link href="/folio/create">
+            <Button leftIcon={<AddIcon />} colorScheme="blue">Create</Button>
+        </Link>
     );
 }
 
