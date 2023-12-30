@@ -8,12 +8,12 @@ import ShortAnswerCard from '../components/folioform/ShortAnswerCard'
 import LongAnswerCard from '../components/folioform/LongAnswerCard'
 
 
+
 export default function FolioSubmissionForm() {
   return (
     <ChakraProvider> 
-    <VStack spacing = "25px" mb={4}>
+    <VStack spacing = "25px" mb={8}>
     <Heading size='md' mt={4}>Create New Entry</Heading>
-
 
         <SelectCard 
         label='Module Code' 
@@ -52,13 +52,16 @@ export default function FolioSubmissionForm() {
         label='Content'
         prompt='Enter Content' />
 
-        <Button colorScheme="blue" size="lg" mt={4} mb={4} onClick={() => console.log("Submitted")}>
+        <Button colorScheme="blue" size="lg" mt={4} onClick={() => console.log("Submitted")}>
             Submit
         </Button>
 
-
     </VStack>
     <Footer/>
+
+    
     </ChakraProvider>
+
+
   )
 }
