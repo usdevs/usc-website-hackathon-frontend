@@ -7,9 +7,9 @@ const EssayCard = () => {
             <CardHeader>
                 <HStack spacing='10px'>
                     <Avatar src='https://bit.ly/broken-link' />
-                    <VStack>
-                        <Heading size='md'>Essay Title</Heading>
-                        <Text>Student Name</Text> 
+                    <VStack align='left'>
+                        <Heading size='sm'>Essay Title</Heading>
+                        <Text fontSize='sm'>Student Name</Text>
                     </VStack>
                 </HStack>
             </CardHeader>
