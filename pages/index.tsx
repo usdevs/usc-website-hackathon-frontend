@@ -98,17 +98,38 @@ const HeroSection = () => {
 
 const MobileHeroSection = () => {
   return (
-    <Flex m = '20px' justifyContent={'center'}>
-      <Box maxW='sm' borderRadius='10px' overflow='hidden'>
+    <Flex m = '25px' justifyContent={'center'}>
+      <Box borderRadius='10px' overflow='hidden' bgColor={'white'}>
         <Image
           alt='Mountains'
           src={HeroBg}
+          placeholder='blur'
+          quality={100}
+          sizes='100vw'
         />
 
         <Box p='6'>
-          <Flex>
-            <Text>Cinnamon </Text>
-            <Text>Student Life</Text>
+          <Flex justifyContent={'center'}>
+            <Text 
+              as="span"
+              color={'#f90'}
+              fontFamily={'Domine'}
+              fontWeight='bold'
+              lineHeight={0.8}
+              fontSize='2em'
+            >
+              Cinnamon&nbsp;
+            </Text>
+            <Text 
+              as="span"
+              color={'black'}
+              fontFamily={'Domine'}
+              fontWeight='bold'
+              lineHeight={0.8}
+              fontSize='2em'
+            >
+              Student Life
+            </Text>
           </Flex>
         </Box>
 
@@ -120,9 +141,25 @@ const MobileHeroSection = () => {
 const LandingPage: NextPage = () => {
   const landingPageData = landingPageMockData
   const [isMobile] = useMediaQuery("(max-width: 768px)")
-  return (
-    <Flex justify='center' flexDir='column' as='main' gap='0'>
-      {isMobile ? <MobileHeroSection /> : <HeroSection />}
+
+  if (isMobile) {
+    return(
+      <Flex bgColor="#f5f5f5" justify='center' flexDir='column' as='main' gap='0'>
+        <MobileHeroSection />
+        
+        <Box>
+          {landingPageData.map((data, index) => (
+            <LandingPageBanner key={index} left={index % 2 == 1} {...data} />
+          ))}
+        </Box>
+
+        <Footer />
+      </Flex>
+    )
+  } else {
+    return(
+      <Flex justify='center' flexDir='column' as='main' gap='0'>
+      <HeroSection />
       {/* <Box mx={{ base: '2', md: '8', xl: '20' }} my={{ base: '16px', md: '80px' }}> */}
       <Box>
         {landingPageData.map((data, index) => (
@@ -132,7 +169,8 @@ const LandingPage: NextPage = () => {
 
       <Footer />
     </Flex>
-  )
+    )
+  }
 }
 
 export default LandingPage
