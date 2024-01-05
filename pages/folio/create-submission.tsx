@@ -13,10 +13,10 @@ import {
   Input,
 } from '@chakra-ui/react'
 import { VStack } from '@chakra-ui/react'
-import Footer from '../components/Footer'
-import SelectCard from '../components/folioform/SelectCard'
-import ShortAnswerCard from '../components/folioform/ShortAnswerCard'
-import LongAnswerCard from '../components/folioform/LongAnswerCard'
+import Footer from '../../components/Footer'
+import SelectCard from '../../components/folioform/SelectCard'
+import ShortAnswerCard from '../../components/folioform/ShortAnswerCard'
+import LongAnswerCard from '../../components/folioform/LongAnswerCard'
 
 export default function FolioSubmissionForm() {
   return (

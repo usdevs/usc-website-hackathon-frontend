@@ -1,8 +1,8 @@
-import CreateButton from "../components/folio/CreateButton";
+import CreateButton from "../../components/folio/CreateButton";
 import { NextPage } from "next";
 import { Text, Flex, Stack, HStack, VStack, Heading, Card, SimpleGrid } from "@chakra-ui/react";
-import ScrollableList from "../components/folio/ScrollableList";
-import EssayCard from "../components/folio/EssayCard";
+import ScrollableList from "../../components/folio/ScrollableList";
+import EssayCard from "../../components/folio/EssayCard";
 
 
 
@@ -18,7 +18,7 @@ const folio : NextPage = () => {
           <ScrollableList title='Module Code' items={codes}/>
           <ScrollableList title='Module Number' items={numbers}/>
         </HStack>
-        <CreateButton/>
+        <CreateButton href='/folio/create-submission'/>
       </VStack>
       <Flex justify='center' flexGrow={1} p={8}>
         <VStack>
