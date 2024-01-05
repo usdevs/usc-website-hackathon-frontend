@@ -104,7 +104,8 @@ export const MobileLandingPageBanner: React.FC<LandingPageBannerProps> = ({
 
   return (
     <Flex mt='0px' ml = '25px' mr = '25px' mb = '25px' justifyContent={'center'}>
-      <Box borderRadius='10px' overflow='hidden' bgColor={'white'}>
+      <Link href={buttonUrl}>
+      <Box as='button' borderRadius='10px' overflow='hidden' bgColor={'white'}>
         <Box>
           <Image src={imageUrl} alt={ header } width={800} height={800} style={imageStyle}/>
         </Box>
@@ -131,6 +132,7 @@ export const MobileLandingPageBanner: React.FC<LandingPageBannerProps> = ({
         </Box>
 
       </Box>
+      </Link>
     </Flex>
   )
 }
