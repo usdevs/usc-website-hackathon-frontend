@@ -4,7 +4,7 @@ import { Flex, Box, Stack, Text, useBreakpointValue, VStack, useMediaQuery, HSta
 import Footer from '../components/Footer'
 import HeroBg from '../public/image1.jpg'
 import Image from 'next/image'
-import LandingPageBanner from '../components/LandingPageBanner'
+import { LandingPageBanner, MobileLandingPageBanner } from '../components/LandingPageBanner'
 import landingPageMockData from '../constants/LandingPageMockData'
 
 const HeroSection = () => {
@@ -146,10 +146,10 @@ const LandingPage: NextPage = () => {
     return(
       <Flex bgColor="#f5f5f5" justify='center' flexDir='column' as='main' gap='0'>
         <MobileHeroSection />
-        
+
         <Box>
           {landingPageData.map((data, index) => (
-            <LandingPageBanner key={index} left={index % 2 == 1} {...data} />
+            <MobileLandingPageBanner key={index} left={index % 2 == 1} {...data} />
           ))}
         </Box>
 
