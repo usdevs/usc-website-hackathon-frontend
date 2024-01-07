@@ -36,7 +36,6 @@ const socialLinks: SocialLink[] = [
 ]
 
 const linkStyles = {
-  // pl: 7,
   display: 'flex',
   alignItems: 'center',
 }
