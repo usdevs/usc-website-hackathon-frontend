@@ -21,6 +21,10 @@ export const BUTTON_LINKS: NavigationLink[] = [
     label: 'Admin',
     href: '/admin',
   },
+  {
+    label: 'Folio',
+    href: '/folio',
+  },
 ]
 
 // Following 8 point grid system
