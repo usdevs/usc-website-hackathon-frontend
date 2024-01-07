@@ -1,7 +1,7 @@
-import { Card, Box, VStack, Heading, Button, Text, Flex, Spacer } from '@chakra-ui/react'
-import Link from 'next/link'
-import React from 'react'
-import Image from 'next/image'
+import { Card, Box, VStack, Heading, Button, Text, Flex, Spacer } from '@chakra-ui/react';
+import Link from 'next/link';
+import React from 'react';
+import Image from 'next/image';
 
 interface LandingPageBannerProps {
   left: boolean
@@ -97,48 +97,43 @@ export const MobileLandingPageBanner: React.FC<LandingPageBannerProps> = ({
   imageUrl,
   header,
 }) => {
-  const imageStyle = {
-    // width: '100%',
-    // height: 'auto'
-  }
+  const imageStyle = {}
 
   return (
-    <Flex mt='0px' ml = '25px' mr = '25px' mb = '25px' justifyContent={'center'}>
+    <Flex mt='0px' ml='25px' mr='25px' mb='25px' justifyContent={'center'}>
       <Link href={buttonUrl}>
-      <Box as='button' borderRadius='10px' overflow='hidden' bgColor={'white'}>
-        <Box>
-          <Image src={imageUrl} alt={ header } width={800} height={800} style={imageStyle}/>
-        </Box>
+        <Box as='button' borderRadius='10px' overflow='hidden' bgColor={'white'}>
+          <Box>
+            <Image src={imageUrl} alt={header} width={800} height={800} style={imageStyle} />
+          </Box>
 
-        <Box p='6'>
-          <VStack>
-            <Text 
-              as="span"
-              color={'#f90'}
-              fontFamily={'Domine'}
-              fontWeight='bold'
-              lineHeight={0.8}
-              fontSize='2em'
-              textAlign='left'
-              width='100%'
-            >
-              {header}
-            </Text>
-            <Spacer></Spacer>
-            <Text noOfLines={8} textAlign='left' fontSize={{ base: 'xl', md: '2xl' }} lineHeight={1.8}>
-              {description}
-            </Text>
-          </VStack>
+          <Box p='6'>
+            <VStack>
+              <Text
+                as='span'
+                color={'#f90'}
+                fontFamily={'Domine'}
+                fontWeight='bold'
+                lineHeight={0.8}
+                fontSize='2em'
+                textAlign='left'
+                width='100%'
+              >
+                {header}
+              </Text>
+              <Spacer></Spacer>
+              <Text
+                noOfLines={8}
+                textAlign='left'
+                fontSize={{ base: 'xl', md: '2xl' }}
+                lineHeight={1.8}
+              >
+                {description}
+              </Text>
+            </VStack>
+          </Box>
         </Box>
-
-      </Box>
       </Link>
     </Flex>
   )
 }
-
-// export const Test= () => {
-//   return <Text>hello hello</Text>
-// }
-
-// export default LandingPageBanner
