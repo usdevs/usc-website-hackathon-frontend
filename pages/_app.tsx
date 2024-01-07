@@ -5,6 +5,7 @@ import './global.css'
 import '@fontsource/domine/400.css'
 import '@fontsource/do-hyeon'
 import NavMenu from '../components/NavMenu'
+import Footer from '../components/Footer'
 
 const colors = {
   brand: {
@@ -80,6 +81,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <ChakraProvider resetCSS theme={theme}>
         <NavMenu />
         <Component {...pageProps} />
+        <Footer />
       </ChakraProvider>
     </React.StrictMode>
   )
