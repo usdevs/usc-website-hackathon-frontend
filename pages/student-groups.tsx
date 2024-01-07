@@ -1,6 +1,5 @@
 import type { NextPage } from 'next'
 import { Button, Flex, HStack, SimpleGrid, VStack } from '@chakra-ui/react'
-import Footer from '../components/Footer'
 import IGCard from '../components/IGCard'
 import { ChangeEvent, useEffect, useState } from 'react'
 import IGSearchFilter from '../components/IGSearchFilter'
@@ -95,7 +94,6 @@ const StudentGroups: NextPage<{
           </SimpleGrid>
           {pageNumberButtons}
         </VStack>
-        <Footer />
       </Flex>
     </>
   )
