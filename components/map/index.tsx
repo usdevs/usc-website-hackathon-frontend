@@ -1,3 +1,4 @@
+import { he } from 'date-fns/locale'
 import { Icon, LatLngExpression } from 'leaflet'
 import dynamic from 'next/dynamic'
 import { ComponentType, CSSProperties, FC } from 'react'
@@ -42,7 +43,9 @@ const DEFAULT_HEIGHT = '100'
 const Map = (props: MapProps) => {
   const { width = DEFAULT_WIDTH, height = DEFAULT_HEIGHT } = props
   const style: CSSProperties = {
-    aspectRatio: (parseInt(width) / parseInt(height)).toString(),
+    aspectRatio: 2 / 1,
+    width: width,
+    height: height,
   }
   return (
     <div style={style}>
