@@ -1,7 +1,7 @@
-import { Card, Box, VStack, Heading, Button, Text, Flex, Spacer } from '@chakra-ui/react';
-import Link from 'next/link';
-import React from 'react';
-import Image from 'next/image';
+import { Card, Box, VStack, Heading, Button, Text, Flex, Spacer } from '@chakra-ui/react'
+import Link from 'next/link'
+import React from 'react'
+import Image from 'next/image'
 
 interface LandingPageBannerProps {
   left: boolean
