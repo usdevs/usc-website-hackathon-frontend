@@ -115,5 +115,3 @@ $ npm run prisma:reset
 #### Final steps
 
 1. Add the backend .env file - get it from an existing person using the repo.
-
-# Luoqi was here
