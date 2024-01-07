@@ -1,11 +1,28 @@
-import { Card, CardBody, CardHeader, Heading, List, Link, ListItem, Divider } from "@chakra-ui/react";
-import { useState } from "react";
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  Heading,
+  List,
+  Link,
+  ListItem,
+  Divider,
+} from '@chakra-ui/react'
+import { useState } from 'react'
 
-const Links = ({ items, onSelect, selectedItem }: { items: string[], onSelect: (item: string) => void, selectedItem: string | null }) => {
+const Links = ({
+  items,
+  onSelect,
+  selectedItem,
+}: {
+  items: string[]
+  onSelect: (item: string) => void
+  selectedItem: string | null
+}) => {
   return (
     <Card
-      maxH="200px" 
-      overflowY="auto" 
+      maxH='200px'
+      overflowY='auto'
       variant='unstyled'
       sx={{
         '&::-webkit-scrollbar': {
@@ -28,11 +45,11 @@ const Links = ({ items, onSelect, selectedItem }: { items: string[], onSelect: (
           <ListItem key={index} padding={2} width='container'>
             <Link
               fontWeight={selectedItem === item ? 'bold' : 'normal'}
-              color="blue.500"
-              href="#"
+              color='blue.500'
+              href='#'
               onClick={(e) => {
-                e.preventDefault();
-                onSelect(item);
+                e.preventDefault()
+                onSelect(item)
               }}
             >
               {item}
@@ -41,29 +58,25 @@ const Links = ({ items, onSelect, selectedItem }: { items: string[], onSelect: (
         ))}
       </List>
     </Card>
-  );
+  )
 }
 
-const ScrollableList = ({ title, items }: { title: string, items: string[] }) => {
-  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+const ScrollableList = ({ title, items }: { title: string; items: string[] }) => {
+  const [selectedItem, setSelectedItem] = useState<string | null>(null)
 
   const handleSelection = (item: string) => {
-    setSelectedItem(item);
-  };
+    setSelectedItem(item)
+  }
 
   return (
     <Card width='max-content' align='center'>
       <CardBody>
         <Heading size='sm'>{title}</Heading>
-        <Divider margin="9px"/>
-        <Links
-          items={items}
-          onSelect={handleSelection}
-          selectedItem={selectedItem}
-        />
+        <Divider margin='9px' />
+        <Links items={items} onSelect={handleSelection} selectedItem={selectedItem} />
       </CardBody>
     </Card>
-  );
-};
+  )
+}
 
-export default ScrollableList;
+export default ScrollableList

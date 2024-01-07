@@ -24,7 +24,7 @@ export const BUTTON_LINKS: NavigationLink[] = [
   {
     label: 'Folio',
     href: '/folio',
-  }
+  },
 ]
 
 // Following 8 point grid system
