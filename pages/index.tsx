@@ -1,9 +1,9 @@
 import type { NextPage } from 'next'
-import React from 'react'
-import { Flex, Box, Stack, Text, useBreakpointValue, VStack } from '@chakra-ui/react'
+import { Flex, Box, Stack, Text, useBreakpointValue, VStack, useMediaQuery } from '@chakra-ui/react'
+import Footer from '../components/Footer'
 import HeroBg from '../public/image1.jpg'
 import Image from 'next/image'
-import LandingPageBanner from '../components/LandingPageBanner'
+import { LandingPageBanner, MobileLandingPageBanner } from '../components/LandingPageBanner'
 import landingPageMockData from '../constants/LandingPageMockData'
 
 const HeroSection = () => {
@@ -22,17 +22,8 @@ const HeroSection = () => {
           zIndex: -1,
         }}
       />
-      <VStack
-        w={'full'}
-        justify={'center'}
-        px={useBreakpointValue({ base: 4, md: 8 })}
-        // bgGradient={'linear(to-r, blackAlpha.600, transparent)'}
-      >
-        <Stack
-          // maxW={'2xl'}
-          align={'flex-start'}
-          // spacing={10}
-        >
+      <VStack w={'full'} justify={'center'} px={useBreakpointValue({ base: 4, md: 8 })}>
+        <Stack align={'flex-start'}>
           <Text
             color={'white'}
             fontWeight={500}
@@ -86,15 +77,68 @@ const HeroSection = () => {
         </Stack>
       </VStack>
     </Flex>
+    // </Flex>
+  )
+}
+
+const MobileHeroSection = () => {
+  return (
+    <Flex m='25px' justifyContent={'center'}>
+      <Box borderRadius='10px' overflow='hidden' bgColor={'white'}>
+        <Image alt='Mountains' src={HeroBg} placeholder='blur' quality={100} sizes='100vw' />
+
+        <Box p='6'>
+          <Flex justifyContent={'center'}>
+            <Text
+              as='span'
+              color={'#f90'}
+              fontFamily={'Domine'}
+              fontWeight='bold'
+              lineHeight={0.8}
+              fontSize='2em'
+            >
+              Cinnamon&nbsp;
+            </Text>
+            <Text
+              as='span'
+              color={'black'}
+              fontFamily={'Domine'}
+              fontWeight='bold'
+              lineHeight={0.8}
+              fontSize='2em'
+            >
+              Student Life
+            </Text>
+          </Flex>
+        </Box>
+      </Box>
+    </Flex>
   )
 }
 
 const LandingPage: NextPage = () => {
   const landingPageData = landingPageMockData
+  const [isMobile] = useMediaQuery('(max-width: 768px)')
+
+  if (isMobile) {
+    return (
+      <Flex bgColor='#f5f5f5' justify='center' flexDir='column' as='main' gap='0'>
+        <MobileHeroSection />
+
+        <Box>
+          {landingPageData.map((data, index) => (
+            <MobileLandingPageBanner key={index} left={index % 2 == 1} {...data} />
+          ))}
+        </Box>
+
+        <Footer />
+      </Flex>
+    )
+  }
+
   return (
     <Flex justify='center' flexDir='column' as='main' gap='0'>
       <HeroSection />
-      {/* <Box mx={{ base: '2', md: '8', xl: '20' }} my={{ base: '16px', md: '80px' }}> */}
       <Box>
         {landingPageData.map((data, index) => (
           <LandingPageBanner key={index} left={index % 2 == 1} {...data} />
