@@ -21,7 +21,7 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import React from 'react'
-import { FaTelegram, FaUserCircle } from 'react-icons/fa'
+import { FaTelegram, FaUser, FaUserCircle } from 'react-icons/fa'
 import Link from 'next/link'
 import ImageWithFallback from './ImageWithFallback'
 import { DEFAULT_PNG_NAME } from '../utils'
@@ -35,45 +35,28 @@ type LeftPaneProps = {
   imageKey: number
   imageSrc: string
   isInactive: boolean
+  inviteLink: string
+  primaryIGHead: User | null
 }
 
 const getContactButton = (contact: User | null, width?: string) => {
-  // const toast = useToast()
-  //
-  // const copyToClipboard = () => {
-  //   const nameToCopy = contact?.name || 'No contact found'
-  //   navigator.clipboard.writeText(nameToCopy)
-  //
-  //   // Show toast alert
-  //   toast({
-  //     title: 'Copied to clipboard!',
-  //     status: 'success',
-  //     duration: 3000,
-  //     isClosable: true,
-  //     position: 'bottom',
-  //   })
-  // }
-  //
-  // const isContactFound = contact !== null && contact.name !== undefined
-
   return (
     <Button
       overflow='hidden'
       textOverflow={'ellipsis'}
       leftIcon={<FaUserCircle />}
       variant='outline'
+      size='xs'
       colorScheme='facebook'
       minWidth={width || 'auto'}
       maxWidth={width || 'auto'}
       rounded='15px'
       style={{
         borderRadius: '0.5rem',
+        border: '1px solid #144a70',
         display: 'flex',
         alignItems: 'center',
       }}
-      // onClick={copyToClipboard}
-      // isDisabled={!isContactFound}
-      isDisabled={true}
     >
       <Text noOfLines={[1]} display='inline' as='b'>
         {contact?.name || 'No contact found'}
@@ -88,27 +71,36 @@ const getInviteLinkButton = (inviteLink: string, width?: string) => {
       <Button
         overflow='hidden'
         textOverflow={'ellipsis'}
+        leftIcon={<FaTelegram />}
+        variant='outline'
+        size='xs'
         colorScheme='telegram'
         minWidth={width || 'auto'}
         maxWidth={width || 'auto'}
         rounded='15px'
         style={{ borderRadius: '0.5rem', border: '1px solid #229ed9' }}
       >
-        <FaTelegram />
+        Invite Link
       </Button>
     </Link>
   )
 }
 
-const LeftPane: React.FC<LeftPaneProps> = ({ imageKey, imageSrc, isInactive }) => {
+const LeftPane: React.FC<LeftPaneProps> = ({
+  imageKey,
+  imageSrc,
+  isInactive,
+  inviteLink,
+  primaryIGHead,
+}) => {
   return (
-    <VStack borderRight='1px solid darkgrey' justifyContent='space-apart'>
-      <Center width='130px' flex={1}>
+    <VStack borderRight='1px solid darkgrey' align='center' justifyContent='space-apart'>
+      <Center width='110px' flex={1}>
         <ImageWithFallback
           key={imageKey}
           fallbackSrc={'orgs/' + DEFAULT_PNG_NAME}
-          width={300}
-          height={300}
+          width={120}
+          height={120}
           src={imageSrc}
           alt={imageSrc}
           style={{ objectFit: 'contain', padding: '12px' }}
@@ -132,6 +124,10 @@ const LeftPane: React.FC<LeftPaneProps> = ({ imageKey, imageSrc, isInactive }) =
         ) : (
           <></>
         )}
+      </Center>
+      <Center width='90%'>{getContactButton(primaryIGHead, '95px')}</Center>
+      <Center width='90%' pb='7px'>
+        {getInviteLinkButton(inviteLink, '95px')}
       </Center>
     </VStack>
   )
@@ -160,10 +156,10 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
       <Box
         _hover={{ boxShadow: 'xl', transform: 'translateY(-3px)', cursor: 'pointer' }}
         transition='transform 0.3s, box-shadow 0.3s'
-        style={{ minWidth: '100%', minHeight: '15rem' }}
+        style={{ minWidth: '100%', minHeight: '10rem' }}
       >
         <Card
-          direction={{ base: 'column', sm: 'row' }}
+          direction={{ base: 'row', sm: 'row' }}
           overflow='hidden'
           variant='elevated'
           shadow='md'
@@ -171,7 +167,13 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
           style={{ height: '100%' }}
           border='1px solid darkgrey'
         >
-          <LeftPane imageKey={imageKey - 1} imageSrc={imageSrc} isInactive={ig_info.isInactive} />
+          <LeftPane
+            imageKey={imageKey - 1}
+            imageSrc={imageSrc}
+            isInactive={ig_info.isInactive}
+            inviteLink={inviteLink}
+            primaryIGHead={primaryIGHead}
+          />
           <Stack>
             <CardBody>
               <Heading fontSize={'2xl'} fontFamily={'body'}>
@@ -182,7 +184,7 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
                 pt='1vh'
                 css={{
                   display: '-webkit-box',
-                  WebkitLineClamp: 3,
+                  WebkitLineClamp: 4,
                   WebkitBoxOrient: 'vertical',
                   overflow: 'hidden',
                 }}
@@ -190,12 +192,6 @@ const IGCard: React.FC<IGInfoProps> = ({ imageKey, ig_info }) => {
                 {ig_info.description}
               </Text>
             </CardBody>
-            <CardFooter>
-              <ButtonGroup spacing='1'>
-                {getInviteLinkButton(inviteLink)}
-                {getContactButton(primaryIGHead)}
-              </ButtonGroup>
-            </CardFooter>
           </Stack>
         </Card>
       </Box>
