@@ -96,6 +96,9 @@ export const makeFetchToUrlWithAuth = async (
     requestOptions.body = body
   }
   const response = await fetch(url, requestOptions)
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}, ${response.statusText}`)
+  }
   const responseJson = await response.json()
   return { responseJson, responseStatus: response.status }
 }
