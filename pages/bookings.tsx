@@ -42,7 +42,11 @@ import { type ChakraColor, generateChakraColour } from '../utils/colors'
 
 const BookingSelector: FC = () => {
   const [allVenues, isLoadingVenues] = useAllVenues()
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const {
+    isOpen: isBookingConfirmationOpen,
+    onOpen: onBookingConfirmationOpen,
+    onClose: onBookingConfirmationClose,
+  } = useDisclosure()
   const [bookingDataFromSelection, setBookingDataFromSelection] = useState<BookingDataSelection>({
     start: new Date(),
     end: new Date(),
@@ -163,10 +167,6 @@ const BookingSelector: FC = () => {
     return memo
   }, bookingsSortedByVenue)
 
-  const onModalClose = () => {
-    onClose()
-  }
-
   const onModalOpen = () => {
     if (!isUserLoggedIn(authOrNull)) {
       if (!toast.isActive(toast_id)) {
@@ -180,7 +180,7 @@ const BookingSelector: FC = () => {
         })
       }
     } else {
-      onOpen()
+      onBookingConfirmationOpen()
     }
   }
 
@@ -319,8 +319,8 @@ const BookingSelector: FC = () => {
       </AnimatePresence>
       {authOrNull ? (
         <BookingConfirmationPopup
-          isOpen={isOpen}
-          onClose={onModalClose}
+          isOpen={isBookingConfirmationOpen}
+          onClose={onBookingConfirmationClose}
           startDate={userSelectedDate}
           bookingDataFromSelection={bookingDataFromSelection}
           mutate={mutate}
