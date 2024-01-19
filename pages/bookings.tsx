@@ -131,22 +131,15 @@ const BookingSelector: FC = () => {
   )
 
   const venueIndices = allVenues.map((venue) => venue.id)
-  // TODO cleanup this stuff, refactor this component
-  const bookingsSortedByVenue: Array<{
-    bookings: Array<BookingDataDisplay>
-    venueId: number
-  }> = venueIndices.map((index) => {
-    return { bookings: [], venueId: index }
+  const venueToBookingsMap = new Map<number, BookingDataDisplay[]>(
+    venueIndices.map((index) => [index, []]),
+  )
+  allBookingsInMonth.forEach((booking) => {
+    if (!venueToBookingsMap.has(booking.venueId)) {
+      throw new Error('Unable to match existing venues in database with venue of booking')
+    }
+    venueToBookingsMap.get(booking.venueId)!.push(booking)
   })
-
-  // Filter bookings to only show bookings for the current day and the current venue
-  allBookingsInMonth.reduce(function (memo, x) {
-    throwsErrorIfNullOrUndefined(
-      memo.find((y) => y.venueId === x.venueId),
-      'Unable to match existing venues in database with venue of booking',
-    ).bookings.push(x)
-    return memo
-  }, bookingsSortedByVenue)
 
   const toast = useToast()
   const toastId = 'auth-toast'
@@ -343,9 +336,7 @@ const BookingSelector: FC = () => {
             bookings={
               venueIdToFilterBy === ALL_VENUES_KEYWORD.id
                 ? allBookingsInMonth
-                : throwsErrorIfNullOrUndefined(
-                    bookingsSortedByVenue.find((x) => x.venueId === venueIdToFilterBy),
-                  ).bookings
+                : venueToBookingsMap.get(venueIdToFilterBy) || []
             }
           />
         </VStack>
@@ -383,9 +374,7 @@ const BookingSelector: FC = () => {
                             onModalOpen()
                           }}
                           currentVenueBookings={allBookingsInSelectedDay(
-                            throwsErrorIfNullOrUndefined(
-                              bookingsSortedByVenue.find((x) => x.venueId === venue.id),
-                            ).bookings,
+                            venueToBookingsMap.get(venue.id) || [],
                           )}
                           openBookingCard={openBookingCard}
                         />
