@@ -32,12 +32,11 @@ import {
   throwsErrorIfNullOrUndefined,
 } from '../utils'
 import { useCurrentHalfHourTime } from '../hooks/useCurrentHalfHourTime'
-import { endOfMonth, isSameDay, startOfMonth } from 'date-fns'
+import { endOfDay, endOfMonth, isSameDay, startOfDay, startOfMonth } from 'date-fns'
 import { useUserInfo } from '../hooks/useUserInfo'
 import { useIdsToColoursMap } from '../hooks/useIdsToColoursMap'
 import { useAllVenues } from '../hooks/useAllVenues'
 import useSWR from 'swr'
-import { getOnlyMonthAndYearFromDate, getOnlyDayMonthAndYearFromDate } from '../utils/dates'
 import { type ChakraColor, generateChakraColour } from '../utils/colors'
 
 const BookingSelector: FC = () => {
@@ -75,15 +74,13 @@ const BookingSelector: FC = () => {
   // we use LocalStorage to persist the colours indefinitely
   const [orgsIdsToColoursMapString, setOrgsIdsToColoursMapString] = useIdsToColoursMap()
   // const orgIdsToColoursMap = useRef<NumberToStringJSObject>({})
-
-  const startOfDay = getOnlyDayMonthAndYearFromDate(userSelectedDate)
   const allBookingsInSelectedDay = (bookingsToFilterBy: BookingDataDisplay[]) =>
     bookingsToFilterBy.filter((booking) => {
-      return isSameDay(booking.from, startOfDay)
+      return isSameDay(booking.from, startOfDay(userSelectedDate))
     })
 
   useEffect(() => {
-    const newPossibleMonth = getOnlyMonthAndYearFromDate(userSelectedDate)
+    const newPossibleMonth = startOfMonth(userSelectedDate)
     if (newPossibleMonth.getTime() !== userSelectedMonth.getTime()) {
       setUserSelectedMonth(newPossibleMonth)
     }
@@ -133,18 +130,13 @@ const BookingSelector: FC = () => {
   // array
 
   // Create time intervals for the current date
-  const timeIntervals = (() => {
-    const year = userSelectedDate.getFullYear()
-    const month = userSelectedDate.getMonth()
-    const day = userSelectedDate.getDate()
-    return eachMinuteOfInterval(
-      {
-        start: new Date(year, month, day, 0),
-        end: new Date(year, month, day, 23, 59),
-      },
-      { step: 30 },
-    )
-  })()
+  const timeIntervals = eachMinuteOfInterval(
+    {
+      start: startOfDay(userSelectedDate),
+      end: endOfDay(userSelectedDate),
+    },
+    { step: 30 },
+  )
 
   type sorted = {
     bookings: Array<BookingDataDisplay>
