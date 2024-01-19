@@ -1,7 +1,6 @@
 import { FC, MouseEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion'
 import {
-  Box,
   Button,
   Flex,
   HStack,
@@ -31,7 +30,6 @@ import {
   isUserLoggedIn,
   makeFetchToUrlWithAuth,
   throwsErrorIfNullOrUndefined,
-  useBookingCellStyles,
 } from '../utils'
 import { useCurrentHalfHourTime } from '../hooks/useCurrentHalfHourTime'
 import { addDays, isSameDay } from 'date-fns'
@@ -43,14 +41,6 @@ import { getOnlyMonthAndYearFromDate, getOnlyDayMonthAndYearFromDate } from '../
 import { type ChakraColor, generateChakraColour } from '../utils/colors'
 
 const BookingSelector: FC = () => {
-  const [_, setRootFontSize] = useBookingCellStyles()
-  useEffect(() => {
-    const fontSizeEffect = async () => {
-      const browserRootFontSize = window.getComputedStyle(document.documentElement).fontSize
-      await setRootFontSize(Number(browserRootFontSize.replace('px', '')))
-    }
-    fontSizeEffect()
-  }, [setRootFontSize])
   const [allVenues, isLoadingVenues] = useAllVenues()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [bookingDataFromSelection, setBookingDataFromSelection] = useState<BookingDataSelection>({
