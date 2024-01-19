@@ -71,8 +71,6 @@ const BookingSelector: FC = () => {
     ],
     getFromUrlArrayAndParseJson,
   )
-  const toast = useToast()
-  const toast_id = 'auth-toast'
   const [allBookingsInMonth, setAllBookingsInMonth] = useState<BookingDataDisplay[]>([])
   // we use LocalStorage to persist the colours indefinitely
   const [orgsIdsToColoursMapString, setOrgsIdsToColoursMapString] = useIdsToColoursMap()
@@ -167,11 +165,13 @@ const BookingSelector: FC = () => {
     return memo
   }, bookingsSortedByVenue)
 
+  const toast = useToast()
+  const toastId = 'auth-toast'
   const onModalOpen = () => {
     if (!isUserLoggedIn(authOrNull)) {
-      if (!toast.isActive(toast_id)) {
+      if (!toast.isActive(toastId)) {
         toast({
-          id: toast_id,
+          id: toastId,
           title: `You need to login to make a booking!`,
           position: 'top',
           duration: 3000,
@@ -236,7 +236,7 @@ const BookingSelector: FC = () => {
 
     if (responseStatus === 200) {
       toast({
-        id: toast_id,
+        id: toastId,
         title: 'Booking deleted successfully',
         position: 'top',
         duration: 3000,
@@ -247,7 +247,7 @@ const BookingSelector: FC = () => {
       hideEventCard()
     } else {
       toast({
-        id: toast_id,
+        id: toastId,
         title: responseJson.message,
         position: 'top',
         duration: 3000,
