@@ -46,7 +46,7 @@ const Auth: React.FC = () => {
   }
 
   useEffect(() => {
-    ;(async () => {
+    const cleanup = async () => {
       if (isUserLoggedIn(authOrNull)) {
         // @ts-ignore because we do the null check already
         const { setupTime } = authOrNull
@@ -55,7 +55,8 @@ const Auth: React.FC = () => {
           await cleanUpAuth()
         }
       }
-    })()
+    }
+    cleanup()
   }, [authOrNull, cleanUpAuth])
 
   const handleDevAuth = async () => {
