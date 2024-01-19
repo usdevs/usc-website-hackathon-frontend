@@ -1,7 +1,6 @@
 import { FC, MouseEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion'
 import {
-  Box,
   Button,
   Flex,
   HStack,
@@ -31,50 +30,22 @@ import {
   isUserLoggedIn,
   makeFetchToUrlWithAuth,
   throwsErrorIfNullOrUndefined,
-  useBookingCellStyles,
 } from '../utils'
 import { useCurrentHalfHourTime } from '../hooks/useCurrentHalfHourTime'
-import { addDays, isSameDay } from 'date-fns'
+import { endOfDay, endOfMonth, isSameDay, startOfDay, startOfMonth } from 'date-fns'
 import { useUserInfo } from '../hooks/useUserInfo'
 import { useIdsToColoursMap } from '../hooks/useIdsToColoursMap'
 import { useAllVenues } from '../hooks/useAllVenues'
 import useSWR from 'swr'
-
-const getOnlyMonthAndYearFromDate = (dateToParse: Date) => {
-  const month = dateToParse.getMonth()
-  const year = dateToParse.getFullYear()
-  return new Date(year, month)
-}
-
-const getOnlyDayMonthAndYearFromDate = (dateToParse: Date) => {
-  const dateWithMonthAndYear = getOnlyMonthAndYearFromDate(dateToParse)
-  const date = dateToParse.getDate()
-  dateWithMonthAndYear.setDate(date)
-  return dateWithMonthAndYear
-}
-
-type ChakraColor = `${string}.${number}`
-
-const generateChakraColour = (n: number): ChakraColor => {
-  const shades = [300, 400, 500, 600, 700]
-  const colours = ['red', 'orange', 'yellow', 'green', 'teal', 'blue', 'cyan', 'purple', 'pink']
-
-  const shade = shades[n % shades.length]
-  const colour = colours[n % colours.length]
-
-  return `${colour}.${shade}`
-}
+import { type ChakraColor, generateChakraColour } from '../utils/colors'
 
 const BookingSelector: FC = () => {
-  const [_, setRootFontSize] = useBookingCellStyles()
-  useEffect(() => {
-    ;(async () => {
-      const browserRootFontSize = window.getComputedStyle(document.documentElement).fontSize
-      await setRootFontSize(Number(browserRootFontSize.replace('px', '')))
-    })()
-  }, [setRootFontSize])
   const [allVenues, isLoadingVenues] = useAllVenues()
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const {
+    isOpen: isBookingConfirmationOpen,
+    onOpen: onBookingConfirmationOpen,
+    onClose: onBookingConfirmationClose,
+  } = useDisclosure()
   const [bookingDataFromSelection, setBookingDataFromSelection] = useState<BookingDataSelection>({
     start: new Date(),
     end: new Date(),
@@ -82,9 +53,8 @@ const BookingSelector: FC = () => {
   })
   const currentRoundedHalfHourTime = useCurrentHalfHourTime()
   const [userSelectedDate, setUserSelectedDate] = useState<Date>(currentRoundedHalfHourTime)
-  const [userSelectedMonth, setUserSelectedMonth] = useState<Date>(
-    getOnlyMonthAndYearFromDate(userSelectedDate),
-  )
+  const userSelectedMonth = startOfMonth(userSelectedDate)
+
   const [authOrNull] = useUserInfo()
   const {
     data: allBookingsInMonthBackend,
@@ -95,37 +65,25 @@ const BookingSelector: FC = () => {
     [
       process.env.NEXT_PUBLIC_BACKEND_URL || '',
       'bookings/all?start=',
-      userSelectedMonth.toISOString(),
+      startOfMonth(userSelectedMonth).toISOString(),
       '&end=',
-      addDays(userSelectedMonth, 31).toISOString(),
+      endOfMonth(userSelectedMonth).toISOString(),
     ],
     getFromUrlArrayAndParseJson,
   )
-  const toast = useToast()
-  const toast_id = 'auth-toast'
   const [allBookingsInMonth, setAllBookingsInMonth] = useState<BookingDataDisplay[]>([])
   // we use LocalStorage to persist the colours indefinitely
   const [orgsIdsToColoursMapString, setOrgsIdsToColoursMapString] = useIdsToColoursMap()
   // const orgIdsToColoursMap = useRef<NumberToStringJSObject>({})
-
-  const startOfDay = getOnlyDayMonthAndYearFromDate(userSelectedDate)
   const allBookingsInSelectedDay = (bookingsToFilterBy: BookingDataDisplay[]) =>
     bookingsToFilterBy.filter((booking) => {
-      return isSameDay(booking.from, startOfDay)
+      return isSameDay(booking.from, startOfDay(userSelectedDate))
     })
 
   useEffect(() => {
-    const newPossibleMonth = getOnlyMonthAndYearFromDate(userSelectedDate)
-    if (newPossibleMonth.getTime() !== userSelectedMonth.getTime()) {
-      setUserSelectedMonth(newPossibleMonth)
-    }
-    // we can disable eslint here because this is the only place where userSelectedMonth is set
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userSelectedDate])
-
-  useEffect(() => {
-    ;(async () => {
+    const bookingsEffect = async () => {
       if (isLoadingBookings || !allBookingsInMonthBackend) return
+
       const bookingsMappedForDisplay: Array<BookingDataDisplay> = allBookingsInMonthBackend.map(
         (booking) => ({
           ...booking,
@@ -156,54 +114,40 @@ const BookingSelector: FC = () => {
       }
 
       await setOrgsIdsToColoursMapString(map)
-    })()
+    }
+    bookingsEffect()
     return () => {}
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userSelectedMonth, isLoadingBookings]) // since we call setOrgIdsToColoursMapString, need to remove it from the dependencies
   // array
 
   // Create time intervals for the current date
-  const timeIntervals = (() => {
-    const year = userSelectedDate.getFullYear()
-    const month = userSelectedDate.getMonth()
-    const day = userSelectedDate.getDate()
-    return eachMinuteOfInterval(
-      {
-        start: new Date(year, month, day, 0),
-        end: new Date(year, month, day, 23, 59),
-      },
-      { step: 30 },
-    )
-  })()
-
-  type sorted = {
-    bookings: Array<BookingDataDisplay>
-    venueId: number
-  }
+  const timeIntervals = eachMinuteOfInterval(
+    {
+      start: startOfDay(userSelectedDate),
+      end: endOfDay(userSelectedDate),
+    },
+    { step: 30 },
+  )
 
   const venueIndices = allVenues.map((venue) => venue.id)
-  // TODO cleanup this stuff, refactor this component
-  const bookingsSortedByVenue: Array<sorted> = venueIndices.map((index) => {
-    return { bookings: [], venueId: index }
+  const venueToBookingsMap = new Map<number, BookingDataDisplay[]>(
+    venueIndices.map((index) => [index, []]),
+  )
+  allBookingsInMonth.forEach((booking) => {
+    if (!venueToBookingsMap.has(booking.venueId)) {
+      throw new Error('Unable to match existing venues in database with venue of booking')
+    }
+    venueToBookingsMap.get(booking.venueId)!.push(booking)
   })
-  // Filter bookings to only show bookings for the current day and the current venue
-  allBookingsInMonth.reduce(function (memo, x) {
-    throwsErrorIfNullOrUndefined(
-      memo.find((y) => y.venueId === x.venueId),
-      'Unable to match existing venues in database with venue of booking',
-    ).bookings.push(x)
-    return memo
-  }, bookingsSortedByVenue)
 
-  const onModalClose = () => {
-    onClose()
-  }
-
+  const toast = useToast()
+  const toastId = 'auth-toast'
   const onModalOpen = () => {
     if (!isUserLoggedIn(authOrNull)) {
-      if (!toast.isActive(toast_id)) {
+      if (!toast.isActive(toastId)) {
         toast({
-          id: toast_id,
+          id: toastId,
           title: `You need to login to make a booking!`,
           position: 'top',
           duration: 3000,
@@ -212,7 +156,7 @@ const BookingSelector: FC = () => {
         })
       }
     } else {
-      onOpen()
+      onBookingConfirmationOpen()
     }
   }
 
@@ -268,7 +212,7 @@ const BookingSelector: FC = () => {
 
     if (responseStatus === 200) {
       toast({
-        id: toast_id,
+        id: toastId,
         title: 'Booking deleted successfully',
         position: 'top',
         duration: 3000,
@@ -279,7 +223,7 @@ const BookingSelector: FC = () => {
       hideEventCard()
     } else {
       toast({
-        id: toast_id,
+        id: toastId,
         title: responseJson.message,
         position: 'top',
         duration: 3000,
@@ -351,8 +295,8 @@ const BookingSelector: FC = () => {
       </AnimatePresence>
       {authOrNull ? (
         <BookingConfirmationPopup
-          isOpen={isOpen}
-          onClose={onModalClose}
+          isOpen={isBookingConfirmationOpen}
+          onClose={onBookingConfirmationClose}
           startDate={userSelectedDate}
           bookingDataFromSelection={bookingDataFromSelection}
           mutate={mutate}
@@ -392,9 +336,7 @@ const BookingSelector: FC = () => {
             bookings={
               venueIdToFilterBy === ALL_VENUES_KEYWORD.id
                 ? allBookingsInMonth
-                : throwsErrorIfNullOrUndefined(
-                    bookingsSortedByVenue.find((x) => x.venueId === venueIdToFilterBy),
-                  ).bookings
+                : venueToBookingsMap.get(venueIdToFilterBy) || []
             }
           />
         </VStack>
@@ -432,9 +374,7 @@ const BookingSelector: FC = () => {
                             onModalOpen()
                           }}
                           currentVenueBookings={allBookingsInSelectedDay(
-                            throwsErrorIfNullOrUndefined(
-                              bookingsSortedByVenue.find((x) => x.venueId === venue.id),
-                            ).bookings,
+                            venueToBookingsMap.get(venue.id) || [],
                           )}
                           openBookingCard={openBookingCard}
                         />
