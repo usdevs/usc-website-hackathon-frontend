@@ -32,7 +32,7 @@ import {
   throwsErrorIfNullOrUndefined,
 } from '../utils'
 import { useCurrentHalfHourTime } from '../hooks/useCurrentHalfHourTime'
-import { addDays, isSameDay } from 'date-fns'
+import { endOfMonth, isSameDay, startOfMonth } from 'date-fns'
 import { useUserInfo } from '../hooks/useUserInfo'
 import { useIdsToColoursMap } from '../hooks/useIdsToColoursMap'
 import { useAllVenues } from '../hooks/useAllVenues'
@@ -54,9 +54,7 @@ const BookingSelector: FC = () => {
   })
   const currentRoundedHalfHourTime = useCurrentHalfHourTime()
   const [userSelectedDate, setUserSelectedDate] = useState<Date>(currentRoundedHalfHourTime)
-  const [userSelectedMonth, setUserSelectedMonth] = useState<Date>(
-    getOnlyMonthAndYearFromDate(userSelectedDate),
-  )
+  const [userSelectedMonth, setUserSelectedMonth] = useState<Date>(startOfMonth(userSelectedDate))
   const [authOrNull] = useUserInfo()
   const {
     data: allBookingsInMonthBackend,
@@ -67,9 +65,9 @@ const BookingSelector: FC = () => {
     [
       process.env.NEXT_PUBLIC_BACKEND_URL || '',
       'bookings/all?start=',
-      userSelectedMonth.toISOString(),
+      startOfMonth(userSelectedMonth).toISOString(),
       '&end=',
-      addDays(userSelectedMonth, 31).toISOString(),
+      endOfMonth(userSelectedMonth).toISOString(),
     ],
     getFromUrlArrayAndParseJson,
   )
@@ -96,8 +94,9 @@ const BookingSelector: FC = () => {
   }, [userSelectedDate])
 
   useEffect(() => {
-    ;(async () => {
+    const bookingsEffect = async () => {
       if (isLoadingBookings || !allBookingsInMonthBackend) return
+
       const bookingsMappedForDisplay: Array<BookingDataDisplay> = allBookingsInMonthBackend.map(
         (booking) => ({
           ...booking,
@@ -128,7 +127,8 @@ const BookingSelector: FC = () => {
       }
 
       await setOrgsIdsToColoursMapString(map)
-    })()
+    }
+    bookingsEffect()
     return () => {}
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userSelectedMonth, isLoadingBookings]) // since we call setOrgIdsToColoursMapString, need to remove it from the dependencies
