@@ -60,19 +60,15 @@ const Auth: React.FC = () => {
   }, [authOrNull, cleanUpAuth])
 
   const handleDevAuth = async () => {
-    await setAuth({
-      token: process.env.NEXT_PUBLIC_BACKEND_JWT_DEV || '',
-      orgIds: [66, 67],
-      userId: Number(process.env.NEXT_PUBLIC_BACKEND_TELEGRAM_USER_ID) || 22,
-      // userInfo is not needed for now, so can just add filler values
-      userInfo: {
-        firstName: 'Test',
-        telegramId: '',
-        photoUrl: '',
-        username: 'telegramUsername',
-      },
-      setupTime: new Date(),
-      isAdminUser: true,
+    const username = process.env.NEXT_PUBLIC_TELEGRAM_USERNAME_DEV ?? 'test'
+    const id = `DEV_ID_${username}`
+    await handleAuth({
+      id: id,
+      first_name: username,
+      username: username,
+      photo_url: '',
+      auth_date: 0,
+      hash: 'none',
     })
   }
 
