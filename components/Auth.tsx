@@ -58,28 +58,24 @@ const Auth: React.FC = () => {
     })()
   }, [authOrNull, cleanUpAuth])
 
-  const loginButtonDev = (
-    <Button
-      onClick={async () => {
-        await setAuth({
-          token: process.env.NEXT_PUBLIC_BACKEND_JWT_DEV || '',
-          orgIds: [66, 67],
-          userId: Number(process.env.NEXT_PUBLIC_BACKEND_TELEGRAM_USER_ID) || 22,
-          // userInfo is not needed for now, so can just add filler values
-          userInfo: {
-            firstName: 'Test',
-            telegramId: '',
-            photoUrl: '',
-            username: 'telegramUsername',
-          },
-          setupTime: new Date(),
-          isAdminUser: true,
-        })
-      }}
-    >
-      Login for dev
-    </Button>
-  )
+  const handleDevAuth = async () => {
+    await setAuth({
+      token: process.env.NEXT_PUBLIC_BACKEND_JWT_DEV || '',
+      orgIds: [66, 67],
+      userId: Number(process.env.NEXT_PUBLIC_BACKEND_TELEGRAM_USER_ID) || 22,
+      // userInfo is not needed for now, so can just add filler values
+      userInfo: {
+        firstName: 'Test',
+        telegramId: '',
+        photoUrl: '',
+        username: 'telegramUsername',
+      },
+      setupTime: new Date(),
+      isAdminUser: true,
+    })
+  }
+
+  const loginButtonDev = <Button onClick={handleDevAuth}>Login for dev</Button>
 
   const loginButtonWidget = (
     <TelegramLoginButton
