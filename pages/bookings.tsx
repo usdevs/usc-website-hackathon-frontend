@@ -138,16 +138,15 @@ const BookingSelector: FC = () => {
     { step: 30 },
   )
 
-  type sorted = {
-    bookings: Array<BookingDataDisplay>
-    venueId: number
-  }
-
   const venueIndices = allVenues.map((venue) => venue.id)
   // TODO cleanup this stuff, refactor this component
-  const bookingsSortedByVenue: Array<sorted> = venueIndices.map((index) => {
+  const bookingsSortedByVenue: Array<{
+    bookings: Array<BookingDataDisplay>
+    venueId: number
+  }> = venueIndices.map((index) => {
     return { bookings: [], venueId: index }
   })
+
   // Filter bookings to only show bookings for the current day and the current venue
   allBookingsInMonth.reduce(function (memo, x) {
     throwsErrorIfNullOrUndefined(
