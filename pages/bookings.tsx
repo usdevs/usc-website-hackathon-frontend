@@ -45,10 +45,11 @@ import { type ChakraColor, generateChakraColour } from '../utils/colors'
 const BookingSelector: FC = () => {
   const [_, setRootFontSize] = useBookingCellStyles()
   useEffect(() => {
-    ;(async () => {
+    const fontSizeEffect = async () => {
       const browserRootFontSize = window.getComputedStyle(document.documentElement).fontSize
       await setRootFontSize(Number(browserRootFontSize.replace('px', '')))
-    })()
+    }
+    fontSizeEffect()
   }, [setRootFontSize])
   const [allVenues, isLoadingVenues] = useAllVenues()
   const { isOpen, onOpen, onClose } = useDisclosure()
