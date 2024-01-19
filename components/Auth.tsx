@@ -99,12 +99,17 @@ const Auth: React.FC = () => {
     </Button>
   )
 
-  return isUserLoggedIn(authOrNull)
-    ? logoutButton
-    : process.env.NODE_ENV === 'development'
-    ? process.env.NEXT_PUBLIC_NGINX_PROXY_ON === 'true'
-      ? loginButtonWidget
-      : loginButtonDev
-    : loginButtonWidget
+  if (isUserLoggedIn(authOrNull)) {
+    return logoutButton
+  }
+
+  if (process.env.NODE_ENV === 'development') {
+    if (process.env.NEXT_PUBLIC_NGINX_PROXY_ON === 'true') {
+      return loginButtonWidget
+    }
+    return loginButtonDev
+  }
+
+  return loginButtonWidget
 }
 export default Auth
