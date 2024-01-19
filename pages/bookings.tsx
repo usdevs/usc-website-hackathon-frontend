@@ -39,31 +39,8 @@ import { useUserInfo } from '../hooks/useUserInfo'
 import { useIdsToColoursMap } from '../hooks/useIdsToColoursMap'
 import { useAllVenues } from '../hooks/useAllVenues'
 import useSWR from 'swr'
-
-const getOnlyMonthAndYearFromDate = (dateToParse: Date) => {
-  const month = dateToParse.getMonth()
-  const year = dateToParse.getFullYear()
-  return new Date(year, month)
-}
-
-const getOnlyDayMonthAndYearFromDate = (dateToParse: Date) => {
-  const dateWithMonthAndYear = getOnlyMonthAndYearFromDate(dateToParse)
-  const date = dateToParse.getDate()
-  dateWithMonthAndYear.setDate(date)
-  return dateWithMonthAndYear
-}
-
-type ChakraColor = `${string}.${number}`
-
-const generateChakraColour = (n: number): ChakraColor => {
-  const shades = [300, 400, 500, 600, 700]
-  const colours = ['red', 'orange', 'yellow', 'green', 'teal', 'blue', 'cyan', 'purple', 'pink']
-
-  const shade = shades[n % shades.length]
-  const colour = colours[n % colours.length]
-
-  return `${colour}.${shade}`
-}
+import { getOnlyMonthAndYearFromDate, getOnlyDayMonthAndYearFromDate } from '../utils/dates'
+import { type ChakraColor, generateChakraColour } from '../utils/colors'
 
 const BookingSelector: FC = () => {
   const [_, setRootFontSize] = useBookingCellStyles()
