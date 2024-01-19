@@ -9,6 +9,42 @@ import * as process from 'process'
 const Auth: React.FC = () => {
   const [authOrNull, setAuth, cleanUpAuth] = useUserInfo()
 
+  const handleAuth = async (user: TelegramUser) => {
+    const headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    }
+    user.id = String(user.id)
+    const body = {
+      method: 'POST',
+      body: JSON.stringify(user),
+      headers: headers,
+    }
+    await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'login', body)
+      .then(async (response) => {
+        if (response.status !== 200) {
+          throw new Error((await response.text()) ?? 'Unable to fetch login data from backend')
+        }
+        return response.json()
+      })
+      .then((res) => {
+        const { token, orgIds, userCredentials, userId, isAdminUser } = res
+        if (userCredentials === undefined) {
+          throw new Error('Undefined userCredentials received')
+        }
+        const userInfo = {
+          firstName: userCredentials.first_name,
+          telegramId: userCredentials.id,
+          photoUrl: userCredentials.photo_url,
+          username: userCredentials.username,
+        }
+        setAuth({ token, orgIds, userInfo, userId, isAdminUser, setupTime: new Date() })
+      })
+      .catch((error) => {
+        alert(error)
+      })
+  }
+
   useEffect(() => {
     ;(async () => {
       if (isUserLoggedIn(authOrNull)) {
@@ -49,41 +85,7 @@ const Auth: React.FC = () => {
     <TelegramLoginButton
       // BOT_TOKEN on the backend needs to match
       botName={process.env.NEXT_PUBLIC_TELEGRAM_LOGIN_BOT ?? 'TestForUSDevsProdBot'}
-      dataOnauth={async (user: TelegramUser) => {
-        const headers = {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        }
-        user.id = String(user.id)
-        const body = {
-          method: 'POST',
-          body: JSON.stringify(user),
-          headers: headers,
-        }
-        await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'login', body)
-          .then(async (response) => {
-            if (response.status !== 200) {
-              throw new Error((await response.text()) ?? 'Unable to fetch login data from backend')
-            }
-            return response.json()
-          })
-          .then((res) => {
-            const { token, orgIds, userCredentials, userId, isAdminUser } = res
-            if (userCredentials === undefined) {
-              throw new Error('Undefined userCredentials received')
-            }
-            const userInfo = {
-              firstName: userCredentials.first_name,
-              telegramId: userCredentials.id,
-              photoUrl: userCredentials.photo_url,
-              username: userCredentials.username,
-            }
-            setAuth({ token, orgIds, userInfo, userId, isAdminUser, setupTime: new Date() })
-          })
-          .catch((error) => {
-            alert(error)
-          })
-      }}
+      dataOnauth={handleAuth}
     />
   )
 
