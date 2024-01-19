@@ -53,7 +53,8 @@ const BookingSelector: FC = () => {
   })
   const currentRoundedHalfHourTime = useCurrentHalfHourTime()
   const [userSelectedDate, setUserSelectedDate] = useState<Date>(currentRoundedHalfHourTime)
-  const [userSelectedMonth, setUserSelectedMonth] = useState<Date>(startOfMonth(userSelectedDate))
+  const userSelectedMonth = startOfMonth(userSelectedDate)
+
   const [authOrNull] = useUserInfo()
   const {
     data: allBookingsInMonthBackend,
@@ -78,15 +79,6 @@ const BookingSelector: FC = () => {
     bookingsToFilterBy.filter((booking) => {
       return isSameDay(booking.from, startOfDay(userSelectedDate))
     })
-
-  useEffect(() => {
-    const newPossibleMonth = startOfMonth(userSelectedDate)
-    if (newPossibleMonth.getTime() !== userSelectedMonth.getTime()) {
-      setUserSelectedMonth(newPossibleMonth)
-    }
-    // we can disable eslint here because this is the only place where userSelectedMonth is set
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userSelectedDate])
 
   useEffect(() => {
     const bookingsEffect = async () => {
