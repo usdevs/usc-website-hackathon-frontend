@@ -1,6 +1,7 @@
 import React from 'react'
 import {
   Box,
+  Card,
   Center,
   Checkbox,
   CheckboxGroup,
@@ -9,8 +10,10 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  SimpleGrid,
   Stack,
   VStack,
+  useBreakpointValue,
 } from '@chakra-ui/react'
 import { SearchIcon } from '@chakra-ui/icons'
 import { DEFAULT_FILTERS } from '../pages/student-groups'
@@ -28,9 +31,39 @@ const IGSearchFilter: React.FC<IGSearchFilterProps> = ({
   onInactiveChange,
   interestGroupCategories,
 }) => {
+  const isGrid = useBreakpointValue({ base: true, md: false })
+
+  const CheckboxLayout = () => {
+    const checkboxes = Object.entries(interestGroupCategories).map((category) => (
+      <Checkbox onChange={onChange} key={category[0]} value={category[0]}>
+        {category[1]}
+      </Checkbox>
+    ))
+    if (isGrid) {
+      return (
+        <SimpleGrid columns={2} spacing={2} mt='0.5rem'>
+          {checkboxes}
+          <Checkbox onChange={onInactiveChange} value={'Inactive'}>
+            Inactive
+          </Checkbox>
+        </SimpleGrid>
+      )
+    } else {
+      return (
+        <HStack mt='0.5rem' spacing={[1, 5]}>
+          {checkboxes}
+          <Divider borderColor={'black'} border='1px' orientation='vertical' />
+          <Checkbox onChange={onInactiveChange} value={'Inactive'}>
+            Inactive
+          </Checkbox>
+        </HStack>
+      )
+    }
+  }
+
   return (
-    <VStack margin={'2rem'}>
-      <InputGroup>
+    <VStack width='100%' margin={'1rem'}>
+      <InputGroup width={{ base: '95%', sm: '95%', md: '60%' }}>
         <InputLeftElement pointerEvents='none' fontSize='1.3em' paddingTop={2}>
           <SearchIcon color='gray.600' />
         </InputLeftElement>
@@ -44,17 +77,7 @@ const IGSearchFilter: React.FC<IGSearchFilterProps> = ({
         />
       </InputGroup>
       <CheckboxGroup colorScheme='green' defaultValue={DEFAULT_FILTERS}>
-        <HStack mt='0.5rem' spacing={[1, 5]}>
-          {Object.entries(interestGroupCategories).map((category) => (
-            <Checkbox onChange={onChange} key={category[0]} value={category[0]}>
-              {category[1]}
-            </Checkbox>
-          ))}
-          <Divider borderColor={'black'} border='1px' orientation='vertical' />
-          <Checkbox onChange={onInactiveChange} value={'Inactive'}>
-            Inactive
-          </Checkbox>
-        </HStack>
+        <CheckboxLayout />
       </CheckboxGroup>
     </VStack>
   )
