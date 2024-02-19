@@ -1,8 +1,6 @@
 body {
   margin: 0;
   line-height: normal;
-  overflow-x: hidden;
-  overflow-y: scroll;
   -ms-overflow-style: none; /* for Internet Explorer, Edge */
   scrollbar-width: none; /* for Firefox */
 }
