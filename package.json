@@ -22,6 +22,7 @@
     "@fontsource/inter": "^4.5.14",
     "@testing-library/user-event": "^14.4.3",
     "date-fns": "^2.29.3",
+    "embla-carousel-react": "^8.0.0-rc23",
     "formik": "^2.4.2",
     "framer-motion": "^10.12.16",
     "leaflet": "^1.9.4",

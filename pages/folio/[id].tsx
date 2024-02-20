@@ -5,7 +5,6 @@ import {
   Box,
   Center,
   Divider,
-  Flex,
   Grid,
   GridItem,
   Heading,
@@ -14,7 +13,7 @@ import {
   Text,
   UnorderedList,
 } from '@chakra-ui/react'
-import { PropsWithChildren, ReactNode } from 'react'
+import { ReactNode } from 'react'
 import FolioPageBg from '../../public/folio-header.png'
 import Image from 'next/image'
 
