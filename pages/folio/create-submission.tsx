@@ -1,17 +1,6 @@
 'use client'
 import { ChakraProvider } from '@chakra-ui/react'
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  Text,
-  Button,
-  Heading,
-  Image,
-  Box,
-  Input,
-} from '@chakra-ui/react'
+import { Button, Heading } from '@chakra-ui/react'
 import { VStack } from '@chakra-ui/react'
 import Footer from '../../components/Footer'
 import SelectCard from '../../components/folioform/SelectCard'
