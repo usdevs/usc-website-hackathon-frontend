@@ -11,6 +11,7 @@ import {
   VStack,
   IconButton,
 } from '@chakra-ui/react'
+import Link from 'next/link'
 
 type Props = {
   submission: FolioDetailedSubmission
@@ -35,7 +36,9 @@ const EssayCard = ({ submission }: Props) => {
         <Text noOfLines={3}>{text}</Text>
       </CardBody>
       <CardFooter gap='5px'>
-        <IconButton variant='outline' aria-label='View Essay' icon={<ViewIcon />} />
+        <Link href={`/folio/${submission.id}`}>
+          <IconButton variant='outline' aria-label='View Essay' icon={<ViewIcon />} />
+        </Link>
         <IconButton variant='outline' aria-label='Edit Essay' icon={<EditIcon />} />
         <IconButton variant='outline' aria-label='Delete Essay' icon={<DeleteIcon />} />
       </CardFooter>
