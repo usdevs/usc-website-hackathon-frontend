@@ -31,9 +31,6 @@ const FormSelect = <T extends number | string>({
     <FormControl isInvalid={showError}>
       <FormLabel htmlFor={id}>{label}</FormLabel>
       <Select id={id} {...field}>
-        <option disabled hidden value={defaultValue}>
-          {placeholder}
-        </option>
         {data.map((item: SelectProps<T>, i: number) => (
           <option key={i} value={item.value}>
             {item.label}

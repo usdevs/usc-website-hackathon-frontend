@@ -116,4 +116,59 @@ declare global {
   export interface NumberToStringJSObject {
     [index: number]: string
   }
+
+  // Folio
+  interface FolioCourse {
+    code: string
+    name: string
+  }
+
+  interface FolioProfessor {
+    id: number
+    name: string
+  }
+
+  interface CourseOffering {
+    id: number
+    courseCode: string
+    professorId: number
+    semester: string
+    ay: string
+  }
+
+  interface FolioStudent {
+    id: number
+    matriculationNo: string
+    name: string
+  }
+
+  interface FolioSubmission {
+    id: number
+    title: string
+    text: string
+    lastUpdated: Date
+    isPublished: boolean
+    studentId: number
+    courseOfferingId: number
+  }
+
+  interface FolioSubmissionPayload {
+    title: string
+    text: string
+    matriculationNo: string
+    courseOfferingInput: {
+      courseCode: string
+      professorId: number
+      semester: string
+      academicYear: number
+    }
+  }
+
+  interface FolioDetailedSubmission extends FolioSubmission {
+    student: FolioStudent
+    courseOffering: CourseOffering & {
+      course: FolioCourse
+      professor: FolioProfessor
+    }
+  }
 }

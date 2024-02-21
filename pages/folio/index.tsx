@@ -1,19 +1,40 @@
 import CreateButton from '../../components/folio/CreateButton'
-import { NextPage } from 'next'
-import { Text, Flex, Stack, HStack, VStack, Heading, Card, SimpleGrid } from '@chakra-ui/react'
+import { Text, Flex, Stack, HStack, VStack, Heading, SimpleGrid } from '@chakra-ui/react'
 import ScrollableList from '../../components/folio/ScrollableList'
 import EssayCard from '../../components/folio/EssayCard'
+import { GetStaticProps, InferGetStaticPropsType } from 'next'
 
-const Folio: NextPage = () => {
-  const codes = ['NTW', 'NGN', 'NSW', 'GEA', 'NGT', 'NSS', 'CPS', 'NST', 'NHS']
-  const numbers = ['2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009']
+export const getStaticProps: GetStaticProps<{
+  submissions: FolioDetailedSubmission[]
+  courses: FolioCourse[]
+}> = async () => {
+  const [submissions, courses] = await Promise.all([
+    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'folio/submissions/all').then((res) => res.json()),
+    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'folio/courses/all').then((res) => res.json()),
+  ])
+  return { props: { submissions, courses } }
+}
+
+export default function Page({
+  submissions,
+  courses,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
+  const codes = courses.map((course) => course.code)
+  const semesters = ['Sem 1', 'Sem 2']
+  const years = [2021, 2022, 2023]
+  const aySemesters = years.flatMap((year) => {
+    const yearLastTwoDigits = parseInt(year.toString().slice(2))
+    return semesters.map(
+      (semester) => `AY${yearLastTwoDigits}/${yearLastTwoDigits + 1} ${semester}`,
+    )
+  })
 
   return (
     <Stack direction='row' spacing={8} p={8}>
       <VStack align='stretch'>
         <HStack>
           <ScrollableList title='Module Code' items={codes} />
-          <ScrollableList title='Module Number' items={numbers} />
+          <ScrollableList title='Year' items={aySemesters} />
         </HStack>
         <CreateButton href='/folio/create-submission' />
       </VStack>
@@ -43,23 +64,12 @@ const Folio: NextPage = () => {
               },
             }}
           >
-            <EssayCard />
-            <EssayCard />
-            <EssayCard />
-            <EssayCard />
-            <EssayCard />
-            <EssayCard />
-            <EssayCard />
-            <EssayCard />
-            <EssayCard />
-            <EssayCard />
-            <EssayCard />
-            <EssayCard />
+            {submissions.map((submission) => (
+              <EssayCard key={submission.id} submission={submission} />
+            ))}
           </SimpleGrid>
         </VStack>
       </Flex>
     </Stack>
   )
 }
-
-export default Folio
