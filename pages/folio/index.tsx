@@ -12,7 +12,6 @@ export const getStaticProps: GetStaticProps<{
     fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'folio/submissions/all').then((res) => res.json()),
     fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'folio/courses/all').then((res) => res.json()),
   ])
-  console.log(courses)
   return { props: { submissions, courses } }
 }
 

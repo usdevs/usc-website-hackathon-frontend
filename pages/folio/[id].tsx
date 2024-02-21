@@ -26,8 +26,10 @@ const schema = z.array(
 )
 
 export const getStaticPaths = (async () => {
-  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'folio/submissions/all')
-  const submissions = schema.parse(await res.json())
+  const data = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'folio/submissions/all').then(
+    (res) => res.json(),
+  )
+  const submissions = schema.parse(data)
   const paths = submissions.map((submission) => ({
     params: { id: submission.id.toString() },
   }))
@@ -43,9 +45,11 @@ export const getStaticProps: GetStaticProps<{
     throw new Error('id is not a string')
   }
 
-  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'submissions/all')
+  const data = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'folio/submissions/all').then(
+    (res) => res.json(),
+  )
   // TODO: add validation
-  const submissions = (await res.json()) as FolioDetailedSubmission[]
+  const submissions = data as FolioDetailedSubmission[]
   const submission = submissions.find((submission) => submission.id === parseInt(id))
   if (!submission) {
     throw new Error('submission not found')
@@ -121,10 +125,10 @@ export default function Page({ submission }: InferGetStaticPropsType<typeof getS
         <Grid
           templateColumns={{ base: 'repeat(1, 1fr)', xl: 'repeat(5, 1fr)' }}
           columnGap={4}
-          maxW={{ base: '100%', lg: '80%' }}
+          w={{ base: '100%', lg: '80%' }}
         >
           <GridItem colSpan={2}>
-            <Box position='sticky' top={8} px={{ base: 2, md: 4 }} bg='white'>
+            <Box position='sticky' top={8} px={{ base: 2, md: 4 }} bg='white' w='100%'>
               <Heading as='h1' size='2xl' mt='8'>
                 {title}
               </Heading>

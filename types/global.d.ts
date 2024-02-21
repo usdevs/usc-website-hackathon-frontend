@@ -152,6 +152,18 @@ declare global {
     courseOfferingId: number
   }
 
+  interface FolioSubmissionPayload {
+    title: string
+    text: string
+    matriculationNo: string
+    courseOfferingInput: {
+      courseCode: string
+      professorId: number
+      semester: string
+      academicYear: number
+    }
+  }
+
   interface FolioDetailedSubmission extends FolioSubmission {
     student: FolioStudent
     courseOffering: CourseOffering & {

@@ -1,12 +1,12 @@
 'use client'
-import { ChakraProvider } from '@chakra-ui/react'
-import { Button, Heading } from '@chakra-ui/react'
+import { Heading, UseToastOptions, useToast } from '@chakra-ui/react'
 import { VStack } from '@chakra-ui/react'
-import Footer from '../../components/Footer'
-import SelectCard from '../../components/folioform/SelectCard'
-import ShortAnswerCard from '../../components/folioform/ShortAnswerCard'
-import LongAnswerCard from '../../components/folioform/LongAnswerCard'
 import { GetStaticProps, InferGetStaticPropsType } from 'next'
+import CreateSubmissionForm from '../../components/folio/CreateSubmissionForm'
+import { SubmissionForm } from '../../components/folio/validationSchema'
+import { useUserInfo, useUserInfoNonNull } from '../../hooks/useUserInfo'
+import { makeErrorToast, makeSuccessToast } from '../../utils/orgUtils'
+import { makeFetchToUrlWithAuth } from '../../utils'
 
 export const getStaticProps: GetStaticProps<{
   courses: FolioCourse[]
@@ -18,40 +18,70 @@ export const getStaticProps: GetStaticProps<{
     fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'folio/professors/all').then((res) => res.json()),
     fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'folio/students/all').then((res) => res.json()),
   ])
-  console.log(courses)
   return { props: { courses, professors, students } }
 }
+
+const errorToast = {
+  title: 'Error',
+  description: 'You must be logged in to create a submission',
+  status: 'error',
+  duration: 5000,
+  isClosable: true,
+} satisfies UseToastOptions
 
 export default function FolioSubmissionForm({
   courses,
   professors,
   students,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const courseCodes = courses.map((course) => course.code)
-  const professorNames = professors.map((professor) => professor.name)
+  const [auth] = useUserInfo()
+  const toast = useToast()
+
+  const semesters = ['Semester 1', 'Semester 2']
+  const academicYears = [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+
+  async function onSubmit(values: SubmissionForm) {
+    if (!auth) {
+      toast(errorToast)
+      return
+    }
+
+    const { title, text, professorId, courseCode, matriculationNo, semester, academicYear } = values
+    const submissionPayload: FolioSubmissionPayload = {
+      title,
+      text,
+      matriculationNo,
+      courseOfferingInput: {
+        courseCode,
+        professorId,
+        semester: semester.replaceAll(/ /g, ''),
+        academicYear,
+      },
+    }
+
+    const postUrl = process.env.NEXT_PUBLIC_BACKEND_URL + 'folio/submissions'
+
+    try {
+      await makeFetchToUrlWithAuth(postUrl, auth.token, 'POST', JSON.stringify(submissionPayload))
+      toast(makeSuccessToast('Submission created successfully!'))
+    } catch (err) {
+      toast(makeErrorToast('Error creating submission', JSON.stringify((err as Error).message)))
+    }
+  }
 
   return (
-    <ChakraProvider>
-      <VStack spacing='25px' mb={8}>
-        <Heading size='md' mt={4}>
-          Create New Entry
-        </Heading>
-        <SelectCard label='Module Code' optionName='Module' options={courseCodes} />{' '}
-        <SelectCard label='Instructor' optionName='Instructor' options={professorNames} />{' '}
-        <SelectCard
-          label='Academic Year'
-          optionName='Academic Year'
-          options={['2018', '2019', '2020', '2021', '2022', '2023']}
-        />{' '}
-        <SelectCard label='Semester' optionName='Semester' options={['Semester 1', 'Semester 2']} />{' '}
-        <ShortAnswerCard label='Student Name' prompt="Enter Student's name" />
-        <ShortAnswerCard label='Title' prompt='Enter ' />
-        <LongAnswerCard label='Content' prompt='Enter Content' />
-        <Button colorScheme='blue' size='lg' mt={4} onClick={() => console.log('Submitted')}>
-          Submit
-        </Button>
+    <>
+      <VStack spacing='25px' py={8} mb={16}>
+        <Heading size='xl'>Create New Folio Post</Heading>
+        <CreateSubmissionForm
+          professors={professors}
+          courses={courses}
+          students={students}
+          semesters={semesters}
+          academicYears={academicYears}
+          onSubmit={onSubmit}
+        />
       </VStack>
-      <Footer />
-    </ChakraProvider>
+    </>
   )
 }
