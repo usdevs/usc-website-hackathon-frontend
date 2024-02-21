@@ -174,29 +174,6 @@ export default function Page({ submission }: InferGetStaticPropsType<typeof getS
           </GridItem>
         </Grid>
       </Center>
-      {/* <Box style={{ maxWidth: '640px' }} mx='auto' mb={16}>
-        <Markdown
-          components={{
-            h1(props) {
-              return <H1>{props.children}</H1>
-            },
-            h2(props) {
-              return <H2>{props.children}</H2>
-            },
-            text(props) {
-              return <P>{props.children}</P>
-            },
-            p(props) {
-              return <P>{props.children}</P>
-            },
-            link(props) {
-              return <A href={props.href ?? ''}>{props.children}</A>
-            },
-          }}
-        >
-          {textWithTitle}
-        </Markdown>
-      </Box> */}
     </Box>
   )
 }
