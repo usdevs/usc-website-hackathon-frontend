@@ -6,22 +6,36 @@ import { GetStaticProps, InferGetStaticPropsType } from 'next'
 
 export const getStaticProps: GetStaticProps<{
   submissions: FolioDetailedSubmission[]
+  courses: FolioCourse[]
 }> = async () => {
-  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'submissions/all')
-  const submissions = await res.json()
-  return { props: { submissions } }
+  const [submissions, courses] = await Promise.all([
+    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'folio/submissions/all').then((res) => res.json()),
+    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'folio/courses/all').then((res) => res.json()),
+  ])
+  console.log(courses)
+  return { props: { submissions, courses } }
 }
 
-export default function Page({ submissions }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const codes = ['NTW', 'NGN', 'NSW', 'GEA', 'NGT', 'NSS', 'CPS', 'NST', 'NHS']
-  const numbers = ['2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009']
+export default function Page({
+  submissions,
+  courses,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
+  const codes = courses.map((course) => course.code)
+  const semesters = ['Sem 1', 'Sem 2']
+  const years = [2021, 2022, 2023]
+  const aySemesters = years.flatMap((year) => {
+    const yearLastTwoDigits = parseInt(year.toString().slice(2))
+    return semesters.map(
+      (semester) => `AY${yearLastTwoDigits}/${yearLastTwoDigits + 1} ${semester}`,
+    )
+  })
 
   return (
     <Stack direction='row' spacing={8} p={8}>
       <VStack align='stretch'>
         <HStack>
           <ScrollableList title='Module Code' items={codes} />
-          <ScrollableList title='Module Number' items={numbers} />
+          <ScrollableList title='Year' items={aySemesters} />
         </HStack>
         <CreateButton href='/folio/create-submission' />
       </VStack>

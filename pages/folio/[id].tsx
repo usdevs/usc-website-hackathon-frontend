@@ -26,7 +26,7 @@ const schema = z.array(
 )
 
 export const getStaticPaths = (async () => {
-  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'submissions/all')
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'folio/submissions/all')
   const submissions = schema.parse(await res.json())
   const paths = submissions.map((submission) => ({
     params: { id: submission.id.toString() },
