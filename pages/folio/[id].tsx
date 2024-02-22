@@ -44,18 +44,22 @@ export const getStaticProps: GetStaticProps<{
   if (typeof id !== 'string') {
     throw new Error('id is not a string')
   }
-
-  const data = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'folio/submissions/all').then(
-    (res) => res.json(),
-  )
-  // TODO: add validation
-  const submissions = data as FolioDetailedSubmission[]
-  const submission = submissions.find((submission) => submission.id === parseInt(id))
-  if (!submission) {
-    throw new Error('submission not found')
+  try {
+    const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'folio/submissions/all')
+    if (!response.ok) {
+      throw new Error(`Server responded with status ${response.status}`)
+    }
+    const data = await response.json()
+    const submissions = data as FolioDetailedSubmission[]
+    const submission = submissions.find((submission) => submission.id === parseInt(id))
+    if (!submission) {
+      throw new Error('submission not found')
+    }
+    return { props: { submission } }
+  } catch (error) {
+    console.error('Error fetching data:', error)
+    throw error
   }
-
-  return { props: { submission } }
 }
 
 const FOLIO_FONT_FAMILY = 'Times New Roman'
@@ -107,6 +111,10 @@ const Ul = ({ children }: { children: ReactNode }) => (
 
 // Create a custom renderer for each Markdown element type
 export default function Page({ submission }: InferGetStaticPropsType<typeof getStaticProps>) {
+  if (!submission) {
+    console.error('No submission found')
+    return null
+  }
   const { title, text, lastUpdated } = submission
   const { name: studentName } = submission.student
 
