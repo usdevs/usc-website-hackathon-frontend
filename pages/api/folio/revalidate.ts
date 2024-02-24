@@ -1,6 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (process.env.NODE_ENV === 'development') {
+    console.log('Development mode, skipping revalidation...')
+    return
+  }
+
   if (req.query.secret !== process.env.REVALIDATE_SECRET) {
     return res.status(401).json({ message: 'Invalid token' })
   }
@@ -8,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     await res.revalidate('/folio')
 
-    const data = await req.body.json()
+    const data = await req.body
     if (data?.id) {
       await res.revalidate(`/folio/${data.id}`)
     }
