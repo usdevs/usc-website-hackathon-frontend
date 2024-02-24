@@ -12,6 +12,7 @@ import {
   ListItem,
   Text,
   UnorderedList,
+  Code,
 } from '@chakra-ui/react'
 import { ReactNode } from 'react'
 import FolioPageBg from '../../public/folio-header.png'
@@ -77,13 +78,13 @@ const H2 = ({ children }: { children: ReactNode }) => (
 )
 
 const H3 = ({ children }: { children: ReactNode }) => (
-  <Heading as='h3' size='md' my={2} fontFamily={FOLIO_FONT_FAMILY}>
+  <Heading as='h3' size='md' my={4} fontFamily={FOLIO_FONT_FAMILY}>
     {children}
   </Heading>
 )
 
 const P = ({ children }: { children: ReactNode }) => (
-  <Text as='p' fontSize={{ base: 'lg', md: 'xl' }}>
+  <Text as='p' fontSize={{ base: 'lg', md: 'xl' }} my={4} fontFamily={FOLIO_FONT_FAMILY}>
     {children}
   </Text>
 )
@@ -109,13 +110,17 @@ const Ul = ({ children }: { children: ReactNode }) => (
   <UnorderedList fontFamily={FOLIO_FONT_FAMILY}>{children}</UnorderedList>
 )
 
+const MdCode = ({ children }: { children: ReactNode }) => (
+  <Code fontSize={{ base: 'md', md: 'lg' }}>{children}</Code>
+)
+
 // Create a custom renderer for each Markdown element type
 export default function Page({ submission }: InferGetStaticPropsType<typeof getStaticProps>) {
   if (!submission) {
     console.error('No submission found')
     return null
   }
-  const { title, text, lastUpdated } = submission
+  const { title, text } = submission
   const { name: studentName } = submission.student
 
   return (
@@ -173,6 +178,9 @@ export default function Page({ submission }: InferGetStaticPropsType<typeof getS
                   },
                   ul(props) {
                     return <Ul>{props.children}</Ul>
+                  },
+                  code(props) {
+                    return <MdCode>{props.children}</MdCode>
                   },
                 }}
               >
