@@ -268,9 +268,9 @@ const BookingSelector: FC = () => {
         mutate={mutate}
       />
 
-      <HStack alignItems='start' py={4} px={2} gap='2' onClick={hideEventCard} position='relative'>
+      <HStack alignItems='start' py={4} px={2} gap='2' onClick={hideEventCard}>
         {/* Sidebar calendar */}
-        <VStack alignItems={'start'} position='sticky'>
+        <VStack alignItems={'start'} position='sticky' top='8'>
           <HStack gap='4'>
             <VenueMenu
               venues={allVenues}
@@ -291,7 +291,7 @@ const BookingSelector: FC = () => {
           />
         </VStack>
 
-        <HStack overflowX='auto' maxW='calc(100vw - 540px)' hidden={isExpandedCalendar}>
+        <HStack maxW='calc(100vw - 540px)' hidden={isExpandedCalendar}>
           <BookingsTimesCol />
           <HStack>
             {allVenues
