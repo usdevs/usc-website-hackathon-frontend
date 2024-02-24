@@ -11,14 +11,15 @@ interface FormSelectProps<FieldValue> extends BaseFromProps {
     onChange: React.ChangeEventHandler<HTMLSelectElement>
     onBlur: React.FocusEventHandler<HTMLSelectElement>
   }
-  data: Array<any>
+  data: Array<{
+    label: string
+    value: FieldValue
+  }>
 }
 
 const FormSelect = <T extends number | string>({
   id,
   name,
-  placeholder,
-  defaultValue,
   label,
   field,
   data,
