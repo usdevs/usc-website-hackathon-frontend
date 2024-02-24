@@ -5,7 +5,7 @@ export const useBookingCellStyles = () => useGlobalState<number>('root-font-size
 
 export const ALL_VENUES_KEYWORD: Venue = { id: 0, name: 'All Venues' }
 
-export const isUserLoggedIn = (auth: AuthState | null): boolean => {
+export const isUserLoggedIn = (auth: AuthState | null): auth is AuthState => {
   return auth !== null
 }
 export const BUTTON_LINKS: NavigationLink[] = [
