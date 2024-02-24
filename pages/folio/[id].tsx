@@ -59,7 +59,9 @@ export const getStaticProps: GetStaticProps<{
     return { props: { submission } }
   } catch (error) {
     console.error('Error fetching data:', error)
-    throw error
+    return {
+      notFound: true,
+    }
   }
 }
 
