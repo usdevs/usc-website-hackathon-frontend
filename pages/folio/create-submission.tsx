@@ -1,12 +1,14 @@
 'use client'
-import { Heading, UseToastOptions, useToast } from '@chakra-ui/react'
+import { Heading, useToast } from '@chakra-ui/react'
 import { VStack } from '@chakra-ui/react'
 import { GetStaticProps, InferGetStaticPropsType } from 'next'
 import CreateSubmissionForm from '../../components/folio/CreateSubmissionForm'
 import { SubmissionForm } from '../../components/folio/validationSchema'
-import { useUserInfo, useUserInfoNonNull } from '../../hooks/useUserInfo'
+import { useUserInfo } from '../../hooks/useUserInfo'
 import { makeErrorToast, makeSuccessToast } from '../../utils/orgUtils'
 import { makeFetchToUrlWithAuth } from '../../utils'
+import { useRouter } from 'next/router'
+import { notLoggedInToast } from '../../components/toasts/common'
 
 export const getStaticProps: GetStaticProps<{
   courses: FolioCourse[]
@@ -21,14 +23,6 @@ export const getStaticProps: GetStaticProps<{
   return { props: { courses, professors, students } }
 }
 
-const errorToast = {
-  title: 'Error',
-  description: 'You must be logged in to create a submission',
-  status: 'error',
-  duration: 5000,
-  isClosable: true,
-} satisfies UseToastOptions
-
 export default function FolioSubmissionForm({
   courses,
   professors,
@@ -40,9 +34,10 @@ export default function FolioSubmissionForm({
   const semesters = ['Semester 1', 'Semester 2']
   const academicYears = [2018, 2019, 2020, 2021, 2022, 2023, 2024]
 
+  const router = useRouter()
   async function onSubmit(values: SubmissionForm) {
     if (!auth) {
-      toast(errorToast)
+      toast(notLoggedInToast)
       return
     }
 
@@ -62,8 +57,21 @@ export default function FolioSubmissionForm({
     const postUrl = process.env.NEXT_PUBLIC_BACKEND_URL + 'folio/submissions'
 
     try {
-      await makeFetchToUrlWithAuth(postUrl, auth.token, 'POST', JSON.stringify(submissionPayload))
-      toast(makeSuccessToast('Submission created successfully!'))
+      const { responseJson: data } = await makeFetchToUrlWithAuth(
+        postUrl,
+        auth.token,
+        'POST',
+        JSON.stringify(submissionPayload),
+      )
+      const id = data?.result?.[0]?.id
+      toast(makeSuccessToast('Submission created successfully! Redirecting...'))
+
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      if (!id) {
+        router.push('/folio')
+      } else {
+        router.push('/folio/' + id)
+      }
     } catch (err) {
       toast(makeErrorToast('Error creating submission', JSON.stringify((err as Error).message)))
     }

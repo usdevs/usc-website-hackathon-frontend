@@ -53,11 +53,18 @@ export default function CreateSubmissionForm({
     academicYear: 2022,
   }
 
+  async function handleSubmit(values: SubmissionForm) {
+    // Form option values are strings, but the backend expects numbers for academicYear
+    const { academicYear } = values
+    const transformedValues = { ...values, academicYear: Number(academicYear) }
+    await onSubmit(transformedValues)
+  }
+
   return (
     <Formik
       validationSchema={submissionValidationSchema}
       initialValues={initialValues}
-      onSubmit={onSubmit}
+      onSubmit={handleSubmit}
     >
       {(form) => {
         return (

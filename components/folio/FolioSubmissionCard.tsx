@@ -6,8 +6,6 @@ import {
   CardFooter,
   Text,
   Heading,
-  Avatar,
-  HStack,
   VStack,
   IconButton,
 } from '@chakra-ui/react'
@@ -15,24 +13,24 @@ import Link from 'next/link'
 
 type Props = {
   submission: FolioDetailedSubmission
+  onDelete: () => Promise<void>
 }
 
-const EssayCard = ({ submission }: Props) => {
-  const { title, text, lastUpdated } = submission
+const FolioSubmissionCard = ({ submission, onDelete }: Props) => {
+  const { title, text } = submission
   const { name: studentName } = submission.student
 
   return (
     <Card>
       <CardHeader>
-        <HStack spacing='10px'>
-          <Avatar src='https://bit.ly/broken-link' />
-          <VStack align='left'>
-            <Heading size='sm'>{title}</Heading>
-            <Text fontSize='sm'>{studentName}</Text>
-          </VStack>
-        </HStack>
+        <VStack align='left' gap='2'>
+          <Heading size='md' noOfLines={2}>
+            {title}
+          </Heading>
+          <Text fontSize='md'>{studentName}</Text>
+        </VStack>
       </CardHeader>
-      <CardBody>
+      <CardBody py={0}>
         <Text noOfLines={3}>{text}</Text>
       </CardBody>
       <CardFooter gap='5px'>
@@ -40,10 +38,15 @@ const EssayCard = ({ submission }: Props) => {
           <IconButton variant='outline' aria-label='View Essay' icon={<ViewIcon />} />
         </Link>
         <IconButton variant='outline' aria-label='Edit Essay' icon={<EditIcon />} />
-        <IconButton variant='outline' aria-label='Delete Essay' icon={<DeleteIcon />} />
+        <IconButton
+          variant='outline'
+          aria-label='Delete Essay'
+          icon={<DeleteIcon />}
+          onClick={onDelete}
+        />
       </CardFooter>
     </Card>
   )
 }
 
-export default EssayCard
+export default FolioSubmissionCard

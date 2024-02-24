@@ -86,6 +86,7 @@ declare global {
     userInfo: UserInformation | null
     userId: number
     isAdminUser: boolean
+    roles: string[]
   }
 
   interface BookingDataForm {
