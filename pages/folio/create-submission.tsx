@@ -1,13 +1,14 @@
 'use client'
-import { Heading, UseToastOptions, useToast } from '@chakra-ui/react'
+import { Heading, useToast } from '@chakra-ui/react'
 import { VStack } from '@chakra-ui/react'
 import { GetStaticProps, InferGetStaticPropsType } from 'next'
 import CreateSubmissionForm from '../../components/folio/CreateSubmissionForm'
 import { SubmissionForm } from '../../components/folio/validationSchema'
-import { useUserInfo, useUserInfoNonNull } from '../../hooks/useUserInfo'
+import { useUserInfo } from '../../hooks/useUserInfo'
 import { makeErrorToast, makeSuccessToast } from '../../utils/orgUtils'
 import { makeFetchToUrlWithAuth } from '../../utils'
 import { useRouter } from 'next/router'
+import { notLoggedInToast } from '../../components/toasts/common'
 
 export const getStaticProps: GetStaticProps<{
   courses: FolioCourse[]
@@ -21,14 +22,6 @@ export const getStaticProps: GetStaticProps<{
   ])
   return { props: { courses, professors, students } }
 }
-
-const errorToast = {
-  title: 'Error',
-  description: 'You must be logged in to create a submission',
-  status: 'error',
-  duration: 5000,
-  isClosable: true,
-} satisfies UseToastOptions
 
 export default function FolioSubmissionForm({
   courses,
@@ -44,7 +37,7 @@ export default function FolioSubmissionForm({
   const router = useRouter()
   async function onSubmit(values: SubmissionForm) {
     if (!auth) {
-      toast(errorToast)
+      toast(notLoggedInToast)
       return
     }
 
