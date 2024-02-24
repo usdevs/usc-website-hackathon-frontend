@@ -9,6 +9,7 @@ import {
   MenuItemOption,
   MenuList,
   MenuOptionGroup,
+  SimpleGrid,
   useBoolean,
   useDisclosure,
   useToast,
@@ -38,6 +39,7 @@ import { useIdsToColoursMap } from '../hooks/useIdsToColoursMap'
 import { useAllVenues } from '../hooks/useAllVenues'
 import useSWR from 'swr'
 import { type ChakraColor, generateChakraColour } from '../utils/colors'
+import VenueMenu from '../components/booking/VenueMenu'
 
 const BookingSelector: FC = () => {
   const [allVenues, isLoadingVenues] = useAllVenues()
@@ -271,7 +273,7 @@ const BookingSelector: FC = () => {
           />
         )}
       </AnimatePresence>
-      {authOrNull ? (
+      {authOrNull && (
         <BookingConfirmationPopup
           isOpen={isBookingConfirmationOpen}
           onClose={onBookingConfirmationClose}
@@ -279,32 +281,15 @@ const BookingSelector: FC = () => {
           bookingDataFromSelection={bookingDataFromSelection}
           mutate={mutate}
         />
-      ) : (
-        <></>
       )}
-      <HStack alignItems='start' py={4} gap='2' onClick={hideEventCard}>
-        <VStack px={12} alignItems={'start'} position='sticky' top='20px'>
+      <HStack alignItems='start' py={4} px={2} gap='2' onClick={hideEventCard}>
+        <VStack alignItems={'start'}>
           <HStack gap='4'>
-            <Menu closeOnSelect={false}>
-              <MenuButton as={Button} colorScheme='blue' rightIcon={<ChevronDownIcon />} w='200px'>
-                {venueIdToFilterBy === 0
-                  ? 'Venue'
-                  : getVenueFromId(allVenues, venueIdToFilterBy).name}
-              </MenuButton>
-              <MenuList>
-                <MenuOptionGroup defaultValue={ALL_VENUES_KEYWORD.name} type='radio'>
-                  {[ALL_VENUES_KEYWORD, ...allVenues].map((venue) => (
-                    <MenuItemOption
-                      onClick={() => setVenueIdToFilterBy(venue.id)}
-                      key={venue.id}
-                      value={venue.name}
-                    >
-                      {venue.name}
-                    </MenuItemOption>
-                  ))}
-                </MenuOptionGroup>
-              </MenuList>
-            </Menu>
+            <VenueMenu
+              venues={allVenues}
+              venueIdToFilterBy={venueIdToFilterBy}
+              setVenueIdToFilterBy={setVenueIdToFilterBy}
+            />
             <Toggle isOn={isExpandedCalendar} setIsOn={setExpandedCalendar} />
           </HStack>
           <Calendar
