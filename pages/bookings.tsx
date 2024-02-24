@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useCallback, useEffect, useRef, useState } from 'react'
+import { FC, MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion'
 import {
   Button,
@@ -53,7 +53,7 @@ const BookingSelector: FC = () => {
   })
   const currentRoundedHalfHourTime = useCurrentHalfHourTime()
   const [userSelectedDate, setUserSelectedDate] = useState<Date>(currentRoundedHalfHourTime)
-  const userSelectedMonth = startOfMonth(userSelectedDate)
+  const userSelectedMonth = useMemo(() => startOfMonth(userSelectedDate), [userSelectedDate])
 
   const [authOrNull] = useUserInfo()
   const {
@@ -75,10 +75,13 @@ const BookingSelector: FC = () => {
   // we use LocalStorage to persist the colours indefinitely
   const [orgsIdsToColoursMapString, setOrgsIdsToColoursMapString] = useIdsToColoursMap()
   // const orgIdsToColoursMap = useRef<NumberToStringJSObject>({})
-  const allBookingsInSelectedDay = (bookingsToFilterBy: BookingDataDisplay[]) =>
-    bookingsToFilterBy.filter((booking) => {
-      return isSameDay(booking.from, startOfDay(userSelectedDate))
-    })
+  const allBookingsInSelectedDay = useCallback(
+    (bookingsToFilterBy: BookingDataDisplay[]) =>
+      bookingsToFilterBy.filter((booking) => {
+        return isSameDay(booking.from, startOfDay(userSelectedDate))
+      }),
+    [userSelectedDate],
+  )
 
   useEffect(() => {
     const bookingsEffect = async () => {
@@ -122,15 +125,19 @@ const BookingSelector: FC = () => {
   // array
 
   // Create time intervals for the current date
-  const timeIntervals = eachMinuteOfInterval(
-    {
-      start: startOfDay(userSelectedDate),
-      end: endOfDay(userSelectedDate),
-    },
-    { step: 30 },
+  const timeIntervals = useMemo(
+    () =>
+      eachMinuteOfInterval(
+        {
+          start: startOfDay(userSelectedDate),
+          end: endOfDay(userSelectedDate),
+        },
+        { step: 30 },
+      ),
+    [userSelectedDate],
   )
 
-  const venueIndices = allVenues.map((venue) => venue.id)
+  const venueIndices = useMemo(() => allVenues.map((venue) => venue.id), [allVenues])
   const venueToBookingsMap = new Map<number, BookingDataDisplay[]>(
     venueIndices.map((index) => [index, []]),
   )
@@ -181,6 +188,7 @@ const BookingSelector: FC = () => {
     setEventCardPos({ x: box.left - 390, y: box.top })
     setBookingCard(booking)
   }
+
   const hideEventCard = () => {
     setEventCardPos({ ...startPos })
   }
@@ -234,39 +242,9 @@ const BookingSelector: FC = () => {
     setIsDeleting.off()
   }
 
-  const intervalRef = useRef<number>(-1)
-
   const isDataFetching = useCallback(() => {
     return isLoadingVenues || isLoadingBookings
   }, [isLoadingBookings, isLoadingVenues])
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (isDataFetching()) {
-        return
-      }
-      intervalRef.current = window.scrollY
-    }
-
-    window.addEventListener('scroll', handleScroll, { passive: true })
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [isDataFetching])
-
-  useEffect(() => {
-    const scrollToPopularTimes = () => {
-      window.scrollTo({
-        top:
-          intervalRef.current === -1
-            ? document.documentElement.clientHeight * 1.3
-            : intervalRef.current,
-        behavior: 'smooth',
-      })
-    }
-    scrollToPopularTimes()
-  })
 
   if (error) {
     throw new Error('Unable to fetch bookings from backend')
@@ -276,7 +254,7 @@ const BookingSelector: FC = () => {
     return <></>
   }
 
-  console.log('Is re-rendering')
+  console.log('Is rendering')
 
   return (
     <>
@@ -348,7 +326,7 @@ const BookingSelector: FC = () => {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <HStack overflowX='auto' maxW='calc(100vw - 540px)' maxH='90vh'>
+              <HStack overflowX='auto' maxW='calc(100vw - 540px)'>
                 <BookingsTimesCol />
                 <HStack>
                   {allVenues
