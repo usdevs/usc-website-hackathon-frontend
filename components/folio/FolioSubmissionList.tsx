@@ -36,19 +36,17 @@ export default function FolioSubmissionList({ submissions }: Props) {
   }
 
   return (
-    <Flex justify='center' flexGrow={1} p={8}>
-      <VStack>
-        <Heading size='xl'>Folio Submissions</Heading>
-        <SimpleGrid columns={2} spacing={8} p={8}>
-          {submissions.map((submission) => (
-            <FolioSubmissionCard
-              key={submission.id}
-              submission={submission}
-              onDelete={() => handleDelete(submission.id)}
-            />
-          ))}
-        </SimpleGrid>
-      </VStack>
-    </Flex>
+    <VStack w='100%'>
+      <Heading size='xl'>Folio Submissions</Heading>
+      <SimpleGrid columns={2} spacing={8} p={8} w='100%'>
+        {submissions.map((submission) => (
+          <FolioSubmissionCard
+            key={submission.id}
+            submission={submission}
+            onDelete={() => handleDelete(submission.id)}
+          />
+        ))}
+      </SimpleGrid>
+    </VStack>
   )
 }
