@@ -1,5 +1,5 @@
 import CreateButton from '../../components/folio/CreateButton'
-import { Flex, Stack, HStack, VStack, Heading, SimpleGrid } from '@chakra-ui/react'
+import { Flex, Stack, HStack, VStack, Heading, SimpleGrid, Box } from '@chakra-ui/react'
 import ScrollableList from '../../components/folio/ScrollableList'
 import FolioSubmissionCard from '../../components/folio/FolioSubmissionCard'
 import { GetStaticProps, InferGetStaticPropsType } from 'next'
@@ -31,15 +31,22 @@ export default function Page({
   })
 
   return (
-    <Stack direction='row' spacing={8} p={8}>
+    <SimpleGrid
+      gridTemplateColumns={{ base: '1fr', lg: '1fr 3fr', xl: '1fr 4fr' }}
+      rowGap={8}
+      justifyItems={'center'}
+      p={{ base: 2, md: 4, lg: 8 }}
+      pt={{ base: 4, md: 6, lg: 12 }}
+      minH={'70vh'}
+    >
       <VStack align='stretch'>
-        <HStack>
+        <HStack w='100%'>
           <ScrollableList title='Module Code' items={codes} />
           <ScrollableList title='Year' items={aySemesters} />
         </HStack>
         <CreateButton href='/folio/create-submission' />
       </VStack>
       <FolioSubmissionList submissions={submissions} />
-    </Stack>
+    </SimpleGrid>
   )
 }

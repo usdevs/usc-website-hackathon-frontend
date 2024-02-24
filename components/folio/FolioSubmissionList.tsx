@@ -38,7 +38,7 @@ export default function FolioSubmissionList({ submissions }: Props) {
   return (
     <VStack w='100%'>
       <Heading size='xl'>Folio Submissions</Heading>
-      <SimpleGrid columns={2} spacing={8} p={8} w='100%'>
+      <SimpleGrid columns={{ base: 1, xl: 2 }} spacing={8} p={8} w='100%'>
         {submissions.map((submission) => (
           <FolioSubmissionCard
             key={submission.id}
