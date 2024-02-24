@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (process.env.NODE_ENV === 'development') {
     console.log('Development mode, skipping revalidation...')
-    return
+    return res.json({ revalidated: false })
   }
 
   if (req.query.secret !== process.env.REVALIDATE_SECRET) {
