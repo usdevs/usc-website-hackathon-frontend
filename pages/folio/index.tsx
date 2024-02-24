@@ -1,8 +1,9 @@
 import CreateButton from '../../components/folio/CreateButton'
-import { Text, Flex, Stack, HStack, VStack, Heading, SimpleGrid } from '@chakra-ui/react'
+import { Flex, Stack, HStack, VStack, Heading, SimpleGrid } from '@chakra-ui/react'
 import ScrollableList from '../../components/folio/ScrollableList'
-import EssayCard from '../../components/folio/EssayCard'
+import FolioSubmissionCard from '../../components/folio/FolioSubmissionCard'
 import { GetStaticProps, InferGetStaticPropsType } from 'next'
+import FolioSubmissionList from '../../components/folio/FolioSubmissionList'
 
 export const getStaticProps: GetStaticProps<{
   submissions: FolioDetailedSubmission[]
@@ -38,38 +39,7 @@ export default function Page({
         </HStack>
         <CreateButton href='/folio/create-submission' />
       </VStack>
-      <Flex justify='center' flexGrow={1} p={8}>
-        <VStack>
-          <Heading size='md'>NTW2001: Cosmopolitanism and Global Citizenship</Heading>
-          <Text>Instructor: Dr Leung Wing Sze</Text>
-          <SimpleGrid
-            columns={2}
-            spacing={8}
-            p={8}
-            maxH='100vh'
-            overflow='auto'
-            sx={{
-              '&::-webkit-scrollbar': {
-                width: '4px',
-              },
-              '&::-webkit-scrollbar-track': {
-                background: 'gray.200',
-              },
-              '&::-webkit-scrollbar-thumb': {
-                background: 'blue.500',
-                borderRadius: '24px',
-              },
-              '&::-webkit-scrollbar-thumb:hover': {
-                background: 'blue.600',
-              },
-            }}
-          >
-            {submissions.map((submission) => (
-              <EssayCard key={submission.id} submission={submission} />
-            ))}
-          </SimpleGrid>
-        </VStack>
-      </Flex>
+      <FolioSubmissionList submissions={submissions} />
     </Stack>
   )
 }
