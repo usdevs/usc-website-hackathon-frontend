@@ -57,7 +57,7 @@ export default function CreateSubmissionForm({
     // Form option values are strings, but the backend expects numbers for academicYear
     const { academicYear } = values
     const transformedValues = { ...values, academicYear: Number(academicYear) }
-    onSubmit(transformedValues)
+    await onSubmit(transformedValues)
   }
 
   return (
