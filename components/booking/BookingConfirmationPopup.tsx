@@ -28,6 +28,7 @@ import { useUserInfoNonNull } from '../../hooks/useUserInfo'
 import useSWRImmutable from 'swr/immutable'
 import { useAllVenues } from '../../hooks/useAllVenues'
 import { KeyedMutator } from 'swr'
+import { ROLES } from '../../constants/roles'
 
 const MAX_SLOTS_PER_BOOKING = 4
 
@@ -40,6 +41,7 @@ type BookingConfirmationPopupProps = {
 }
 
 type OrgDropdownProps = {
+  isBookingAdmin: boolean
   auth: AuthState
   allOrgs: Organisation[]
 }
@@ -82,8 +84,8 @@ const makeErrorBookingToast = (errMsg: string): UseToastOptions => {
   }
 }
 
-const OrgDropdown: FC<OrgDropdownProps> = ({ auth, allOrgs }) => {
-  if (auth.isAdminUser) {
+const OrgDropdown: FC<OrgDropdownProps> = ({ isBookingAdmin, auth, allOrgs }) => {
+  if (isBookingAdmin) {
     return (
       <>
         {allOrgs.map((orgName, i) => {
@@ -134,6 +136,7 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
   const toast = useToast()
   const currentRoundedHalfHourTime = useCurrentHalfHourTime()
   const [auth] = useUserInfoNonNull()
+  const isBookingAdmin = auth.isAdminUser || auth.roles.includes(ROLES.BookingAdmin)
   const [bookingData, setBookingData] = useState<BookingDataForm>({
     eventName: '',
     orgId: auth.orgIds[0],
@@ -197,7 +200,7 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
   }
 
   if (
-    !auth.isAdminUser &&
+    !isBookingAdmin &&
     bookingDataFromSelection.end.getTime() - bookingDataFromSelection.start.getTime() >
       DURATION_PER_SLOT * MAX_SLOTS_PER_BOOKING * 1000 * 60
   ) {
@@ -243,7 +246,7 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
                   required
                   {...(auth.orgIds.length === 1 ? { pointerEvents: 'none' } : {})}
                 >
-                  <OrgDropdown auth={auth} allOrgs={allOrgs} />
+                  <OrgDropdown auth={auth} isBookingAdmin={isBookingAdmin} allOrgs={allOrgs} />
                 </Select>
               }
             </FormControl>
