@@ -24,7 +24,7 @@ import {
   makeFetchToUrlWithAuth,
 } from '../../utils'
 import { useCurrentHalfHourTime } from '../../hooks/useCurrentHalfHourTime'
-import { useUserInfoNonNull } from '../../hooks/useUserInfo'
+import { useUserInfo, useUserInfoNonNull } from '../../hooks/useUserInfo'
 import useSWRImmutable from 'swr/immutable'
 import { useAllVenues } from '../../hooks/useAllVenues'
 import { KeyedMutator } from 'swr'
@@ -135,16 +135,21 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
   const [allVenues, isLoadingVenues] = useAllVenues()
   const toast = useToast()
   const currentRoundedHalfHourTime = useCurrentHalfHourTime()
-  const [auth] = useUserInfoNonNull()
-  const isBookingAdmin = auth.isAdminUser || auth.roles.includes(ROLES.BookingAdmin)
+  const [auth] = useUserInfo()
   const [bookingData, setBookingData] = useState<BookingDataForm>({
     eventName: '',
-    orgId: auth.orgIds[0],
+    orgId: auth?.orgIds[0] ?? 0,
   })
 
   // todo do better than querying all orgs just to match bookings here <-- search orgs in DB by orgId with GraphQL
-
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+
+  if (!isUserLoggedIn(auth)) {
+    return <></>
+  }
+
+  const isBookingAdmin = auth.isAdminUser || auth.roles.includes(ROLES.BookingAdmin)
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 

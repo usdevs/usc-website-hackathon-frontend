@@ -1,4 +1,4 @@
-import { useBoolean, VStack, Box, Text } from '@chakra-ui/react'
+import { useBoolean, VStack, Box, Text, Center } from '@chakra-ui/react'
 import { addMinutes, isAfter, isEqual, startOfDay } from 'date-fns'
 import { useState, useRef, useEffect } from 'react'
 import { BoxProps } from '@chakra-ui/react'
@@ -287,20 +287,20 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
   }
 
   return (
-    <VStack ref={wrapperRef} spacing='0' w='150px' flexShrink='0'>
-      <Text
+    <VStack ref={wrapperRef} spacing='0' w='130px' flexShrink='0'>
+      <Center
         fontSize='md'
         position='sticky'
         top='0'
-        py='1'
         bg='brand.primary'
         color='white'
         alignSelf='stretch'
         textAlign='center'
         zIndex='100'
+        h='24'
       >
         {venueName}
-      </Text>
+      </Center>
       <VStack
         position='relative'
         spacing='0'

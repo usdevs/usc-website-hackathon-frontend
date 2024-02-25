@@ -1,24 +1,10 @@
-import { FC, MouseEvent, useCallback, useEffect, useRef, useState } from 'react'
+import { FC, MouseEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion'
-import {
-  Button,
-  Flex,
-  HStack,
-  Menu,
-  MenuButton,
-  MenuItemOption,
-  MenuList,
-  MenuOptionGroup,
-  useBoolean,
-  useDisclosure,
-  useToast,
-  VStack,
-} from '@chakra-ui/react'
+import { Flex, HStack, useBoolean, useDisclosure, useToast, VStack } from '@chakra-ui/react'
 import eachMinuteOfInterval from 'date-fns/eachMinuteOfInterval'
 import { BookingConfirmationPopup } from '../components/booking/BookingConfirmationPopup'
 import { NextPage } from 'next'
 import Calendar from '../components/booking/Calendar'
-import { ChevronDownIcon } from '@chakra-ui/icons'
 import BookingsTimesCol from '../components/booking/BookingTimesCol'
 import BookingVenueCol from '../components/booking/BookingVenueCol'
 import Toggle from '../components/booking/Toggle'
@@ -26,7 +12,6 @@ import CalendarEventCard from '../components/booking/CalendarEventCard'
 import {
   ALL_VENUES_KEYWORD,
   getFromUrlArrayAndParseJson,
-  getVenueFromId,
   isUserLoggedIn,
   makeFetchToUrlWithAuth,
   throwsErrorIfNullOrUndefined,
@@ -38,6 +23,7 @@ import { useIdsToColoursMap } from '../hooks/useIdsToColoursMap'
 import { useAllVenues } from '../hooks/useAllVenues'
 import useSWR from 'swr'
 import { type ChakraColor, generateChakraColour } from '../utils/colors'
+import VenueMenu from '../components/booking/VenueMenu'
 
 const BookingSelector: FC = () => {
   const [allVenues, isLoadingVenues] = useAllVenues()
@@ -53,7 +39,7 @@ const BookingSelector: FC = () => {
   })
   const currentRoundedHalfHourTime = useCurrentHalfHourTime()
   const [userSelectedDate, setUserSelectedDate] = useState<Date>(currentRoundedHalfHourTime)
-  const userSelectedMonth = startOfMonth(userSelectedDate)
+  const userSelectedMonth = useMemo(() => startOfMonth(userSelectedDate), [userSelectedDate])
 
   const [authOrNull] = useUserInfo()
   const {
@@ -75,10 +61,13 @@ const BookingSelector: FC = () => {
   // we use LocalStorage to persist the colours indefinitely
   const [orgsIdsToColoursMapString, setOrgsIdsToColoursMapString] = useIdsToColoursMap()
   // const orgIdsToColoursMap = useRef<NumberToStringJSObject>({})
-  const allBookingsInSelectedDay = (bookingsToFilterBy: BookingDataDisplay[]) =>
-    bookingsToFilterBy.filter((booking) => {
-      return isSameDay(booking.from, startOfDay(userSelectedDate))
-    })
+  const allBookingsInSelectedDay = useCallback(
+    (bookingsToFilterBy: BookingDataDisplay[]) =>
+      bookingsToFilterBy.filter((booking) => {
+        return isSameDay(booking.from, startOfDay(userSelectedDate))
+      }),
+    [userSelectedDate],
+  )
 
   useEffect(() => {
     const bookingsEffect = async () => {
@@ -122,15 +111,19 @@ const BookingSelector: FC = () => {
   // array
 
   // Create time intervals for the current date
-  const timeIntervals = eachMinuteOfInterval(
-    {
-      start: startOfDay(userSelectedDate),
-      end: endOfDay(userSelectedDate),
-    },
-    { step: 30 },
+  const timeIntervals = useMemo(
+    () =>
+      eachMinuteOfInterval(
+        {
+          start: startOfDay(userSelectedDate),
+          end: endOfDay(userSelectedDate),
+        },
+        { step: 30 },
+      ),
+    [userSelectedDate],
   )
 
-  const venueIndices = allVenues.map((venue) => venue.id)
+  const venueIndices = useMemo(() => allVenues.map((venue) => venue.id), [allVenues])
   const venueToBookingsMap = new Map<number, BookingDataDisplay[]>(
     venueIndices.map((index) => [index, []]),
   )
@@ -173,6 +166,7 @@ const BookingSelector: FC = () => {
     x: -1,
     y: -1,
   }
+
   const openBookingCard = (event: MouseEvent, booking: BookingDataDisplay | undefined) => {
     event.stopPropagation()
     const el = event.target as HTMLElement
@@ -181,6 +175,7 @@ const BookingSelector: FC = () => {
     setEventCardPos({ x: box.left - 390, y: box.top })
     setBookingCard(booking)
   }
+
   const hideEventCard = () => {
     setEventCardPos({ ...startPos })
   }
@@ -234,39 +229,9 @@ const BookingSelector: FC = () => {
     setIsDeleting.off()
   }
 
-  const intervalRef = useRef<number>(-1)
-
   const isDataFetching = useCallback(() => {
     return isLoadingVenues || isLoadingBookings
   }, [isLoadingBookings, isLoadingVenues])
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (isDataFetching()) {
-        return
-      }
-      intervalRef.current = window.scrollY
-    }
-
-    window.addEventListener('scroll', handleScroll, { passive: true })
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [isDataFetching])
-
-  useEffect(() => {
-    const scrollToPopularTimes = () => {
-      window.scrollTo({
-        top:
-          intervalRef.current === -1
-            ? document.documentElement.clientHeight * 1.3
-            : intervalRef.current,
-        behavior: 'smooth',
-      })
-    }
-    scrollToPopularTimes()
-  })
 
   if (error) {
     throw new Error('Unable to fetch bookings from backend')
@@ -276,7 +241,7 @@ const BookingSelector: FC = () => {
     return <></>
   }
 
-  console.log('Is re-rendering')
+  console.log('Is rendering')
 
   return (
     <>
@@ -293,40 +258,25 @@ const BookingSelector: FC = () => {
           />
         )}
       </AnimatePresence>
-      {authOrNull ? (
-        <BookingConfirmationPopup
-          isOpen={isBookingConfirmationOpen}
-          onClose={onBookingConfirmationClose}
-          startDate={userSelectedDate}
-          bookingDataFromSelection={bookingDataFromSelection}
-          mutate={mutate}
-        />
-      ) : (
-        <></>
-      )}
-      <HStack alignItems='start' py={4} gap='2' onClick={hideEventCard}>
-        <VStack px={12} alignItems={'start'} position='sticky' top='20px'>
+
+      {/* Booking form */}
+      <BookingConfirmationPopup
+        isOpen={isBookingConfirmationOpen}
+        onClose={onBookingConfirmationClose}
+        startDate={userSelectedDate}
+        bookingDataFromSelection={bookingDataFromSelection}
+        mutate={mutate}
+      />
+
+      <HStack alignItems='start' py={4} px={2} gap='2' onClick={hideEventCard}>
+        {/* Sidebar calendar */}
+        <VStack alignItems={'start'} position='sticky' top='8'>
           <HStack gap='4'>
-            <Menu closeOnSelect={false}>
-              <MenuButton as={Button} colorScheme='blue' rightIcon={<ChevronDownIcon />} w='200px'>
-                {venueIdToFilterBy === 0
-                  ? 'Venue'
-                  : getVenueFromId(allVenues, venueIdToFilterBy).name}
-              </MenuButton>
-              <MenuList>
-                <MenuOptionGroup defaultValue={ALL_VENUES_KEYWORD.name} type='radio'>
-                  {[ALL_VENUES_KEYWORD, ...allVenues].map((venue) => (
-                    <MenuItemOption
-                      onClick={() => setVenueIdToFilterBy(venue.id)}
-                      key={venue.id}
-                      value={venue.name}
-                    >
-                      {venue.name}
-                    </MenuItemOption>
-                  ))}
-                </MenuOptionGroup>
-              </MenuList>
-            </Menu>
+            <VenueMenu
+              venues={allVenues}
+              venueIdToFilterBy={venueIdToFilterBy}
+              setVenueIdToFilterBy={setVenueIdToFilterBy}
+            />
             <Toggle isOn={isExpandedCalendar} setIsOn={setExpandedCalendar} />
           </HStack>
           <Calendar
@@ -340,51 +290,41 @@ const BookingSelector: FC = () => {
             }
           />
         </VStack>
-        <AnimatePresence>
-          {!isExpandedCalendar && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <HStack overflowX='auto' maxW='calc(100vw - 540px)' maxH='90vh'>
-                <BookingsTimesCol />
-                <HStack>
-                  {allVenues
-                    .filter((venue) => {
-                      if (venueIdToFilterBy === ALL_VENUES_KEYWORD.id) {
-                        return true
-                      }
-                      return venue.id === venueIdToFilterBy
-                    })
-                    .map((venue: Venue) => {
-                      return (
-                        <BookingVenueCol
-                          orgIdsToColoursMap={orgsIdsToColoursMapString || {}}
-                          timeIntervals={timeIntervals}
-                          key={venue.id}
-                          venueName={venue.name}
-                          openBookingModal={(start, end) => {
-                            setBookingDataFromSelection({
-                              venueId: venue.id,
-                              start,
-                              end,
-                            })
-                            onModalOpen()
-                          }}
-                          currentVenueBookings={allBookingsInSelectedDay(
-                            venueToBookingsMap.get(venue.id) || [],
-                          )}
-                          openBookingCard={openBookingCard}
-                        />
-                      )
-                    })}
-                </HStack>
-              </HStack>
-            </motion.div>
-          )}
-        </AnimatePresence>
+
+        <HStack maxW='calc(100vw - 540px)' hidden={isExpandedCalendar}>
+          <BookingsTimesCol />
+          <HStack>
+            {allVenues
+              .filter((venue) => {
+                if (venueIdToFilterBy === ALL_VENUES_KEYWORD.id) {
+                  return true
+                }
+                return venue.id === venueIdToFilterBy
+              })
+              .map((venue: Venue) => {
+                return (
+                  <BookingVenueCol
+                    orgIdsToColoursMap={orgsIdsToColoursMapString || {}}
+                    timeIntervals={timeIntervals}
+                    key={venue.id}
+                    venueName={venue.name}
+                    openBookingModal={(start, end) => {
+                      setBookingDataFromSelection({
+                        venueId: venue.id,
+                        start,
+                        end,
+                      })
+                      onModalOpen()
+                    }}
+                    currentVenueBookings={allBookingsInSelectedDay(
+                      venueToBookingsMap.get(venue.id) || [],
+                    )}
+                    openBookingCard={openBookingCard}
+                  />
+                )
+              })}
+          </HStack>
+        </HStack>
       </HStack>
     </>
   )
