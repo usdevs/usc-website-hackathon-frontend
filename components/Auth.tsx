@@ -52,7 +52,7 @@ const Auth: React.FC = () => {
       if (isUserLoggedIn(authOrNull)) {
         // @ts-ignore because we do the null check already
         const { setupTime } = authOrNull
-        const timeSinceSetup: number = Date.now() - setupTime
+        const timeSinceSetup: number = Date.now() - setupTime.getMilliseconds()
         if (timeSinceSetup >= (30 + 1) * 60 * 1000) {
           await cleanUpAuth()
         }
