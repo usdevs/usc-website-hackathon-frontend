@@ -49,9 +49,9 @@ type OrgDropdownProps = {
 const BOOKING_TOAST_ID = 'booking-toast'
 const DURATION_PER_SLOT = 30
 
-const makeSuccessBookingToast = (): UseToastOptions => {
+const makeSuccessBookingToast = (id = BOOKING_TOAST_ID): UseToastOptions => {
   return {
-    id: BOOKING_TOAST_ID,
+    id,
     title: `Booking made successfully!`,
     position: 'top',
     duration: 3000,
@@ -60,9 +60,9 @@ const makeSuccessBookingToast = (): UseToastOptions => {
   }
 }
 
-const makeInvalidBookingToast = (errMsg: string): UseToastOptions => {
+const makeInvalidBookingToast = (errMsg: string, id = BOOKING_TOAST_ID): UseToastOptions => {
   return {
-    id: BOOKING_TOAST_ID,
+    id,
     title: `Oops! The booking couldn't be made.`,
     description: errMsg,
     position: 'top',
@@ -72,9 +72,9 @@ const makeInvalidBookingToast = (errMsg: string): UseToastOptions => {
   }
 }
 
-const makeErrorBookingToast = (errMsg: string): UseToastOptions => {
+const makeErrorBookingToast = (errMsg: string, id = BOOKING_TOAST_ID): UseToastOptions => {
   return {
-    id: BOOKING_TOAST_ID,
+    id,
     title: 'Oh snap! There was an error when making the booking',
     description: errMsg,
     position: 'top',
@@ -170,19 +170,20 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
 
       if (responseStatus === 200) {
         if (!toast.isActive(BOOKING_TOAST_ID)) {
-          toast(makeSuccessBookingToast())
+          toast(makeSuccessBookingToast('booking-success'))
         }
         await mutate(undefined)
         onClose()
       } else if (responseStatus === 400) {
         if (toast.isActive(BOOKING_TOAST_ID)) return
-        toast(makeInvalidBookingToast(JSON.stringify(responseJson.message)))
+        toast(makeInvalidBookingToast(JSON.stringify(responseJson.message), 'booking-invalid'))
       } else {
         if (toast.isActive(BOOKING_TOAST_ID)) return
-        toast(makeErrorBookingToast(JSON.stringify(responseJson.message)))
+        toast(makeErrorBookingToast(JSON.stringify(responseJson.message), 'booking-error'))
       }
     } catch (err) {
-      toast(makeErrorBookingToast((err as Error).message))
+      const message = (err as Error).message
+      toast(makeErrorBookingToast(message, message))
     }
 
     setIsSubmitting(false)

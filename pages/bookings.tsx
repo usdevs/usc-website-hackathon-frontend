@@ -135,12 +135,12 @@ const BookingSelector: FC = () => {
   })
 
   const toast = useToast()
-  const toastId = 'auth-toast'
   const onModalOpen = () => {
     if (!isUserLoggedIn(authOrNull)) {
-      if (!toast.isActive(toastId)) {
+      const needToLogin = 'need-to-login'
+      if (!toast.isActive(needToLogin)) {
         toast({
-          id: toastId,
+          id: needToLogin,
           title: `You need to login to make a booking!`,
           position: 'top',
           duration: 3000,
@@ -148,9 +148,9 @@ const BookingSelector: FC = () => {
           isClosable: true,
         })
       }
-    } else {
-      onBookingConfirmationOpen()
+      return
     }
+    onBookingConfirmationOpen()
   }
 
   const [venueIdToFilterBy, setVenueIdToFilterBy] = useState<number>(ALL_VENUES_KEYWORD.id)
@@ -199,15 +199,15 @@ const BookingSelector: FC = () => {
     setIsDeleting.on()
 
     const { token } = throwsErrorIfNullOrUndefined(authOrNull)
-    const { responseJson, responseStatus } = await makeFetchToUrlWithAuth(
-      process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings/' + bookingId,
-      token,
-      'DELETE',
-    )
 
-    if (responseStatus === 200) {
+    try {
+      await makeFetchToUrlWithAuth(
+        process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings/' + bookingId,
+        token,
+        'DELETE',
+      )
       toast({
-        id: toastId,
+        id: 'booking-deleted-successfully',
         title: 'Booking deleted successfully',
         position: 'top',
         duration: 3000,
@@ -216,17 +216,19 @@ const BookingSelector: FC = () => {
       })
       await mutate(undefined)
       hideEventCard()
-    } else {
+    } catch (err) {
+      const message = (err as Error).message
       toast({
-        id: toastId,
-        title: responseJson.message,
+        id: 'booking-deleted-error',
+        title: message,
         position: 'top',
         duration: 3000,
         status: 'error',
         isClosable: true,
       })
+    } finally {
+      setIsDeleting.off()
     }
-    setIsDeleting.off()
   }
 
   const isDataFetching = useCallback(() => {
