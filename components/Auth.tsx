@@ -5,7 +5,6 @@ import TelegramLoginButton from './TelegramLoginButton'
 import { isUserLoggedIn } from '../utils'
 import { useUserInfo } from '../hooks/useUserInfo'
 import * as process from 'process'
-import { ROLES } from '../constants/roles'
 
 const Auth: React.FC = () => {
   const [authOrNull, setAuth, cleanUpAuth] = useUserInfo()
@@ -29,7 +28,7 @@ const Auth: React.FC = () => {
         return response.json()
       })
       .then((res) => {
-        const { token, orgIds, userCredentials, userId, roles } = res
+        const { token, orgIds, userCredentials, userId, permissions } = res
         if (userCredentials === undefined) {
           throw new Error('Undefined userCredentials received')
         }
@@ -39,7 +38,7 @@ const Auth: React.FC = () => {
           photoUrl: userCredentials.photo_url,
           username: userCredentials.username,
         }
-        setAuth({ token, orgIds, userInfo, userId, roles, setupTime: new Date() })
+        setAuth({ token, orgIds, userInfo, userId, permissions, setupTime: new Date() })
       })
       .catch((error) => {
         alert(error)

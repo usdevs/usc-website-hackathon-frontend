@@ -24,11 +24,10 @@ import {
   makeFetchToUrlWithAuth,
 } from '../../utils'
 import { useCurrentHalfHourTime } from '../../hooks/useCurrentHalfHourTime'
-import { useUserInfo, useUserInfoNonNull } from '../../hooks/useUserInfo'
+import { useUserInfo } from '../../hooks/useUserInfo'
 import useSWRImmutable from 'swr/immutable'
 import { useAllVenues } from '../../hooks/useAllVenues'
 import { KeyedMutator } from 'swr'
-import { ROLES } from '../../constants/roles'
 import { checkIsBookingAdmin } from '../../utils/auth'
 
 const MAX_SLOTS_PER_BOOKING = 4
@@ -150,7 +149,6 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
   }
 
   const isBookingAdmin = checkIsBookingAdmin(auth)
-
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
@@ -161,22 +159,25 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
     }
 
     setIsSubmitting(true)
+    try {
+      const { responseJson, responseStatus } = await makeFetchToUrlWithAuth(
+        process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings',
+        auth.token,
+        'POST',
+        JSON.stringify({ ...bookingData, ...bookingDataFromSelection }),
+      )
 
-    const { responseJson, responseStatus } = await makeFetchToUrlWithAuth(
-      process.env.NEXT_PUBLIC_BACKEND_URL + 'bookings',
-      auth.token,
-      'POST',
-      JSON.stringify({ ...bookingData, ...bookingDataFromSelection }),
-    )
-
-    if (responseStatus === 200) {
-      toast(makeSuccessBookingToast())
-      await mutate(undefined)
-      onClose()
-    } else if (responseStatus === 400) {
-      toast(makeInvalidBookingToast(JSON.stringify(responseJson.message)))
-    } else {
-      toast(makeErrorBookingToast(JSON.stringify(responseJson.message)))
+      if (responseStatus === 200) {
+        toast(makeSuccessBookingToast())
+        await mutate(undefined)
+        onClose()
+      } else if (responseStatus === 400) {
+        toast(makeInvalidBookingToast(JSON.stringify(responseJson.message)))
+      } else {
+        toast(makeErrorBookingToast(JSON.stringify(responseJson.message)))
+      }
+    } catch (err) {
+      toast(makeErrorBookingToast((err as Error).message))
     }
 
     setIsSubmitting(false)
@@ -205,18 +206,18 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
     return <></>
   }
 
-  if (
-    !isBookingAdmin &&
-    bookingDataFromSelection.end.getTime() - bookingDataFromSelection.start.getTime() >
-      DURATION_PER_SLOT * MAX_SLOTS_PER_BOOKING * 1000 * 60
-  ) {
-    toast(
-      makeInvalidBookingToast(
-        JSON.stringify('Booking duration is too long, please change your booking request'),
-      ),
-    )
-    return <></>
-  }
+  // if (
+  //   !isBookingAdmin &&
+  //   bookingDataFromSelection.end.getTime() - bookingDataFromSelection.start.getTime() >
+  //     DURATION_PER_SLOT * MAX_SLOTS_PER_BOOKING * 1000 * 60
+  // ) {
+  //   toast(
+  //     makeInvalidBookingToast(
+  //       JSON.stringify('Booking duration is too long, please change your booking request'),
+  //     ),
+  //   )
+  //   return <></>
+  // }
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} autoFocus={false} returnFocusOnClose={false}>
