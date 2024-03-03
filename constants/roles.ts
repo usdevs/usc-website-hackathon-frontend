@@ -5,6 +5,7 @@ const BookingAdmin = 'booking_admin'
 const OrganisationHead = 'organisation_head'
 const Member = 'member'
 
+/** The following roles are duplicated from the backend */
 export const ROLES = {
   WebsiteAdmin,
   SpacesAdmin,

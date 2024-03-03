@@ -39,8 +39,7 @@ const Auth: React.FC = () => {
           photoUrl: userCredentials.photo_url,
           username: userCredentials.username,
         }
-        const isAdminUser = roles.some((role: string) => role === ROLES.WebsiteAdmin)
-        setAuth({ token, orgIds, userInfo, userId, roles, isAdminUser, setupTime: new Date() })
+        setAuth({ token, orgIds, userInfo, userId, roles, setupTime: new Date() })
       })
       .catch((error) => {
         alert(error)

@@ -85,7 +85,6 @@ declare global {
     orgIds: Array<number>
     userInfo: UserInformation | null
     userId: number
-    isAdminUser: boolean
     roles: string[]
   }
 

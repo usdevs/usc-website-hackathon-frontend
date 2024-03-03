@@ -17,6 +17,7 @@ import { FC, HTMLProps } from 'react'
 import { getVenueFromId } from '../../utils'
 import { useUserInfo } from '../../hooks/useUserInfo'
 import { useAllVenues } from '../../hooks/useAllVenues'
+import { checkIsBookingAdmin } from '../../utils/auth'
 
 interface CalendarEventCardProps extends HTMLProps<HTMLDivElement> {
   x: number
@@ -84,7 +85,7 @@ const CalendarEventCard: FC<CalendarEventCardProps> = ({ x, y, booking, onDelete
           </VStack>
         </CardBody>
         <CardFooter justify='flex-end' pt='0'>
-          {(booking.userId === authOrNull?.userId || authOrNull?.isAdminUser) && (
+          {(booking.userId === authOrNull?.userId || checkIsBookingAdmin(authOrNull)) && (
             <Button
               size='sm'
               isLoading={isDeleting}

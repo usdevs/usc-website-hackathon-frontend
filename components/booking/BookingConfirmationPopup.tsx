@@ -29,6 +29,7 @@ import useSWRImmutable from 'swr/immutable'
 import { useAllVenues } from '../../hooks/useAllVenues'
 import { KeyedMutator } from 'swr'
 import { ROLES } from '../../constants/roles'
+import { checkIsBookingAdmin } from '../../utils/auth'
 
 const MAX_SLOTS_PER_BOOKING = 4
 
@@ -148,7 +149,7 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
     return <></>
   }
 
-  const isBookingAdmin = auth.isAdminUser || auth.roles.includes(ROLES.BookingAdmin)
+  const isBookingAdmin = checkIsBookingAdmin(auth)
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
