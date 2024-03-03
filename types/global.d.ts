@@ -87,11 +87,8 @@ declare global {
     userId: number
     permissions: {
       isAdmin: boolean
-      isBookingAdmin: boolean
-      isButteryAdmin: boolean
-      isSpacesAdmin: boolean
       isAcadsAdmin: boolean
-      isOrgHead: boolean
+      venueIdToIsVenueAdmin: Record<number, boolean>
     }
   }
 

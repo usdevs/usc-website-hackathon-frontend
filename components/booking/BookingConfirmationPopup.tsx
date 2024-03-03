@@ -28,7 +28,7 @@ import { useUserInfo } from '../../hooks/useUserInfo'
 import useSWRImmutable from 'swr/immutable'
 import { useAllVenues } from '../../hooks/useAllVenues'
 import { KeyedMutator } from 'swr'
-import { checkIsBookingAdmin } from '../../utils/auth'
+import { checkIsVenueAdmin } from '../../utils/auth'
 
 const MAX_SLOTS_PER_BOOKING = 4
 
@@ -41,7 +41,7 @@ type BookingConfirmationPopupProps = {
 }
 
 type OrgDropdownProps = {
-  isBookingAdmin: boolean
+  isVenueAdmin: boolean
   auth: AuthState
   allOrgs: Organisation[]
 }
@@ -84,8 +84,8 @@ const makeErrorBookingToast = (errMsg: string): UseToastOptions => {
   }
 }
 
-const OrgDropdown: FC<OrgDropdownProps> = ({ isBookingAdmin, auth, allOrgs }) => {
-  if (isBookingAdmin) {
+const OrgDropdown: FC<OrgDropdownProps> = ({ isVenueAdmin, auth, allOrgs }) => {
+  if (isVenueAdmin) {
     return (
       <>
         {allOrgs.map((orgName, i) => {
@@ -148,7 +148,8 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
     return <></>
   }
 
-  const isBookingAdmin = checkIsBookingAdmin(auth)
+  const isVenueAdmin = checkIsVenueAdmin(auth, bookingDataFromSelection.venueId)
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
@@ -168,12 +169,16 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
       )
 
       if (responseStatus === 200) {
-        toast(makeSuccessBookingToast())
+        if (!toast.isActive(BOOKING_TOAST_ID)) {
+          toast(makeSuccessBookingToast())
+        }
         await mutate(undefined)
         onClose()
       } else if (responseStatus === 400) {
+        if (toast.isActive(BOOKING_TOAST_ID)) return
         toast(makeInvalidBookingToast(JSON.stringify(responseJson.message)))
       } else {
+        if (toast.isActive(BOOKING_TOAST_ID)) return
         toast(makeErrorBookingToast(JSON.stringify(responseJson.message)))
       }
     } catch (err) {
@@ -206,18 +211,19 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
     return <></>
   }
 
-  // if (
-  //   !isBookingAdmin &&
-  //   bookingDataFromSelection.end.getTime() - bookingDataFromSelection.start.getTime() >
-  //     DURATION_PER_SLOT * MAX_SLOTS_PER_BOOKING * 1000 * 60
-  // ) {
-  //   toast(
-  //     makeInvalidBookingToast(
-  //       JSON.stringify('Booking duration is too long, please change your booking request'),
-  //     ),
-  //   )
-  //   return <></>
-  // }
+  if (
+    !isVenueAdmin &&
+    bookingDataFromSelection.end.getTime() - bookingDataFromSelection.start.getTime() >
+      DURATION_PER_SLOT * MAX_SLOTS_PER_BOOKING * 1000 * 60
+  ) {
+    if (toast.isActive(BOOKING_TOAST_ID)) return <></>
+    toast(
+      makeInvalidBookingToast(
+        JSON.stringify('Booking duration is too long, please change your booking request'),
+      ),
+    )
+    return <></>
+  }
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} autoFocus={false} returnFocusOnClose={false}>
@@ -253,7 +259,7 @@ export const BookingConfirmationPopup: FC<BookingConfirmationPopupProps> = ({
                   required
                   {...(auth.orgIds.length === 1 ? { pointerEvents: 'none' } : {})}
                 >
-                  <OrgDropdown auth={auth} isBookingAdmin={isBookingAdmin} allOrgs={allOrgs} />
+                  <OrgDropdown auth={auth} isVenueAdmin={isVenueAdmin} allOrgs={allOrgs} />
                 </Select>
               }
             </FormControl>
