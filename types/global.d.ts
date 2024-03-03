@@ -85,8 +85,11 @@ declare global {
     orgIds: Array<number>
     userInfo: UserInformation | null
     userId: number
-    isAdminUser: boolean
-    roles: string[]
+    permissions: {
+      isAdmin: boolean
+      isAcadsAdmin: boolean
+      venueIdToIsVenueAdmin: Record<number, boolean>
+    }
   }
 
   interface BookingDataForm {

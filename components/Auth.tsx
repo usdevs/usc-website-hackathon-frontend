@@ -5,7 +5,6 @@ import TelegramLoginButton from './TelegramLoginButton'
 import { isUserLoggedIn } from '../utils'
 import { useUserInfo } from '../hooks/useUserInfo'
 import * as process from 'process'
-import { ROLES } from '../constants/roles'
 
 const Auth: React.FC = () => {
   const [authOrNull, setAuth, cleanUpAuth] = useUserInfo()
@@ -29,7 +28,7 @@ const Auth: React.FC = () => {
         return response.json()
       })
       .then((res) => {
-        const { token, orgIds, userCredentials, userId, roles } = res
+        const { token, orgIds, userCredentials, userId, permissions } = res
         if (userCredentials === undefined) {
           throw new Error('Undefined userCredentials received')
         }
@@ -39,8 +38,7 @@ const Auth: React.FC = () => {
           photoUrl: userCredentials.photo_url,
           username: userCredentials.username,
         }
-        const isAdminUser = roles.some((role: string) => role === ROLES.WebsiteAdmin)
-        setAuth({ token, orgIds, userInfo, userId, roles, isAdminUser, setupTime: new Date() })
+        setAuth({ token, orgIds, userInfo, userId, permissions, setupTime: new Date() })
       })
       .catch((error) => {
         alert(error)
@@ -49,13 +47,13 @@ const Auth: React.FC = () => {
 
   useEffect(() => {
     const cleanup = async () => {
-      if (isUserLoggedIn(authOrNull)) {
-        // @ts-ignore because we do the null check already
-        const { setupTime } = authOrNull
-        const timeSinceSetup: number = Date.now() - setupTime.getMilliseconds()
-        if (timeSinceSetup >= (30 + 1) * 60 * 1000) {
-          await cleanUpAuth()
-        }
+      if (!isUserLoggedIn(authOrNull)) return
+
+      // @ts-ignore because we do the null check already
+      const { setupTime } = authOrNull
+      const timeSinceSetup = Date.now() - (setupTime as unknown as number)
+      if (timeSinceSetup >= (30 + 1) * 60 * 1000) {
+        await cleanUpAuth()
       }
     }
     cleanup()
