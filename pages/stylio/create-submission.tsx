@@ -2,8 +2,8 @@
 import { Heading, useToast } from '@chakra-ui/react'
 import { VStack } from '@chakra-ui/react'
 import { GetStaticProps, InferGetStaticPropsType } from 'next'
-import CreateSubmissionForm from '../../components/folio/CreateSubmissionForm'
-import { SubmissionForm } from '../../components/folio/validationSchema'
+import CreateSubmissionForm from '../../components/stylio/CreateSubmissionForm'
+import { SubmissionForm } from '../../components/stylio/validationSchema'
 import { useUserInfo } from '../../hooks/useUserInfo'
 import { makeErrorToast, makeSuccessToast } from '../../utils/orgUtils'
 import { makeFetchToUrlWithAuth } from '../../utils'
@@ -11,19 +11,19 @@ import { useRouter } from 'next/router'
 import { notLoggedInToast } from '../../components/toasts/common'
 
 export const getStaticProps: GetStaticProps<{
-  courses: FolioCourse[]
-  professors: FolioProfessor[]
-  students: FolioStudent[]
+  courses: StylioCourse[]
+  professors: StylioProfessor[]
+  students: StylioStudent[]
 }> = async () => {
   const [courses, professors, students] = await Promise.all([
-    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'folio/courses/all').then((res) => res.json()),
-    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'folio/professors/all').then((res) => res.json()),
-    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'folio/students/all').then((res) => res.json()),
+    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'stylio/courses/all').then((res) => res.json()),
+    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'stylio/professors/all').then((res) => res.json()),
+    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'stylio/students/all').then((res) => res.json()),
   ])
   return { props: { courses, professors, students } }
 }
 
-export default function FolioSubmissionForm({
+export default function StylioSubmissionForm({
   courses,
   professors,
   students,
@@ -42,7 +42,7 @@ export default function FolioSubmissionForm({
     }
 
     const { title, text, professorId, courseCode, matriculationNo, semester, academicYear } = values
-    const submissionPayload: FolioSubmissionPayload = {
+    const submissionPayload: StylioSubmissionPayload = {
       title,
       text,
       matriculationNo,
@@ -54,7 +54,7 @@ export default function FolioSubmissionForm({
       },
     }
 
-    const postUrl = process.env.NEXT_PUBLIC_BACKEND_URL + 'folio/submissions'
+    const postUrl = process.env.NEXT_PUBLIC_BACKEND_URL + 'stylio/submissions'
 
     try {
       const { responseJson: data } = await makeFetchToUrlWithAuth(
@@ -68,9 +68,9 @@ export default function FolioSubmissionForm({
 
       await new Promise((resolve) => setTimeout(resolve, 1000))
       if (!id) {
-        router.push('/folio')
+        router.push('/stylio')
       } else {
-        router.push('/folio/' + id)
+        router.push('/stylio/' + id)
       }
     } catch (err) {
       toast(makeErrorToast('Error creating submission', JSON.stringify((err as Error).message)))
@@ -80,7 +80,7 @@ export default function FolioSubmissionForm({
   return (
     <>
       <VStack spacing='25px' py={8} mb={16}>
-        <Heading size='xl'>Create New Folio Post</Heading>
+        <Heading size='xl'>Create New Stylio Post</Heading>
         <CreateSubmissionForm
           professors={professors}
           courses={courses}

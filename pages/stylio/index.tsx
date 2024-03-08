@@ -1,17 +1,16 @@
-import CreateButton from '../../components/folio/CreateButton'
-import { Flex, Stack, HStack, VStack, Heading, SimpleGrid, Box } from '@chakra-ui/react'
-import ScrollableList from '../../components/folio/ScrollableList'
-import FolioSubmissionCard from '../../components/folio/FolioSubmissionCard'
+import CreateButton from '../../components/stylio/CreateButton'
+import { HStack, VStack, SimpleGrid } from '@chakra-ui/react'
+import ScrollableList from '../../components/stylio/ScrollableList'
 import { GetStaticProps, InferGetStaticPropsType } from 'next'
-import FolioSubmissionList from '../../components/folio/FolioSubmissionList'
+import StylioSubmissionList from '../../components/stylio/StylioSubmissionList'
 
 export const getStaticProps: GetStaticProps<{
-  submissions: FolioDetailedSubmission[]
-  courses: FolioCourse[]
+  submissions: StylioDetailedSubmission[]
+  courses: StylioCourse[]
 }> = async () => {
   const [submissions, courses] = await Promise.all([
-    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'folio/submissions/all').then((res) => res.json()),
-    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'folio/courses/all').then((res) => res.json()),
+    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'stylio/submissions/all').then((res) => res.json()),
+    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'stylio/courses/all').then((res) => res.json()),
   ])
   return { props: { submissions, courses } }
 }
@@ -44,9 +43,9 @@ export default function Page({
           <ScrollableList title='Module Code' items={codes} />
           <ScrollableList title='Year' items={aySemesters} />
         </HStack>
-        <CreateButton href='/folio/create-submission' />
+        <CreateButton href='/stylio/create-submission' />
       </VStack>
-      <FolioSubmissionList submissions={submissions} />
+      <StylioSubmissionList submissions={submissions} />
     </SimpleGrid>
   )
 }

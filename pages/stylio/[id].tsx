@@ -15,7 +15,7 @@ import {
   Code,
 } from '@chakra-ui/react'
 import { ReactNode } from 'react'
-import FolioPageBg from '../../public/folio-header.png'
+import StylioPageBg from '../../public/stylio-header.png'
 import Image from 'next/image'
 
 const schema = z.array(
@@ -27,7 +27,7 @@ const schema = z.array(
 )
 
 export const getStaticPaths = (async () => {
-  const data = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'folio/submissions/all').then(
+  const data = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'stylio/submissions/all').then(
     (res) => res.json(),
   )
   const submissions = schema.parse(data)
@@ -38,7 +38,7 @@ export const getStaticPaths = (async () => {
 }) satisfies GetStaticPaths
 
 export const getStaticProps: GetStaticProps<{
-  submission: FolioDetailedSubmission
+  submission: StylioDetailedSubmission
 }> = async (context) => {
   const params = context.params
   const id = params?.id
@@ -46,12 +46,12 @@ export const getStaticProps: GetStaticProps<{
     throw new Error('id is not a string')
   }
   try {
-    const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'folio/submissions/all')
+    const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'stylio/submissions/all')
     if (!response.ok) {
       throw new Error(`Server responded with status ${response.status}`)
     }
     const data = await response.json()
-    const submissions = data as FolioDetailedSubmission[]
+    const submissions = data as StylioDetailedSubmission[]
     const submission = submissions.find((submission) => submission.id === parseInt(id))
     if (!submission) {
       throw new Error('submission not found')
@@ -65,28 +65,28 @@ export const getStaticProps: GetStaticProps<{
   }
 }
 
-const FOLIO_FONT_FAMILY = 'Times New Roman'
+const STYLIO_FONT_FAMILY = 'Times New Roman'
 
 // Define your custom typography components
 const H1 = ({ children }: { children: ReactNode }) => (
-  <Heading as='h1' size='xl' my={6} fontFamily={FOLIO_FONT_FAMILY}>
+  <Heading as='h1' size='xl' my={6} fontFamily={STYLIO_FONT_FAMILY}>
     {children}
   </Heading>
 )
 const H2 = ({ children }: { children: ReactNode }) => (
-  <Heading as='h2' size='lg' my={4} fontFamily={FOLIO_FONT_FAMILY}>
+  <Heading as='h2' size='lg' my={4} fontFamily={STYLIO_FONT_FAMILY}>
     {children}
   </Heading>
 )
 
 const H3 = ({ children }: { children: ReactNode }) => (
-  <Heading as='h3' size='md' my={4} fontFamily={FOLIO_FONT_FAMILY}>
+  <Heading as='h3' size='md' my={4} fontFamily={STYLIO_FONT_FAMILY}>
     {children}
   </Heading>
 )
 
 const P = ({ children }: { children: ReactNode }) => (
-  <Text as='p' fontSize={{ base: 'lg', md: 'xl' }} my={4} fontFamily={FOLIO_FONT_FAMILY}>
+  <Text as='p' fontSize={{ base: 'lg', md: 'xl' }} my={4} fontFamily={STYLIO_FONT_FAMILY}>
     {children}
   </Text>
 )
@@ -95,7 +95,7 @@ const A = ({ href, children }: { children: ReactNode; href: string }) => (
   <Link
     href={href}
     color='teal.500'
-    fontFamily={FOLIO_FONT_FAMILY}
+    fontFamily={STYLIO_FONT_FAMILY}
     fontSize={{ base: 'lg', md: 'xl' }}
   >
     {children}
@@ -103,13 +103,13 @@ const A = ({ href, children }: { children: ReactNode; href: string }) => (
 )
 
 const Li = ({ children }: { children: ReactNode }) => (
-  <ListItem fontSize={{ base: 'lg', md: 'xl' }} fontFamily={FOLIO_FONT_FAMILY}>
+  <ListItem fontSize={{ base: 'lg', md: 'xl' }} fontFamily={STYLIO_FONT_FAMILY}>
     {children}
   </ListItem>
 )
 
 const Ul = ({ children }: { children: ReactNode }) => (
-  <UnorderedList fontFamily={FOLIO_FONT_FAMILY}>{children}</UnorderedList>
+  <UnorderedList fontFamily={STYLIO_FONT_FAMILY}>{children}</UnorderedList>
 )
 
 const MdCode = ({ children }: { children: ReactNode }) => (
@@ -126,10 +126,10 @@ export default function Page({ submission }: InferGetStaticPropsType<typeof getS
   const { name: studentName } = submission.student
 
   return (
-    <Box width='100%' fontFamily={FOLIO_FONT_FAMILY} mb={16}>
+    <Box width='100%' fontFamily={STYLIO_FONT_FAMILY} mb={16}>
       <Image
-        src={FolioPageBg}
-        alt='Folio Page Background'
+        src={StylioPageBg}
+        alt='Stylio Page Background'
         sizes='100vw'
         style={{
           width: '100%',

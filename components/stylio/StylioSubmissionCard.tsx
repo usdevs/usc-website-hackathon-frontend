@@ -12,11 +12,11 @@ import {
 import Link from 'next/link'
 
 type Props = {
-  submission: FolioDetailedSubmission
+  submission: StylioDetailedSubmission
   onDelete: () => Promise<void>
 }
 
-const FolioSubmissionCard = ({ submission, onDelete }: Props) => {
+const StylioSubmissionCard = ({ submission, onDelete }: Props) => {
   const { title, text } = submission
   const { name: studentName } = submission.student
 
@@ -34,7 +34,7 @@ const FolioSubmissionCard = ({ submission, onDelete }: Props) => {
         <Text noOfLines={3}>{text}</Text>
       </CardBody>
       <CardFooter gap='5px'>
-        <Link href={`/folio/${submission.id}`}>
+        <Link href={`/stylio/${submission.id}`}>
           <IconButton variant='outline' aria-label='View Essay' icon={<ViewIcon />} />
         </Link>
         <IconButton variant='outline' aria-label='Edit Essay' icon={<EditIcon />} />
@@ -49,4 +49,4 @@ const FolioSubmissionCard = ({ submission, onDelete }: Props) => {
   )
 }
 
-export default FolioSubmissionCard
+export default StylioSubmissionCard

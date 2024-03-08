@@ -1,6 +1,5 @@
 import { Box } from '@chakra-ui/react'
 import Image, { StaticImageData } from 'next/image'
-import React from 'react'
 
 type PropType = {
   selected: boolean
@@ -18,7 +17,7 @@ export default function CarouselThumb(props: PropType) {
         <div className='embla-thumbs__slide__number'>
           <span>{index + 1}</span>
         </div>
-        <Image src={image} alt={`folio-image-${index}`} className='embla-thumbs__slide__img' />
+        <Image src={image} alt={`stylio-image-${index}`} className='embla-thumbs__slide__img' />
       </button>
     </Box>
   )
