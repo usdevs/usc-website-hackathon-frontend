@@ -121,13 +121,13 @@ declare global {
     [index: number]: string
   }
 
-  // Folio
-  interface FolioCourse {
+  // Stylio
+  interface StylioCourse {
     code: string
     name: string
   }
 
-  interface FolioProfessor {
+  interface StylioProfessor {
     id: number
     name: string
   }
@@ -140,13 +140,13 @@ declare global {
     ay: string
   }
 
-  interface FolioStudent {
+  interface StylioStudent {
     id: number
     matriculationNo: string
     name: string
   }
 
-  interface FolioSubmission {
+  interface StylioSubmission {
     id: number
     title: string
     text: string
@@ -156,7 +156,7 @@ declare global {
     courseOfferingId: number
   }
 
-  interface FolioSubmissionPayload {
+  interface StylioSubmissionPayload {
     title: string
     text: string
     matriculationNo: string
@@ -168,11 +168,11 @@ declare global {
     }
   }
 
-  interface FolioDetailedSubmission extends FolioSubmission {
-    student: FolioStudent
+  interface StylioDetailedSubmission extends StylioSubmission {
+    student: StylioStudent
     courseOffering: CourseOffering & {
-      course: FolioCourse
-      professor: FolioProfessor
+      course: StylioCourse
+      professor: StylioProfessor
     }
   }
 }

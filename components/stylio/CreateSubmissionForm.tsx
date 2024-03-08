@@ -6,9 +6,9 @@ import FormTextArea from '../form/FormTextArea'
 import submissionValidationSchema, { SubmissionForm } from './validationSchema'
 
 type Props = {
-  professors: FolioProfessor[]
-  courses: FolioCourse[]
-  students: FolioStudent[]
+  professors: StylioProfessor[]
+  courses: StylioCourse[]
+  students: StylioStudent[]
   semesters: string[]
   academicYears: number[]
   onSubmit: (values: SubmissionForm) => void

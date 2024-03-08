@@ -22,8 +22,8 @@ export const BUTTON_LINKS: NavigationLink[] = [
     href: '/admin',
   },
   {
-    label: 'Folio',
-    href: '/folio',
+    label: 'Stylio',
+    href: '/stylio',
   },
 ]
 

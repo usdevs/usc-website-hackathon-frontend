@@ -1,16 +1,16 @@
-import { Flex, VStack, Heading, SimpleGrid, useToast } from '@chakra-ui/react'
-import FolioSubmissionCard from '../../components/folio/FolioSubmissionCard'
-import { useUserInfo } from '../../hooks/useUserInfo'
+import { Heading, SimpleGrid, VStack, useToast } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
+import { useUserInfo } from '../../hooks/useUserInfo'
 import { makeFetchToUrlWithAuth } from '../../utils'
-import { notLoggedInToast } from '../toasts/common'
 import { makeErrorToast, makeSuccessToast } from '../../utils/orgUtils'
+import { notLoggedInToast } from '../toasts/common'
+import StylioSubmissionCard from './StylioSubmissionCard'
 
 type Props = {
-  submissions: FolioDetailedSubmission[]
+  submissions: StylioDetailedSubmission[]
 }
 
-export default function FolioSubmissionList({ submissions }: Props) {
+export default function StylioSubmissionList({ submissions }: Props) {
   const [auth] = useUserInfo()
   const toast = useToast()
   const router = useRouter()
@@ -23,7 +23,7 @@ export default function FolioSubmissionList({ submissions }: Props) {
 
     try {
       await makeFetchToUrlWithAuth(
-        process.env.NEXT_PUBLIC_BACKEND_URL + 'folio/submissions/' + id,
+        process.env.NEXT_PUBLIC_BACKEND_URL + 'stylio/submissions/' + id,
         auth.token,
         'DELETE',
         JSON.stringify({}),
@@ -37,10 +37,10 @@ export default function FolioSubmissionList({ submissions }: Props) {
 
   return (
     <VStack w='100%'>
-      <Heading size='xl'>Folio Submissions</Heading>
+      <Heading size='xl'>Stylio Submissions</Heading>
       <SimpleGrid columns={{ base: 1, xl: 2 }} spacing={8} p={8} w='100%'>
         {submissions.map((submission) => (
-          <FolioSubmissionCard
+          <StylioSubmissionCard
             key={submission.id}
             submission={submission}
             onDelete={() => handleDelete(submission.id)}

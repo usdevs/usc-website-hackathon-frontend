@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from 'react'
+import { Box, Center, Grid, GridItem, HStack, Heading, Stack } from '@chakra-ui/react'
 import useEmblaCarousel from 'embla-carousel-react'
-import { Box, Center, Grid, GridItem, HStack, Heading, Stack, VStack } from '@chakra-ui/react'
 import Image, { StaticImageData } from 'next/image'
+import { useCallback, useEffect, useState } from 'react'
 import CarouselThumb from './CarouselThumb'
 
 type CarouselProps = {
@@ -42,7 +42,7 @@ export default function Carousel({ images }: CarouselProps) {
       <Grid gridTemplateColumns={{ base: 'repeat(1, 1fr)', lg: 'repeat(4, 1fr)' }}>
         <GridItem h='100%'>
           <Heading as='h2' size='3xl' py='12' px='8' bg='brand.primary' color='white' h='100%'>
-            Folio
+            Stylio
           </Heading>
         </GridItem>
         <GridItem colSpan={3}>
@@ -51,7 +51,7 @@ export default function Carousel({ images }: CarouselProps) {
               <HStack maxW='100%'>
                 {images.map((image, index) => (
                   <div key={index} style={{ flex: '0 0 100%' }}>
-                    <Image src={image} alt={`folio-image-${index}`} />
+                    <Image src={image} alt={`stylio-image-${index}`} />
                   </div>
                 ))}
               </HStack>

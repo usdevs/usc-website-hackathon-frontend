@@ -11,11 +11,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    await res.revalidate('/folio')
+    await res.revalidate('/stylio')
 
     const data = await req.body
     if (data?.id) {
-      await res.revalidate(`/folio/${data.id}`)
+      await res.revalidate(`/stylio/${data.id}`)
     }
   } catch (err) {
     console.error('Error revalidating:', err)
