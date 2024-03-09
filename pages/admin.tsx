@@ -63,6 +63,7 @@ const AdminPage: NextPage = () => {
     return <Box>Fetching data! Spinner</Box>
   }
 
+  // TODO: update this error as it will never trigger; if errorUsers, then users will be undefined
   if (errorOrgCategories || errorOrgs || errorUsers) {
     throw new Error("Could not fetch organisations' data from the backend")
   }

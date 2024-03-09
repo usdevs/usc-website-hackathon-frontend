@@ -85,7 +85,11 @@ declare global {
     orgIds: Array<number>
     userInfo: UserInformation | null
     userId: number
-    isAdminUser: boolean
+    permissions: {
+      isAdmin: boolean
+      isAcadsAdmin: boolean
+      venueIdToIsVenueAdmin: Record<number, boolean>
+    }
   }
 
   interface BookingDataForm {
@@ -115,5 +119,60 @@ declare global {
 
   export interface NumberToStringJSObject {
     [index: number]: string
+  }
+
+  // Stylio
+  interface StylioCourse {
+    code: string
+    name: string
+  }
+
+  interface StylioProfessor {
+    id: number
+    name: string
+  }
+
+  interface CourseOffering {
+    id: number
+    courseCode: string
+    professorId: number
+    semester: string
+    ay: string
+  }
+
+  interface StylioStudent {
+    id: number
+    matriculationNo: string
+    name: string
+  }
+
+  interface StylioSubmission {
+    id: number
+    title: string
+    text: string
+    lastUpdated: Date
+    isPublished: boolean
+    studentId: number
+    courseOfferingId: number
+  }
+
+  interface StylioSubmissionPayload {
+    title: string
+    text: string
+    matriculationNo: string
+    courseOfferingInput: {
+      courseCode: string
+      professorId: number
+      semester: string
+      academicYear: number
+    }
+  }
+
+  interface StylioDetailedSubmission extends StylioSubmission {
+    student: StylioStudent
+    courseOffering: CourseOffering & {
+      course: StylioCourse
+      professor: StylioProfessor
+    }
   }
 }

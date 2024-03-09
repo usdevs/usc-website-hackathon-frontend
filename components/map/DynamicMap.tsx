@@ -9,11 +9,9 @@ import { Marker, Popup } from 'react-leaflet'
 
 import { CustomMarkerProps, LeafletComponents } from './index'
 
-// FIXME need to fix this for mobile, original values for width and height were 100% and providing these values is a
-//  must for leaflet to work. But with 100%  the map is not visible because parent container has no height(?)
 const style: CSSProperties = {
-  height: '20vh',
-  width: '20vw',
+  width: '100%',
+  height: '100%',
 }
 
 interface DynamicMapProps {

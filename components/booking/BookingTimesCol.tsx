@@ -20,19 +20,17 @@ const BookingsTimesCol: React.FC = () => {
 
   return (
     <VStack spacing='0' position='sticky' left='0' zIndex={10} bgColor={'white'}>
-      <Text
+      <Center
         fontSize='md'
         position='sticky'
         top='0'
-        py='1'
         px='2'
         bg='brand.primary'
         color='white'
-        alignSelf='stretch'
-        textAlign='center'
+        h='24'
       >
         Time
-      </Text>
+      </Center>
       <VStack spacing='0'>
         {timeStrings.map((el) => (
           <Center

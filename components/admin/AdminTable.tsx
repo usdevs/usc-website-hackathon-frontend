@@ -29,7 +29,6 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
 } from '@chakra-ui/icons'
-import Footer from '../Footer'
 import { useState } from 'react'
 
 export interface AdminTableColumnProps {
@@ -199,7 +198,6 @@ function AdminTable({
           </Button>
         </Flex>
       </Box>
-      <Footer />
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent>

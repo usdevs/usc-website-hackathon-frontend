@@ -13,8 +13,9 @@ import {
 } from '@chakra-ui/react'
 import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons'
 import dynamic from 'next/dynamic'
-import { BUTTON_LINKS } from '../utils'
+import { LOGGED_IN_BUTTON_LINKS, PUBLIC_BUTTON_LINKS } from '../utils'
 import { CldImage } from 'next-cloudinary'
+import { useUserInfo } from '../hooks/useUserInfo'
 
 const NavLink: React.FC<NavigationLink> = (props) => (
   <LinkBox
@@ -39,9 +40,21 @@ const NavLink: React.FC<NavigationLink> = (props) => (
 const Auth = dynamic(() => import('../components/Auth'), { ssr: false })
 
 const NavLinks = () => {
+  const [authOrNull] = useUserInfo()
+
+  if (authOrNull) {
+    return (
+      <>
+        {LOGGED_IN_BUTTON_LINKS.map((info) => (
+          <NavLink key={info.label} {...info} />
+        ))}
+      </>
+    )
+  }
+
   return (
     <>
-      {BUTTON_LINKS.map((info) => (
+      {PUBLIC_BUTTON_LINKS.map((info) => (
         <NavLink key={info.label} {...info} />
       ))}
     </>
@@ -55,13 +68,6 @@ const NavMenu = () => {
     <>
       <LinkBox>
         <Box display={'flex'} justifyContent={'center'} padding='0.5rem'>
-          {/*<Heading as='h1' size='2xl' color='#1f407b' fontFamily={'Blender-Medium'}>*/}
-          {/*  NUS{' '}*/}
-          {/*  <Text as='span' color='#ef7c00'>*/}
-          {/*    College*/}
-          {/*  </Text>{' '}*/}
-          {/*  Club*/}
-          {/*</Heading>*/}
           <CldImage src={'nusc-logo'} alt={'NUS College'} height={420} width={190} />
           <LinkOverlay href={'/'} />
         </Box>

@@ -188,7 +188,7 @@ const VenueMap: React.FC = () => {
   return (
     <>
       {!isSsr && (
-        <Map width='2' height='1' center={DEFAULT_CENTER} zoom={17}>
+        <Map width='100%' height='100%' center={DEFAULT_CENTER} zoom={17}>
           {(
             { TileLayer, Polygon, Polyline }: VenueMapProps,
             TempIcon: typeof Icon,
