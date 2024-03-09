@@ -9,25 +9,6 @@ export const isUserLoggedIn = (auth: AuthState | null): auth is AuthState => {
   return auth !== null
 }
 
-export const LOGGED_IN_BUTTON_LINKS: NavigationLink[] = [
-  {
-    label: 'Student Groups',
-    href: '/student-groups',
-  },
-  {
-    label: 'Bookings',
-    href: '/bookings',
-  },
-  {
-    label: 'Admin',
-    href: '/admin',
-  },
-  {
-    label: 'Stylio',
-    href: '/stylio',
-  },
-]
-
 export const PUBLIC_BUTTON_LINKS: NavigationLink[] = [
   {
     label: 'Student Groups',
@@ -36,6 +17,22 @@ export const PUBLIC_BUTTON_LINKS: NavigationLink[] = [
   {
     label: 'Stylio',
     href: '/stylio',
+  },
+  {
+    label: 'Newsletter',
+    href: '/nusc-letter',
+  },
+]
+
+export const LOGGED_IN_BUTTON_LINKS: NavigationLink[] = [
+  ...PUBLIC_BUTTON_LINKS,
+  {
+    label: 'Bookings',
+    href: '/bookings',
+  },
+  {
+    label: 'Admin',
+    href: '/admin',
   },
 ]
 

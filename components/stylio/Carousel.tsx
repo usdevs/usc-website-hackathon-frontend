@@ -6,9 +6,10 @@ import CarouselThumb from './CarouselThumb'
 
 type CarouselProps = {
   images: StaticImageData[]
+  title: string
 }
 
-export default function Carousel({ images }: CarouselProps) {
+export default function Carousel({ images, title }: CarouselProps) {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [emblaMainRef, emblaMainApi] = useEmblaCarousel({ loop: false })
   const [emblaThumbsRef, emblaThumbsApi] = useEmblaCarousel({
@@ -39,13 +40,15 @@ export default function Carousel({ images }: CarouselProps) {
 
   return (
     <Center overflowX='auto' py='8'>
-      <Grid gridTemplateColumns={{ base: 'repeat(1, 1fr)', lg: 'repeat(4, 1fr)' }}>
+      <Grid gridTemplateColumns={{ base: 'repeat(1, 1fr)', lg: 'auto auto' }}>
         <GridItem h='100%'>
-          <Heading as='h2' size='3xl' py='12' px='8' bg='brand.primary' color='white' h='100%'>
-            Stylio
-          </Heading>
+          <Box bg='brand.primary' color='white' h='100%' maxW={{ base: '100%', lg: '30vw' }}>
+            <Heading as='h2' size='3xl' py='12' px='8'>
+              {title}
+            </Heading>
+          </Box>
         </GridItem>
-        <GridItem colSpan={3}>
+        <GridItem>
           <Stack w={{ base: '100vw', md: 'xl', lg: '2xl' }}>
             <Box ref={emblaMainRef} overflow='hidden'>
               <HStack maxW='100%'>
