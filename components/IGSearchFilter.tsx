@@ -1,15 +1,14 @@
 import React from 'react'
 import {
-  Box,
-  Center,
   Checkbox,
   CheckboxGroup,
   Divider,
+  Flex,
   HStack,
   Input,
   InputGroup,
   InputLeftElement,
-  Stack,
+  SimpleGrid,
   VStack,
 } from '@chakra-ui/react'
 import { SearchIcon } from '@chakra-ui/icons'
@@ -44,7 +43,7 @@ const IGSearchFilter: React.FC<IGSearchFilterProps> = ({
         />
       </InputGroup>
       <CheckboxGroup colorScheme='green' defaultValue={DEFAULT_FILTERS}>
-        <HStack mt='0.5rem' spacing={[1, 5]}>
+        <Flex flexDir={{ base: 'column', md: 'row' }} gap={{ base: 2, md: 4 }}>
           {Object.entries(interestGroupCategories).map((category) => (
             <Checkbox onChange={onChange} key={category[0]} value={category[0]}>
               {category[1]}
@@ -54,7 +53,7 @@ const IGSearchFilter: React.FC<IGSearchFilterProps> = ({
           <Checkbox onChange={onInactiveChange} value={'Inactive'}>
             Inactive
           </Checkbox>
-        </HStack>
+        </Flex>
       </CheckboxGroup>
     </VStack>
   )

@@ -3,19 +3,12 @@ import VenueMap from './VenueMap'
 import { FaInstagram, FaTelegram } from 'react-icons/fa'
 import { MdEmail } from 'react-icons/md'
 import React from 'react'
-import { BUTTON_LINKS } from '../utils'
+import { LOGGED_IN_BUTTON_LINKS, PUBLIC_BUTTON_LINKS } from '../utils'
+import { useUserInfo } from '../hooks/useUserInfo'
 
 interface SocialLink extends NavigationLink {
   iconComponent: React.FC
 }
-
-const navigationLinks: NavigationLink[] = [
-  {
-    href: '/',
-    label: 'Home',
-  },
-  ...BUTTON_LINKS,
-]
 
 const socialLinks: SocialLink[] = [
   {
@@ -46,6 +39,16 @@ const iconStyles = {
 }
 
 const Footer: React.FC = () => {
+  const [authOrNull] = useUserInfo()
+  const otherNavLinks = authOrNull ? LOGGED_IN_BUTTON_LINKS : PUBLIC_BUTTON_LINKS
+  const navigationLinks: NavigationLink[] = [
+    {
+      href: '/',
+      label: 'Home',
+    },
+    ...otherNavLinks,
+  ]
+
   return (
     <VStack p='1.5rem 1rem' bg='#1f407b' color='white' justifyContent='space-between'>
       <Grid
@@ -54,7 +57,7 @@ const Footer: React.FC = () => {
         justifyContent='center'
       >
         <GridItem justifyContent='center' px='1rem'>
-          <Heading as='h4' size='md'>
+          <Heading as='h4' size='md' mb='2'>
             Navigate
           </Heading>
           {navigationLinks.map(({ href, label }) => (

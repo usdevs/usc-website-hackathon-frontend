@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import { Button, Flex, HStack, SimpleGrid, VStack } from '@chakra-ui/react'
+import { Button, Flex, Grid, HStack, SimpleGrid, VStack } from '@chakra-ui/react'
 import IGCard from '../components/IGCard'
 import { ChangeEvent, useEffect, useState } from 'react'
 import IGSearchFilter from '../components/IGSearchFilter'
@@ -62,7 +62,7 @@ const StudentGroups: NextPage<{
   const totalPages = Math.ceil(igCardsToDisplay.length / pageSize)
 
   const pageNumberButtons = (
-    <HStack style={{ width: '80%', justifyContent: 'center', margin: '2rem' }}>
+    <SimpleGrid minChildWidth='20px' w='100%' my='4'>
       {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
         <Button
           size='lg'
@@ -75,7 +75,7 @@ const StudentGroups: NextPage<{
           {pageNumber}
         </Button>
       ))}
-    </HStack>
+    </SimpleGrid>
   )
 
   return (
@@ -83,7 +83,7 @@ const StudentGroups: NextPage<{
       <Flex justify='center' flexDir='column' as='main'>
         <VStack flexGrow={1} minH='40vh'>
           <IGSearchFilter {...igSearchFilterProps} />
-          <SimpleGrid columns={{ sm: 1, md: 2 }} width={'95%'} spacing='2rem'>
+          <SimpleGrid columns={{ sm: 1, md: 2 }} spacing='2rem'>
             {paginateArray(page).map((interestGroupDetail, idx) => (
               <IGCard
                 key={interestGroupDetail.name}

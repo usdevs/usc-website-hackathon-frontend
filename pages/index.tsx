@@ -1,6 +1,5 @@
 import type { NextPage } from 'next'
 import { Flex, Box, Stack, Text, useBreakpointValue, VStack, useMediaQuery } from '@chakra-ui/react'
-import Footer from '../components/Footer'
 import HeroBg from '../public/image1.jpg'
 import Image from 'next/image'
 import { LandingPageBanner, MobileLandingPageBanner } from '../components/LandingPageBanner'
@@ -130,8 +129,6 @@ const LandingPage: NextPage = () => {
             <MobileLandingPageBanner key={index} left={index % 2 == 1} {...data} />
           ))}
         </Box>
-
-        <Footer />
       </Flex>
     )
   }

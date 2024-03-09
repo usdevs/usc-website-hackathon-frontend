@@ -8,7 +8,8 @@ export const ALL_VENUES_KEYWORD: Venue = { id: 0, name: 'All Venues' }
 export const isUserLoggedIn = (auth: AuthState | null): auth is AuthState => {
   return auth !== null
 }
-export const BUTTON_LINKS: NavigationLink[] = [
+
+export const LOGGED_IN_BUTTON_LINKS: NavigationLink[] = [
   {
     label: 'Student Groups',
     href: '/student-groups',
@@ -20,6 +21,17 @@ export const BUTTON_LINKS: NavigationLink[] = [
   {
     label: 'Admin',
     href: '/admin',
+  },
+  {
+    label: 'Stylio',
+    href: '/stylio',
+  },
+]
+
+export const PUBLIC_BUTTON_LINKS: NavigationLink[] = [
+  {
+    label: 'Student Groups',
+    href: '/student-groups',
   },
   {
     label: 'Stylio',
