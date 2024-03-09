@@ -1,4 +1,4 @@
-import { Heading, SimpleGrid, VStack, useToast } from '@chakra-ui/react'
+import { Center, Heading, SimpleGrid, Spacer, VStack, useToast } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import { useUserInfo } from '../../hooks/useUserInfo'
 import { makeFetchToUrlWithAuth } from '../../utils'

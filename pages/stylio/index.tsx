@@ -3,6 +3,7 @@ import { HStack, VStack, SimpleGrid } from '@chakra-ui/react'
 import ScrollableList from '../../components/stylio/ScrollableList'
 import { GetStaticProps, InferGetStaticPropsType } from 'next'
 import StylioSubmissionList from '../../components/stylio/StylioSubmissionList'
+import OpenHouse from '../../pages/stylio/open-house'
 
 export const getStaticProps: GetStaticProps<{
   submissions: StylioDetailedSubmission[]
@@ -19,6 +20,11 @@ export default function Page({
   submissions,
   courses,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
+  // TODO: remove after open house
+  if (submissions.length === 0) {
+    return <OpenHouse />
+  }
+
   const codes = courses.map((course) => course.code)
   const semesters = ['Sem 1', 'Sem 2']
   const years = [2021, 2022, 2023]
