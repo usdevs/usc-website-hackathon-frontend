@@ -1,6 +1,6 @@
 import { FC, MouseEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion'
-import { Flex, HStack, useBoolean, useDisclosure, useToast, VStack } from '@chakra-ui/react'
+import { Box, Flex, HStack, useBoolean, useDisclosure, useToast, VStack } from '@chakra-ui/react'
 import eachMinuteOfInterval from 'date-fns/eachMinuteOfInterval'
 import { BookingConfirmationPopup } from '../components/booking/BookingConfirmationPopup'
 import { NextPage } from 'next'
@@ -246,7 +246,7 @@ const BookingSelector: FC = () => {
   console.log('Is rendering')
 
   return (
-    <>
+    <Box>
       {/* Put absolutely positioned elements here as they still cause slight
       layout shifts for some reason */}
       <AnimatePresence>
@@ -293,7 +293,7 @@ const BookingSelector: FC = () => {
           />
         </VStack>
 
-        <HStack maxW='calc(100vw - 540px)' hidden={isExpandedCalendar}>
+        <HStack overflowX='auto' hidden={isExpandedCalendar}>
           <BookingsTimesCol />
           <HStack>
             {allVenues
@@ -328,7 +328,7 @@ const BookingSelector: FC = () => {
           </HStack>
         </HStack>
       </HStack>
-    </>
+    </Box>
   )
 }
 
