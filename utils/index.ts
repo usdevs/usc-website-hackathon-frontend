@@ -22,14 +22,14 @@ export const PUBLIC_BUTTON_LINKS: NavigationLink[] = [
     label: 'Newsletter',
     href: '/nusc-letter',
   },
-]
-
-export const LOGGED_IN_BUTTON_LINKS: NavigationLink[] = [
-  ...PUBLIC_BUTTON_LINKS,
   {
     label: 'Bookings',
     href: '/bookings',
   },
+]
+
+export const LOGGED_IN_BUTTON_LINKS: NavigationLink[] = [
+  ...PUBLIC_BUTTON_LINKS,
   {
     label: 'Admin',
     href: '/admin',
