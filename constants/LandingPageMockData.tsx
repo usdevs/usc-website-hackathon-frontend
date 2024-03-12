@@ -7,7 +7,7 @@ const landingPageMockData = [
   // },
   {
     buttonUrl: '/student-groups',
-    imageUrl: '/samplebanner.png',
+    imageUrl: '/samplebanner.jpeg',
     description: `Student Groups cover a wide array of activities. Students with any level of experience are welcome to join IGs of their interest.`,
     header: 'Student Groups',
   },
