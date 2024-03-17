@@ -63,7 +63,7 @@ function OrganisationControlForm({
     if (responseStatus === 200) {
       toast(
         makeSuccessToast(
-          parsedValues.igHead === -1 ? `Org created successfully!` : `Org edited successfully`,
+          parsedValues.id === -1 ? `Org created successfully!` : `Org edited successfully`,
         ),
       )
       mutateOrgs()
