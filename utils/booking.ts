@@ -72,22 +72,20 @@ export const getVenueFromId = (venuesToSearch: Venue[], venueId: number) => {
   )
 }
 
-export const getFromUrlStringAndParseJson: Fetcher<unknown, string> = (
-  url: string,
-): Promise<any> => {
+export const getFromUrlStringAndParseJson: Fetcher<any, string> = (url: string): Promise<any> => {
   return fetch(url).then((res: Response) => res.json())
 }
 
-export const getFromUrlStringAndParseJsonWithAuth: Fetcher<unknown, string[]> = ([
+export const getFromUrlStringAndParseJsonWithAuth: Fetcher<any, string[]> = ([
   url,
   token,
-]: string[]): Promise<unknown> => {
+]: string[]): Promise<any> => {
   return makeFetchToUrlWithAuth(url, token, 'GET').then((res) => res.responseJson)
 }
 
-export const getFromUrlArrayAndParseJson: Fetcher<unknown, string[]> = (
+export const getFromUrlArrayAndParseJson: Fetcher<any, string[]> = (
   url: string[],
-): Promise<unknown> => {
+): Promise<any> => {
   const combinedUrl = url.join('')
   return fetch(combinedUrl).then((res: Response) => res.json())
 }

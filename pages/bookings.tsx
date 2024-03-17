@@ -1,7 +1,6 @@
 import { Box, Flex, HStack, VStack, useBoolean, useDisclosure, useToast } from '@chakra-ui/react'
 import { endOfDay, endOfMonth, isSameDay, startOfDay, startOfMonth } from 'date-fns'
 import eachMinuteOfInterval from 'date-fns/eachMinuteOfInterval'
-import { AnimatePresence, useMotionValueEvent, useScroll } from 'framer-motion'
 import { NextPage } from 'next'
 import { FC, MouseEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import useSWR from 'swr'
@@ -171,7 +170,6 @@ const BookingSelector: FC = () => {
   const [eventCardPos, setEventCardPos] = useState({ x: 0, y: 0 })
   // Sets the content of the event card
   const [bookingCard, setBookingCard] = useState<BookingDataDisplay | undefined>(undefined)
-  const { scrollY } = useScroll()
 
   const startPos = {
     x: -1,
@@ -190,13 +188,6 @@ const BookingSelector: FC = () => {
   const hideEventCard = () => {
     setEventCardPos({ ...startPos })
   }
-
-  useMotionValueEvent(scrollY, 'change', () => {
-    // Prevent re-render
-    if (eventCardPos.x !== startPos.x) {
-      hideEventCard()
-    }
-  })
 
   //todo check
   // Frontend login for removing the booking from bookingsSortedByVenue
@@ -260,17 +251,15 @@ const BookingSelector: FC = () => {
     <Box>
       {/* Put absolutely positioned elements here as they still cause slight
       layout shifts for some reason */}
-      <AnimatePresence>
-        {eventCardPos.x !== -1 && (
-          <CalendarEventCard
-            x={eventCardPos.x}
-            y={eventCardPos.y}
-            booking={bookingCard}
-            onDelete={handleDeleteBooking}
-            isDeleting={isDeleting}
-          />
-        )}
-      </AnimatePresence>
+      {eventCardPos.x !== -1 && (
+        <CalendarEventCard
+          x={eventCardPos.x}
+          y={eventCardPos.y}
+          booking={bookingCard}
+          onDelete={handleDeleteBooking}
+          isDeleting={isDeleting}
+        />
+      )}
 
       {/* Booking form */}
       <BookingConfirmationPopup
