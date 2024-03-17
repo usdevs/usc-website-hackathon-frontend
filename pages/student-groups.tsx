@@ -1,9 +1,13 @@
+import { Button, Flex, SimpleGrid, VStack } from '@chakra-ui/react'
 import type { NextPage } from 'next'
-import { Button, Flex, Grid, HStack, SimpleGrid, VStack } from '@chakra-ui/react'
-import IGCard from '../components/IGCard'
 import { ChangeEvent, useEffect, useState } from 'react'
-import IGSearchFilter from '../components/IGSearchFilter'
-import { makeCategoriesPrettier } from '../utils/orgUtils'
+
+import { makeCategoriesPrettier } from '@/utils/orgUtils'
+
+import { OrganisationWithIGHead } from '@/types/bookings.types'
+
+import IGCard from '@/components/IGCard'
+import IGSearchFilter from '@/components/IGSearchFilter'
 
 export const DEFAULT_FILTERS: string[] = ['Sports', 'SocioCultural', 'Others']
 
@@ -31,8 +35,8 @@ const StudentGroups: NextPage<{
   }
 
   useEffect(() => {
-    let visibleCards = allOrgs.filter((card) => !card.isInvisible)
-    let inactiveFilteredCards = visibleCards.filter((card) => !(card.isInactive && !isInactive))
+    const visibleCards = allOrgs.filter((card) => !card.isInvisible)
+    const inactiveFilteredCards = visibleCards.filter((card) => !(card.isInactive && !isInactive))
     let filteredCards = inactiveFilteredCards.filter((card) =>
       interestGroupFilters.includes(card.category),
     )

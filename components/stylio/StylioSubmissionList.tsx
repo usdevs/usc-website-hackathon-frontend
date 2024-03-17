@@ -1,10 +1,15 @@
-import { Center, Heading, SimpleGrid, Spacer, VStack, useToast } from '@chakra-ui/react'
+import { Heading, SimpleGrid, VStack, useToast } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
-import { useUserInfo } from '../../hooks/useUserInfo'
-import { makeFetchToUrlWithAuth } from '../../utils'
-import { makeErrorToast, makeSuccessToast } from '../../utils/orgUtils'
-import { notLoggedInToast } from '../toasts/common'
-import StylioSubmissionCard from './StylioSubmissionCard'
+
+import { makeFetchToUrlWithAuth } from '@/utils/booking'
+import { makeErrorToast, makeSuccessToast } from '@/utils/orgUtils'
+
+import { StylioDetailedSubmission } from '@/types/stylio.types'
+
+import { useUserInfo } from '@/hooks/useUserInfo'
+
+import StylioSubmissionCard from '@/components/stylio/StylioSubmissionCard'
+import { notLoggedInToast } from '@/components/toasts/common'
 
 type Props = {
   submissions: StylioDetailedSubmission[]

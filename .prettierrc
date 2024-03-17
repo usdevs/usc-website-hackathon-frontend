@@ -5,5 +5,19 @@
   "singleQuote": true,
   "trailingComma": "all",
   "jsxSingleQuote": true,
-  "bracketSpacing": true
+  "bracketSpacing": true,
+  "importOrder": [
+    "^@/pages/(.*)$",
+    "^@/styles/(.*)$",
+    "^@/lib/(.*)$",
+    "^@/constants/(.*)$",
+    "^@/utils/(.*)$",
+    "^@/types/(.*)$",
+    "^@/hooks/(.*)$",
+    "^@/components/(.*)$",
+    "^@/public/(.*)$",
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
 }

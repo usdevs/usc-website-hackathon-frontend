@@ -1,6 +1,7 @@
+import { FormControl, FormErrorMessage, FormLabel, Textarea } from '@chakra-ui/react'
 import React from 'react'
-import { FormControl, FormLabel, FormErrorMessage, Textarea } from '@chakra-ui/react'
-import { BaseFromProps } from '../../types/form'
+
+import { BaseFromProps } from '@/types/form.types'
 
 type TextareaProps = React.ComponentProps<typeof Textarea>
 

@@ -1,15 +1,17 @@
 import { DeleteIcon, EditIcon, ViewIcon } from '@chakra-ui/icons'
 import {
   Card,
-  CardHeader,
   CardBody,
   CardFooter,
-  Text,
+  CardHeader,
   Heading,
-  VStack,
   IconButton,
+  Text,
+  VStack,
 } from '@chakra-ui/react'
 import Link from 'next/link'
+
+import { StylioDetailedSubmission } from '@/types/stylio.types'
 
 type Props = {
   submission: StylioDetailedSubmission

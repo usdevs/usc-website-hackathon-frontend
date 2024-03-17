@@ -1,4 +1,4 @@
-import React from 'react'
+import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons'
 import {
   Box,
   Container,
@@ -11,11 +11,12 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react'
-import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons'
-import dynamic from 'next/dynamic'
-import { LOGGED_IN_BUTTON_LINKS, PUBLIC_BUTTON_LINKS } from '../utils'
 import { CldImage } from 'next-cloudinary'
+import dynamic from 'next/dynamic'
+import React from 'react'
+
 import { useUserInfo } from '../hooks/useUserInfo'
+import { LOGGED_IN_BUTTON_LINKS, PUBLIC_BUTTON_LINKS } from '../utils/booking'
 
 const NavLink: React.FC<NavigationLink> = (props) => (
   <LinkBox

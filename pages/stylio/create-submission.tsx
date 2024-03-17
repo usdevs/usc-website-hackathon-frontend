@@ -1,14 +1,25 @@
 'use client'
+
 import { Heading, useToast } from '@chakra-ui/react'
 import { VStack } from '@chakra-ui/react'
 import { GetStaticProps, InferGetStaticPropsType } from 'next'
-import CreateSubmissionForm from '../../components/stylio/CreateSubmissionForm'
-import { SubmissionForm } from '../../components/stylio/validationSchema'
-import { useUserInfo } from '../../hooks/useUserInfo'
-import { makeErrorToast, makeSuccessToast } from '../../utils/orgUtils'
-import { makeFetchToUrlWithAuth } from '../../utils'
 import { useRouter } from 'next/router'
-import { notLoggedInToast } from '../../components/toasts/common'
+
+import { makeFetchToUrlWithAuth } from '@/utils/booking'
+import { makeErrorToast, makeSuccessToast } from '@/utils/orgUtils'
+
+import {
+  StylioCourse,
+  StylioProfessor,
+  StylioStudent,
+  StylioSubmissionPayload,
+} from '@/types/stylio.types'
+
+import { useUserInfo } from '@/hooks/useUserInfo'
+
+import CreateSubmissionForm from '@/components/stylio/CreateSubmissionForm'
+import { SubmissionForm } from '@/components/stylio/validationSchema'
+import { notLoggedInToast } from '@/components/toasts/common'
 
 export const getStaticProps: GetStaticProps<{
   courses: StylioCourse[]

@@ -1,10 +1,15 @@
-import { Heading, Grid, GridItem, VStack, Link, Flex, Icon } from '@chakra-ui/react'
-import VenueMap from './VenueMap'
+import { Flex, Grid, GridItem, Heading, Icon, Link, VStack } from '@chakra-ui/react'
+import React from 'react'
 import { FaInstagram, FaTelegram } from 'react-icons/fa'
 import { MdEmail } from 'react-icons/md'
-import React from 'react'
-import { LOGGED_IN_BUTTON_LINKS, PUBLIC_BUTTON_LINKS } from '../utils'
-import { useUserInfo } from '../hooks/useUserInfo'
+
+import { LOGGED_IN_BUTTON_LINKS, PUBLIC_BUTTON_LINKS } from '@/utils/booking'
+
+import { NavigationLink } from '@/types/utils.types'
+
+import { useUserInfo } from '@/hooks/useUserInfo'
+
+import VenueMap from '@/components/VenueMap'
 
 interface SocialLink extends NavigationLink {
   iconComponent: React.FC

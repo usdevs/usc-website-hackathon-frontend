@@ -1,14 +1,15 @@
-import React from 'react'
 import {
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Input,
-  FormErrorMessage,
   InputGroup,
   InputLeftElement,
   Text,
 } from '@chakra-ui/react'
-import { BaseFromProps } from '../../types/form'
+import React from 'react'
+
+import { BaseFromProps } from '@/types/form.types'
 
 interface FormTextFieldProps extends BaseFromProps {
   type: string

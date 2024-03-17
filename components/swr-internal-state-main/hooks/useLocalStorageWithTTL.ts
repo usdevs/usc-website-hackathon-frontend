@@ -1,5 +1,7 @@
 import useSWR from 'swr'
 
+import { ObjectWithSetupTime } from '@/types/auth.types'
+
 import { LocalStorageHookResult } from '../types'
 import { isServerSide } from '../utils'
 
@@ -19,12 +21,12 @@ const useLocalStorageWithTTL = <T extends ObjectWithSetupTime>(
   //todo fix before handover
   //Note that this file is modified to be able to invalidate local storage after 20 minute - see commit
   // b918ac409cedf11db27a11f2df974473d13e4146 for what changed
-  let initialValue = defaultValue
+  const initialValue = defaultValue
 
   // @ts-ignore
   const fetcher = () => {
     if (!isServerSide()) {
-      let storedValue = window.localStorage.getItem(key)
+      const storedValue = window.localStorage.getItem(key)
       if (storedValue !== null && storedValue !== 'undefined') {
         const parsedValue = JSON.parse(storedValue)
         if (Date.now() - parsedValue.setupTime <= (refreshInterval + 1) * 60 * 1000) {

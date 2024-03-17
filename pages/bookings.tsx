@@ -1,29 +1,39 @@
-import { FC, MouseEvent, useCallback, useEffect, useMemo, useState } from 'react'
-import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion'
-import { Box, Flex, HStack, useBoolean, useDisclosure, useToast, VStack } from '@chakra-ui/react'
+import { Box, Flex, HStack, VStack, useBoolean, useDisclosure, useToast } from '@chakra-ui/react'
+import { endOfDay, endOfMonth, isSameDay, startOfDay, startOfMonth } from 'date-fns'
 import eachMinuteOfInterval from 'date-fns/eachMinuteOfInterval'
-import { BookingConfirmationPopup } from '../components/booking/BookingConfirmationPopup'
 import { NextPage } from 'next'
-import Calendar from '../components/booking/Calendar'
-import BookingsTimesCol from '../components/booking/BookingTimesCol'
-import BookingVenueCol from '../components/booking/BookingVenueCol'
-import Toggle from '../components/booking/Toggle'
-import CalendarEventCard from '../components/booking/CalendarEventCard'
+import { FC, MouseEvent, useCallback, useEffect, useMemo, useState } from 'react'
+import useSWR from 'swr'
+
+import { NumberToStringJSObject } from '@/types/auth.types'
+import {
+  BookingDataBackend,
+  BookingDataDisplay,
+  BookingDataSelection,
+  Venue,
+} from '@/types/bookings.types'
+
+import { useAllVenues } from '@/hooks/useAllVenues'
+import { useCurrentHalfHourTime } from '@/hooks/useCurrentHalfHourTime'
+import { useIdsToColoursMap } from '@/hooks/useIdsToColoursMap'
+import { useUserInfo } from '@/hooks/useUserInfo'
+
+import { BookingConfirmationPopup } from '@/components/booking/BookingConfirmationPopup'
+import BookingTimesCol from '@/components/booking/BookingTimesCol'
+import BookingVenueCol from '@/components/booking/BookingVenueCol'
+import Calendar from '@/components/booking/Calendar'
+import CalendarEventCard from '@/components/booking/CalendarEventCard'
+import Toggle from '@/components/booking/Toggle'
+import VenueMenu from '@/components/booking/VenueMenu'
+
 import {
   ALL_VENUES_KEYWORD,
   getFromUrlArrayAndParseJson,
   isUserLoggedIn,
   makeFetchToUrlWithAuth,
   throwsErrorIfNullOrUndefined,
-} from '../utils'
-import { useCurrentHalfHourTime } from '../hooks/useCurrentHalfHourTime'
-import { endOfDay, endOfMonth, isSameDay, startOfDay, startOfMonth } from 'date-fns'
-import { useUserInfo } from '../hooks/useUserInfo'
-import { useIdsToColoursMap } from '../hooks/useIdsToColoursMap'
-import { useAllVenues } from '../hooks/useAllVenues'
-import useSWR from 'swr'
+} from '../utils/booking'
 import { type ChakraColor, generateChakraColour } from '../utils/colors'
-import VenueMenu from '../components/booking/VenueMenu'
 
 const BookingSelector: FC = () => {
   const [allVenues, isLoadingVenues] = useAllVenues()
@@ -84,7 +94,7 @@ const BookingSelector: FC = () => {
       const mappedOrgIds: number[] = bookingsMappedForDisplay.map(
         (booking) => booking.bookedForOrgId || booking.bookedBy.org.id,
       )
-      let uniqueOrgIds: number[] = [...new Set(mappedOrgIds)]
+      const uniqueOrgIds: number[] = [...new Set(mappedOrgIds)]
       const map = orgsIdsToColoursMapString ?? ({} as NumberToStringJSObject)
       const existingColors = new Set(Object.values(map))
 
@@ -160,7 +170,6 @@ const BookingSelector: FC = () => {
   const [eventCardPos, setEventCardPos] = useState({ x: 0, y: 0 })
   // Sets the content of the event card
   const [bookingCard, setBookingCard] = useState<BookingDataDisplay | undefined>(undefined)
-  const { scrollY } = useScroll()
 
   const startPos = {
     x: -1,
@@ -179,13 +188,6 @@ const BookingSelector: FC = () => {
   const hideEventCard = () => {
     setEventCardPos({ ...startPos })
   }
-
-  useMotionValueEvent(scrollY, 'change', () => {
-    // Prevent re-render
-    if (eventCardPos.x !== startPos.x) {
-      hideEventCard()
-    }
-  })
 
   //todo check
   // Frontend login for removing the booking from bookingsSortedByVenue
@@ -249,17 +251,15 @@ const BookingSelector: FC = () => {
     <Box>
       {/* Put absolutely positioned elements here as they still cause slight
       layout shifts for some reason */}
-      <AnimatePresence>
-        {eventCardPos.x !== -1 && (
-          <CalendarEventCard
-            x={eventCardPos.x}
-            y={eventCardPos.y}
-            booking={bookingCard}
-            onDelete={handleDeleteBooking}
-            isDeleting={isDeleting}
-          />
-        )}
-      </AnimatePresence>
+      {eventCardPos.x !== -1 && (
+        <CalendarEventCard
+          x={eventCardPos.x}
+          y={eventCardPos.y}
+          booking={bookingCard}
+          onDelete={handleDeleteBooking}
+          isDeleting={isDeleting}
+        />
+      )}
 
       {/* Booking form */}
       <BookingConfirmationPopup
@@ -294,7 +294,7 @@ const BookingSelector: FC = () => {
         </VStack>
 
         <HStack overflowX='auto' hidden={isExpandedCalendar}>
-          <BookingsTimesCol />
+          <BookingTimesCol />
           <HStack>
             {allVenues
               .filter((venue) => {

@@ -2,7 +2,8 @@ import { Box, Center, Grid, GridItem, HStack, Heading, Stack } from '@chakra-ui/
 import useEmblaCarousel from 'embla-carousel-react'
 import Image, { StaticImageData } from 'next/image'
 import { useCallback, useEffect, useState } from 'react'
-import CarouselThumb from './CarouselThumb'
+
+import CarouselThumb from '@/components/stylio/CarouselThumb'
 
 type CarouselProps = {
   images: StaticImageData[]

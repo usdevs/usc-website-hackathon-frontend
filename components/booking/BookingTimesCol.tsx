@@ -1,10 +1,11 @@
-import { VStack, Center, Text, Box } from '@chakra-ui/react'
+import { Box, Center, Text, VStack } from '@chakra-ui/react'
 import { eachMinuteOfInterval, format } from 'date-fns'
+
 import {
   BOOKING_CELL_BORDER_Y_REM,
   BOOKING_CELL_HEIGHT_REM,
   useBookingCellStyles,
-} from '../../utils'
+} from '@/utils/booking'
 
 // Labels for time 0000-2330
 const BookingsTimesCol: React.FC = () => {
