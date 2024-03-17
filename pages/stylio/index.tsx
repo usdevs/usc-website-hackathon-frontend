@@ -1,9 +1,13 @@
-import CreateButton from '../../components/stylio/CreateButton'
-import { HStack, VStack, SimpleGrid } from '@chakra-ui/react'
-import ScrollableList from '../../components/stylio/ScrollableList'
+import { HStack, SimpleGrid, VStack } from '@chakra-ui/react'
 import { GetStaticProps, InferGetStaticPropsType } from 'next'
-import StylioSubmissionList from '../../components/stylio/StylioSubmissionList'
-import OpenHouse from '../../pages/stylio/open-house'
+
+import OpenHouse from '@/pages/stylio/open-house'
+
+import { StylioCourse, StylioDetailedSubmission } from '@/types/stylio.types'
+
+import CreateButton from '@/components/stylio/CreateButton'
+import ScrollableList from '@/components/stylio/ScrollableList'
+import StylioSubmissionList from '@/components/stylio/StylioSubmissionList'
 
 export const getStaticProps: GetStaticProps<{
   submissions: StylioDetailedSubmission[]

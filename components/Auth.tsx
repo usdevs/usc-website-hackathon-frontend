@@ -1,10 +1,14 @@
+import { Button } from '@chakra-ui/react'
+import * as process from 'process'
 import React, { useEffect } from 'react'
 
-import { Button } from '@chakra-ui/react'
-import TelegramLoginButton from './TelegramLoginButton'
-import { isUserLoggedIn } from '../utils'
-import { useUserInfo } from '../hooks/useUserInfo'
-import * as process from 'process'
+import { isUserLoggedIn } from '@/utils/booking'
+
+import { TelegramUser } from '@/types/auth.types'
+
+import { useUserInfo } from '@/hooks/useUserInfo'
+
+import TelegramLoginButton from '@/components/TelegramLoginButton'
 
 const Auth: React.FC = () => {
   const [authOrNull, setAuth, cleanUpAuth] = useUserInfo()

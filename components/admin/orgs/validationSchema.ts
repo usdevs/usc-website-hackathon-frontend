@@ -1,4 +1,5 @@
 import * as Yup from 'yup'
+
 import defaultValues from './initialValues'
 
 // Custom validation method for checking empty IG Head

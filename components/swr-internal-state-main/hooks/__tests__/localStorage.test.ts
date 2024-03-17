@@ -1,7 +1,7 @@
 import useLocalStorageWithTTL from '../useLocalStorageWithTTL'
 import MockedLocalStorage from '../__mocks__/mockedLocalStorage'
 
-let mockedMutate = jest.fn()
+const mockedMutate = jest.fn()
 
 jest.mock('swr', () => (key: any, persistentFetcher: any) => ({
   data: persistentFetcher(key),
@@ -9,7 +9,7 @@ jest.mock('swr', () => (key: any, persistentFetcher: any) => ({
 }))
 
 describe('persistent-storage', () => {
-  let mockedLocalStorage: MockedLocalStorage = new MockedLocalStorage()
+  const mockedLocalStorage: MockedLocalStorage = new MockedLocalStorage()
 
   beforeAll(() => {
     Object.defineProperty(window, 'localStorage', { value: mockedLocalStorage })

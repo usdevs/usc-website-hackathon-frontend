@@ -1,5 +1,10 @@
-import { useGlobalState } from '../components/swr-internal-state-main'
 import { Fetcher } from 'swr'
+
+import { AuthState } from '@/types/auth.types'
+import { Organisation, Venue } from '@/types/bookings.types'
+import { NavigationLink } from '@/types/utils.types'
+
+import { useGlobalState } from '@/components/swr-internal-state-main'
 
 export const useBookingCellStyles = () => useGlobalState<number>('root-font-size', 16)
 

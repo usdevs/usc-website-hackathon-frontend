@@ -1,8 +1,11 @@
+import { Button, Grid, HStack, Text, VStack } from '@chakra-ui/react'
+import { addMonths, format, isSameDay, startOfMonth, subMonths } from 'date-fns'
 import { useState } from 'react'
-import { Box, Button, Grid, HStack, Text, VStack } from '@chakra-ui/react'
-import { format, startOfMonth, addMonths, subMonths, isSameDay } from 'date-fns'
-import { motion, AnimatePresence, LayoutGroup } from 'framer-motion'
-import CalendarCell from './CalendarCell'
+
+import { BookingDataDisplay } from '@/types/bookings.types'
+import { ToggleProps } from '@/types/utils.types'
+
+import CalendarCell from '@/components/booking/CalendarCell'
 
 interface CellProps {
   text: string
@@ -25,19 +28,7 @@ const spring = {
 
 type DayCellProps = Pick<CellProps, 'text' | 'isExpanded'>
 const CalendarDayCell: React.FC<DayCellProps> = ({ text, isExpanded }) => {
-  return (
-    <motion.div
-      style={{ textAlign: 'center', fontWeight: 'bold' }}
-      animate={{
-        opacity: 1,
-        height: isExpanded ? '70px' : '50px',
-        width: isExpanded ? '10vw' : '50px',
-        transition: spring,
-      }}
-    >
-      {text}
-    </motion.div>
-  )
+  return <div style={{ textAlign: 'center', fontWeight: 'bold' }}>{text}</div>
 }
 
 const Calendar: React.FC<CalendarProps> = ({ isOn, setStartDate, bookings }) => {
@@ -79,40 +70,36 @@ const Calendar: React.FC<CalendarProps> = ({ isOn, setStartDate, bookings }) => 
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
           <CalendarDayCell key={day} text={day} isExpanded={isOn} />
         ))}
-        <AnimatePresence>
-          <LayoutGroup>
-            {Array.from({ length: firstDayOfMonth }).map((_, index) => (
-              <CalendarCell
-                text={''}
-                bookings={[]}
-                isSelected={false}
-                key={'empty-' + index}
-                isExpanded={isOn}
-              />
-            ))}
-            {daysInMonth.map((day) => {
-              const date = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), day)
-              const bookingsForDay = bookings.filter((booking) => {
-                return isSameDay(booking.from, date)
-              })
+        {Array.from({ length: firstDayOfMonth }).map((_, index) => (
+          <CalendarCell
+            text={''}
+            bookings={[]}
+            isSelected={false}
+            key={'empty-' + index}
+            isExpanded={isOn}
+          />
+        ))}
+        {daysInMonth.map((day) => {
+          const date = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), day)
+          const bookingsForDay = bookings.filter((booking) => {
+            return isSameDay(booking.from, date)
+          })
 
-              return (
-                <CalendarCell
-                  key={selectedDate.getMonth + '-' + day}
-                  onClick={() => {
-                    setSelected(day)
-                    const date = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), day)
-                    setStartDate(date)
-                  }}
-                  text={day.toString()}
-                  isExpanded={isOn}
-                  isSelected={selected === day}
-                  bookings={bookingsForDay}
-                />
-              )
-            })}
-          </LayoutGroup>
-        </AnimatePresence>
+          return (
+            <CalendarCell
+              key={selectedDate.getMonth + '-' + day}
+              onClick={() => {
+                setSelected(day)
+                const date = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), day)
+                setStartDate(date)
+              }}
+              text={day.toString()}
+              isExpanded={isOn}
+              isSelected={selected === day}
+              bookings={bookingsForDay}
+            />
+          )
+        })}
       </Grid>
     </VStack>
   )

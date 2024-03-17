@@ -1,6 +1,8 @@
-import { useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import { Text } from '@chakra-ui/react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { useRef } from 'react'
+
+import { ToggleProps } from '@/types/utils.types'
 
 const Toggle: React.FC<ToggleProps> = ({ isOn, setIsOn }) => {
   const STYLES = {

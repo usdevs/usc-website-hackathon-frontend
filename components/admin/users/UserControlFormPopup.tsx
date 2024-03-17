@@ -1,16 +1,19 @@
 import {
+  Button,
   Modal,
-  ModalOverlay,
+  ModalBody,
+  ModalCloseButton,
   ModalContent,
   ModalHeader,
-  ModalCloseButton,
-  ModalBody,
+  ModalOverlay,
   VStack,
-  Button,
 } from '@chakra-ui/react'
-import { Formik, Form } from 'formik'
-import FormTextField from '../../form/FormTextField'
-import defaultValues from './initialValues'
+import { Form, Formik } from 'formik'
+
+import { User } from '@/types/bookings.types'
+
+import defaultValues from '@/components/admin/users/initialValues'
+import FormTextField from '@/components/form/FormTextField'
 
 type ModalProps = {
   isOpen: boolean

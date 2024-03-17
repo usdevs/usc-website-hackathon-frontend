@@ -1,22 +1,23 @@
 import {
+  Button,
   Modal,
-  ModalOverlay,
+  ModalBody,
+  ModalCloseButton,
   ModalContent,
   ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  VStack,
+  ModalOverlay,
   Text,
-  Button,
+  VStack,
 } from '@chakra-ui/react'
-import { Formik, Form } from 'formik'
-import React from 'react'
-import FormCheckbox from '../../form/FormCheckbox'
-import FormSelect from '../../form/FormSelect'
-import FormTextArea from '../../form/FormTextArea'
-import FormTextField from '../../form/FormTextField'
-import defaultValues from './initialValues'
-import FormMultiSelect from '../../form/FormMultiSelect'
+import { Form, Formik } from 'formik'
+
+import { OrganisationForm } from '@/types/bookings.types'
+
+import FormCheckbox from '@/components/form/FormCheckbox'
+import FormMultiSelect from '@/components/form/FormMultiSelect'
+import FormSelect from '@/components/form/FormSelect'
+import FormTextArea from '@/components/form/FormTextArea'
+import FormTextField from '@/components/form/FormTextField'
 
 export type SelectProps<T> = {
   value: T
@@ -47,7 +48,7 @@ function OrganisationControlFormPopup({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
-          {Object.is(initialValues, defaultValues) ? 'Add New Organisation' : 'Edit Organisation'}
+          {Object.is(initialValues, initialValues) ? 'Add New Organisation' : 'Edit Organisation'}
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
@@ -72,7 +73,7 @@ function OrganisationControlFormPopup({
                       id='category'
                       name='category'
                       label='Category'
-                      defaultValue={defaultValues['category']}
+                      defaultValue={categories[0].value}
                       placeholder='Select a category...'
                       field={form.getFieldProps('category')}
                       form={form}
@@ -82,7 +83,7 @@ function OrganisationControlFormPopup({
                       id='igHead'
                       name='igHead'
                       label='Head'
-                      defaultValue={defaultValues['igHead']}
+                      defaultValue={users[0].value}
                       placeholder='Select an IG head...'
                       field={form.getFieldProps<number>('igHead')}
                       form={form}
@@ -114,13 +115,6 @@ function OrganisationControlFormPopup({
                       name='inviteLink'
                       label='Invite Link'
                       field={form.getFieldProps('inviteLink')}
-                      form={form}
-                    />
-                    <FormCheckbox
-                      id='isAdminOrg'
-                      name='isAdminOrg'
-                      label='Admin Organisation?'
-                      field={form.getFieldProps('isAdminOrg')}
                       form={form}
                     />
                     <FormCheckbox

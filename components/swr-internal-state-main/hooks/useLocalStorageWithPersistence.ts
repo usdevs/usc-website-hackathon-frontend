@@ -18,7 +18,7 @@ const useLocalStorageWithPersistence = <T>(
   let initialValue = defaultValue
 
   if (!isServerSide()) {
-    let storedValue = window.localStorage.getItem(key)
+    const storedValue = window.localStorage.getItem(key)
     if (storedValue !== null && storedValue !== 'undefined') initialValue = JSON.parse(storedValue)
   }
 

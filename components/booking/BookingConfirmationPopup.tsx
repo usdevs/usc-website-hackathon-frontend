@@ -1,4 +1,3 @@
-import { FC, FormEvent, ChangeEvent, useState } from 'react'
 import {
   Box,
   Button,
@@ -16,19 +15,30 @@ import {
   useToast,
 } from '@chakra-ui/react'
 import format from 'date-fns/format'
+import { ChangeEvent, FC, FormEvent, useState } from 'react'
+import { KeyedMutator } from 'swr'
+import useSWRImmutable from 'swr/immutable'
+
+import { checkIsVenueAdmin } from '@/utils/auth'
 import {
-  isUserLoggedIn,
+  getFromUrlStringAndParseJson,
   getOrgFromId,
   getVenueFromId,
-  getFromUrlStringAndParseJson,
+  isUserLoggedIn,
   makeFetchToUrlWithAuth,
-} from '../../utils'
-import { useCurrentHalfHourTime } from '../../hooks/useCurrentHalfHourTime'
-import { useUserInfo } from '../../hooks/useUserInfo'
-import useSWRImmutable from 'swr/immutable'
-import { useAllVenues } from '../../hooks/useAllVenues'
-import { KeyedMutator } from 'swr'
-import { checkIsVenueAdmin } from '../../utils/auth'
+} from '@/utils/booking'
+
+import { AuthState } from '@/types/auth.types'
+import {
+  BookingDataBackend,
+  BookingDataForm,
+  BookingDataSelection,
+  Organisation,
+} from '@/types/bookings.types'
+
+import { useAllVenues } from '@/hooks/useAllVenues'
+import { useCurrentHalfHourTime } from '@/hooks/useCurrentHalfHourTime'
+import { useUserInfo } from '@/hooks/useUserInfo'
 
 const MAX_SLOTS_PER_BOOKING = 4
 

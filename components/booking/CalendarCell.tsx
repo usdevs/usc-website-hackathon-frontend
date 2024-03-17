@@ -1,19 +1,22 @@
 import {
+  Center,
   Modal,
-  ModalOverlay,
-  ModalHeader,
   ModalBody,
-  ModalContent,
   ModalCloseButton,
-  Box,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
   Text,
   VStack,
   useDisclosure,
 } from '@chakra-ui/react'
-import { motion } from 'framer-motion'
 import { format } from 'date-fns'
-import { getVenueFromId } from '../../utils'
-import { useAllVenues } from '../../hooks/useAllVenues'
+
+import { getVenueFromId } from '@/utils/booking'
+
+import { BookingDataDisplay } from '@/types/bookings.types'
+
+import { useAllVenues } from '@/hooks/useAllVenues'
 
 interface CellProps {
   text: string
@@ -34,69 +37,38 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
 
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const list = {
-    visible: {
-      opacity: 1,
-      transition: {
-        when: 'beforeChildren',
-        staggerChildren: 0.3,
-      },
-    },
-    hidden: {
-      opacity: 0,
-      transition: {
-        when: 'afterChildren',
-      },
-    },
-  }
-
-  const item = {
-    visible: { opacity: 1, x: 0 },
-    hidden: { opacity: 0, x: -10 },
-  }
-
   if (isLoadingVenues) {
     return <></>
   }
 
   return (
-    <motion.div
-      style={{
-        textAlign: 'center',
-        cursor: text !== '' ? 'pointer' : 'default',
-        position: 'relative',
-      }}
-      animate={{
-        opacity: 1,
-        height: isExpanded ? '10rem' : '50px',
-        width: isExpanded ? '13vw' : '50px',
-        transition: spring,
-      }}
-      onClick={onClick}
-    >
-      <Box
+    <>
+      <Center
         zIndex='10'
         color={isSelected ? 'white' : 'black'}
+        bgColor={isSelected ? '#1f407b' : 'white'}
         fontWeight={isSelected ? 'bold' : 'normal'}
-        height='100%'
+        height={12}
+        width={12}
+        onClick={onClick}
       >
         <Text>{text}</Text>
         {isExpanded && (
-          <motion.div initial='hidden' animate='visible' variants={list} style={{ height: '75%' }}>
+          <div style={{ height: '75%' }}>
             <VStack alignItems='flex-start' spacing='0' pl='4' height='100%'>
               {bookings.slice(0, 3).map((booking, i) => {
                 return (
-                  <motion.div variants={item} key={i}>
+                  <div key={i}>
                     <Text w='100%' fontWeight='normal' fontSize='sm' textAlign='left'>
                       {`${format(booking.from, 'HH:mm')}-${format(booking.to, 'HH:mm')} ${
                         getVenueFromId(allVenues, booking.venueId).name
                       }`}
                     </Text>
-                  </motion.div>
+                  </div>
                 )
               })}
               {bookings.length > 3 ? (
-                <motion.div variants={item}>
+                <div>
                   <Text
                     role='button'
                     w='100%'
@@ -110,33 +82,14 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
                   >
                     {bookings.length - 3} more
                   </Text>
-                </motion.div>
+                </div>
               ) : (
                 <></>
               )}
             </VStack>
-          </motion.div>
+          </div>
         )}
-      </Box>
-      {isSelected && (
-        <motion.div
-          style={{
-            position: 'absolute',
-            height: isExpanded ? '10rem' : '50px',
-            width: isExpanded ? '13vw' : '50px',
-            bottom: isExpanded ? '0' : '25%',
-            borderRadius: '15px',
-            background: '#1F407B',
-            opacity: 0.85,
-            zIndex: -1,
-          }}
-          transition={{
-            duration: 0.5,
-            ease: [0.2, 0.8, 0.2, 1],
-          }}
-          layoutId='underline'
-        />
-      )}
+      </Center>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -155,7 +108,7 @@ const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onCli
           </ModalBody>
         </ModalContent>
       </Modal>
-    </motion.div>
+    </>
   )
 }
 
