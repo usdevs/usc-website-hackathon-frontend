@@ -10,7 +10,7 @@ export type Organisation = {
   isAdminOrg: boolean
   inviteLink: string
   slug: string
-  category: IGCategory
+  category: string
   isInactive: boolean
   isInvisible: boolean
 }

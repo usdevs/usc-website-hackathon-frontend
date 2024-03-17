@@ -1,6 +1,8 @@
 import useSWRImmutable from 'swr/immutable'
 
-import { getFromUrlStringAndParseJson } from '../utils/booking'
+import { getFromUrlStringAndParseJson } from '@/utils/booking'
+
+import { Venue } from '@/types/bookings.types'
 
 export const useAllVenues = (): [Venue[], boolean] => {
   const { data, error, isLoading } = useSWRImmutable<Venue[], string>(

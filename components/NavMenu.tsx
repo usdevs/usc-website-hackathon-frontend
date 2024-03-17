@@ -15,8 +15,11 @@ import { CldImage } from 'next-cloudinary'
 import dynamic from 'next/dynamic'
 import React from 'react'
 
-import { useUserInfo } from '../hooks/useUserInfo'
-import { LOGGED_IN_BUTTON_LINKS, PUBLIC_BUTTON_LINKS } from '../utils/booking'
+import { LOGGED_IN_BUTTON_LINKS, PUBLIC_BUTTON_LINKS } from '@/utils/booking'
+
+import { NavigationLink } from '@/types/utils.types'
+
+import { useUserInfo } from '@/hooks/useUserInfo'
 
 const NavLink: React.FC<NavigationLink> = (props) => (
   <LinkBox
