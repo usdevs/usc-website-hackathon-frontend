@@ -157,7 +157,7 @@ function OrganisationControlForm({
       )
     }
   }
-  const onAdd = () => openModalWithInitialValues(defaultValues)
+  const onAdd = () => openModalWithInitialValues(initialValues)
   const headerText = 'Organisations and Interest Groups'
   const addButtonText = 'New Organisation'
   const searchFieldText = 'Search Organisations...'
