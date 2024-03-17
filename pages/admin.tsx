@@ -3,17 +3,21 @@ import type { NextPage } from 'next'
 import useSWR from 'swr'
 import useSWRImmutable from 'swr/immutable'
 
-import CopyTokenButton from '../components/admin/CopyTokenButton'
-import OrganisationControlForm from '../components/admin/orgs/OrganisationControlForm'
-import UserControlForm from '../components/admin/users/UserControlForm'
-import { useUserInfo } from '../hooks/useUserInfo'
 import {
   getFromUrlArrayAndParseJson,
   getFromUrlStringAndParseJson,
   getFromUrlStringAndParseJsonWithAuth,
   isUserLoggedIn,
-} from '../utils/booking'
-import { makeCategoriesPrettier } from '../utils/orgUtils'
+} from '@/utils/booking'
+import { makeCategoriesPrettier } from '@/utils/orgUtils'
+
+import { OrganisationWithIGHead, User } from '@/types/bookings.types'
+
+import { useUserInfo } from '@/hooks/useUserInfo'
+
+import CopyTokenButton from '@/components/admin/CopyTokenButton'
+import OrganisationControlForm from '@/components/admin/orgs/OrganisationControlForm'
+import UserControlForm from '@/components/admin/users/UserControlForm'
 
 const AdminPage: NextPage = () => {
   const [authOrNull] = useUserInfo()

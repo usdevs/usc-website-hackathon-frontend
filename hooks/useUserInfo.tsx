@@ -1,9 +1,8 @@
-import {
-  RemoveValue,
-  SetValue,
-  useLocalStorageWithTTL,
-} from '../components/swr-internal-state-main'
-import { throwsErrorIfNullOrUndefined } from '../utils/booking'
+import { throwsErrorIfNullOrUndefined } from '@/utils/booking'
+
+import { AuthState } from '@/types/auth.types'
+
+import { RemoveValue, SetValue, useLocalStorageWithTTL } from '@/components/swr-internal-state-main'
 
 export const useUserInfo = () => useLocalStorageWithTTL<AuthState>('user-profile', null, 30)
 

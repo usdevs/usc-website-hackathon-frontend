@@ -1,3 +1,5 @@
+import { AuthState } from '@/types/auth.types'
+
 export const checkIsWebsiteAdmin = (auth: AuthState | null) => {
   if (!auth) return false
   return auth.permissions.isAdmin

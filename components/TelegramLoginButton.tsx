@@ -1,6 +1,8 @@
-import PropTypes from 'prop-types'
-import React, { useRef, useEffect } from 'react'
 import { Box } from '@chakra-ui/react'
+import PropTypes from 'prop-types'
+import React, { useEffect, useRef } from 'react'
+
+import { TelegramUser } from '@/types/auth.types'
 
 interface Props {
   botName: string

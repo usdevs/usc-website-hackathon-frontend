@@ -1,5 +1,8 @@
 import { UseToastOptions } from '@chakra-ui/react'
 
+import { StringToStringJSObject } from '@/types/auth.types'
+import { OrganisationWithIGHead } from '@/types/bookings.types'
+
 const ORGANISATION_TOAST_ID = 'admin-toast'
 
 export const makeSuccessToast = (title: string): UseToastOptions => {
