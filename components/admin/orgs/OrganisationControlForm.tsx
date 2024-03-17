@@ -1,18 +1,23 @@
-import { useToast, useDisclosure } from '@chakra-ui/react'
-import { makeFetchToUrlWithAuth } from '../../../utils'
-import { useUserInfoNonNull } from '../../../hooks/useUserInfo'
-import { KeyedMutator } from 'swr'
+import { useDisclosure, useToast } from '@chakra-ui/react'
 import { useState } from 'react'
-import OrganisationControlFormPopup from './OrganisationControlFormPopup'
-import defaultValues from './initialValues'
-import validationSchema from './validationSchema'
+import { KeyedMutator } from 'swr'
+
+import { makeFetchToUrlWithAuth } from '@/utils/booking'
 import {
-  makeSuccessToast,
   makeErrorToast,
+  makeSuccessToast,
   prettifyCategoriesInOrg,
   unprettifyCategory,
-} from '../../../utils/orgUtils'
-import AdminTable, { AdminTableColumnProps } from '../AdminTable'
+} from '@/utils/orgUtils'
+
+import { OrganisationForm, OrganisationWithIGHead, User } from '@/types/bookings.types'
+
+import { useUserInfoNonNull } from '@/hooks/useUserInfo'
+
+import AdminTable, { AdminTableColumnProps } from '@/components/admin/AdminTable'
+import OrganisationControlFormPopup from '@/components/admin/orgs/OrganisationControlFormPopup'
+import defaultValues from '@/components/admin/orgs/initialValues'
+import validationSchema from '@/components/admin/orgs/validationSchema'
 
 type OrganisationControlFormProps = {
   users: User[]

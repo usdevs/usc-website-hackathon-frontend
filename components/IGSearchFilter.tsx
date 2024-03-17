@@ -1,18 +1,19 @@
-import React from 'react'
+import { SearchIcon } from '@chakra-ui/icons'
 import {
   Checkbox,
   CheckboxGroup,
   Divider,
   Flex,
-  HStack,
   Input,
   InputGroup,
   InputLeftElement,
-  SimpleGrid,
   VStack,
 } from '@chakra-ui/react'
-import { SearchIcon } from '@chakra-ui/icons'
-import { DEFAULT_FILTERS } from '../pages/student-groups'
+import React from 'react'
+
+import { DEFAULT_FILTERS } from '@/pages/student-groups'
+
+import { StringToStringJSObject } from '@/types/auth.types'
 
 type IGSearchFilterProps = {
   onInput: React.FormEventHandler<HTMLInputElement>

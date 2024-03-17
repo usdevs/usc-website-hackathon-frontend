@@ -1,13 +1,4 @@
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  Heading,
-  List,
-  Link,
-  ListItem,
-  Divider,
-} from '@chakra-ui/react'
+import { Card, CardBody, Divider, Heading, Link, List, ListItem } from '@chakra-ui/react'
 import { useState } from 'react'
 
 const Links = ({

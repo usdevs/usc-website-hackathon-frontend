@@ -1,22 +1,22 @@
 import {
+  Button,
   Modal,
-  ModalOverlay,
+  ModalBody,
+  ModalCloseButton,
   ModalContent,
   ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  VStack,
+  ModalOverlay,
   Text,
-  Button,
+  VStack,
 } from '@chakra-ui/react'
-import { Formik, Form } from 'formik'
-import React from 'react'
-import FormCheckbox from '../../form/FormCheckbox'
-import FormSelect from '../../form/FormSelect'
-import FormTextArea from '../../form/FormTextArea'
-import FormTextField from '../../form/FormTextField'
-import defaultValues from './initialValues'
-import FormMultiSelect from '../../form/FormMultiSelect'
+import { Form, Formik } from 'formik'
+
+import defaultValues from '@/components/admin/orgs/initialValues'
+import FormCheckbox from '@/components/form/FormCheckbox'
+import FormMultiSelect from '@/components/form/FormMultiSelect'
+import FormSelect from '@/components/form/FormSelect'
+import FormTextArea from '@/components/form/FormTextArea'
+import FormTextField from '@/components/form/FormTextField'
 
 export type SelectProps<T> = {
   value: T

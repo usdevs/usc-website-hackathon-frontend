@@ -1,17 +1,18 @@
-import type { NextPage } from 'next'
 import { Box, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react'
+import type { NextPage } from 'next'
+import useSWR from 'swr'
+import useSWRImmutable from 'swr/immutable'
+
+import CopyTokenButton from '../components/admin/CopyTokenButton'
+import OrganisationControlForm from '../components/admin/orgs/OrganisationControlForm'
+import UserControlForm from '../components/admin/users/UserControlForm'
+import { useUserInfo } from '../hooks/useUserInfo'
 import {
   getFromUrlArrayAndParseJson,
   getFromUrlStringAndParseJson,
   getFromUrlStringAndParseJsonWithAuth,
   isUserLoggedIn,
-} from '../utils'
-import { useUserInfo } from '../hooks/useUserInfo'
-import OrganisationControlForm from '../components/admin/orgs/OrganisationControlForm'
-import UserControlForm from '../components/admin/users/UserControlForm'
-import CopyTokenButton from '../components/admin/CopyTokenButton'
-import useSWR from 'swr'
-import useSWRImmutable from 'swr/immutable'
+} from '../utils/booking'
 import { makeCategoriesPrettier } from '../utils/orgUtils'
 
 const AdminPage: NextPage = () => {

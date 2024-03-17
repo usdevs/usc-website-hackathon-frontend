@@ -1,8 +1,7 @@
-import { he } from 'date-fns/locale'
 import { Icon, LatLngExpression } from 'leaflet'
 import dynamic from 'next/dynamic'
-import { ComponentType, CSSProperties, FC } from 'react'
-import { MarkerProps, TileLayerProps, PopupProps, PolygonProps, PolylineProps } from 'react-leaflet'
+import { CSSProperties, ComponentType, FC } from 'react'
+import { MarkerProps, PolygonProps, PolylineProps, PopupProps, TileLayerProps } from 'react-leaflet'
 
 const DynamicMap = dynamic(() => import('./DynamicMap'), {
   ssr: false,

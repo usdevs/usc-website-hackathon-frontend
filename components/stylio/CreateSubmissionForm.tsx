@@ -1,9 +1,12 @@
 import { Button, VStack } from '@chakra-ui/react'
 import { Form, Formik } from 'formik'
-import FormTextField from '../form/FormTextField'
-import FormSelect from '../form/FormSelect'
-import FormTextArea from '../form/FormTextArea'
-import submissionValidationSchema, { SubmissionForm } from './validationSchema'
+
+import { StylioCourse, StylioProfessor, StylioStudent } from '@/types/stylio.types'
+
+import FormSelect from '@/components/form/FormSelect'
+import FormTextArea from '@/components/form/FormTextArea'
+import FormTextField from '@/components/form/FormTextField'
+import submissionValidationSchema, { SubmissionForm } from '@/components/stylio/validationSchema'
 
 type Props = {
   professors: StylioProfessor[]

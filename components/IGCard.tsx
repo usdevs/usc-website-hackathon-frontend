@@ -1,30 +1,33 @@
 import {
+  Box,
   Button,
+  ButtonGroup,
   Card,
   CardBody,
-  Heading,
-  Box,
-  Center,
-  Divider,
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-  Text,
-  ButtonGroup,
   CardFooter,
+  Center,
+  Heading,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Stack,
+  Text,
   VStack,
+  useDisclosure,
 } from '@chakra-ui/react'
+import Link from 'next/link'
 import React from 'react'
 import { FaTelegram, FaUserCircle } from 'react-icons/fa'
-import Link from 'next/link'
-import ImageWithFallback from './ImageWithFallback'
-import { DEFAULT_PNG_NAME } from '../utils'
+
+import { DEFAULT_PNG_NAME } from '@/utils/booking'
+
+import { OrganisationWithIGHead, User, UserOnOrg } from '@/types/bookings.types'
+
+import ImageWithFallback from '@/components/ImageWithFallback'
 
 interface IGInfoProps {
   ig_info: OrganisationWithIGHead

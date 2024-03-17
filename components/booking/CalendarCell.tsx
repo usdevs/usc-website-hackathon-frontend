@@ -1,19 +1,23 @@
 import {
-  Modal,
-  ModalOverlay,
-  ModalHeader,
-  ModalBody,
-  ModalContent,
-  ModalCloseButton,
   Box,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
   Text,
   VStack,
   useDisclosure,
 } from '@chakra-ui/react'
-import { motion } from 'framer-motion'
 import { format } from 'date-fns'
-import { getVenueFromId } from '../../utils'
-import { useAllVenues } from '../../hooks/useAllVenues'
+import { motion } from 'framer-motion'
+
+import { getVenueFromId } from '@/utils/booking'
+
+import { BookingDataDisplay } from '@/types/bookings.types'
+
+import { useAllVenues } from '@/hooks/useAllVenues'
 
 interface CellProps {
   text: string

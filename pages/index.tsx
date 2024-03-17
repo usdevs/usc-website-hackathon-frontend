@@ -1,9 +1,12 @@
 import { Box, Flex, Stack, Text, VStack, useBreakpointValue, useMediaQuery } from '@chakra-ui/react'
 import type { NextPage } from 'next'
 import Image from 'next/image'
-import { LandingPageBanner, MobileLandingPageBanner } from '../components/LandingPageBanner'
-import landingPageMockData from '../constants/LandingPageMockData'
-import HeroBg from '../public/01_FIRST HEADER.jpg'
+
+import landingPageMockData from '@/constants/LandingPageMockData'
+
+import { LandingPageBanner, MobileLandingPageBanner } from '@/components/LandingPageBanner'
+
+import HeroBg from '@/public/01_FIRST HEADER.jpg'
 
 const HeroSection = () => {
   return (

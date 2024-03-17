@@ -1,23 +1,27 @@
 import {
-  Card,
-  CardHeader,
-  CardBody,
-  Text,
-  Icon,
-  VStack,
-  HStack,
-  Center,
-  CardFooter,
   Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Center,
+  HStack,
+  Icon,
+  Text,
+  VStack,
 } from '@chakra-ui/react'
-import { FaRegCalendarAlt, FaRegBuilding, FaRegClock, FaRegUser, FaTrash } from 'react-icons/fa'
-import { motion } from 'framer-motion'
 import { format } from 'date-fns'
+import { motion } from 'framer-motion'
 import { FC, HTMLProps } from 'react'
-import { getVenueFromId } from '../../utils'
-import { useUserInfo } from '../../hooks/useUserInfo'
-import { useAllVenues } from '../../hooks/useAllVenues'
-import { checkIsVenueAdmin } from '../../utils/auth'
+import { FaRegBuilding, FaRegCalendarAlt, FaRegClock, FaRegUser, FaTrash } from 'react-icons/fa'
+
+import { checkIsVenueAdmin } from '@/utils/auth'
+import { getVenueFromId } from '@/utils/booking'
+
+import { BookingDataDisplay } from '@/types/bookings.types'
+
+import { useAllVenues } from '@/hooks/useAllVenues'
+import { useUserInfo } from '@/hooks/useUserInfo'
 
 interface CalendarEventCardProps extends HTMLProps<HTMLDivElement> {
   x: number

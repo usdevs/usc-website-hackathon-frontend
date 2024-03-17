@@ -1,5 +1,10 @@
-import { useGlobalState } from '../components/swr-internal-state-main'
 import { Fetcher } from 'swr'
+
+import { AuthState } from '@/types/auth.types'
+import { Organisation, Venue } from '@/types/bookings.types'
+import { NavigationLink } from '@/types/utils.types'
+
+import { useGlobalState } from '@/components/swr-internal-state-main'
 
 export const useBookingCellStyles = () => useGlobalState<number>('root-font-size', 16)
 
@@ -67,20 +72,22 @@ export const getVenueFromId = (venuesToSearch: Venue[], venueId: number) => {
   )
 }
 
-export const getFromUrlStringAndParseJson: Fetcher<any, string> = (url: string): Promise<any> => {
+export const getFromUrlStringAndParseJson: Fetcher<unknown, string> = (
+  url: string,
+): Promise<any> => {
   return fetch(url).then((res: Response) => res.json())
 }
 
-export const getFromUrlStringAndParseJsonWithAuth: Fetcher<any, string[]> = ([
+export const getFromUrlStringAndParseJsonWithAuth: Fetcher<unknown, string[]> = ([
   url,
   token,
-]: string[]): Promise<any> => {
+]: string[]): Promise<unknown> => {
   return makeFetchToUrlWithAuth(url, token, 'GET').then((res) => res.responseJson)
 }
 
-export const getFromUrlArrayAndParseJson: Fetcher<any, string[]> = (
+export const getFromUrlArrayAndParseJson: Fetcher<unknown, string[]> = (
   url: string[],
-): Promise<any> => {
+): Promise<unknown> => {
   const combinedUrl = url.join('')
   return fetch(combinedUrl).then((res: Response) => res.json())
 }

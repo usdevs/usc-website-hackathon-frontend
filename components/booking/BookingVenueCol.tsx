@@ -1,15 +1,20 @@
-import { useBoolean, VStack, Box, Text, Center } from '@chakra-ui/react'
-import { addMinutes, isAfter, isEqual, startOfDay } from 'date-fns'
-import { useState, useRef, useEffect } from 'react'
+import { Box, Center, Text, VStack, useBoolean } from '@chakra-ui/react'
 import { BoxProps } from '@chakra-ui/react'
+import { addMinutes, isAfter, isEqual, startOfDay } from 'date-fns'
+import { useEffect, useRef, useState } from 'react'
+
 import {
   BOOKING_CELL_BORDER_Y_REM,
   BOOKING_CELL_HEIGHT_REM,
   isUserLoggedIn,
   useBookingCellStyles,
-} from '../../utils'
-import { useCurrentHalfHourTime } from '../../hooks/useCurrentHalfHourTime'
-import { useUserInfo } from '../../hooks/useUserInfo'
+} from '@/utils/booking'
+
+import { AuthState, NumberToStringJSObject } from '@/types/auth.types'
+import { BookingDataDisplay } from '@/types/bookings.types'
+
+import { useCurrentHalfHourTime } from '@/hooks/useCurrentHalfHourTime'
+import { useUserInfo } from '@/hooks/useUserInfo'
 
 enum CellStatus {
   Available = 'Available',
@@ -20,7 +25,7 @@ enum CellStatus {
 }
 
 interface BookingVenueColumnProps extends React.HTMLProps<HTMLDivElement> {
-  venueName: String
+  venueName: string
   openBookingModal: (start: Date, end: Date) => void
   timeIntervals: Date[]
   currentVenueBookings: Array<BookingDataDisplay>

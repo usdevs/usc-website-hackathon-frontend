@@ -1,5 +1,7 @@
-import React from 'react'
 import { LinkBox, LinkOverlay, Text } from '@chakra-ui/react'
+import React from 'react'
+
+import { NavigationLink } from '@/types/utils.types'
 
 const HomePageCard: React.FC<NavigationLink> = (props) => {
   return (

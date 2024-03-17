@@ -6,6 +6,7 @@
       "@/pages/*": ["pages/*"],
       "@/styles/*": ["styles/*"],
       "@/lib/*": ["lib/*"],
+      "@/constants/*": ["constants/*"],
       "@/utils/*": ["utils/*"],
       "@/hooks/*": ["hooks/*"],
       "@/types/*": ["types/*"],

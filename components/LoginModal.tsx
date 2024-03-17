@@ -1,33 +1,29 @@
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
   Button,
-  HStack,
-  Text,
-  Heading,
-  VStack,
-  FormControl,
-  FormLabel,
-  Input,
+  Center,
   Flex,
-  Spacer,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  HStack,
+  Heading,
+  Input,
   InputGroup,
   InputLeftAddon,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalOverlay,
   PinInput,
   PinInputField,
-  Center,
+  Spacer,
+  Text,
   useBoolean,
-  FormErrorMessage,
+  useDisclosure,
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import { FaCheck } from 'react-icons/fa'
-import { NumericLiteral } from 'typescript'
 
 type LoginForms = 'login' | 'code' | 'success'
 

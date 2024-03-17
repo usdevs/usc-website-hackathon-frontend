@@ -1,9 +1,7 @@
-import { GetStaticProps, GetStaticPaths, InferGetStaticPropsType } from 'next'
-import { z } from 'zod'
-import Markdown from 'react-markdown'
 import {
   Box,
   Center,
+  Code,
   Divider,
   Grid,
   GridItem,
@@ -12,11 +10,16 @@ import {
   ListItem,
   Text,
   UnorderedList,
-  Code,
 } from '@chakra-ui/react'
-import { ReactNode } from 'react'
-import StylioPageBg from '../../public/stylio-header.png'
+import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next'
 import Image from 'next/image'
+import { ReactNode } from 'react'
+import Markdown from 'react-markdown'
+import { z } from 'zod'
+
+import { StylioDetailedSubmission } from '@/types/stylio.types'
+
+import StylioPageBg from '@/public/stylio-header.png'
 
 const schema = z.array(
   z

@@ -1,8 +1,12 @@
+import { Button, Grid, HStack, Text, VStack } from '@chakra-ui/react'
+import { addMonths, format, isSameDay, startOfMonth, subMonths } from 'date-fns'
+import { AnimatePresence, LayoutGroup, motion } from 'framer-motion'
 import { useState } from 'react'
-import { Box, Button, Grid, HStack, Text, VStack } from '@chakra-ui/react'
-import { format, startOfMonth, addMonths, subMonths, isSameDay } from 'date-fns'
-import { motion, AnimatePresence, LayoutGroup } from 'framer-motion'
-import CalendarCell from './CalendarCell'
+
+import { BookingDataDisplay } from '@/types/bookings.types'
+import { ToggleProps } from '@/types/utils.types'
+
+import CalendarCell from '@/components/booking/CalendarCell'
 
 interface CellProps {
   text: string
