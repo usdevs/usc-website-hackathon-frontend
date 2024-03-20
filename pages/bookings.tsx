@@ -65,7 +65,9 @@ const BookingSelector: FC = () => {
       '&end=',
       endOfMonth(userSelectedMonth).toISOString(),
     ],
-    getFromUrlArrayAndParseJson,
+    {
+      fetcher: getFromUrlArrayAndParseJson,
+    },
   )
   const [allBookingsInMonth, setAllBookingsInMonth] = useState<BookingDataDisplay[]>([])
   // we use LocalStorage to persist the colours indefinitely
