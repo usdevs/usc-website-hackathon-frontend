@@ -43,6 +43,7 @@ const Auth: React.FC = () => {
           username: userCredentials.username,
         }
         setAuth({ token, orgIds, userInfo, userId, permissions, setupTime: new Date() })
+        window.location.reload()
       })
       .catch((error) => {
         alert(error)
@@ -74,6 +75,7 @@ const Auth: React.FC = () => {
       auth_date: 0,
       hash: 'none',
     })
+    window.location.reload()
   }
 
   const loginButtonDev = <Button onClick={handleDevAuth}>Login for dev</Button>
