@@ -1,6 +1,6 @@
 import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react'
 import React from 'react'
-import Select, { SingleValue } from 'react-select'
+import Select from 'react-select'
 
 import { BaseFromProps } from '@/types/form.types'
 
@@ -43,7 +43,7 @@ const FormSelect = <T extends number | string>({
         value={data.find((option) => option.value === field.value)}
         // @ts-expect-error
         name={field.name}
-        onChange={(option: SingleValue<SelectProps<number>>) =>
+        onChange={(option: SelectProps<T> | null) =>
           // TODO: Properly type all form types
           // @ts-expect-error
           form.setFieldValue(name, option.value)
