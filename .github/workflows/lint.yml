@@ -22,9 +22,19 @@ jobs:
     name: Run linters
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      packages: read
+      # To report GitHub Actions status checks
+      statuses: write
+
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          # super-linter needs the full git history to get the
+          # list of files that changed across commits
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -34,11 +44,14 @@ jobs:
       - name: Install Node.js dependencies
         run: npm ci
 
-      - name: Run lint-action linters
-        uses: wearerequired/lint-action@v2.3.0
-        with:
-          eslint: true
-          prettier: true
+      - name: Super-Linter
+        uses: super-linter/super-linter@v6.3.0
+        env:
+          # To report GitHub Actions status checks
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LINTER_RULES_PATH: ./
+          TYPESCRIPT_ES_CONFIG_FILE: eslint.config.mjs
 
       - name: Run next linters
         run: npm run linter-next
+            
