@@ -1,5 +1,4 @@
 import { Button, Flex, SimpleGrid, VStack } from '@chakra-ui/react'
-import type { NextPage } from 'next'
 import { ChangeEvent, useEffect, useState } from 'react'
 
 import { makeCategoriesPrettier } from '@/utils/orgUtils'
@@ -11,10 +10,24 @@ import IGSearchFilter from '@/components/IGSearchFilter'
 
 export const DEFAULT_FILTERS: string[] = ['Sports', 'SocioCultural', 'Others']
 
-const StudentGroups: NextPage<{
+type Props = {
   allOrgs: OrganisationWithIGHead[]
   allIGCategories: { [key: string]: string }
-}> = ({ allOrgs, allIGCategories }) => {
+}
+
+export async function getStaticProps() {
+  const [orgs, igCategories] = await Promise.all([
+    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs'),
+    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs/categories'),
+  ])
+  const allOrgs = await (await orgs).json()
+  const allIGCategories: { [key: string]: string } = makeCategoriesPrettier(
+    await (await igCategories).json(),
+  )
+  return { props: { allOrgs, allIGCategories }, revalidate: 86400 } // regenerate every 1 day
+}
+
+export default function StudentGroups({ allOrgs, allIGCategories }: Props) {
   const [igCardsToDisplay, setIgCardsToDisplay] = useState<OrganisationWithIGHead[]>(allOrgs)
   const [interestGroupFilters, setInterestGroupFilters] = useState(DEFAULT_FILTERS)
   const [interestGroupSearchString, setInterestGroupSearchString] = useState('')
@@ -102,17 +115,3 @@ const StudentGroups: NextPage<{
     </>
   )
 }
-
-export async function getStaticProps() {
-  const [orgs, igCategories] = await Promise.all([
-    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs'),
-    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'orgs/categories'),
-  ])
-  const allOrgs = await (await orgs).json()
-  const allIGCategories: { [key: string]: string } = makeCategoriesPrettier(
-    await (await igCategories).json(),
-  )
-  return { props: { allOrgs, allIGCategories }, revalidate: 86400 } // regenerate every 1 day
-}
-
-export default StudentGroups

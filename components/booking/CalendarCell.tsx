@@ -26,13 +26,7 @@ interface CellProps {
   bookings: Array<BookingDataDisplay>
 }
 
-const spring = {
-  type: 'spring',
-  damping: 50,
-  stiffness: 300,
-}
-
-const CalendarCell: React.FC<CellProps> = ({ text, isExpanded, isSelected, onClick, bookings }) => {
+const CalendarCell = ({ text, isExpanded, isSelected, onClick, bookings }: CellProps) => {
   const [allVenues, isLoadingVenues] = useAllVenues()
 
   const { isOpen, onOpen, onClose } = useDisclosure()

@@ -28,17 +28,16 @@ const AdminPage: NextPage = () => {
     mutate: mutateUsers,
   } = useSWR<User[], string[]>(
     authOrNull?.token ? [process.env.NEXT_PUBLIC_BACKEND_URL + 'users', authOrNull.token] : null,
-    getFromUrlStringAndParseJsonWithAuth,
+    { fetcher: getFromUrlStringAndParseJsonWithAuth },
   )
   const {
     data: orgs,
     error: errorOrgs,
     isLoading: isLoadingOrgs,
     mutate: mutateOrgs,
-  } = useSWR<OrganisationWithIGHead[], string[]>(
-    [process.env.NEXT_PUBLIC_BACKEND_URL, 'orgs'],
-    getFromUrlArrayAndParseJson,
-  )
+  } = useSWR<OrganisationWithIGHead[], string[]>([process.env.NEXT_PUBLIC_BACKEND_URL, 'orgs'], {
+    fetcher: getFromUrlArrayAndParseJson,
+  })
   const {
     data: allOrgCategories,
     error: errorOrgCategories,

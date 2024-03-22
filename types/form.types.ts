@@ -1,4 +1,4 @@
-export interface BaseFromProps {
+export interface BaseFormProps {
   id: string
   name: string
   label: string
@@ -6,4 +6,9 @@ export interface BaseFromProps {
     errors: { [key: string]: string | string[] }
     touched: { [key: string]: boolean }
   }
+}
+
+export type SelectProps<T> = {
+  value: T
+  label: string
 }

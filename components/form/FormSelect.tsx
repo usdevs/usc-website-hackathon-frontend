@@ -1,12 +1,11 @@
 import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react'
 import React from 'react'
-import Select, { SingleValue } from 'react-select'
+import Select from 'react-select'
 
-import { BaseFromProps } from '@/types/form.types'
+import { BaseFormProps } from '@/types/form.types'
+import { SelectProps } from '@/types/form.types'
 
-import { SelectProps } from '@/components/admin/orgs/OrganisationControlFormPopup'
-
-interface FormSelectProps<FieldValue> extends BaseFromProps {
+interface FormSelectProps<FieldValue> extends BaseFormProps {
   placeholder: string
   defaultValue: any
   field: {
@@ -41,11 +40,10 @@ const FormSelect = <T extends number | string>({
         defaultValue={defaultValue}
         options={data}
         value={data.find((option) => option.value === field.value)}
-        // @ts-expect-error
+        // @ts-expect-error TODO: Properly type all form types
         name={field.name}
-        onChange={(option: SingleValue<SelectProps<number>>) =>
-          // TODO: Properly type all form types
-          // @ts-expect-error
+        onChange={(option: SelectProps<T> | null) =>
+          // @ts-expect-error TODO: Properly type all form types
           form.setFieldValue(name, option.value)
         }
       />

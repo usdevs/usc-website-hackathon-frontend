@@ -20,18 +20,12 @@ interface CalendarProps extends ToggleProps {
   bookings: Array<BookingDataDisplay>
 }
 
-const spring = {
-  type: 'spring',
-  damping: 50,
-  stiffness: 300,
-}
-
 type DayCellProps = Pick<CellProps, 'text' | 'isExpanded'>
-const CalendarDayCell: React.FC<DayCellProps> = ({ text, isExpanded }) => {
+const CalendarDayCell = ({ text }: DayCellProps) => {
   return <div style={{ textAlign: 'center', fontWeight: 'bold' }}>{text}</div>
 }
 
-const Calendar: React.FC<CalendarProps> = ({ isOn, setStartDate, bookings }) => {
+const Calendar = ({ isOn, setStartDate, bookings }: CalendarProps) => {
   //todo remove these duplicate states, use parent's state
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
   const [selected, setSelected] = useState<number>(selectedDate.getDate())

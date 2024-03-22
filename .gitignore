@@ -49,3 +49,4 @@ _static
 # local env files
 .env*.local
 
+/.vscode
