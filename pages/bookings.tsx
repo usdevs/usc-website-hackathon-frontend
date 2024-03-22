@@ -118,9 +118,7 @@ const BookingSelector: FC = () => {
     }
     bookingsEffect()
     return () => {}
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userSelectedMonth, isLoadingBookings]) // since we call setOrgIdsToColoursMapString, need to remove it from the dependencies
-  // array
 
   // Create time intervals for the current date
   const timeIntervals = useMemo(

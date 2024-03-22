@@ -64,12 +64,7 @@ interface BookingCardProps extends React.HTMLProps<HTMLDivElement> {
 }
 
 // Card which shows details for each booking event
-const BookingCard: React.FC<BookingCardProps> = ({
-  booking,
-  openBookingCard,
-  orgIdsToColoursMap,
-  auth,
-}) => {
+const BookingCard = ({ booking, openBookingCard, orgIdsToColoursMap, auth }: BookingCardProps) => {
   const rootFontSize = 16
 
   const calculateNumberofTimeBlocks = (start: Date, end: Date) => {
@@ -121,13 +116,13 @@ const BookingCard: React.FC<BookingCardProps> = ({
 }
 
 // Individual Grid Cells for the time intervals
-const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
+const BookingVenueTimeCell = ({
   onMouseDown,
   onMouseOver,
   isUserLoggedIn,
   cellStatus,
   rootFontSize,
-}) => {
+}: BookingVenueTimeCellProps) => {
   // Cell is coloured based on whether it's selected or not
   const SharedBoxProps: BoxProps = {
     w: BOX_WIDTH_REM * rootFontSize + 'px',
@@ -174,21 +169,21 @@ const BookingVenueTimeCell: React.FC<BookingVenueTimeCellProps> = ({
         )
       }
     default: {
-      const exhaustiveCheck: never = cellStatus
+      const _exhaustiveCheck: never = cellStatus
       return <div></div>
     }
   }
 }
 
 // Column of Time Grid Cells for a single venue
-const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
+const BookingVenueCol = ({
   venueName,
   openBookingModal,
   timeIntervals,
   currentVenueBookings,
   openBookingCard,
   orgIdsToColoursMap,
-}) => {
+}: BookingVenueColumnProps) => {
   const isCurrentCellBetweenFirstAndLastSelectedCells = (currentIndex: number): boolean => {
     return smallerSelected <= currentIndex && currentIndex <= largerSelected
   }
@@ -284,7 +279,6 @@ const BookingVenueCol: React.FC<BookingVenueColumnProps> = ({
 
     const cellBlocks = timeIntervals.map((el, i) => {
       const { cellStatus, venueBooking } = getCellStatus(timeIntervals[i], i)
-      const isBooked = cellStatus === CellStatus.Booked
       return getVenueCell(i, venueBooking, cellStatus)
     })
 

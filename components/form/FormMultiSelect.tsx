@@ -7,14 +7,14 @@ import { OrganisationForm } from '@/types/bookings.types'
 import { BaseFormProps, SelectProps } from '@/types/form.types'
 
 // Adapted from https://codesandbox.io/s/formik-react-select-multi-typescript-qsrj2?file=/src/CustomSelect.tsx
-interface CustomMultiSelectProps<FieldValue> extends BaseFormProps {
+interface CustomMultiSelectProps extends BaseFormProps {
   field: FieldInputProps<number[]>
   form: FormikProps<OrganisationForm>
   options: SelectProps<number>[]
   placeholder?: string
 }
 
-export const FormMultiSelect = <T extends number[]>({
+export const FormMultiSelect = ({
   id,
   name,
   label,
@@ -22,7 +22,7 @@ export const FormMultiSelect = <T extends number[]>({
   options,
   placeholder,
   form,
-}: CustomMultiSelectProps<T>) => {
+}: CustomMultiSelectProps) => {
   const onChange = (options: MultiValue<SelectProps<number>>) => {
     form.setFieldValue(
       name,

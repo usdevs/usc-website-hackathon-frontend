@@ -40,11 +40,10 @@ const FormSelect = <T extends number | string>({
         defaultValue={defaultValue}
         options={data}
         value={data.find((option) => option.value === field.value)}
-        // @ts-expect-error
+        // @ts-expect-error TODO: Properly type all form types
         name={field.name}
         onChange={(option: SelectProps<T> | null) =>
-          // TODO: Properly type all form types
-          // @ts-expect-error
+          // @ts-expect-error TODO: Properly type all form types
           form.setFieldValue(name, option.value)
         }
       />

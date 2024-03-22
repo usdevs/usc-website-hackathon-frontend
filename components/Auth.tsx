@@ -53,8 +53,6 @@ const Auth: React.FC = () => {
   useEffect(() => {
     const cleanup = async () => {
       if (!isUserLoggedIn(authOrNull)) return
-
-      // @ts-ignore because we do the null check already
       const { setupTime } = authOrNull
       const timeSinceSetup = Date.now() - (setupTime as unknown as number)
       if (timeSinceSetup >= (30 + 1) * 60 * 1000) {

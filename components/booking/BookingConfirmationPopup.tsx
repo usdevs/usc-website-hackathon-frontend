@@ -28,7 +28,6 @@ import {
   makeFetchToUrlWithAuth,
 } from '@/utils/booking'
 
-import { AuthState } from '@/types/auth.types'
 import { BookingDataBackend, BookingDataSelection, Organisation } from '@/types/bookings.types'
 import { SelectProps } from '@/types/form.types'
 
@@ -47,12 +46,6 @@ type BookingConfirmationPopupProps = {
   bookingDataFromSelection: BookingDataSelection
   startDate: Date
   mutate: KeyedMutator<BookingDataBackend[]>
-}
-
-type OrgDropdownProps = {
-  isVenueAdmin: boolean
-  auth: AuthState
-  allOrgs: Organisation[]
 }
 
 const BOOKING_TOAST_ID = 'booking-toast'

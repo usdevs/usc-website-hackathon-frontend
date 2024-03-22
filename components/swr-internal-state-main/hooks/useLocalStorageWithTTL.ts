@@ -23,7 +23,6 @@ const useLocalStorageWithTTL = <T extends ObjectWithSetupTime>(
   // b918ac409cedf11db27a11f2df974473d13e4146 for what changed
   const initialValue = defaultValue
 
-  // @ts-ignore
   const fetcher = () => {
     if (!isServerSide()) {
       const storedValue = window.localStorage.getItem(key)

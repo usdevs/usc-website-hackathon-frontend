@@ -4,7 +4,7 @@ import { useRef } from 'react'
 
 import { ToggleProps } from '@/types/utils.types'
 
-const Toggle: React.FC<ToggleProps> = ({ isOn, setIsOn }) => {
+const Toggle = ({ isOn, setIsOn }: ToggleProps) => {
   const STYLES = {
     container: {
       height: '40px',
