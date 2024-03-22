@@ -91,7 +91,6 @@ export const LandingPageBanner: React.FC<LandingPageBannerProps> = ({
 }
 
 export const MobileLandingPageBanner: React.FC<LandingPageBannerProps> = ({
-  left,
   buttonUrl,
   description,
   imageUrl,

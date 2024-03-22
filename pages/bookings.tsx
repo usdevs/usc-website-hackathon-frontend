@@ -65,7 +65,9 @@ const BookingSelector: FC = () => {
       '&end=',
       endOfMonth(userSelectedMonth).toISOString(),
     ],
-    getFromUrlArrayAndParseJson,
+    {
+      fetcher: getFromUrlArrayAndParseJson,
+    },
   )
   const [allBookingsInMonth, setAllBookingsInMonth] = useState<BookingDataDisplay[]>([])
   // we use LocalStorage to persist the colours indefinitely
@@ -116,9 +118,7 @@ const BookingSelector: FC = () => {
     }
     bookingsEffect()
     return () => {}
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userSelectedMonth, isLoadingBookings]) // since we call setOrgIdsToColoursMapString, need to remove it from the dependencies
-  // array
 
   // Create time intervals for the current date
   const timeIntervals = useMemo(

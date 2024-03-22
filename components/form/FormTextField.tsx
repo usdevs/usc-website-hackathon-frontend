@@ -9,9 +9,9 @@ import {
 } from '@chakra-ui/react'
 import React from 'react'
 
-import { BaseFromProps } from '@/types/form.types'
+import { BaseFormProps } from '@/types/form.types'
 
-interface FormTextFieldProps extends BaseFromProps {
+interface FormTextFieldProps extends BaseFormProps {
   type: string
   field: {
     value: any

@@ -1,4 +1,4 @@
-import { Box, Center, Text, VStack } from '@chakra-ui/react'
+import { Box, Center, VStack } from '@chakra-ui/react'
 import { eachMinuteOfInterval, format } from 'date-fns'
 
 import {

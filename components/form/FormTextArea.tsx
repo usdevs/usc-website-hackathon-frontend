@@ -1,11 +1,11 @@
 import { FormControl, FormErrorMessage, FormLabel, Textarea } from '@chakra-ui/react'
 import React from 'react'
 
-import { BaseFromProps } from '@/types/form.types'
+import { BaseFormProps } from '@/types/form.types'
 
 type TextareaProps = React.ComponentProps<typeof Textarea>
 
-interface FormTextAreaProps extends BaseFromProps {
+interface FormTextAreaProps extends BaseFormProps {
   field: {
     value: any
     onChange: React.ChangeEventHandler<HTMLTextAreaElement>
