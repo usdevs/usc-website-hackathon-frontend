@@ -4,13 +4,10 @@ import React from 'react'
 import Select, { MultiValue } from 'react-select'
 
 import { OrganisationForm } from '@/types/bookings.types'
-import { BaseFromProps } from '@/types/form.types'
-
-import { SelectProps } from '@/components/admin/orgs/OrganisationControlFormPopup'
+import { BaseFormProps, SelectProps } from '@/types/form.types'
 
 // Adapted from https://codesandbox.io/s/formik-react-select-multi-typescript-qsrj2?file=/src/CustomSelect.tsx
-
-interface CustomMultiSelectProps<FieldValue> extends BaseFromProps {
+interface CustomMultiSelectProps<FieldValue> extends BaseFormProps {
   field: FieldInputProps<number[]>
   form: FormikProps<OrganisationForm>
   options: SelectProps<number>[]

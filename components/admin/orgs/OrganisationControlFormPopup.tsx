@@ -12,17 +12,13 @@ import {
 import { Form, Formik } from 'formik'
 
 import { OrganisationForm } from '@/types/bookings.types'
+import { SelectProps } from '@/types/form.types'
 
 import FormCheckbox from '@/components/form/FormCheckbox'
 import FormMultiSelect from '@/components/form/FormMultiSelect'
 import FormSelect from '@/components/form/FormSelect'
 import FormTextArea from '@/components/form/FormTextArea'
 import FormTextField from '@/components/form/FormTextField'
-
-export type SelectProps<T> = {
-  value: T
-  label: string
-}
 
 type ModalProps = {
   isOpen: boolean
