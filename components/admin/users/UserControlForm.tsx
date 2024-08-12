@@ -39,29 +39,35 @@ function UserControlForm({ users, mutateUsers, mutateOrgs }: UserControlFormProp
       fetchUrl = process.env.NEXT_PUBLIC_BACKEND_URL + `user/${values.id}`
       method = 'PUT'
     }
-    const { responseJson, responseStatus } = await makeFetchToUrlWithAuth(
-      fetchUrl,
-      auth.token,
-      method,
-      JSON.stringify(values),
-    )
 
-    if (responseStatus === 200) {
-      toast(
-        makeSuccessToast(
-          values.id === -1 ? `User created successfully!` : `User edited successfully`,
-        ),
+    try {
+      const { responseJson, responseStatus } = await makeFetchToUrlWithAuth(
+        fetchUrl,
+        auth.token,
+        method,
+        JSON.stringify(values),
       )
-      mutateOrgs()
-      mutateUsers()
-      onClose()
-    } else {
-      toast(
-        makeErrorToast(
-          'Oh snap! There was an error when making the user',
-          JSON.stringify(responseJson.message),
-        ),
-      )
+
+      if (responseStatus === 200) {
+        toast(
+          makeSuccessToast(
+            values.id === -1 ? `User created successfully!` : `User edited successfully`,
+          ),
+        )
+        mutateOrgs()
+        mutateUsers()
+        onClose()
+      } else {
+        toast(
+          makeErrorToast(
+            'Oh snap! There was an error when making the user',
+            JSON.stringify(responseJson.message),
+          ),
+        )
+      }
+    } catch (err) {
+      console.error(err)
+      toast(makeErrorToast('Oh snap! There was an error when making the user', (err as Error).message))
     }
 
     setSubmitting(false)
